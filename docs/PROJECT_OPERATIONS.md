@@ -89,15 +89,18 @@ credential. `GITHUB_TOKEN` cannot access a user Project. Use a repository
 secret named `PROJECTS_TOKEN` containing
 a fine-grained credential limited to this repository and Projects access, give
 the workflow only `contents: write`, `issues: read`, and `pull-requests: read`,
-and store append-only metrics on a dedicated `project-metrics` branch. Never
+and store the daily history on a dedicated `project-metrics` branch. Never
 print, persist, or place the credential in command arguments or artifacts.
 
-The snapshot workflow runs at 00:17 UTC and can also be dispatched manually.
+The snapshot workflow runs at 00:17 UTC and can also be dispatched manually
+from the default branch. It refuses non-default refs, and exposes the Project
+secret only to the audit and snapshot steps.
 It fails before writing if Project discovery or configuration audit fails. PR
 events are deliberately excluded from this secret-bearing workflow so proposed
 code cannot access the Project credential. Review transitions therefore remain
 with the enabled Project workflow and the Project Manager; do not add a
-secret-bearing `pull_request` checkout.
+secret-bearing `pull_request` checkout. The `project-metrics` branch must exist
+before the workflow is enabled; a missing branch fails safely.
 
 ## Verification
 

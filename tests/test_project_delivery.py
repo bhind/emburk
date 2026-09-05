@@ -39,6 +39,16 @@ class ProjectDeliveryTest(unittest.TestCase):
             render_svg(rows, svg_path, "remaining_points", "Points")
             self.assertIn("ideal", svg_path.read_text(encoding="utf-8"))
 
+    def test_append_preserves_prior_days(self):
+        first = make_snapshot([item(1, "In Progress", 5)], dt.date(2026, 9, 5))
+        second = make_snapshot([item(1, "Done", 5)], dt.date(2026, 9, 6))
+        with tempfile.TemporaryDirectory() as directory:
+            csv_path = Path(directory) / "snapshot.csv"
+            append_snapshot(csv_path, first)
+            rows = append_snapshot(csv_path, second)
+            self.assertEqual([row["date"] for row in rows], ["2026-09-05", "2026-09-06"])
+            self.assertEqual([row["remaining_points"] for row in rows], ["5.0", "0"])
+
 
 if __name__ == "__main__":
     unittest.main()

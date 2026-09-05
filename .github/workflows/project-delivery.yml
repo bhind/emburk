@@ -13,28 +13,29 @@ permissions: {}
 
 jobs:
   snapshot:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      issues: read
-      pull-requests: read
-    env:
-      GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
       - name: Verify Project configuration
         run: python3 scripts/project_delivery.py audit
-      - name: Create daily snapshot
-        run: python3 scripts/project_delivery.py snapshot --output-dir "$RUNNER_TEMP/project-delivery"
-      - name: Commit append-only metrics
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+      - name: Check out metrics history
+        run: git worktree add -B project-metrics "$RUNNER_TEMP/project-metrics" origin/project-metrics
+      - name: Update daily snapshot
+        run: python3 scripts/project_delivery.py snapshot --output-dir "$RUNNER_TEMP/project-metrics/data/project-delivery"
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+      - name: Commit metrics history
         run: |
+          cd "$RUNNER_TEMP/project-metrics"
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git switch project-metrics
-          mkdir -p data/project-delivery
-          cp "$RUNNER_TEMP"/project-delivery/* data/project-delivery/
           git add data/project-delivery
           git diff --cached --quiet || git commit -m "chore(metrics): snapshot project delivery"
           git push origin project-metrics
