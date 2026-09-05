@@ -69,6 +69,8 @@ enum ScalarResolution {
     OptionalString(Option<String>),
     Boolean(bool),
     I64(i64),
+    MissingRequired,
+    NullNotAllowed,
     Unsupported {
         raw: RawScalarKind,
         requested: ScalarRequestKind,
@@ -77,6 +79,8 @@ enum ScalarResolution {
 
 fn resolve(raw: RawScalar, request: ScalarRequest) -> ScalarResolution {
     match (raw, request) {
+        (RawScalar::Missing, ScalarRequest::RequiredString) => ScalarResolution::MissingRequired,
+        (RawScalar::Null, ScalarRequest::RequiredString) => ScalarResolution::NullNotAllowed,
         (RawScalar::String(value), ScalarRequest::RequiredString) => {
             ScalarResolution::String(value)
         }
@@ -86,6 +90,7 @@ fn resolve(raw: RawScalar, request: ScalarRequest) -> ScalarResolution {
         (RawScalar::String(value), ScalarRequest::DefaultString { .. }) => {
             ScalarResolution::String(value)
         }
+        (RawScalar::Null, ScalarRequest::DefaultString { .. }) => ScalarResolution::NullNotAllowed,
         (RawScalar::Missing | RawScalar::Null, ScalarRequest::OptionalStringNullDefault) => {
             ScalarResolution::OptionalString(None)
         }
@@ -128,6 +133,29 @@ mod tests {
             ),
             ScalarResolution::String(defaulted)
         );
+        assert_eq!(
+            resolve(
+                RawScalar::String(String::new()),
+                ScalarRequest::RequiredString
+            ),
+            ScalarResolution::String(String::new())
+        );
+        assert_eq!(
+            resolve(
+                RawScalar::String(String::new()),
+                ScalarRequest::DefaultString {
+                    value: "fallback".to_owned(),
+                },
+            ),
+            ScalarResolution::String(String::new())
+        );
+        assert_eq!(
+            resolve(
+                RawScalar::String(String::new()),
+                ScalarRequest::OptionalStringNullDefault,
+            ),
+            ScalarResolution::OptionalString(Some(String::new()))
+        );
     }
 
     #[test]
@@ -142,10 +170,7 @@ mod tests {
         );
         assert_eq!(
             resolve(RawScalar::Null, request),
-            ScalarResolution::Unsupported {
-                raw: RawScalarKind::Null,
-                requested: ScalarRequestKind::DefaultString,
-            }
+            ScalarResolution::NullNotAllowed
         );
     }
 
@@ -168,20 +193,14 @@ mod tests {
     }
 
     #[test]
-    fn missing_and_null_remain_distinct_when_not_covered_by_a_policy() {
+    fn required_string_preserves_observed_missing_and_null_outcomes() {
         assert_eq!(
             resolve(RawScalar::Missing, ScalarRequest::RequiredString),
-            ScalarResolution::Unsupported {
-                raw: RawScalarKind::Missing,
-                requested: ScalarRequestKind::RequiredString,
-            }
+            ScalarResolution::MissingRequired
         );
         assert_eq!(
             resolve(RawScalar::Null, ScalarRequest::RequiredString),
-            ScalarResolution::Unsupported {
-                raw: RawScalarKind::Null,
-                requested: ScalarRequestKind::RequiredString,
-            }
+            ScalarResolution::NullNotAllowed
         );
     }
 
