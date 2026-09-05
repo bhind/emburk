@@ -1,7 +1,7 @@
 # T-0012/S09 bounded double-value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; Stage A capture only, independent readiness review passed
+- State: Blocked before source creation; awaiting explicit owner approval for reference-probe execution
 - Branch: `research/t-0012-double-value-probe`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
@@ -174,3 +174,17 @@ Stage A-to-B and any later Rust value/equality decision remain explicit gates.
 
 Independent read-only readiness review passed after clarifying the parent task
 versus parent epic. No runtime evidence or Float64 policy follows from readiness.
+
+## Execution authorization checkpoint
+
+Environment review declined the initial three-file source patch and requires
+explicit owner approval for creating and executing the new reference probe.
+No S09 source file was created, no new JAR was downloaded and no S09 runtime
+execution occurred. This does not invalidate accepted S08 evidence.
+
+Clearing condition: the owner explicitly approves creating the scoped probe,
+retrieving the official checksum-pinned Embulk 0.11.5 executable and running
+that executable with the original local test plugin. External executable code
+runs locally; the checksum establishes identity, not a security guarantee.
+No new dependency/artifact admission, paid service or redistribution is proposed.
+Owner: repository owner; PM resumes the existing packet only after approval.

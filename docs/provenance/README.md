@@ -26,4 +26,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0013/S08 selected commit-position differential](T-0013-commit-position-differential.md) | Done (bounded slice; PR #80, `de38a44`) |
 | [T-0012/S07 bounded Page value observation](T-0012-page-value-probe.md) | Done (bounded reference slice; PR #81, `203d7da`) |
 | [T-0012/S08 private record values](T-0012-private-record-values.md) | Done (bounded slice; PR #82, `b428305`) |
-| [T-0012/S09 double-value observation](T-0012-double-value-probe.md) | In Progress; Stage A capture only |
+| [T-0012/S09 double-value observation](T-0012-double-value-probe.md) | Blocked before source creation; owner execution approval required |
