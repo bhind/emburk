@@ -26,7 +26,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 (`In Progress`) and T-0012/S04 (`In Progress`) are the only active work
+T-0021 (`In Progress`) and T-0012/S05 (`In Progress`) are the only active work
 items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 
 | Item | State | Purpose |
@@ -35,7 +35,7 @@ items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S04 | In Progress | Live comparison of 13 supported scalar outcomes; S01–S03 integrated |
+| T-0012/S05 | In Progress | Schema-boundary reference observations; S01–S04 integrated |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -113,6 +113,7 @@ Clippy, and diff checks. Its evidence is Unit/Contract only. S04 implements
 a live oracle comparison for 13 supported outcomes. Primary acceptance at
 `3fe6546` passed the exact Demo Command and negative controls, nine offline core
 tests (one live test explicitly ignored), format, Clippy, and diff checks.
-Independent Tester acceptance reproduced the same results; PR integration
-remains pending. See the
+Independent Tester acceptance reproduced the same results; PR #67 integrated
+the slice as `79cbcb9`. S05 is observing schema construction and phase handoff
+before any Rust schema policy. See the
 [S04 evidence record](provenance/T-0012-live-scalar-differential.md).

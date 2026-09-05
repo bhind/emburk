@@ -2,7 +2,8 @@
 
 - Tracking issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
 - Branch: `test/t-0012-live-scalar-differential`
-- State: In Progress; independent acceptance passed, integration pending
+- State: Done as a slice; integrated through PR #67 as
+  `79cbcb94b25cecf41bb5587f540a509445d08351`; parent T-0012 remains open
 - Slice estimate: 3 SP; parent Current SP 8, Initial SP unchanged at 5
 - Owner: Rust Core Implementer; canonical records and integration: Project Manager
 - Access dates: 2026-09-05–2026-09-06
@@ -94,8 +95,10 @@ artifact). SHA-256:
 - `oracle-actual.jsonl`: `6d9922dcb534b674cacd2406b899abc678d558e8ad799dc90f8221cb6d2ae387`
 
 The JSONL retains actual exception classes/messages and values. The manifest
-retains both upstream evidence directories. PR integration is pending; the
-parent T-0012 remains open.
+retains both upstream evidence directories. Final-head primary Demo at
+`d833740576f5d8a8172d571eb5d04716f592abe5` also exited 0; external evidence
+`${TMPDIR}/t0012-s04.AEPRVG`. PR #67 integrated the slice; parent T-0012 remains
+open.
 
 Independent Tester reproduced the exact Demo and all auxiliary checks at full
 revision `3fe654610d7b34d5eeb3a5b582accb7f94964b18`, with no findings. Its

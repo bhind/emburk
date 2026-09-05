@@ -30,8 +30,9 @@ it does not itself satisfy the configuration/schema/value contract or the
 Phase 0 exit gate. T-0012/S02's Boolean/Long observation integrated through PR
 #65 as `d7b4838`. T-0012/S03 integrated its private original-Rust scalar resolver
 through PR #66 as `e03a2bc`. S04's live comparator matched 13 selected outcomes
-at `3fe6546` in primary and independent Tester acceptance; integration is
-pending. Even after integration,
+at `3fe6546` in primary and independent Tester acceptance and integrated through
+PR #67 as `79cbcb9`. S05 now observes schema construction and handoff. Even after
+these bounded slices,
 that limited matrix does not satisfy the full configuration/schema/value or
 lifecycle gate.
 
