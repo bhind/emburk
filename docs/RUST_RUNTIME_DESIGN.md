@@ -135,6 +135,14 @@ probe's `PageOutput.finish()` call. This is reference observation only. It does
 not reveal output commit/abort/close behavior; observe that boundary directly
 before making those responsibilities part of the private Rust execution model.
 
+S02's primary reference acceptance at `5739052` shows why the distinction
+matters: one requested input task reached an output transaction with eight
+tasks. Its runtime log explicitly reported `max_threads=16` and eight output
+tasks. A future coordinator must not collapse input task identity and output
+task identity into one counter. The factor eight is a local observation, not a
+portable constant or an accepted scheduling algorithm. Mapping rules, executor
+options and concurrency need separate fixtures before implementation.
+
 | Phase | Coordinator responsibility | Plugin/adapter responsibility | Trace evidence required |
 |---|---|---|---|
 | Resolve and validate | Select pinned factories, resolve configuration | Validate plugin options at the compatible stage | First error, defaults applied, side effects before failure |
@@ -214,3 +222,22 @@ traces, then implement API contracts with fake plugins. Defer actual Java/Ruby
 hosts and provider integrations until those boundaries are evidenced. This
 document can be reviewed independently; parent task completion still requires
 its original semantic dependencies and executable acceptance evidence.
+
+### Bounded path from observation to private execution
+
+The immediate goal is a testable private empty-task coordinator, not completion
+of every compatibility cell before any execution code. Its activation still
+requires a separate packet and a reviewed decision delimiting unsupported paths.
+
+| Decision point | Required evidence | What it permits, and what it does not |
+|---|---|---|
+| Empty successful orchestration | Accepted S01 input and S02 output observations with actual component traces | A bounded normal-path candidate; not inferred failure handling |
+| Failure before the input's finish call | Same-runtime positive control and an original input-run exception fixture, retaining propagation and all actual output callbacks | A candidate for that exact failure boundary; not pre-publication, rollback, retry or recovery guarantees |
+| Private coordinator acceptance | Independently authored fake plugins, explicit input/output task plans, and live comparisons of the selected complete traces | Private execution of those supplied plans; not a reproduction of default executor fan-out or a public plugin API |
+| Expansion beyond empty tasks | New fixtures for values, output mapping, concurrency and resource bounds | A separately reviewed execution slice; not a silent extension of empty-task evidence |
+
+The proposed failure fixture should throw inside input `run` before its own
+`finish` call. Calling this "before publication" would be unjustified: output
+transaction/open could already have effects in a real plugin. Commit durability
+and lost acknowledgements remain separate D5 gates, even if the empty local
+fixture later records abort and close callbacks.
