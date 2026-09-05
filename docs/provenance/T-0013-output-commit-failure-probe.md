@@ -1,7 +1,7 @@
 # T-0013/S05 output commit failure observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; acceptance pending
+- State: Review; PR #75, final-head acceptance and integration pending
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0; raw 3 maps to 3 SP)

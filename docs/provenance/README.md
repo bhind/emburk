@@ -18,4 +18,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0013/S03 input-run failure observation](T-0013-input-failure-probe.md) | Done (Reference Observation / Integration; PR #72) |
 | [T-0021/S03 private empty-task coordinator](T-0021-empty-task-coordinator.md) | Done (Unit/Contract; PR #73) |
 | [T-0013/S04 selected empty-lifecycle differential](T-0013-empty-lifecycle-differential.md) | Done (two selected Differential projections; PR #74) |
-| [T-0013/S05 output commit failure observation](T-0013-output-commit-failure-probe.md) | In Progress (acceptance pending) |
+| [T-0013/S05 output commit failure observation](T-0013-output-commit-failure-probe.md) | Review (Reference Observation / Integration; PR #75) |

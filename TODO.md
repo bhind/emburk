@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S05` is `In Progress`; `T-0012`, `T-0021` and all other unfinished items
+`T-0013/S05` is `Review` (PR #75); `T-0012`, `T-0021` and all other unfinished items
 are `Backlog`. No item is `Blocked`. Combined WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S05: output commit failure observation) | In Progress | P0 | 21 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S05: output commit failure observation) | Review | P0 | 21 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
