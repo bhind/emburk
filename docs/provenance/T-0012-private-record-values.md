@@ -167,3 +167,61 @@ Return to PM before source allowlist expansion, public/schema/physical coupling,
 different fixtures/artifacts, new normalization exclusions or material IP/security
 uncertainty. Do not edit S07 to make the driver pass, weaken a gate, invent live
 outputs or mutate the user's checkout.
+
+## Frozen source and primary acceptance
+
+Source commit: `914ad2e9f63fffecddcde988cea4caf778270e37`.
+Only the four source/test allowlist paths changed. Existing schema, scalar,
+lifecycle, S07, Cargo and CLI sources are unchanged.
+
+| Source | SHA-256 |
+| --- | --- |
+| `crates/emburk-core/src/logical_record.rs` | `5c8702affa7af6b4c6a669370c2220c1e612d79ecc37be7f246b08928950402d` |
+| `crates/emburk-core/src/lib.rs` | `a81ca1807e5f7570a8268b92dc0e8d95f317f72d3dd9ccde2e8ae3682d0f85bc` |
+| `tools/t0012-page-value-differential` | `e6dbc57428c3c5681d04e604c286c25a030a36851a1ce93b04901fe416407714` |
+| `tests/t0012_page_value_differential_test.sh` | `4d892b0b694618b84a4dc6dce296788451fb5b96e731f3f2b9fb8cebb915ee52` |
+
+Primary reviewed the complete four-file change independently of the source
+implementers. Input cells construct actual private storage; expected-only
+mutation preserves those inputs and fails with the comparison-specific error.
+The raw-only path uses the same complete validation and projection as live mode,
+but emits no live marker. Exact six-file hash identities are checked before
+opening manifest-selected files. No upstream implementation was copied.
+
+The exact two-script Demo exited 0 at the frozen source. Primary logs:
+`/private/tmp/t0012-s08-primary.2S6x04/demo.stdout.log` and `demo.stderr.log`.
+Stdout SHA-256:
+`b56546c8242c79aedfbd3a0b716b0896d258c85b81d533e771fa045a075571e2`;
+stderr is empty. Temporary evidence root is
+`/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T`:
+
+- S08 `t0012-s08.HnvBfO`, including manifest, source revision/hashes, native
+  control/live logs, full driver stdout/stderr and original raw-evidence path;
+- reference `t0012-page-value-probe/run.9AMos8/evidence`, retaining complete
+  runtime/artifact/source/coordinate/stage identities and raw logs;
+- unchanged S06 `t0012-s06.n6bXJI`.
+
+Both actual reference processes exited 0: empty has 32 raw events and zero rows;
+typed-null has 110 events and three rows. The native live test executed exactly
+once and passed. Eighteen diagnostic-specific S08 raw controls passed, alongside
+the mandatory full S07 gate (39 raw and two artifact controls), six local Rust
+storage/transport tests and unchanged S06's three live schema comparisons.
+The normalized manifest SHA-256 is
+`94b949ebeb6ba7b136323605fcf9307422c05d7d6d328cc1ef82529848d657ae`.
+
+Primary quality logs are in `/private/tmp/t0012-s08-primary-quality.gUJHr1`.
+Workspace tests passed 35 with six intentionally ignored live tests; workspace
+formatting, strict all-target Clippy, separate Bash syntax, external-cache
+Python compilation and diff checks all exited 0. Implementer frozen Demo also
+exited 0 in `t0012-s08-combined-frozen.hAXq4j` under the temporary root above.
+
+Retained non-acceptance attempts include the initial incomplete draft runs,
+`t0012-s08-full-draft.XbnCJd` (pinned retrieval exited 56 before the unchanged
+artifact checksum control could execute), and an initial Clippy rejection of
+constant-size `chunks_exact`, corrected before freezing. Contributor reproduction
+in `t0012-s08-repro.IxwN3W` has no confirmed final exit and is not acceptance.
+Temporary agent-slot exhaustion was resolved by starting a fresh read-only
+Tester after implementation finished; no independence gate was waived.
+
+Evidence is Unit/Contract plus the two selected Differential projections only.
+Independent Tester acceptance and final PR-head Demo/integration remain pending.

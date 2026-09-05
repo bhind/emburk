@@ -343,5 +343,8 @@ S07 final-head Demo passed at `3b95ecd`; PR #81 integrated as `203d7da`.
 T-0012/S08 (5 SP within unchanged Current 34 / Initial 5) is prepared under
 ADR-0011 and its [packet](docs/provenance/T-0012-private-record-values.md).
 Only private values-only records and two selected live getter projections are
-in scope; schema/physical/public coupling remain excluded. Known accepted
-S03–S07 slice estimates total 15 SP; parent #15 remains open.
+in scope; schema/physical/public coupling remain excluded. Primary source
+acceptance at `914ad2e` passes both projections, 18 raw controls, six local tests,
+unchanged S06 regression and strict checks. Independent acceptance and PR
+integration remain pending. Known accepted S03–S07 slice estimates total 15 SP;
+no S08 points are awarded yet and parent #15 remains open.

@@ -18,7 +18,12 @@ Development state: `bootstrap`
   data-transfer, or performance claim has passed its evidence gate.
 - A private ordered logical schema preserves owned names, type tags, order and
   duplicates. Its live comparison matches three selected schema outcomes;
-  values, nullability, lookup and physical encoding remain unimplemented.
+  schema coupling to values, nullability, lookup and physical encoding remain
+  unimplemented.
+- Private owned Null/Boolean/Signed64/Text records preserve row/cell order and
+  distinguish null from false, zero and empty text. Primary acceptance matches
+  two selected reference getter-result projections; independent acceptance and
+  integration are pending. This is not a production record-transfer path.
 - A private synchronous empty-task coordinator executes original fake callbacks
   with separate cleanup capabilities and reports. Its Unit/Contract tests
   cover zero/one-input plans, one selected input-run failure, and selected
@@ -294,8 +299,11 @@ no Rust values, production transfer or new Differential result. Final-head
 acceptance and integration remain required; parent and phase gates stay open.
 
 S07 final-head Demo passed at `3b95ecd`; PR #81 integrated as `203d7da`.
-Its two bounded reference observations are accepted. T-0012/S08 now prepares
-private Null/Boolean/Signed64/Text records and selected getter-result comparison
-under ADR-0011. Schema coupling, physical encoding and public API remain outside
-this packet. No new native value or Differential claim before source acceptance;
-parent and phase delivery gates remain open.
+Its two bounded reference observations are accepted. T-0012/S08 implements
+private owned Null/Boolean/Signed64/Text records under ADR-0011. At frozen source
+`914ad2e`, primary acceptance passes two selected getter-result comparisons,
+18 raw controls, six local storage/transport tests and the unchanged three-schema
+regression. Workspace 35 passed/six intentionally ignored, formatting and strict
+Clippy pass. Independent acceptance and PR integration remain required.
+Schema coupling, physical encoding, public API and production transfer remain
+outside this slice; parent and phase delivery gates stay open.
