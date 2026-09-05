@@ -8,9 +8,9 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S07` is integrated; `T-0021/S05` is `Review` in PR #79. T-0012, T-0013 and
-all other unfinished items are `Backlog`. No item is `Blocked`.
-Combined active WIP is one of two.
+`T-0013/S07` and `T-0021/S05` are integrated. T-0013/S08 is `Review` in PR #80;
+T-0012, T-0021 and all other unfinished items are `Backlog`. No item is
+`Blocked`. Combined active WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -36,7 +36,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S07 integrated; remaining comparisons/recovery queued) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S08: commit-position comparison) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -44,7 +44,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
-| T-0021 | Define workspace boundaries and core traits (S05: private abort suffix) | Review | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
+| T-0021 | Define workspace boundaries and core traits (S01–S05 integrated; remaining contracts queued) | Backlog | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches | Backlog | P1 | 8 | T-0012, T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
@@ -298,4 +298,19 @@ S05 primary and independent source acceptance pass at `f2d9755`: three new
 first/middle local fixtures, complete typed trace/report/cleanup assertions,
 12 focused passes, four existing live projections and 13/31 raw controls.
 Workspace 26 passed/four intentionally ignored and strict quality checks pass.
-Final-head acceptance and integration remain required; parent #18 stays open.
+Final-head exact Demo passed at `02673ba`; PR #79 integrated as `d36cf28`.
+Parent #18 stays open and returns to Backlog.
+
+T-0013/S08 (3 SP within unchanged Current 34 / Initial 8) is Review in PR #80 under its
+[packet](docs/provenance/T-0013-commit-position-differential.md). Compare exactly
+normal/first/middle empty-fixture projections with actual private Rust execution,
+strict raw validation and negative controls. S04/S06/S07 sources remain unchanged;
+no production algorithm or public type changes. S01–S07 account for 21 accepted
+SP, not parent completion; remaining cleanup/recovery work stays queued.
+
+S08 primary and independent source acceptance pass at `4c591a0`: three selected
+normal/first/middle live projections, 57 raw controls, three local Rust tests,
+and unchanged S04/S06 regressions. Workspace 29 passed/five intentional ignores
+and strict quality checks pass. Runtime policy is unchanged; evidence is
+Unit/Contract plus selected Differential only. Final-head acceptance and PR
+integration remain required; parent #16 remains open.

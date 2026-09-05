@@ -79,7 +79,15 @@ committed-prefix/uncommitted-suffix boundary. No new public/bridge type or
 production plugin boundary is introduced. The private implementation at
 `f2d9755` now aborts `handles[index..]` after an actual commit failure while
 preserving prior report tokens, all-close and separate cleanup. Primary and
-independent acceptance pass; final-head integration is pending.
+independent acceptance pass; final-head acceptance passed at `02673ba` and
+PR #79 integrated as `d36cf28`. S08 prepares a separate test-only position
+comparison child and strict raw adapter. Registration is its only permitted
+edit to the coordinator file; no runtime policy/type change is authorized.
+
+S08 primary and independent source acceptance now passes at `4c591a0`, including
+three selected live projections and unchanged S04/S06 regressions. This is a
+test-only Differential boundary; no runtime policy, public type or phase gate
+changes. Final-head acceptance and integration remain required.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe

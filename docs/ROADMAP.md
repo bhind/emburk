@@ -105,7 +105,14 @@ bounded native abort-suffix candidate; a later separate comparison is required
 for first/middle Differential evidence.
 T-0021/S05 primary and independent source acceptance now pass at `f2d9755`,
 including all local suffix cases and unchanged S04/S06 live regressions.
-Final-head acceptance and integration remain pending; phase gates stay open.
+Final-head exact Demo passed at `02673ba` and PR #79 integrated as `d36cf28`;
+phase gates stay open. T-0013/S08 now prepares three selected position
+comparisons with unchanged S04/S06 regressions, not a wider recovery claim.
+
+S08 primary and independent source acceptance now passes at `4c591a0`, including
+three selected live projections and unchanged S04/S06 regressions. This is a
+test-only Differential boundary; no runtime policy, public type or phase gate
+changes. Final-head acceptance and integration remain required.
 
 ## Phase 1: Native File-to-File MVP
 
