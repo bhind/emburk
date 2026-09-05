@@ -1,8 +1,11 @@
 //! A deliberately small, limited-fallibility fixture lifecycle boundary.
 //!
-//! Only input run and the selected last output commit can fail here. Setup,
-//! other output operations, scope teardown, and cleanup are infallible by
-//! design for these test fakes; this is not a production plugin trait.
+//! Only input run and a selected output commit can fail here. Setup, other
+//! output operations, scope teardown, and cleanup are infallible by design for
+//! these test fakes; this is not a production plugin trait.
+//! Selected first, middle, and last positions cover the observed empty-fixture
+//! cases; they do not establish arbitrary-index or concurrent reference
+//! equivalence.
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct EmptyPlan {
@@ -110,13 +113,17 @@ where
         Ok(input_report) => {
             let mut output_reports = Vec::new();
             let mut output_failure = None;
-            for handle in &mut handles {
-                // This private boundary is exercised only for a fake's selected
-                // last-index failure; it does not establish earlier/middle policy.
-                match handle.commit() {
+            for index in 0..handles.len() {
+                let commit_result = handles[index].commit();
+                match commit_result {
                     Ok(report) => output_reports.push(report),
                     Err(failure) => {
-                        handle.abort();
+                        // The failing handle and every unattempted successor form
+                        // the abort suffix. Reports from the committed prefix are
+                        // retained, and no later commit is attempted.
+                        for handle in &mut handles[index..] {
+                            handle.abort();
+                        }
                         output_failure = Some(failure);
                         break;
                     }
@@ -581,6 +588,75 @@ mod tests {
             ]);
             assert_eq!(trace, expected);
         }
+    }
+    fn assert_commit_failure_suffix(output_tasks: usize, failing_commit_index: usize) {
+        let plan = EmptyPlan {
+            input_tasks: 1,
+            output_tasks,
+            output_task_cap: output_tasks,
+        };
+        let (result, input_cleanup, output_cleanup, trace) =
+            run_with_commit_failure(plan.clone(), false, Some(failing_commit_index));
+
+        assert_eq!(
+            result,
+            Err(CoordinatorError::OutputFailed(OutputFailure(
+                "selected last commit failure".to_owned()
+            )))
+        );
+        assert_eq!(input_cleanup.contexts.len(), 1);
+        assert_eq!(output_cleanup.contexts.len(), 1);
+        assert_eq!(input_cleanup.contexts[0].plan, plan);
+        assert_eq!(output_cleanup.contexts[0].plan, plan);
+        assert_eq!(
+            input_cleanup.contexts[0].reports,
+            vec![ReportToken("input-report".to_owned())]
+        );
+        assert_eq!(
+            output_cleanup.contexts[0].reports,
+            (0..failing_commit_index)
+                .map(|index| ReportToken(format!("output-report-{index}")))
+                .collect::<Vec<_>>()
+        );
+
+        let mut expected = vec![
+            Event::InputJobOpened,
+            Event::InputControlOpened,
+            Event::OutputJobOpened,
+            Event::OutputControlOpened,
+        ];
+        expected.extend((0..output_tasks).map(Event::OutputTaskOpened));
+        expected.push(Event::InputRan);
+        expected.extend((0..output_tasks).map(Event::OutputTaskFinished));
+        expected.push(Event::InputFinished);
+        expected.extend((0..failing_commit_index).map(Event::OutputTaskCommitted));
+        expected.push(Event::OutputTaskCommitFailed(
+            failing_commit_index,
+            OutputFailure("selected last commit failure".to_owned()),
+        ));
+        expected.extend((failing_commit_index..output_tasks).map(Event::OutputTaskAborted));
+        expected.extend((0..output_tasks).map(Event::OutputTaskClosed));
+        expected.extend([
+            Event::OutputControlClosed(ScopeOutcome::Failed(selected_output_failure())),
+            Event::OutputJobClosed(ScopeOutcome::Failed(selected_output_failure())),
+            Event::InputControlClosed(ScopeOutcome::Failed(selected_output_failure())),
+            Event::InputJobClosed(ScopeOutcome::Failed(selected_output_failure())),
+            Event::InputCleaned,
+            Event::OutputCleaned,
+        ]);
+        assert_eq!(trace, expected);
+    }
+    #[test]
+    fn first_commit_failure_aborts_failed_and_unattempted_suffix() {
+        assert_commit_failure_suffix(8, 0);
+    }
+    #[test]
+    fn middle_commit_failure_retains_prefix_and_aborts_suffix() {
+        assert_commit_failure_suffix(8, 4);
+    }
+    #[test]
+    fn minimum_middle_commit_failure_uses_dynamic_suffix_boundary() {
+        assert_commit_failure_suffix(3, 1);
     }
     #[test]
     fn cleanup_receivers_are_separate_from_jobs_and_handles_are_dropped() {
