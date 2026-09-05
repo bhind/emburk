@@ -34,8 +34,8 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S08 is integrated through PR #80. T-0012/S07 is being prepared as the
-next isolated reference observation. Combined active WIP is zero of two;
+T-0013/S08 is integrated through PR #80. T-0012/S07 is the single active
+isolated reference observation. Combined active WIP is one of two;
 no item is `Blocked`. T-0012, T-0013 and T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -44,7 +44,7 @@ no item is `Blocked`. T-0012, T-0013 and T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
+| T-0012/S07 | In Progress | Two bounded Page value observations; capture before expectations |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
