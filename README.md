@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/brand/emburk-icon-256.png" width="256" height="256" alt="Emburk whale shark icon">
+  <img src="assets/brand/emburk-icon-master.png" width="256" height="256" alt="Emburk whale shark icon">
 </p>
 
 # embuяk
