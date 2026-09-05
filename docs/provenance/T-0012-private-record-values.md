@@ -1,7 +1,7 @@
 # T-0012/S08 private record values and selected comparison
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Ready; independent packet review passed with transport clarifications
+- State: In Progress; independent packet review passed with transport clarifications
 - Branch: `feat/t-0012-private-record-values`
 - Owner: Rust Core Implementer; canonical decisions/integration: PM
 - Priority: P0; parent T-0010
