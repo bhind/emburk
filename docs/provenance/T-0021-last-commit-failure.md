@@ -1,7 +1,7 @@
 # T-0021/S04 private last-commit failure
 
 - Tracking issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: In Progress; acceptance pending
+- State: In Progress; source acceptance passed, PR integration pending
 - Priority: P1; parent T-0020
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0; raw 3 maps to 3 SP)
@@ -107,6 +107,47 @@ the exact Demo at final PR head. Existing shell/Python/Java tools stay unchanged
 Unit/Contract for new last-commit behavior; regression of the existing two S04
 Differential projections only. No new output-failure Differential result until
 a separate T-0013 comparison packet passes. Parent #18 remains open.
+
+Independent read-only Planning review at `7ade007` found no material ambiguity.
+It confirmed the last-index-only fixture, typed input/output scope payloads,
+incremental reports, unchanged S04 projections and sufficient two-file allowlist.
+This is not source acceptance or a new runtime claim.
+
+### Source acceptance
+
+Primary and independent read-only Tester acceptance passed at
+`b8dbc77c1f2ef48e9c02be43bba0f29a8a1edd79`. The exact Demo exited 0:
+seven local tests passed with one intentional live ignore, then the two existing
+S04 live projections passed with 13 rejected raw negative controls. Workspace
+tests passed 21 with three intentional live ignores. Cargo formatting,
+`rustfmt --edition 2024 --check crates/emburk-core/src/empty_lifecycle/differential_tests.rs`,
+strict workspace/all-target Clippy and diff checks all exited 0.
+
+Review corrected an initially ambiguous failed-commit event to a distinct typed
+failure event. An explicit Rust 2024 included-file formatting check then found
+one semicolon adjustment; `0832928` is not the final accepted source revision.
+Full typed error payloads, actual report tokens, failed-handle-only abort,
+all-handle close, and drop-before-fresh-cleanup were independently verified.
+
+Source SHA-256 values:
+
+- `empty_lifecycle.rs`: `0a02985f9d6a8be3c17f3ba81ee090327f0ce3c3df6b1aa9396ffa9a8290eb9a`
+- `differential_tests.rs`: `39ddca6e262c366de5d5140d8c815d226e348004dbb06d7d5787ee6c3f0e87e5`
+
+Primary regression evidence: `${TMPDIR}/t0013-s04.uDqHFy`.
+Tester evidence: `${TMPDIR}/t0013-s04.1MsCRi`; logs:
+`/private/tmp/emburk-t0021-s04-acceptance.zIYDft`.
+Tester Demo log SHA-256:
+`c3cba0714dca600f6eceafbae9483ce150999581a30cdf93ef9ef71fc0756742`.
+Tester cases/traces SHA-256:
+`25de9bc1388920b2bb9615fb02bd7a33480f136f4fb30835efbafcbd59a06817` /
+`fd2bfd78f299089d4e72e5773579580a3fdff8172b3e18651a184c923ca1fd73`.
+Environment: macOS 26.5.1 ARM64, Rust/Cargo 1.98.1, Temurin 17.0.20+8,
+Python 3.14.6 and Bash 3.2.57. The initially restricted reference download
+passed on approved network retry; no acceptance gate was weakened.
+Evidence remains Unit/Contract plus existing S04 regression, not a new
+output-failure Differential claim. Final PR-head acceptance and integration
+remain required; parent #18 stays open.
 
 ## Reference and reuse record
 

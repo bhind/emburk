@@ -259,7 +259,9 @@ failed output is aborted, all handles close, and earlier returned reports remain
 available to cleanup. Primary and independent acceptance pass at `876e861`;
 PR #75 integrated as `2901c31`. ADR-0009 and the T-0021/S04 packet now authorize
 the private candidate with typed output errors, incremental report retention and
-common typed scope outcomes while preserving S04 regressions. New output-failure
+common typed scope outcomes while preserving S04 regressions. Primary and
+independent Unit/Contract acceptance pass at `b8dbc77`; integration is pending.
+New output-failure
 Differential evidence remains a separate gate. Last-index evidence is not
 arbitrary-index coverage. Observe first/middle
 commit failures before choosing a broader policy, and never infer publication

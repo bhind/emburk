@@ -105,7 +105,8 @@ final-head acceptance passed and PR #75 integrated as `2901c31`. It adds no
 native output-failure, partial-publication or rollback
 policy, and does not observe arbitrary failure indexes.
 
-T-0021/S04's private last-commit failure implementation is pending under ADR-0009.
+T-0021/S04's private last-commit failure passes primary and independent
+Unit/Contract acceptance at `b8dbc77` under ADR-0009; integration is pending.
 Its local candidate and existing input-failure live regression do not establish
 a new output-failure Differential result or a public Native/Verified entry.
 

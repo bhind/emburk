@@ -243,3 +243,8 @@ Current parent SP is refined 5 to 8 for added implementation/regression work;
 Initial SP stays 5. T-0013 returns to Backlog for its next comparison and
 remaining index/recovery contracts. Combined WIP stays one; no parent completion
 or new output-failure Differential result is claimed.
+
+S04 source acceptance at `b8dbc77` passes primary and independent Tester checks:
+seven local tests, two existing live projections, 13 negative controls,
+workspace 21 passed/three intentional ignores, formatting and strict Clippy.
+Evidence is Unit/Contract plus existing regression; PR integration is pending.

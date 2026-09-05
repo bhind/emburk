@@ -53,7 +53,8 @@ is not a host API.
 
 ADR-0009 permits a private typed output-commit error and common input/output
 scope outcome, preserving actual reports on the observed last-index failure.
-T-0021/S04 is implementing this candidate; acceptance is pending. Its private
+T-0021/S04 implements this candidate; primary and independent Unit/Contract
+acceptance pass at `b8dbc77`, with integration pending. Its private
 fallible signature does not establish arbitrary-index recovery, publication or
 rollback semantics or authorize a public plugin boundary.
 

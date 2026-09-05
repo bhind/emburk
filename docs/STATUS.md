@@ -205,6 +205,11 @@ plan. Independent Tester reproduced these results. This is Reference Observation
 integrated as `2901c31`, with no Rust output-failure policy added by that slice.
 
 ADR-0009 now permits T-0021/S04's private last-commit failure candidate with
-typed scope errors and retained reports. Acceptance is pending; earlier/middle
+typed scope errors and retained reports. Primary and independent source
+acceptance passed at `b8dbc77`: seven local tests, two existing live projections,
+13 negative controls and workspace 21 passed/three intentionally ignored;
+format, explicit included-file Rust 2024 formatting and strict Clippy passed.
+PR integration is pending. Evidence is Unit/Contract plus existing regression,
+not a new output-failure Differential result; earlier/middle
 failure positions and general recovery remain outside its reference coverage.
 Current T-0021 SP is refined 5 to 8; Initial SP stays 5 and parent gates stay open.

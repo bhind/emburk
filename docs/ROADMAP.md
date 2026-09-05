@@ -85,6 +85,9 @@ output commit failure from input-run failure without completing parent gates.
 ADR-0009 now activates T-0021/S04's local private last-commit candidate while
 requiring both existing live projections as regression. A separate future
 T-0013 comparison must establish any new output-failure Differential evidence.
+Primary and independent S04 source acceptance passed at `b8dbc77`, including
+both unchanged live regressions; integration remains pending and phase gates
+remain open.
 
 ## Phase 1: Native File-to-File MVP
 
