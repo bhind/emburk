@@ -7,9 +7,9 @@ GitHub Project mirror these stable identifiers for coordination. Parent epics
 are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
-Current queue state: `T-0002` and `T-0011` are `Done`; `T-0003` is `Review`;
-`T-0021` is `In Progress`; `T-0012` is `Blocked`; and every other item is
-`Backlog`. No item is `Ready`.
+Current queue state: `T-0002`, `T-0003`, and `T-0011` are `Done`; `T-0004` is
+`Review`; `T-0021` is `In Progress`; `T-0012` is `Blocked`; and every other
+item is `Backlog`. No item is `Ready`.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -23,8 +23,8 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0001 | Epic: Governance and traceability | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0002 | Establish canonical records and stable IDs | Done | P0 | 3 | None | Project Manager | Unit/Contract |
-| T-0003 | Establish roles, mutation ownership, and WIP enforcement | Review | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
-| T-0004 | Implement Project synchronization audit | Backlog | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
+| T-0003 | Establish roles, mutation ownership, and WIP enforcement | Done | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
+| T-0004 | Implement Project synchronization audit | Review | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
 | T-0005 | Establish provenance, license, NOTICE, and SBOM gates | Backlog | P0 | 5 | T-0002 | Project Manager | Release |
 | T-0006 | Establish trademark and patent review checkpoints | Backlog | P1 | 2 | T-0005 | Project Manager | Planning |
 
@@ -122,7 +122,7 @@ T-0021 has two bounded slices under one serial integration lane:
 These estimates are within the parent's 5 SP, not additional points or accepted
 velocity. Parent completion retains its listed dependencies.
 
-T-0003 is implementing the governance audit required before T-0004 can refine
-Project synchronization and delivery analytics. T-0012 remains blocked with
-its exact clearing condition in Issue #15. The combined `In Progress` plus
-`Review` WIP limit is fully occupied by T-0003 and T-0021.
+T-0003 is complete through PR #62. T-0004/S01 is implementing Project delivery
+operations and burndown inputs. T-0012 remains blocked with its exact clearing
+condition in Issue #15. The combined `In Progress` plus `Review` WIP limit is
+fully occupied by T-0004 and T-0021.

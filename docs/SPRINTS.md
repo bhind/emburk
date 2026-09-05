@@ -25,10 +25,18 @@ The minimum Project schema is:
 | Evidence Class | `Planning`, `Unit/Contract`, `Differential (Embulk)`, `Integration`, `Benchmark`, `Release` |
 | Demo Command | Text |
 | Estimate Change Reason | Text |
+| Iteration | Weekly iteration starting Monday |
+| Start date | Date; set only when work actually starts |
+| Target date | Date; evidence-based forecast, not a commitment |
 
 Show Title, Status, Priority, Parent T-ID, Owner Role, Depends On, Story Points,
 Demo Command, and Evidence Class on the execution board.
 Keep the other fields available for refinement and review.
+
+`Story Points` is the Project's estimate field, `Work Type` is its type field,
+and GitHub `Assignees` identifies people. Do not duplicate them as Estimate,
+Type, or Owner. See [GitHub Project operations](PROJECT_OPERATIONS.md) for saved
+views, Insights definitions, and burndown interpretation.
 
 ## Product Backlog and WIP
 

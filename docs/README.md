@@ -8,6 +8,7 @@ Repository records are the authoritative project memory. GitHub Issues and the G
 - [Roadmap](ROADMAP.md)
 - [Architecture](ARCHITECTURE.md)
 - [Compatibility](COMPATIBILITY.md)
+- [GitHub Project operations](PROJECT_OPERATIONS.md)
 - [Development](DEVELOPMENT.md)
 
 ## Governance

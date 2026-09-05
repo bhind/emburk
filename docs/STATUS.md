@@ -24,15 +24,16 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0003 is in review and T-0021 occupies the other active lane. T-0012 is blocked on
-executing its pinned reference probe. No work item is currently `Ready` or
-`Review`.
+T-0004 is in review and T-0021 occupies the other active lane. T-0012 is
+blocked on executing its pinned reference probe. No work item is currently
+`Ready`.
 
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
-| T-0003 | Review | Add an executable governance and WIP audit |
+| T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
+| T-0004 | Review | Establish Project delivery operations and burndown inputs |
 | T-0012 | Blocked | Pinned reference probe cannot yet execute successfully |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
@@ -46,6 +47,12 @@ T-0003 adds a fail-closed, read-only audit that dynamically discovers the one
 open Project linked to the repository, validates the combined `In Progress`
 plus `Review` WIP limit, and exposes reusable packet-validation checks. It does
 not automate lifecycle transitions or provide delivery analytics.
+
+T-0004/S01 added weekly Iteration, Start date, and Target date fields plus the
+requested delivery and missing-metadata views. The current iteration contains
+T-0004, blocked T-0012, and T-0021 for 15 Story Points. A read-only snapshot
+records remaining Issues, remaining points, completion, and Status distribution
+without double-counting pull requests.
 
 ## Evidence and non-claims
 

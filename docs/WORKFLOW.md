@@ -27,6 +27,12 @@ Project Manager work. Personal endpoints, approval choices, and concurrency
 limits remain in the ignored `.codex/config.toml` rather than shared agent
 definitions.
 
+Project delivery configuration and read-only snapshots are audited with
+`python3 scripts/project_delivery.py audit`. GitHub built-in workflows remain
+the first choice for item-added, close, merge, and linked-pull-request events.
+Use a custom Action only for a verified gap such as ready-for-review or an
+ideal-line daily snapshot, following `docs/PROJECT_OPERATIONS.md`.
+
 ## Kanban lifecycle
 
 ```text
