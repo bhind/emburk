@@ -94,3 +94,8 @@ authenticated repository context. They must not embed a personal login,
 Project number, URL, or credential. Discovery fails closed unless exactly one
 open linked Project is found, and audit output must never include tokens or
 secret values.
+
+Project delivery operations preserve established field meanings: Story Points
+is Estimate, Work Type is Type, Assignees identifies people, and Owner Role
+identifies authority. Iteration and date fields add scheduling metadata without
+changing repository records into forecasts or delivery claims.
