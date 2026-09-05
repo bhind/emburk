@@ -1,0 +1,17 @@
+{
+  "completed_issues": 1,
+  "completed_points": 5.0,
+  "date": "2026-09-05",
+  "duration": 7,
+  "iteration": "2026-W36",
+  "remaining_issues": 2,
+  "remaining_points": 10.0,
+  "start_date": "2026-08-31",
+  "status_counts": {
+    "Blocked": 1,
+    "Done": 1,
+    "In Progress": 1
+  },
+  "total_issues": 3,
+  "total_points": 15.0
+}
