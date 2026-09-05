@@ -159,6 +159,16 @@ the two validated failed control completions absent from that instrumentation;
 failed job/commit outcomes normalize category/index only after exact payload
 checks. All event mapping remains exhaustive. No further exclusion is approved.
 
+Artifact identity validation belongs to the mandatory unchanged full S07 live
+gate; the driver retains those complete identity records alongside its raw
+hashes. `--validate-only` validates raw envelopes, capture identity, log/digest
+consistency and semantics of control copies. It is not artifact admission or a
+substitute for the live gate and cannot establish a live comparison by itself.
+Independent moving-draft review found no additional raw/projection gap beyond
+the PM's requested cap-before-allocation, ordinary validator function, exact
+Bash invocation and complete identity-retention corrections. Final source and
+actual acceptance remain required.
+
 ## Provenance and non-claims
 
 Use original repository-owned S06/S07 patterns and their pinned Embulk 0.11.5
