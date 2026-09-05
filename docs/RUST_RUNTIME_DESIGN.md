@@ -278,8 +278,9 @@ first/middle observations, explicitly recording later-handle callbacks and
 cleanup reports before any wider policy decision.
 At `fb26813`, first/middle observations show that selected failure and remaining
 unattempted outputs abort, while prior successful reports survive and all handles
-close. These are initial reference observations requiring full S07 acceptance,
-not an accepted expansion of ADR-0009 or a production recovery policy.
+close. Full S07 source acceptance now passes independently at `76dbab0`.
+Integration remains pending; the reference observations are not an accepted
+expansion of ADR-0009 or a production recovery policy.
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output

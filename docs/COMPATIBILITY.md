@@ -121,8 +121,10 @@ not general commit handling or a public plugin certification.
 S07 prepares a separate first/middle reference-only observation; no new position
 coverage or Rust policy is claimed before its capture and acceptance gates.
 Its initial capture at `fb26813` records first/middle abort suffixes and retained
-report counts, but full acceptance is pending. This is not first/middle Rust
-compatibility evidence; see the packet's per-index observation matrix.
+report counts. Primary and independent full source acceptance pass at `76dbab0`:
+three cases, 57 semantic controls, two artifact controls and S05 regression.
+Integration remains pending. This is Reference Observation / Integration, not
+first/middle Rust compatibility; see the packet's per-index observation matrix.
 
 ## Adding an Entry
 

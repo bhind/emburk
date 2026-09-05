@@ -278,3 +278,9 @@ Stage B expectations: abort the selected and unattempted suffix, preserve prior
 commit reports, close all handles. The observed plan was 1/8 with failures at 0
 and 4. Initial capture is not acceptance or a Rust policy; Stage B tests and
 independent reproduction remain required.
+
+S07 source acceptance at `76dbab0` passes primary and independent Tester:
+three live cases, 57 semantic controls, two artifact controls and unchanged
+S05 full regression. Syntax, source hashes and diff checks pass. Final-head
+acceptance and integration remain pending; parent #16 remains open and no
+first/middle Rust policy is added.

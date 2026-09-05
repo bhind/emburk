@@ -97,6 +97,9 @@ S07 prepares a separate reference-only first/middle observation with an explicit
 capture-before-expectations gate; Rust policy remains unchanged.
 That initial capture is now reviewed at `fb26813`; Stage B validates the
 observed abort suffix and retained reports before any later native policy gate.
+Primary and independent Stage B acceptance pass at `76dbab0`, including three
+cases, 57 semantic controls and unchanged S05 regression. Integration remains
+pending; this reference-only slice does not pass a native or phase delivery gate.
 
 ## Phase 1: Native File-to-File MVP
 

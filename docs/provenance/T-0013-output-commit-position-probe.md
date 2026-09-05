@@ -245,6 +245,56 @@ separately from failed/unattempted outputs. It does not authorize that runtime
 change here. Existing last-index-only Rust behavior remains explicitly bounded
 and is not being presented as compatible at first/middle positions. New source
 acceptance, independent reproduction, final-head Demo and integration remain.
+Independent read-only review of the same initial capture confirmed all three
+case envelopes, per-index callbacks, exact error propagation, physical phases,
+fresh cleanup captures, report counts and retained hashes. It ran no new
+fixture and made no edits. This corroborates the input to PM's Stage B decision,
+not acceptance of the forthcoming validator or a Rust policy.
+
+### Stage B source acceptance
+
+Frozen source revision: `76dbab0e9276f83e9b245d6e6147a8d1ef9760ae`.
+Only the wrapper changes after Stage A. Its SHA-256 is
+`4c67c8ac36ec6364e7ecf56127f24b91f6fd759977db12e879f832a5c4467807`;
+Java and runner retain the pre-capture hashes above. PM reviewed exact per-index
+pairs, error payloads, report counts, physical phases, main capture chains and
+fresh failure cleanup captures. The validator bounds declared output count by
+available raw rows before allocating per-index expectations.
+
+Primary ran the exact Demo at that revision: exit 0, three live cases,
+57 diagnostic-specific mutated-evidence controls, two artifact controls and the
+unchanged S05 full regression (two cases and 23 controls). Exactly one S07 full
+marker and one retained S05 full marker were present. Semantic mutations repair
+sequence, hashes and raw logs before expecting their named rejection. Separate
+runner/wrapper shell syntax, source identity and diff checks passed.
+
+Primary evidence: `${TMPDIR}/t0013-output-commit-position.FKYCgj/evidence`;
+wrapper stdout/stderr retained in `/private/tmp/t0013-s07-primary.VXA85k`.
+Cases/traces SHA-256:
+`cd4beef69d2e5512d039616419724795ec7ff99ab8cf36f0dbaed8f19afdaaac` /
+`359916e690604180b8ba7e93ffd85746cbb1aea6b909d95410de20e2b3c9a4a2`.
+Wrapper stdout/stderr SHA-256:
+`925af29495a79b07c4bbdd4446a320aec98ebb2933f53ceb3812eeba77aaca40` /
+`16bb7c78d42058fa75f028e32e115e6c416a3a6059e502ec093ed6199b1fd2cb`.
+Normal records 81 markers and exit 0; first/middle each record 82 and exit 1.
+Observed N=8, selected failures 0/4 and cleanup reports 1/0 and 1/4 agree with
+the independently reviewed initial matrix. Known artifact/deprecation warnings
+remain retained rather than requiring empty stderr. Evidence is Reference
+Observation / Integration only.
+
+Independent read-only Tester reproduced the exact Demo at the same revision:
+exit 0, all three cases, 57 semantic controls, two artifact controls and the
+unchanged S05 full gate; separate shell syntax, diff and source hashes passed.
+Evidence: `${TMPDIR}/t0013-output-commit-position.rQhaTC/evidence`;
+logs: `/private/tmp/t0013-s07-independent.q6IP8P`.
+Cases/traces SHA-256:
+`2114daf1b13791ef37827398216756d0ea38daf632066517bc6aa1cb98433389` /
+`652ec31a8948dfd87a596b5cdfe10b8f9e3f7267a91f6644629c338b6d0ffb99`.
+Stdout/stderr SHA-256:
+`034b6734dbe07637bbcf43d2ded83f178c7290e3debf961a109d74a8e9df0eb4` /
+`4502b13c20c87f60fdeb96eaf54a0c2d63ad505cb7d0601dfc3f866e3a0b13e0`.
+No source finding remains. Final-head acceptance and integration are still
+required; the parent remains open.
 
 ## Reference and reuse record
 

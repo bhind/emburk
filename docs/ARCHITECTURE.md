@@ -72,6 +72,9 @@ The S07 initial first/middle capture now observes aborts on the failed and
 unattempted suffix, with earlier reports retained and all handles closed. This
 motivates an explicit committed-prefix boundary in a future decision; current
 Rust behavior is unchanged and remains supported only for its declared fixtures.
+Primary and independent full source acceptance at `76dbab0` corroborate the
+three reference fixtures; a separate ADR and native packet remain prerequisites
+to changing the coordinator's abort boundary.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe

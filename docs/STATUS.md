@@ -236,4 +236,11 @@ S07 initial capture at `fb26813` observed first failure aborting outputs 0–7,
 and middle failure at 4 retaining commits 0–3 then aborting 4–7. Both close all
 outputs; cleanup reports are input 1/output 0 and input 1/output 4. PM inspected
 the full raw logs and recorded Stage B expectations. This is initial reference
-observation only; acceptance and integration remain pending, with no Rust change.
+observation only, with no Rust change.
+
+S07 primary and independent source acceptance at `76dbab0` pass the exact
+three-case Demo, 57 diagnostic-specific semantic controls, two artifact controls
+and unchanged S05 full regression. Both reproduce the observed abort suffix and
+retained report counts. Shell syntax, source hashes and diff checks pass.
+Evidence is Reference Observation / Integration only; final-head acceptance and
+integration remain pending. First/middle Rust behavior is not yet implemented.
