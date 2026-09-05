@@ -84,13 +84,20 @@ date require human judgment. Blocked also requires an exact blocker and
 clearing condition. GitHub has no public API for creating Insights charts or
 configuring built-in workflows, so those UI settings require direct read-back.
 
-The daily snapshot and ready-for-review transitions require repository
-automation plus a user-Project credential. `GITHUB_TOKEN` cannot access a user
-Project. If enabled, use a repository secret named `PROJECTS_TOKEN` containing
+The daily snapshot requires repository automation plus a user-Project
+credential. `GITHUB_TOKEN` cannot access a user Project. Use a repository
+secret named `PROJECTS_TOKEN` containing
 a fine-grained credential limited to this repository and Projects access, give
 the workflow only `contents: write`, `issues: read`, and `pull-requests: read`,
 and store append-only metrics on a dedicated `project-metrics` branch. Never
 print, persist, or place the credential in command arguments or artifacts.
+
+The snapshot workflow runs at 00:17 UTC and can also be dispatched manually.
+It fails before writing if Project discovery or configuration audit fails. PR
+events are deliberately excluded from this secret-bearing workflow so proposed
+code cannot access the Project credential. Review transitions therefore remain
+with the enabled Project workflow and the Project Manager; do not add a
+secret-bearing `pull_request` checkout.
 
 ## Verification
 
