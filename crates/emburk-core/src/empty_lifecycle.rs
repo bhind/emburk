@@ -1,8 +1,8 @@
-//! A deliberately small, infallible-fixture lifecycle boundary.
+//! A deliberately small, limited-fallibility fixture lifecycle boundary.
 //!
-//! Only the input callback can fail here. Setup, output operations, scope
-//! teardown, and cleanup are infallible by design for these test fakes; this
-//! is not a production plugin trait.
+//! Only input run and the selected last output commit can fail here. Setup,
+//! other output operations, scope teardown, and cleanup are infallible by
+//! design for these test fakes; this is not a production plugin trait.
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct EmptyPlan {
@@ -32,9 +32,17 @@ struct ReportToken(String);
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct InputFailure(String);
 #[derive(Clone, Debug, Eq, PartialEq)]
+struct OutputFailure(String);
+#[derive(Clone, Debug, Eq, PartialEq)]
+enum CallbackFailure {
+    Input(InputFailure),
+    Output(OutputFailure),
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
 enum CoordinatorError {
     InvalidPlan(PlanError),
     InputFailed(InputFailure),
+    OutputFailed(OutputFailure),
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct CleanupContext {
@@ -44,7 +52,7 @@ struct CleanupContext {
 
 trait EmptyOutputHandle {
     fn finish(&mut self);
-    fn commit(&mut self) -> ReportToken;
+    fn commit(&mut self) -> Result<ReportToken, OutputFailure>;
     fn abort(&mut self);
     fn close(&mut self);
 }
@@ -53,15 +61,15 @@ trait EmptyOutput {
     fn open_job(&mut self);
     fn open_control(&mut self);
     fn open_task(&self, task_index: usize) -> Self::Handle;
-    fn close_control(&mut self, outcome: &Result<(), InputFailure>);
-    fn close_job(&mut self, outcome: &Result<(), InputFailure>);
+    fn close_control(&mut self, outcome: &Result<(), CallbackFailure>);
+    fn close_job(&mut self, outcome: &Result<(), CallbackFailure>);
 }
 trait EmptyInput<H: EmptyOutputHandle> {
     fn open_job(&mut self);
     fn open_control(&mut self);
     fn run(&mut self, outputs: &mut [H]) -> Result<ReportToken, InputFailure>;
-    fn close_control(&mut self, outcome: &Result<(), InputFailure>);
-    fn close_job(&mut self, outcome: &Result<(), InputFailure>);
+    fn close_control(&mut self, outcome: &Result<(), CallbackFailure>);
+    fn close_job(&mut self, outcome: &Result<(), CallbackFailure>);
 }
 /// Cleanup is intentionally a distinct capability from either live job.
 trait EmptyInputCleanup {
@@ -100,11 +108,31 @@ where
     };
     let (outcome, input_reports, output_reports) = match input_result {
         Ok(input_report) => {
-            let output_reports = handles.iter_mut().map(EmptyOutputHandle::commit).collect();
+            let mut output_reports = Vec::new();
+            let mut output_failure = None;
+            for handle in &mut handles {
+                // This private boundary is exercised only for a fake's selected
+                // last-index failure; it does not establish earlier/middle policy.
+                match handle.commit() {
+                    Ok(report) => output_reports.push(report),
+                    Err(failure) => {
+                        handle.abort();
+                        output_failure = Some(failure);
+                        break;
+                    }
+                }
+            }
             for handle in &mut handles {
                 handle.close();
             }
-            (Ok(()), input_report.into_iter().collect(), output_reports)
+            match output_failure {
+                Some(failure) => (
+                    Err(CallbackFailure::Output(failure)),
+                    input_report.into_iter().collect(),
+                    output_reports,
+                ),
+                None => (Ok(()), input_report.into_iter().collect(), output_reports),
+            }
         }
         Err(failure) => {
             for handle in &mut handles {
@@ -113,7 +141,7 @@ where
             for handle in &mut handles {
                 handle.close();
             }
-            (Err(failure), Vec::new(), Vec::new())
+            (Err(CallbackFailure::Input(failure)), Vec::new(), Vec::new())
         }
     };
     // No live task handles or transaction mutable state enter cleanup.
@@ -130,7 +158,10 @@ where
         plan,
         reports: output_reports,
     });
-    outcome.map_err(CoordinatorError::InputFailed)
+    outcome.map_err(|failure| match failure {
+        CallbackFailure::Input(failure) => CoordinatorError::InputFailed(failure),
+        CallbackFailure::Output(failure) => CoordinatorError::OutputFailed(failure),
+    })
 }
 
 #[cfg(test)]
@@ -140,7 +171,7 @@ mod tests {
     #[derive(Clone, Debug, Eq, PartialEq)]
     enum ScopeOutcome {
         Normal,
-        Failed,
+        Failed(CallbackFailure),
     }
     #[derive(Clone, Debug, Eq, PartialEq)]
     enum Event {
@@ -156,6 +187,7 @@ mod tests {
         OutputTaskOpened(usize),
         OutputTaskFinished(usize),
         OutputTaskCommitted(usize),
+        OutputTaskCommitFailed(usize, OutputFailure),
         OutputTaskAborted(usize),
         OutputTaskClosed(usize),
         OutputControlClosed(ScopeOutcome),
@@ -163,12 +195,17 @@ mod tests {
         InputCleaned,
         OutputCleaned,
     }
-    fn outcome_event(outcome: &Result<(), InputFailure>) -> ScopeOutcome {
-        if outcome.is_ok() {
-            ScopeOutcome::Normal
-        } else {
-            ScopeOutcome::Failed
+    fn outcome_event(outcome: &Result<(), CallbackFailure>) -> ScopeOutcome {
+        match outcome {
+            Ok(()) => ScopeOutcome::Normal,
+            Err(failure) => ScopeOutcome::Failed(failure.clone()),
         }
+    }
+    fn selected_input_failure() -> CallbackFailure {
+        CallbackFailure::Input(InputFailure("selected input failure".to_owned()))
+    }
+    fn selected_output_failure() -> CallbackFailure {
+        CallbackFailure::Output(OutputFailure("selected last commit failure".to_owned()))
     }
 
     struct InputFake {
@@ -205,22 +242,28 @@ mod tests {
             self.event(Event::InputFinished);
             Ok(ReportToken("input-report".to_owned()))
         }
-        fn close_control(&mut self, outcome: &Result<(), InputFailure>) {
+        fn close_control(&mut self, outcome: &Result<(), CallbackFailure>) {
             self.event(Event::InputControlClosed(outcome_event(outcome)));
         }
-        fn close_job(&mut self, outcome: &Result<(), InputFailure>) {
+        fn close_job(&mut self, outcome: &Result<(), CallbackFailure>) {
             self.event(Event::InputJobClosed(outcome_event(outcome)));
         }
     }
     struct OutputFake {
         events: Rc<RefCell<Vec<Event>>>,
         live_handles: Rc<RefCell<usize>>,
+        failing_commit_index: Option<usize>,
     }
     impl OutputFake {
-        fn new(events: Rc<RefCell<Vec<Event>>>, live_handles: Rc<RefCell<usize>>) -> Self {
+        fn new(
+            events: Rc<RefCell<Vec<Event>>>,
+            live_handles: Rc<RefCell<usize>>,
+            failing_commit_index: Option<usize>,
+        ) -> Self {
             Self {
                 events,
                 live_handles,
+                failing_commit_index,
             }
         }
         fn event(&self, event: Event) {
@@ -231,6 +274,7 @@ mod tests {
         id: usize,
         events: Rc<RefCell<Vec<Event>>>,
         live_handles: Rc<RefCell<usize>>,
+        fail_commit: bool,
     }
     impl OutputHandle {
         fn event(&self, event: Event) {
@@ -246,9 +290,15 @@ mod tests {
         fn finish(&mut self) {
             self.event(Event::OutputTaskFinished(self.id));
         }
-        fn commit(&mut self) -> ReportToken {
-            self.event(Event::OutputTaskCommitted(self.id));
-            ReportToken(format!("output-report-{}", self.id))
+        fn commit(&mut self) -> Result<ReportToken, OutputFailure> {
+            if self.fail_commit {
+                let failure = OutputFailure("selected last commit failure".to_owned());
+                self.event(Event::OutputTaskCommitFailed(self.id, failure.clone()));
+                Err(failure)
+            } else {
+                self.event(Event::OutputTaskCommitted(self.id));
+                Ok(ReportToken(format!("output-report-{}", self.id)))
+            }
         }
         fn abort(&mut self) {
             self.event(Event::OutputTaskAborted(self.id));
@@ -272,12 +322,13 @@ mod tests {
                 id: task_index,
                 events: Rc::clone(&self.events),
                 live_handles: Rc::clone(&self.live_handles),
+                fail_commit: self.failing_commit_index == Some(task_index),
             }
         }
-        fn close_control(&mut self, outcome: &Result<(), InputFailure>) {
+        fn close_control(&mut self, outcome: &Result<(), CallbackFailure>) {
             self.event(Event::OutputControlClosed(outcome_event(outcome)));
         }
-        fn close_job(&mut self, outcome: &Result<(), InputFailure>) {
+        fn close_job(&mut self, outcome: &Result<(), CallbackFailure>) {
             self.event(Event::OutputJobClosed(outcome_event(outcome)));
         }
     }
@@ -322,10 +373,26 @@ mod tests {
         OutputCleanupFake,
         Vec<Event>,
     ) {
+        run_with_commit_failure(plan, fail_before_finish, None)
+    }
+    fn run_with_commit_failure(
+        plan: EmptyPlan,
+        fail_before_finish: bool,
+        failing_commit_index: Option<usize>,
+    ) -> (
+        Result<(), CoordinatorError>,
+        InputCleanupFake,
+        OutputCleanupFake,
+        Vec<Event>,
+    ) {
         let events = Rc::new(RefCell::new(Vec::new()));
         let live_handles = Rc::new(RefCell::new(0));
         let mut input = InputFake::new(Rc::clone(&events), fail_before_finish);
-        let mut output = OutputFake::new(Rc::clone(&events), Rc::clone(&live_handles));
+        let mut output = OutputFake::new(
+            Rc::clone(&events),
+            Rc::clone(&live_handles),
+            failing_commit_index,
+        );
         // These receivers are newly constructed and share no job state.
         let mut input_cleanup = InputCleanupFake {
             events: Rc::clone(&events),
@@ -451,10 +518,64 @@ mod tests {
             expected.extend((0..outputs).map(Event::OutputTaskAborted));
             expected.extend((0..outputs).map(Event::OutputTaskClosed));
             expected.extend([
-                Event::OutputControlClosed(ScopeOutcome::Failed),
-                Event::OutputJobClosed(ScopeOutcome::Failed),
-                Event::InputControlClosed(ScopeOutcome::Failed),
-                Event::InputJobClosed(ScopeOutcome::Failed),
+                Event::OutputControlClosed(ScopeOutcome::Failed(selected_input_failure())),
+                Event::OutputJobClosed(ScopeOutcome::Failed(selected_input_failure())),
+                Event::InputControlClosed(ScopeOutcome::Failed(selected_input_failure())),
+                Event::InputJobClosed(ScopeOutcome::Failed(selected_input_failure())),
+                Event::InputCleaned,
+                Event::OutputCleaned,
+            ]);
+            assert_eq!(trace, expected);
+        }
+    }
+    #[test]
+    fn last_commit_failure_retains_prior_tokens_and_propagates_output_payload() {
+        for outputs in [1, 8] {
+            let plan = EmptyPlan {
+                input_tasks: 1,
+                output_tasks: outputs,
+                output_task_cap: outputs,
+            };
+            let (result, input_cleanup, output_cleanup, trace) =
+                run_with_commit_failure(plan, false, Some(outputs - 1));
+            assert_eq!(
+                result,
+                Err(CoordinatorError::OutputFailed(OutputFailure(
+                    "selected last commit failure".to_owned()
+                )))
+            );
+            assert_eq!(
+                input_cleanup.contexts[0].reports,
+                vec![ReportToken("input-report".to_owned())]
+            );
+            assert_eq!(
+                output_cleanup.contexts[0].reports,
+                (0..(outputs - 1))
+                    .map(|index| ReportToken(format!("output-report-{index}")))
+                    .collect::<Vec<_>>()
+            );
+            let mut expected = vec![
+                Event::InputJobOpened,
+                Event::InputControlOpened,
+                Event::OutputJobOpened,
+                Event::OutputControlOpened,
+            ];
+            expected.extend((0..outputs).map(Event::OutputTaskOpened));
+            expected.push(Event::InputRan);
+            expected.extend((0..outputs).map(Event::OutputTaskFinished));
+            expected.push(Event::InputFinished);
+            expected.extend((0..(outputs - 1)).map(Event::OutputTaskCommitted));
+            expected.push(Event::OutputTaskCommitFailed(
+                outputs - 1,
+                OutputFailure("selected last commit failure".to_owned()),
+            ));
+            expected.push(Event::OutputTaskAborted(outputs - 1));
+            expected.extend((0..outputs).map(Event::OutputTaskClosed));
+            expected.extend([
+                Event::OutputControlClosed(ScopeOutcome::Failed(selected_output_failure())),
+                Event::OutputJobClosed(ScopeOutcome::Failed(selected_output_failure())),
+                Event::InputControlClosed(ScopeOutcome::Failed(selected_output_failure())),
+                Event::InputJobClosed(ScopeOutcome::Failed(selected_output_failure())),
                 Event::InputCleaned,
                 Event::OutputCleaned,
             ]);
