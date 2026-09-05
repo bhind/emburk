@@ -10,7 +10,8 @@
 - Required reviewer: Librarian (Vreji), reviewed 2026-09-05; independent Tester
   review is required before acceptance.
 - Access date: 2026-09-05
-- State: `In Progress` (packet prepared; no runtime observation yet)
+- State: `In Progress` (runtime candidate recorded; independent Tester review
+  remains required before acceptance)
 
 ## Outcome and boundary
 
@@ -84,6 +85,31 @@ redistribution, security, patent/standards, and freedom-to-operate questions
 remain unreviewed. The Librarian found no material provenance blocker for this
 observation-only packet, conditional on retaining S01 identity and isolation
 controls. That review is not legal advice or patent/FTO clearance.
+
+## Preliminary runtime evidence
+
+- Command: `tests/t0012_config_conversion_probe_test.sh` exited 0 on
+  2026-09-05 after `bash -n` also checked the S01 runner and both Demo scripts.
+  The unchanged S01 Demo Command passed in the same candidate run. The S02
+  corrupt-copy and unavailable-runtime controls exited 3 and 56 respectively.
+- Environment: Temurin Java 17.0.20 on macOS arm64. The pinned executable hash
+  remained `e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47`.
+- Generated local test-plugin source SHA-256:
+  `a0ea3894e9674e2129c3495557adace6ef2fb6d3c813e142dba0922e2375fb3d`;
+  generated JAR SHA-256:
+  `43918a93153a3bb295bf84092dcc8dc35f8c27bd7ed0a4dac2aac664d90aa114`.
+  Both are external temporary artifacts and are not distributed.
+- All nine case records reached `probe config load` with exit 0. Within this
+  pinned fixture, Boolean true/false and quoted true succeeded; invalid Boolean
+  recorded a `ConfigException`; Long 37, quoted 37, maximum Long, and
+  fractional 37.5 succeeded (the fractional observation rendered 37); and an
+  above-maximum Long recorded a `ConfigException`. Raw exception messages,
+  inputs, exits, and logs remain local because they may include personal paths.
+
+This is preliminary Reference Observation / Integration evidence only. It is
+not accepted until an independent Tester reproduces the Demo Command at the
+reviewed commit. The listed outcomes do not establish general conversion,
+rounding, default, parser-cause, or Emburk behavior.
 
 ## Stop rule and non-claims
 

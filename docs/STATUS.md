@@ -102,5 +102,6 @@ executable route and local-only Maven-style input plugin recorded nine
 annotated String/Optional fixture observations and integrated through PR #61
 as `e2532e2`. This is Reference Observation / Integration evidence only, not a
 generic typed-getter contract, a verified Emburk semantic, or the parent task's
-Differential (Embulk) evidence. T-0012/S02 is packeted to observe a separate
-Boolean/Long conversion matrix; it has no runtime result yet.
+Differential (Embulk) evidence. T-0012/S02 has a preliminary nine-case
+Boolean/Long runtime observation through the same pinned executable; independent
+Tester reproduction remains required before it is accepted.

@@ -81,43 +81,116 @@ printf '%s\n' '<project><modelVersion>4.0.0</modelVersion><groupId>org.embulk.t0
 shasum -a 256 "$plugin_jar" | awk '{print $1}' > "$evidence_dir/plugin-jar.sha256"
 printf '%s\n' 'source=maven|group=org.embulk.t0012|name=t0012|version=0.0.1|artifact=embulk-input-t0012|local-only' > "$evidence_dir/plugin-coordinate.txt"
 
-: > "$evidence_dir/observations.raw.bin"
-: > "$evidence_dir/probe-output.raw"
-for declaration in required defaulted optional; do
-  for state in absent null value; do
-    config_file="$run_dir/$declaration-$state.yml"
-    {
-      printf '%s\n' 'in:' '  type:' '    source: maven' '    group: org.embulk.t0012' '    name: t0012' '    version: 0.0.1'
-      if [[ "$state" != absent ]]; then
-        [[ "$state" == null ]] && printf '%s\n' '  field: null' || printf '%s\n' '  field: observed-value'
-      fi
-      printf '%s\n' 'out:' '  type: "null"'
-    } > "$config_file"
-    T0012_DECLARATION="$declaration" T0012_STATE="$state" T0012_RAW_FILE="$evidence_dir/observations.raw.bin" \
-      java -jar "$executable" "-Xembulk_home=$EMBULK_HOME" run "$config_file" >> "$evidence_dir/probe-output.raw" 2>&1
+run_presence() {
+  : > "$evidence_dir/observations.raw.bin"
+  : > "$evidence_dir/probe-output.raw"
+  for declaration in required defaulted optional; do
+    for state in absent null value; do
+      config_file="$run_dir/$declaration-$state.yml"
+      {
+        printf '%s\n' 'in:' '  type:' '    source: maven' '    group: org.embulk.t0012' '    name: t0012' '    version: 0.0.1'
+        if [[ "$state" != absent ]]; then
+          [[ "$state" == null ]] && printf '%s\n' '  field: null' || printf '%s\n' '  field: observed-value'
+        fi
+        printf '%s\n' 'out:' '  type: "null"'
+      } > "$config_file"
+      T0012_DECLARATION="$declaration" T0012_STATE="$state" T0012_RAW_FILE="$evidence_dir/observations.raw.bin" \
+        java -jar "$executable" "-Xembulk_home=$EMBULK_HOME" run "$config_file" >> "$evidence_dir/probe-output.raw" 2>&1
+    done
   done
-done
 
-grep '^CASE|' "$evidence_dir/probe-output.raw" > "$evidence_dir/cases.raw" || true
-case_count=$(wc -l < "$evidence_dir/cases.raw" | tr -d ' ')
-if [[ "$case_count" != 9 ]]; then
-  printf 'expected 9 complete runtime case rows, found %s\n' "$case_count" >&2
-  exit 4
-fi
-if grep -Ev '^CASE\|(required|defaulted|optional)\|(absent|null|value)\|(SUCCESS|EXCEPTION)\|([A-Za-z0-9+/=]*|-)\|([A-Za-z0-9+/=]*|-)$' "$evidence_dir/cases.raw" > /dev/null; then
-  printf '%s\n' 'one or more case rows is incomplete' >&2
-  exit 4
-fi
-for key in required:absent required:null required:value defaulted:absent defaulted:null defaulted:value optional:absent optional:null optional:value; do
-  declaration=${key%%:*}
-  state=${key##*:}
-  if [[ $(grep -Ec "^CASE\\|$declaration\\|$state\\|" "$evidence_dir/cases.raw") != 1 ]]; then
-    printf 'missing or duplicate case key: %s\n' "$key" >&2
+  grep '^CASE|' "$evidence_dir/probe-output.raw" > "$evidence_dir/cases.raw" || true
+  case_count=$(wc -l < "$evidence_dir/cases.raw" | tr -d ' ')
+  if [[ "$case_count" != 9 ]]; then
+    printf 'expected 9 complete runtime case rows, found %s\n' "$case_count" >&2
     exit 4
   fi
-done
-grep -Fqx 'CASE|required|value|SUCCESS|b2JzZXJ2ZWQtdmFsdWU=|' "$evidence_dir/cases.raw"
-grep -Fqx 'CASE|defaulted|value|SUCCESS|b2JzZXJ2ZWQtdmFsdWU=|' "$evidence_dir/cases.raw"
-grep -Fqx 'CASE|optional|value|SUCCESS|cHJlc2VudDpvYnNlcnZlZC12YWx1ZQ==|' "$evidence_dir/cases.raw"
-[[ -s "$evidence_dir/observations.raw.bin" ]] || exit 4
-cat "$evidence_dir/cases.raw"
+  if grep -Ev '^CASE\|(required|defaulted|optional)\|(absent|null|value)\|(SUCCESS|EXCEPTION)\|([A-Za-z0-9+/=]*|-)\|([A-Za-z0-9+/=]*|-)$' "$evidence_dir/cases.raw" > /dev/null; then
+    printf '%s\n' 'one or more case rows is incomplete' >&2
+    exit 4
+  fi
+  for key in required:absent required:null required:value defaulted:absent defaulted:null defaulted:value optional:absent optional:null optional:value; do
+    declaration=${key%%:*}
+    state=${key##*:}
+    if [[ $(grep -Ec "^CASE\\|$declaration\\|$state\\|" "$evidence_dir/cases.raw") != 1 ]]; then
+      printf 'missing or duplicate case key: %s\n' "$key" >&2
+      exit 4
+    fi
+  done
+  grep -Fqx 'CASE|required|value|SUCCESS|b2JzZXJ2ZWQtdmFsdWU=|' "$evidence_dir/cases.raw"
+  grep -Fqx 'CASE|defaulted|value|SUCCESS|b2JzZXJ2ZWQtdmFsdWU=|' "$evidence_dir/cases.raw"
+  grep -Fqx 'CASE|optional|value|SUCCESS|cHJlc2VudDpvYnNlcnZlZC12YWx1ZQ==|' "$evidence_dir/cases.raw"
+  [[ -s "$evidence_dir/observations.raw.bin" ]] || exit 4
+  cat "$evidence_dir/cases.raw"
+}
+
+run_conversion() {
+  : > "$evidence_dir/observations.raw.bin"
+  : > "$evidence_dir/conversion-cases.raw"
+  local cases=(
+    'boolean|boolean-true|true'
+    'boolean|boolean-false|false'
+    'boolean|boolean-quoted-true|"true"'
+    'boolean|boolean-invalid|not-boolean'
+    'long|long-37|37'
+    'long|long-quoted-37|"37"'
+    'long|long-max|9223372036854775807'
+    'long|long-fractional|37.5'
+    'long|long-overflow|9223372036854775808'
+  )
+  local entry type case_name value config_file raw_log exit_code marker row phase
+  for entry in "${cases[@]}"; do
+    IFS='|' read -r type case_name value <<< "$entry"
+    config_file="$run_dir/$case_name.yml"
+    raw_log="$evidence_dir/$case_name.raw.log"
+    {
+      printf '%s\n' 'in:' '  type:' '    source: maven' '    group: org.embulk.t0012' '    name: t0012' '    version: 0.0.1'
+      printf '  field: %s\n' "$value"
+      printf '%s\n' 'out:' '  type: "null"'
+    } > "$config_file"
+    printf '%s\n' "$value" > "$evidence_dir/$case_name.input.yml-value"
+    if T0012_MODE=conversion T0012_TYPE="$type" T0012_CASE="$case_name" T0012_RAW_FILE="$evidence_dir/observations.raw.bin" \
+      java -jar "$executable" "-Xembulk_home=$EMBULK_HOME" run "$config_file" > "$raw_log" 2>&1; then
+      exit_code=0
+    else
+      exit_code=$?
+    fi
+    marker=$(grep -Ec '^probe config load$' "$raw_log" || true)
+    row=$(grep '^CONVERSION_CASE|' "$raw_log" || true)
+    if [[ "$marker" == 1 && "$exit_code" == 0 \
+      && $(printf '%s\n' "$row" | sed '/^$/d' | wc -l | tr -d ' ') == 1 \
+      && "$row" =~ ^CONVERSION_CASE\|$type\|$case_name\|(SUCCESS\|([A-Za-z0-9+/=]*|-)\|([A-Za-z0-9+/=]*|-)|EXCEPTION\|([A-Za-z0-9+/=]+|-)\|([A-Za-z0-9+/=]*|-))$ ]]; then
+      phase='probe config load'
+      printf 'CONVERSION_CASE|%s|%s|%s|%s\n' "$case_name" "$type" "$phase" "$exit_code" >> "$evidence_dir/conversion-cases.raw"
+      printf '%s\n' "$row" >> "$evidence_dir/conversion-results.raw"
+    elif [[ "$case_name" == long-overflow && "$marker" == 0 && "$exit_code" != 0 ]]; then
+      phase='before probe callback'
+      printf 'CONVERSION_CASE|%s|%s|%s|%s\n' "$case_name" "$type" "$phase" "$exit_code" >> "$evidence_dir/conversion-cases.raw"
+      printf 'NO_PLUGIN_RESULT|%s\n' "$case_name" >> "$evidence_dir/conversion-results.raw"
+    else
+      printf 'invalid conversion observation for %s (marker=%s exit=%s rows=%s)\n' \
+        "$case_name" "$marker" "$exit_code" "$(printf '%s\n' "$row" | sed '/^$/d' | wc -l | tr -d ' ')" >&2
+      exit 4
+    fi
+  done
+  if [[ $(wc -l < "$evidence_dir/conversion-cases.raw" | tr -d ' ') != 9 ]]; then
+    printf '%s\n' 'expected 9 complete conversion case rows' >&2
+    exit 4
+  fi
+  for case_name in boolean-true boolean-false boolean-quoted-true boolean-invalid long-37 long-quoted-37 long-max long-fractional long-overflow; do
+    [[ $(grep -Ec "^CONVERSION_CASE\\|$case_name\\|" "$evidence_dir/conversion-cases.raw") == 1 ]] || exit 4
+  done
+  [[ $(wc -l < "$evidence_dir/conversion-results.raw" | tr -d ' ') == 9 ]] || exit 4
+  grep -Fqx 'CONVERSION_CASE|boolean-true|boolean|probe config load|0' "$evidence_dir/conversion-cases.raw"
+  grep -Fqx 'CONVERSION_CASE|long-37|long|probe config load|0' "$evidence_dir/conversion-cases.raw"
+  grep -Fqx 'CONVERSION_CASE|boolean|boolean-true|SUCCESS|dHJ1ZQ==|' "$evidence_dir/conversion-results.raw"
+  grep -Fqx 'CONVERSION_CASE|long|long-37|SUCCESS|Mzc=|' "$evidence_dir/conversion-results.raw"
+  [[ -s "$evidence_dir/observations.raw.bin" ]] || exit 4
+  cat "$evidence_dir/conversion-cases.raw"
+}
+
+case ${T0012_MODE:-presence} in
+  presence) run_presence ;;
+  conversion) run_conversion ;;
+  *) printf 'unknown T0012_MODE: %s\n' "${T0012_MODE}" >&2; exit 2 ;;
+esac
