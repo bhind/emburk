@@ -1,5 +1,8 @@
 # Architecture
 
+Status: target architecture unless explicitly identified as implemented below.
+The current runtime remains the two-crate bootstrap, not a working loader.
+
 ## Principles
 
 Emburk keeps the core compact. The core owns stable orchestration contracts; plugins own integration behavior and dependencies. Installation and dependency resolution are separate from job execution.
@@ -26,35 +29,56 @@ private, dependency-free raw-scalar resolver inside `emburk-core`; it is neither
 a YAML loader nor a stable public API. Creating crate directories does not make
 their eventual Rust API stable.
 
+T-0012 reference probes and S04's ignored live comparison are test-only tools
+outside the Emburk runtime. Their local executable retrieval and generated probe
+plugin do not create an Emburk Java host, admitted plugin, runtime dependency,
+public API, or protocol boundary.
+
 ## Runtime Layers
 
 ### Rust Execution Core
 
-The core owns configuration assembly, schema validation, planning, bounded scheduling, backpressure, cancellation, transaction state, resume state, structured errors, metrics, and plugin lifecycle coordination.
+The target core owns configuration assembly, schema validation, planning, bounded scheduling, backpressure, cancellation, transaction state, resume state, structured errors, metrics, and plugin lifecycle coordination. These runtime responsibilities are not implemented yet.
 
 It must not accumulate provider-specific clients or convenience libraries that can live in plugin crates.
 
 ### Native Plugins
 
-Standard plugins are Rust crates linked into the distribution. Third-party plugins communicate through a separately versioned process protocol. This avoids treating Rust's dynamic ABI as stable and prevents one plugin's dependency graph or crash from silently corrupting another.
+The intended standard plugins are Rust crates linked into the distribution.
+Third-party plugins are planned to communicate through a separately versioned
+process protocol, avoiding reliance on a stable Rust dynamic ABI. Process
+isolation is a design boundary to validate, not a proven security guarantee.
 
 ### Legacy Compatibility Hosts
 
-The Java host loads pinned Maven-style plugins against Embulk SPI 0.11. A later JRuby layer supports selected gem-style plugins. Both are optional and run outside the Rust coordinator initially.
+The planned Java host will load pinned Maven-style plugins against Embulk SPI
+0.11. A later JRuby layer targets selected gem-style plugins. Both are optional
+and intended to run outside the Rust coordinator initially; neither exists yet.
 
 Hosted execution is a migration capability, not evidence that a plugin has been reimplemented in Rust.
 
 ## Data Plane
 
-The internal representation is an Arrow-compatible columnar batch with explicit Emburk logical metadata for boolean, signed 64-bit integer, 64-bit floating point, UTF-8 string, timestamp, JSON, and nullability.
+The target internal representation is an Arrow-compatible columnar batch with
+explicit Emburk logical metadata. Boolean, signed 64-bit integer, 64-bit float,
+string, timestamp, JSON and null behavior require compatibility evidence before
+logical or physical representations are accepted. No batch encoding exists yet.
 
-The public protocol is versioned independently from internal crate layout. It does not expose Embulk's raw `Page` representation.
+The planned public protocol will be versioned independently from internal crate
+layout and will not expose Embulk's raw `Page` representation.
 
 ## Execution Lifecycle
 
-A job proceeds through configuration, validation, planning, transaction, task execution, commit, and cleanup. Failure invokes abort and persists only validated resume state.
+The proposed coordinator separates configuration, validation, planning,
+transaction, task execution, publication and cleanup. Actual callback ordering,
+abort and resume rules await T-0013 reference traces. A failure during publication
+may leave an unknown or partial outcome: do not blindly abort or replay it.
+Only validated recovery state may be persisted once its contract is accepted.
 
-Exactly-once is a capability of the complete source/core/sink combination. Emburk promises it only when the selected output contract can commit transactionally; other combinations are documented as at-least-once or best-effort.
+Exactly-once requires evidence for the complete source/core/sink combination;
+a transactional output alone is insufficient. No delivery guarantee is
+implemented or verified yet. Reconciliation, replay and idempotency requirements
+must be established per combination before labeling its delivery semantics.
 
 ## Dependency and Plugin Resolution
 

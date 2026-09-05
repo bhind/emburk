@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0021` and `T-0012/S04` are `In Progress`, and every other item is
+`T-0021` and `T-0012/S05` are `In Progress`, and every other item is
 `Backlog`. No item is `Blocked`. This is the two-item WIP limit.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -34,7 +34,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S04: live scalar differential; S01–S03 integrated) | In Progress | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S05: schema observation; S01–S04 integrated) | In Progress | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics | Backlog | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -134,9 +134,17 @@ owned a separate, nine-case Boolean/Long conversion probe. It integrated
 through PR #65 as `d7b4838`. T-0012/S03 integrated its private original-Rust
 resolver through PR #66 as `e03a2bc`, with Unit/Contract evidence at `8432391`.
 S04 (3 SP) adds live comparison and malformed-evidence gates for 13 supported
-outcomes, reproduced by primary and independent Tester at `3fe6546`; integration
-is pending. T-0012's current estimate increases from 5 to 8 SP; Initial SP remains
+outcomes, reproduced by primary and independent Tester at `3fe6546`; PR #67
+integrated as `79cbcb9`. T-0012's current estimate increased from 5 to 8 SP; Initial SP remains
 5. The refinement accounts for the explicit oracle adapter, private test bridge,
 and negative evidence validation omitted from the initial estimate. It does
 not award parent completion or change the remaining configuration/schema/value
 scope. T-0021 and T-0012 occupy the combined WIP limit of two.
+
+S05 (3 SP within Current SP 8, not additional points) observes three schema
+construction/handoff cases through the pinned executable before choosing a
+Rust schema representation. See its [packet](docs/provenance/T-0012-schema-boundary-probe.md).
+This is existing T-0012 scope and does not trigger another parent re-estimate.
+Primary and independent Tester acceptance passed at `cc24730`, including all
+three schema cases, validator controls and S01/S02/S04 regressions. Integration
+is pending; parent completion and schema support are not claimed.

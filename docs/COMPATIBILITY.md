@@ -54,6 +54,12 @@ coverage, exact Java diagnostics, lexical/fractional coercion, overflow behavior
 schema/value support, or end-to-end configuration compatibility. Those gaps
 are pending work, not accepted deviations.
 
+[T-0012/S05](provenance/T-0012-schema-boundary-probe.md) records reference-only
+schema observations: empty, six ordered logical types, and duplicate-name
+columns constructed and reached the run callback without changing their
+ordered fingerprints. This does not add Native or Verified schema support,
+name lookup, nullability, Page/value encoding, or a lifecycle contract.
+
 ## Adding an Entry
 
 Each entry must identify the Embulk version, exact plugin artifact, configuration fixture, expected evidence, source/provenance record, and known deviations. Claims enter this document only after review evidence exists.
