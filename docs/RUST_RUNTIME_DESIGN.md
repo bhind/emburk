@@ -93,8 +93,8 @@ They do not settle lookup, renaming, null handling, mismatch timing or physical
 value encodings, and do not establish a Rust schema API.
 
 S06 now implements the private ordered-vector boundary under ADR-0007. Its
-three-case live comparison has primary and independent acceptance; integration
-is pending. This storage-only model does not resolve the remaining
+three-case live comparison has primary and independent acceptance and integrated
+through PR #69. This storage-only model does not resolve the remaining
 worksheet cells or authorize physical encoding/public API choices.
 
 ## Logical records and physical batches
@@ -128,6 +128,12 @@ are alternatives to evaluate; truncation is not an acceptable fallback.
 The following sequence is an Emburk orchestration proposal. Exact upstream
 callbacks, nesting, retry rules and call counts are unverified until T-0013.
 No public trait signatures should be frozen from this sequence alone.
+
+T-0013/S01's bounded input probe now records successful zero/one empty task
+executions, including input cleanup and the normal return of the one-task
+probe's `PageOutput.finish()` call. This is reference observation only. It does
+not reveal output commit/abort/close behavior; observe that boundary directly
+before making those responsibilities part of the private Rust execution model.
 
 | Phase | Coordinator responsibility | Plugin/adapter responsibility | Trace evidence required |
 |---|---|---|---|

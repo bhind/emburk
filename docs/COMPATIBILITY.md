@@ -66,7 +66,15 @@ same three selected cases against actual S05 run-phase data and preserves
 the duplicate-name pair as two ordered positions. Internal tests also cover
 owned-name storage and malformed evidence. This is not a full schema API,
 validation policy, arbitrary-name compatibility, lookup, nullability, values,
-Page/Arrow encoding or lifecycle claim. Integration is pending.
+Page/Arrow encoding or lifecycle claim. PR #69 integrated the slice as `5de35b7`.
+
+[T-0013/S01](provenance/T-0013-input-lifecycle-probe.md) records a bounded
+input-side reference observation: zero and one empty task processes exited 0,
+with six and ten probe markers respectively, including cleanup. The one-task
+probe's call to `PageOutput.finish()` returned normally. No resume or guess
+marker occurred. This does not establish output callback ordering, delivery,
+cleanup guarantees, failure/retry behavior or Native/Verified lifecycle support.
+Primary and independent acceptance passed; integration is pending.
 
 ## Adding an Entry
 
