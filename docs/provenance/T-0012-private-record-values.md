@@ -1,7 +1,7 @@
 # T-0012/S08 private record values and selected comparison
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; independent packet review passed with transport clarifications
+- State: Review in [PR #82](https://github.com/bhind/emburk/pull/82)
 - Branch: `feat/t-0012-private-record-values`
 - Owner: Rust Core Implementer; canonical decisions/integration: PM
 - Priority: P0; parent T-0010
@@ -224,4 +224,36 @@ Temporary agent-slot exhaustion was resolved by starting a fresh read-only
 Tester after implementation finished; no independence gate was waived.
 
 Evidence is Unit/Contract plus the two selected Differential projections only.
-Independent Tester acceptance and final PR-head Demo/integration remain pending.
+
+## Independent reproduction
+
+The fresh read-only Tester reproduced the exact compound Demo with exit 0 at
+unchanged source hashes (`b493925` adds PM documentation only). Retained run:
+`/private/tmp/t0012-s08-final.wqfBnG/exact-demo.exit`; native evidence is its
+`evidence/` subdirectory, with the same normalized manifest hash as primary.
+The tool exposed incomplete outer output for that attempt, so it is not used
+as the complete-log acceptance run. The subsequent redirected exact rerun
+exited 0 and retained complete logs in `/private/tmp/t0012-s08-retained.M3hmoK`:
+`demo.stdout.log`, `demo.stderr.log` (empty), and `demo.exit` (0).
+Stdout SHA-256:
+`1b979f9c917a6acdc389f41cdca04f9b0922666e8fc66f067c636638bc14f8c5`.
+Independent S08/S06 evidence directories under the temporary root above are
+`t0012-s08.jtj0rs` and `t0012-s06.NBFA5H`. The normalized manifest matches primary.
+Primary inspected the retained logs and actual named live-test success.
+
+The earlier independent attempt in `/private/tmp/emburk-t0012-s08-acceptance`
+exited 4 before S06. Its nested artifact attempt `t0012-page-artifact.S4uiIP`
+records `curl: (6) Could not resolve host: github.com` and runner exit 56.
+The EXIT trap did emit the evidence directory. PM corrected the initial Tester
+inference that a missing trap/marker caused failure: retrieval failed before the
+corrupt-copy control could be prepared. This was a network-environment failure,
+not a source defect or an accepted corrupted artifact. No gate was weakened.
+
+Independent workspace tests, formatting, strict Clippy, separate Bash syntax,
+external-cache Python compilation, source hashes and diff checks passed.
+Complete-log independent retention passed. Final PR-head Demo/integration
+remain required; parent and delivery gates stay open.
+
+Environment remains macOS/Darwin arm64, Rust/Cargo 1.98.1, Python 3.14.6,
+Temurin 17 and Bash 3.2, using only the admitted Embulk 0.11.5 reference.
+No MSRV, alternate platform or Java-version compatibility claim follows.

@@ -9,7 +9,7 @@ tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
 `T-0013/S08`, `T-0012/S07` and `T-0021/S05` are integrated. T-0012/S08 is
-`In Progress`; T-0013, T-0021 and all other unfinished items are `Backlog`.
+`Review` in PR #82; T-0013, T-0021 and all other unfinished items are `Backlog`.
 No item is `Blocked`. Combined active WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S08: private record values and comparison) | In Progress | P0 | 34 | T-0011 | Rust Core Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S08: private record values and comparison) | Review | P0 | 34 | T-0011 | Rust Core Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -345,6 +345,7 @@ ADR-0011 and its [packet](docs/provenance/T-0012-private-record-values.md).
 Only private values-only records and two selected live getter projections are
 in scope; schema/physical/public coupling remain excluded. Primary source
 acceptance at `914ad2e` passes both projections, 18 raw controls, six local tests,
-unchanged S06 regression and strict checks. Independent acceptance and PR
-integration remain pending. Known accepted S03–S07 slice estimates total 15 SP;
+unchanged S06 regression and strict checks. Independent Tester reproduced the
+frozen source. Final PR-head acceptance and integration remain pending.
+Known accepted S03–S07 slice estimates total 15 SP;
 no S08 points are awarded yet and parent #15 remains open.

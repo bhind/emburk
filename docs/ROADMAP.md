@@ -141,10 +141,10 @@ acceptance and integration remain required; parent and phase gates stay open.
 S07 final-head Demo passed at `3b95ecd`; PR #81 integrated as `203d7da`.
 Its two bounded reference observations are accepted. T-0012/S08 implements
 private owned Null/Boolean/Signed64/Text records under ADR-0011. At frozen source
-`914ad2e`, primary acceptance passes two selected getter-result comparisons,
+`914ad2e`, primary and independent acceptance pass two selected getter-result comparisons,
 18 raw controls, six local storage/transport tests and the unchanged three-schema
 regression. Workspace 35 passed/six intentionally ignored, formatting and strict
-Clippy pass. Independent acceptance and PR integration remain required.
+Clippy pass. Final PR-head acceptance and integration remain required.
 Schema coupling, physical encoding, public API and production transfer remain
 outside this slice; parent and phase delivery gates stay open.
 
