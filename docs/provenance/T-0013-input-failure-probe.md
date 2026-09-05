@@ -1,7 +1,8 @@
 # T-0013/S03 input-run failure reference observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review; primary and independent acceptance passed, integration pending
+- State: Done (bounded S03 only); PR #72 integrated as `8e43948`
+- Parent queue: Backlog; remaining lifecycle comparisons and recovery contracts
 - Parent: T-0010; priority P0
 - Slice estimate: 3 SP within parent Current SP 13; Initial SP remains 8
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 1;
@@ -237,5 +238,8 @@ Tester case/trace hashes were
 `6be446943cf625d14dad1c8dea2d4cf77e0c09d5413034c634ddd55dbbfc316c` and
 `303235adefefeb97c297c74195d70b88e8d38d97a304ab9756d795122b1a8b28`.
 Fresh random capture IDs intentionally make them differ from the primary run;
-the actual bounded outcomes and controls were reproduced. PR integration
-remains pending; parent #16 remains open.
+the actual bounded outcomes and controls were reproduced. Final-head Demo at
+`1cfa5af` passed, evidence `${TMPDIR}/t0013-input-failure.63qf6S/evidence`.
+PR #72 integrated as `8e4394807b2726ab4932349fed70d79caa7689e7`;
+parent #16 remains open and returns to Backlog while the private Rust
+coordinator prerequisite is implemented under T-0021/S03.
