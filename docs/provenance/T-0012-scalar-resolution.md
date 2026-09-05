@@ -4,7 +4,7 @@
 - Branch: `feat/t-0012-scalar-resolution`
 - Owner: Rust Core Implementer; canonical records and lifecycle: Project Manager
 - Estimate: 3 SP within the existing T-0012 parent estimate
-- State: `In Progress` (packet only)
+- State: `Ready` (revised packet awaiting ADR-0006 acceptance)
 
 ## Authority, inputs, and boundary
 
@@ -15,13 +15,13 @@ and S02's integrated Reference Observation / Integration records (PR #61
 artifact, dependency, source text, test, or implementation is consulted or
 reused.
 
-The resolver may cover only: required/defaulted/optional String presence rules;
-native Boolean true/false and quoted `"true"`; invalid Boolean; native Long 37
-and maximum; quoted Long 37; decimal token `37.5` resolving to 37; and an
-above-maximum Long error. It must not identify cases by fixture ID or call the
-reference runtime. Unobserved spellings, Boolean/Long defaults, negative and
-other decimals, YAML parsing, public APIs, CLI wiring, and plugins remain out
-of scope.
+The resolver may cover complete native domains: required/defaulted/optional
+String identity and Missing/Null presence rules; Boolean identity; and signed
+64-bit integer identity. It must not identify cases by fixture ID or call the
+reference runtime. Lexical Boolean/Long conversion (including quoted values),
+decimal conversion (including 37.5), overflow-token handling, Boolean/Long
+defaults, YAML parsing, public APIs, CLI wiring, and plugins remain out of
+scope until separate evidence supports a general rule.
 
 ## Packet
 
