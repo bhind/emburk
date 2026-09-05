@@ -1,7 +1,7 @@
 # T-0013/S06 selected output-commit differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; primary and independent source acceptance passed, integration pending
+- State: Review; primary and independent source acceptance passed, [PR #77](https://github.com/bhind/emburk/pull/77) integration pending
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP remains 21; Initial SP remains 8.
