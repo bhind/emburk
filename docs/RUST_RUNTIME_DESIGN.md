@@ -240,8 +240,8 @@ T-0021/S03 packet implements that bounded candidate with explicit plans,
 separate report collections and fresh cleanup capability receivers. Task
 handles are dropped before scope completion and cleanup; the selected failure
 aborts all opened handles before closing all of them. Five local lifecycle
-tests pass at `84edf00` under primary and independent acceptance; integration
-is pending.
+tests pass at `84edf00` under primary and independent acceptance; final-head
+acceptance passed and PR #73 integrated as `14d5fb5`.
 Other callback
 fallibility remains outside the initial fake-plugin boundary; public traits
 and a complete lifecycle contract are not approved by this internal slice.
@@ -250,7 +250,7 @@ and a complete lifecycle contract are not approved by this internal slice.
 |---|---|---|
 | Empty successful orchestration | Accepted S01 input and S02 output observations with actual component traces | A bounded normal-path candidate; not inferred failure handling |
 | Failure before the input's finish call | Same-runtime positive control and an original input-run exception fixture, retaining propagation and all actual output callbacks | A candidate for that exact failure boundary; not pre-publication, rollback, retry or recovery guarantees |
-| Private coordinator acceptance | Independently authored fake plugins, explicit input/output task plans, and live comparisons of the selected complete traces | Private execution of those supplied plans; not a reproduction of default executor fan-out or a public plugin API |
+| Private coordinator acceptance | Independently authored fake plugins and explicit input/output plans (T-0021/S03 Unit); live comparison of the complete declared event projection (T-0013/S04 pending) | Private execution of those supplied plans; not default executor fan-out, identical instrumentation or a public plugin API |
 | Expansion beyond empty tasks | New fixtures for values, output mapping, concurrency and resource bounds | A separately reviewed execution slice; not a silent extension of empty-task evidence |
 
 The proposed failure fixture should throw inside input `run` before its own

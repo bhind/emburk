@@ -29,8 +29,8 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021/S03 (`Review`, PR #73) is the only active work item. Combined WIP is one of
-two; no item is `Ready` or `Blocked`. T-0012 and T-0013 remain Backlog after
+T-0013/S04 (`In Progress`) is the only active work item. Combined WIP is one of
+two; no item is `Ready` or `Blocked`. T-0012 and T-0021 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
 | Item | State | Purpose |
@@ -40,8 +40,8 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013 | Backlog | S01–S03 integrated; remaining lifecycle comparisons/recovery contracts |
-| T-0021/S03 | Review | Private empty-task coordinator; PR #73 acceptance and integration |
+| T-0013/S04 | In Progress | Two selected live empty-lifecycle projections |
+| T-0021 | Backlog | S01–S03 integrated; remaining core contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -175,5 +175,10 @@ intentional live-test ignores), format, strict Clippy and diff checks. Separate
 cleanup receivers receive preserved reports after task handles are dropped;
 the selected input failure aborts all handles before closing all handles.
 Independent Tester reproduced these results at the same source revision;
-final-head acceptance and integration are pending. This is Unit/Contract only;
+final-head acceptance at `264a12f` passed and PR #73 integrated as `14d5fb5`.
+This is Unit/Contract only;
 it adds no public API, default scheduling, JVM host or loader claim.
+
+T-0013/S04 now implements a live comparison of two explicitly defined empty-job
+projections. It compares actual callbacks and cleanup counts for supplied plans,
+not default fan-out, raw instrumentation identity or general lifecycle behavior.

@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0021/S03` is `Review` (PR #73); `T-0012`, `T-0013` and all other unfinished items
+`T-0013/S04` is `In Progress`; `T-0012`, `T-0021` and all other unfinished items
 are `Backlog`. No item is `Blocked`. Combined WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S03 integrated; remaining contracts queued) | Backlog | P0 | 13 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S04: selected live empty-lifecycle comparison) | In Progress | P0 | 13 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -43,7 +43,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
-| T-0021 | Define workspace boundaries and core traits (S03: private empty-task coordinator) | Review | P1 | 5 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
+| T-0021 | Define workspace boundaries and core traits (S01–S03 integrated; remaining contracts queued) | Backlog | P1 | 5 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches | Backlog | P1 | 8 | T-0012, T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
@@ -206,6 +206,13 @@ under T-0013. T-0013 returns to Backlog, not Done or Blocked; WIP stays one.
 
 S03 primary source acceptance at `84edf00` passed five selected lifecycle tests,
 19 workspace tests with two intentional live ignores, format, strict Clippy
-and diff checks. Independent Tester reproduced these results; PR integration
-remains pending;
+and diff checks. Independent Tester reproduced these results; final-head
+acceptance at `264a12f` passed and PR #73 integrated as `14d5fb5`;
 the parent semantic dependencies and live comparison gate remain open.
+
+T-0013/S04 (3 SP within unchanged Current SP 13, Initial SP 8) is active under
+its [packet](docs/provenance/T-0013-empty-lifecycle-differential.md). Compare
+the live S03 normal/failure reference projections to the actual private Rust
+coordinator with observed output counts as supplied plans. Zero-task behavior
+remains Unit/Contract only. T-0021 returns to Backlog; no parent completion or
+additional points follow. Combined WIP stays one.

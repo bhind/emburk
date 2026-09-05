@@ -39,8 +39,8 @@ ADR-0008 permits a private synchronous empty-task coordinator with explicit
 input/output task plans, separate report collections and owned output handles.
 T-0021/S03 implements this candidate with original fake plugins and separate
 cleanup capability receivers after dropping task handles. Five local lifecycle
-tests pass at `84edf00` under primary and independent acceptance; integration
-is pending.
+tests pass at `84edf00` under primary and independent acceptance; final-head
+acceptance passed at `264a12f` and PR #73 integrated as `14d5fb5`.
 Its limited callback fallibility is not a public production plugin
 contract, and it does not choose default fan-out or a parallel scheduler.
 

@@ -89,8 +89,12 @@ Independent acceptance passed; PR #72 integrated as `8e43948`.
 T-0021/S03's private coordinator passes five local lifecycle tests at `84edf00`
 for explicit zero/one-input plans, separate reports/cleanup and the selected
 input failure. Independent Tester reproduced these results. This is
-Unit/Contract only, with integration pending; no new Native/Verified lifecycle
+Unit/Contract only, integrated through PR #73 (`14d5fb5`); no new Native/Verified lifecycle
 entry follows.
+
+T-0013/S04's live comparison is pending. Its two selected projections exclude
+default planning, capture identity, Java report contents and zero-task live
+coverage; no generalized lifecycle claim follows from activation.
 
 ## Adding an Entry
 
