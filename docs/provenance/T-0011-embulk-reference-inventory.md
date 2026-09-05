@@ -44,9 +44,10 @@ can enter the compatibility matrix.
   are packaged independently; lifecycle and resume behavior still require
   contracts and differential tests; JRuby is optional in the selected line.
 - Review state: independent Librarian review passed after corrections on
-  2026-09-05; Project Manager review and final integration remain pending in
-  [Draft PR #53](https://github.com/bhind/emburk/pull/53).
+  2026-09-05; Project Manager review completed and
+  [PR #53](https://github.com/bhind/emburk/pull/53) was squash-merged as
+  `230e3af`.
 
 This is Planning evidence. It does not establish compatibility, exactly-once
 delivery, performance advantage, production readiness, redistribution or legal
-clearance, freedom to operate, upstream endorsement, or completion of T-0011.
+clearance, freedom to operate, or upstream endorsement.
