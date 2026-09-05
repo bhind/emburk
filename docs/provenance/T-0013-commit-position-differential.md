@@ -1,7 +1,7 @@
 # T-0013/S08 selected commit-position differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Prepared; implementation waits for Ready and activation
+- State: In Progress; independent packet readiness review passed
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current 34 / Initial 8 remain unchanged. S01–S07
@@ -133,6 +133,12 @@ raw evidence and normalized manifest hashes at the reviewed revision.
 Unit/Contract for strict adapters/negative controls, plus Differential (Embulk)
 only for the three selected empty-fixture projections after acceptance. No new
 runtime policy, arbitrary-index/concurrent equivalence or parent completion.
+
+Independent read-only planning review at `f51e535` found no material ambiguity.
+It confirmed the exact four-file boundary, immutable S07 full gate, dynamic
+three-case projection, raw validation before exclusion, separate runtime-local
+error checks and unchanged S04/S06 regressions. This is Planning only, not a
+new observed match or source acceptance.
 
 ## Provenance and non-claims
 
