@@ -24,9 +24,8 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 is the only active work item. T-0012/S03 is `Ready` pending architecture
-approval. The combined `In Progress`/`Review` WIP is one of two; no item is
-`Blocked`.
+T-0021 and T-0012/S03 are the only active work items. The combined `In
+Progress`/`Review` WIP is two of two; no item is `Ready` or `Blocked`.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -34,7 +33,7 @@ approval. The combined `In Progress`/`Review` WIP is one of two; no item is
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S03 | Ready | Proposed internal raw scalar resolver bounded by S01/S02 observations |
+| T-0012/S03 | In Progress | Accepted private raw scalar resolver bounded by S01/S02 observations |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are

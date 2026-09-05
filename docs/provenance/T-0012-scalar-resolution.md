@@ -4,7 +4,7 @@
 - Branch: `feat/t-0012-scalar-resolution`
 - Owner: Rust Core Implementer; canonical records and lifecycle: Project Manager
 - Estimate: 3 SP within the existing T-0012 parent estimate
-- State: `Ready` (revised packet awaiting ADR-0006 acceptance)
+- State: `In Progress` (ADR-0006 accepted; implementation not yet recorded)
 
 ## Authority, inputs, and boundary
 
@@ -16,12 +16,15 @@ artifact, dependency, source text, test, or implementation is consulted or
 reused.
 
 The resolver may cover complete native domains: required/defaulted/optional
-String identity and Missing/Null presence rules; Boolean identity; and signed
-64-bit integer identity. It must not identify cases by fixture ID or call the
-reference runtime. Lexical Boolean/Long conversion (including quoted values),
-decimal conversion (including 37.5), overflow-token handling, Boolean/Long
-defaults, YAML parsing, public APIs, CLI wiring, and plugins remain out of
-scope until separate evidence supports a general rule.
+String identity and Missing/Null presence rules; the explicit S01 String-default
+policy; the explicit S01 Optional<String> null-default policy (Missing/Null to
+None only for that named policy); Boolean identity; and signed-64-bit integer
+identity. Unsupported type combinations must be distinct internal outcomes, not
+claimed Embulk rejections. It must not identify cases by fixture ID or call the
+reference runtime. Lexical Boolean/Long conversion, decimal conversion,
+overflow-token handling, Boolean/Long defaults, YAML parsing, public APIs, CLI
+wiring, and plugins remain out of scope until separate evidence supports a
+general rule.
 
 ## Packet
 
@@ -33,8 +36,10 @@ scope until separate evidence supports a general rule.
 - Demo Command: `cargo test -p emburk-core`.
 - Acceptance: the Demo, `cargo fmt --check`, `cargo clippy -p emburk-core
   -- -D warnings`, and existing core tests pass; an independent reproduction is
-  required. Tests assert project-owned values and errors rather than an
-  invented general YAML contract.
+  required. Tests cover arbitrary Strings, Boolean true/false, i64 minimum/
+  maximum, and Missing versus Null; no fixture-ID dispatch is permitted. A
+  documented narrow `dead_code` allowance is permitted only if needed to keep
+  the resolver private; warnings must not be disabled globally.
 - Evidence: Unit/Contract, traceable to reference observations; not
   Differential.
 - Stop rule: stop expansion for any parser/public API/dependency request or

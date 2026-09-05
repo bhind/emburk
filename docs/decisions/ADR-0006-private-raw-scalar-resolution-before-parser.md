@@ -1,6 +1,6 @@
 # ADR-0006: Private Raw Scalar Resolution Before Parser Adoption
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-05
 
 ## Context
@@ -16,13 +16,16 @@ If accepted, allow T-0012/S03 to add a dependency-free, private raw-scalar
 resolver in `emburk-core`. Its inputs are constructed by project-owned tests,
 not parsed YAML. It resolves complete native domains only: Missing/Null and
 String identity/presence, Boolean identity, and signed-64-bit integer identity.
-No CLI wiring, parser, public API, plugin interface, schema, lexical Boolean or
-Long conversion, decimal conversion, or default Boolean/Long policy is adopted.
+It also permits the explicit S01 String-default and null-default Optional<String>
+policies only. No CLI wiring, parser, public API, plugin interface, schema,
+lexical Boolean or Long conversion, decimal conversion, or default Boolean/Long
+policy is adopted.
 
 ## Consequences
 
 The slice supplies original Rust code and Unit/Contract regression tests traced
-to S01/S02 without treating observed tokens as a general lexical algorithm. It
-is not a live differential harness or an Emburk compatibility claim. Lexical
-spellings, decimal conversion, a parser, defaults, or public exposure require
-a new packet and evidence.
+to S01/S02 without treating observed tokens as a general lexical algorithm.
+Unsupported combinations are distinct internal outcomes, not claims about an
+Embulk rejection. It is not a live differential harness or an Emburk
+compatibility claim. Lexical spellings, decimal conversion, Boolean/Long
+defaults, a parser, or public exposure require a new packet and evidence.
