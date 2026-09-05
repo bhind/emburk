@@ -58,6 +58,10 @@ runner; core/SPI source classification remains Apache-2.0 per T-0011.
 No new upstream source or tests are inspected, copied or translated. Recorded
 runtime outputs are observations, not reused implementation code. Source
 categories: prior public-interface observations and current executable behavior.
+The adapter's exception-message recognition literals come from these generated
+observations of the pinned executable, not from upstream source or tests. They
+identify two rejection categories; they do not reproduce Java diagnostics in
+the Rust product or establish whole-message compatibility.
 
 Runtime artifacts are local-only; none are redistributed by this slice.
 Transitive dependency/SBOM and redistribution review remain pending T-0005;

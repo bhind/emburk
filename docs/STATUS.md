@@ -48,8 +48,8 @@ plus `Review` WIP limit, and exposes reusable packet-validation checks. It does
 not automate lifecycle transitions or provide delivery analytics.
 
 T-0004/S01 added weekly Iteration, Start date, and Target date fields plus the
-requested delivery and missing-metadata views. The current iteration contains
-T-0004, blocked T-0012, and T-0021 for 15 Story Points. A read-only snapshot
+requested delivery and missing-metadata views. Its initial iteration snapshot
+contained T-0004, then-blocked T-0012, and T-0021 for 15 Story Points. A read-only snapshot
 records remaining Issues, remaining points, completion, and Status distribution
 without double-counting pull requests.
 

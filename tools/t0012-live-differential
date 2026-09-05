@@ -1,0 +1,355 @@
+#!/usr/bin/env python3
+"""Adapt the pinned T-0012 oracle's actual results for the private Rust test."""
+
+import argparse
+import base64
+import binascii
+import json
+import os
+import pathlib
+import subprocess
+import sys
+import tempfile
+
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+RUNNER = ROOT / "tools/t0012-config-presence/run.sh"
+CONFIG_EXCEPTION = "org.embulk.config.ConfigException"
+MISSING_REQUIRED_MESSAGE = (
+    "com.fasterxml.jackson.databind.JsonMappingException: "
+    "Field 'field' is required but not set\n"
+    " at [Source: UNKNOWN; byte offset: #UNKNOWN]"
+)
+NULL_NOT_ALLOWED_MESSAGE = (
+    "com.fasterxml.jackson.databind.JsonMappingException: "
+    "Setting null to a task field is not allowed. "
+    "Use Optional<T> to represent null."
+)
+
+# IDs describe only oracle input and the private resolver request. They do not
+# contain an expected outcome.
+PRESENCE_SPECS = (
+    ("required", "absent", "required-absent", "missing", "", "required-string", ""),
+    ("required", "null", "required-null", "null", "", "required-string", ""),
+    ("required", "value", "required-value", "string", "observed-value", "required-string", ""),
+    ("defaulted", "absent", "defaulted-absent", "missing", "", "default-string", "fallback"),
+    ("defaulted", "null", "defaulted-null", "null", "", "default-string", "fallback"),
+    ("defaulted", "value", "defaulted-value", "string", "observed-value", "default-string", "fallback"),
+    ("optional", "absent", "optional-absent", "missing", "", "optional-string-null-default", ""),
+    ("optional", "null", "optional-null", "null", "", "optional-string-null-default", ""),
+    ("optional", "value", "optional-value", "string", "observed-value", "optional-string-null-default", ""),
+)
+CONVERSION_MANIFEST = {
+    "boolean-true": "boolean",
+    "boolean-false": "boolean",
+    "boolean-quoted-true": "boolean",
+    "boolean-invalid": "boolean",
+    "long-37": "long",
+    "long-quoted-37": "long",
+    "long-max": "long",
+    "long-fractional": "long",
+    "long-overflow": "long",
+}
+CONVERSION_SPECS = (
+    ("boolean-true", "bool", "true", "bool"),
+    ("boolean-false", "bool", "false", "bool"),
+    ("long-37", "i64", "37", "i64"),
+    ("long-max", "i64", "9223372036854775807", "i64"),
+)
+
+
+def decode_field(encoded):
+    if encoded == "-":
+        return None
+    try:
+        return base64.b64decode(encoded, validate=True).decode("utf-8")
+    except (binascii.Error, UnicodeDecodeError) as error:
+        raise ValueError("malformed base64/UTF-8 oracle field") from error
+
+
+def invoke(mode, evidence_manifest):
+    completed = subprocess.run(
+        [str(RUNNER)],
+        env={**os.environ, "T0012_MODE": mode},
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    evidence = [line.split("=", 1)[1] for line in completed.stdout.splitlines()
+                if line.startswith("T0012_EVIDENCE_DIR=")]
+    if len(evidence) != 1:
+        raise ValueError(f"{mode} oracle did not report exactly one evidence directory")
+    evidence_path = pathlib.Path(evidence[0])
+    with evidence_manifest.open("a", encoding="utf-8") as manifest:
+        manifest.write(f"{mode}={evidence_path}\n")
+    if completed.returncode != 0:
+        sys.stderr.write(completed.stderr)
+        raise ValueError(
+            f"{mode} oracle exited {completed.returncode}; evidence={evidence_path}"
+        )
+    return evidence_path
+
+
+def unique_rows(path, prefix, key_fields):
+    rows = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        fields = line.split("|")
+        if fields[0] != prefix or len(fields) <= max(key_fields):
+            raise ValueError(f"unexpected row in {path.name}")
+        key = tuple(fields[index] for index in key_fields)
+        if key in rows:
+            raise ValueError(f"duplicate oracle key: {key}")
+        rows[key] = fields
+    return rows
+
+
+def parse_presence(path):
+    rows = unique_rows(path, "CASE", (1, 2))
+    manifest = {(decl, state) for decl, state, *_ in PRESENCE_SPECS}
+    if set(rows) != manifest:
+        raise ValueError("presence oracle manifest is not exact")
+    parsed = {}
+    for key, fields in rows.items():
+        if len(fields) != 6 or fields[3] not in {"SUCCESS", "EXCEPTION"}:
+            raise ValueError(f"malformed presence row: {key}")
+        parsed[key] = (fields[3], decode_field(fields[4]), decode_field(fields[5]))
+    return parsed
+
+
+def parse_conversion(path):
+    results = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        fields = line.split("|")
+        if fields[0] == "CONVERSION_CASE" and len(fields) == 6:
+            _, typ, name, status, first, message = fields
+            if status not in {"SUCCESS", "EXCEPTION"}:
+                raise ValueError(f"unknown conversion status: {status}")
+            value = (typ, status, decode_field(first), decode_field(message))
+        elif fields[0] == "NO_PLUGIN_RESULT" and len(fields) == 2:
+            _, name = fields
+            value = (CONVERSION_MANIFEST.get(name), "NO_PLUGIN_RESULT", None, None)
+        else:
+            raise ValueError("malformed conversion row")
+        if name in results:
+            raise ValueError(f"duplicate conversion key: {name}")
+        results[name] = value
+    if set(results) != set(CONVERSION_MANIFEST):
+        raise ValueError("conversion oracle manifest is not exact")
+    for name, (typ, *_rest) in results.items():
+        if typ != CONVERSION_MANIFEST[name]:
+            raise ValueError(f"wrong conversion type for {name}")
+    return results
+
+
+def normalize_presence(request_tag, status, first, message):
+    if status == "SUCCESS":
+        if message not in {None, ""} or first is None:
+            raise ValueError("malformed successful presence outcome")
+        if request_tag == "optional-string-null-default":
+            if first == "empty":
+                return "optional-none", ""
+            if first.startswith("present:"):
+                return "optional-some", first[len("present:"):]
+            raise ValueError("unknown successful optional outcome")
+        return "string", first
+    if status != "EXCEPTION" or first != CONFIG_EXCEPTION or message is None:
+        raise ValueError("unknown presence exception/status")
+    if message == MISSING_REQUIRED_MESSAGE:
+        return "missing-required", ""
+    if message == NULL_NOT_ALLOWED_MESSAGE:
+        return "null-not-allowed", ""
+    raise ValueError("unknown ConfigException message")
+
+
+def normalize_conversion(request_tag, status, first, message):
+    if status != "SUCCESS" or message not in {None, ""} or first is None:
+        raise ValueError("selected conversion was not an unambiguous success")
+    if request_tag == "bool" and first in {"true", "false"}:
+        return "bool", first
+    if request_tag == "i64":
+        try:
+            value = int(first, 10)
+        except ValueError as error:
+            raise ValueError("malformed oracle i64") from error
+        if str(value) == first and -(2**63) <= value <= 2**63 - 1:
+            return "i64", first
+    raise ValueError("unknown successful conversion value")
+
+
+def hex_if_string(tag, value):
+    return value.encode("utf-8").hex() if tag in {"string", "default-string", "optional-some"} else value
+
+
+def selected_raw_outcomes(presence, conversion):
+    raw_outcomes = []
+    for decl, state, ident, *_spec in PRESENCE_SPECS:
+        status, first, message = presence[(decl, state)]
+        raw_outcomes.append({"id": ident, "status": status,
+                             "class": first if status == "EXCEPTION" else None,
+                             "value": first if status == "SUCCESS" else None,
+                             "message": message})
+    for ident, *_spec in CONVERSION_SPECS:
+        _typ, status, first, message = conversion[ident]
+        raw_outcomes.append({"id": ident, "status": status,
+                             "class": first if status == "EXCEPTION" else None,
+                             "value": first if status == "SUCCESS" else None,
+                             "message": message})
+    if len(raw_outcomes) != 13 or len({row["id"] for row in raw_outcomes}) != 13:
+        raise ValueError("selected manifest is not exactly 13 unique cases")
+    return raw_outcomes
+
+
+def build_rows(presence, conversion):
+    rows = []
+    for decl, state, ident, raw_tag, raw, request_tag, request in PRESENCE_SPECS:
+        status, first, message = presence[(decl, state)]
+        outcome_tag, outcome = normalize_presence(request_tag, status, first, message)
+        rows.append((ident, raw_tag, raw, request_tag, request, outcome_tag, outcome))
+    for ident, raw_tag, raw, request_tag in CONVERSION_SPECS:
+        _typ, status, first, message = conversion[ident]
+        outcome_tag, outcome = normalize_conversion(request_tag, status, first, message)
+        rows.append((ident, raw_tag, raw, request_tag, "", outcome_tag, outcome))
+    return rows
+
+
+def write_tsv(rows, tsv_path):
+    encoded = []
+    for ident, raw_tag, raw, request_tag, request, outcome_tag, outcome in rows:
+        encoded.append((ident.encode().hex(), raw_tag, hex_if_string(raw_tag, raw),
+                        request_tag, hex_if_string(request_tag, request), outcome_tag,
+                        hex_if_string(outcome_tag, outcome)))
+    tsv_path.write_text("T0012-S04\t1\n" + "\n".join("\t".join(row) for row in encoded) + "\n", encoding="utf-8")
+
+
+def write_raw_outcomes(raw_outcomes, jsonl_path):
+    jsonl_path.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in raw_outcomes), encoding="utf-8")
+
+
+def self_test():
+    assert normalize_presence("required-string", "EXCEPTION", CONFIG_EXCEPTION,
+                              MISSING_REQUIRED_MESSAGE) == ("missing-required", "")
+    assert normalize_presence("required-string", "EXCEPTION", CONFIG_EXCEPTION,
+                              NULL_NOT_ALLOWED_MESSAGE) == ("null-not-allowed", "")
+    assert normalize_presence("optional-string-null-default", "SUCCESS", "empty", None) == ("optional-none", "")
+    assert normalize_presence("optional-string-null-default", "SUCCESS", "present:any", None) == ("optional-some", "any")
+    assert normalize_presence("required-string", "SUCCESS", "changed-actual", "") == ("string", "changed-actual")
+    assert normalize_conversion("bool", "SUCCESS", "false", None) == ("bool", "false")
+    assert normalize_conversion("i64", "SUCCESS", "9223372036854775807", None) == ("i64", "9223372036854775807")
+    for args in (
+        ("required-string", "EXCEPTION", CONFIG_EXCEPTION, "prefix" + MISSING_REQUIRED_MESSAGE),
+        ("required-string", "EXCEPTION", CONFIG_EXCEPTION, MISSING_REQUIRED_MESSAGE + "suffix"),
+        ("required-string", "EXCEPTION", "unknown.Exception", MISSING_REQUIRED_MESSAGE),
+        ("required-string", "EXCEPTION", CONFIG_EXCEPTION, "unrecognized"),
+        ("required-string", "OTHER", None, None),
+    ):
+        try:
+            normalize_presence(*args)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("unknown oracle outcome was accepted")
+
+    def b64(value):
+        return base64.b64encode(value.encode()).decode()
+
+    with tempfile.TemporaryDirectory() as directory:
+        temporary = pathlib.Path(directory)
+        presence_lines = [
+            f"CASE|{decl}|{state}|SUCCESS|{b64('actual')}|"
+            for decl, state, *_spec in PRESENCE_SPECS
+        ]
+        presence_path = temporary / "cases.raw"
+        presence_path.write_text("\n".join(presence_lines) + "\n", encoding="utf-8")
+        assert len(parse_presence(presence_path)) == 9
+        for malformed in (
+            presence_lines + [presence_lines[0]],
+            ["CASE|required"] + presence_lines[1:],
+        ):
+            presence_path.write_text("\n".join(malformed) + "\n", encoding="utf-8")
+            try:
+                parse_presence(presence_path)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("duplicate/truncated presence rows were accepted")
+
+        conversion_lines = []
+        for name, typ in CONVERSION_MANIFEST.items():
+            if name == "long-overflow":
+                conversion_lines.append(f"NO_PLUGIN_RESULT|{name}")
+            else:
+                conversion_lines.append(
+                    f"CONVERSION_CASE|{typ}|{name}|SUCCESS|{b64('37')}|"
+                )
+        conversion_path = temporary / "conversion-results.raw"
+        conversion_path.write_text("\n".join(conversion_lines) + "\n", encoding="utf-8")
+        assert len(parse_conversion(conversion_path)) == 9
+        for malformed in (
+            conversion_lines + [conversion_lines[0]],
+            ["CONVERSION_CASE|boolean"] + conversion_lines[1:],
+        ):
+            conversion_path.write_text("\n".join(malformed) + "\n", encoding="utf-8")
+            try:
+                parse_conversion(conversion_path)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("duplicate/truncated conversion rows were accepted")
+
+        presence = {
+            (decl, state): ("SUCCESS", "changed-actual", "")
+            for decl, state, *_spec in PRESENCE_SPECS
+        }
+        presence[("required", "absent")] = (
+            "EXCEPTION", "unknown.Exception", "changed unknown message"
+        )
+        conversion = {
+            name: (typ, "SUCCESS", "true" if typ == "boolean" else "37", "")
+            for name, typ in CONVERSION_MANIFEST.items()
+        }
+        raw_path = temporary / "actual.jsonl"
+        write_raw_outcomes(selected_raw_outcomes(presence, conversion), raw_path)
+        actual = [json.loads(line) for line in raw_path.read_text().splitlines()]
+        assert next(row for row in actual if row["id"] == "required-value")["value"] == "changed-actual"
+        unknown = next(row for row in actual if row["id"] == "required-absent")
+        assert unknown["class"] == "unknown.Exception"
+        assert unknown["message"] == "changed unknown message"
+        try:
+            build_rows(presence, conversion)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("unknown exception normalized")
+        assert raw_path.stat().st_size > 0
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tsv", type=pathlib.Path)
+    parser.add_argument("--jsonl", type=pathlib.Path)
+    parser.add_argument("--evidence-manifest", type=pathlib.Path)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
+    if not all((args.tsv, args.jsonl, args.evidence_manifest)):
+        parser.error("--tsv, --jsonl, and --evidence-manifest are required")
+    try:
+        args.evidence_manifest.write_text("", encoding="utf-8")
+        presence_dir = invoke("presence", args.evidence_manifest)
+        conversion_dir = invoke("conversion", args.evidence_manifest)
+        presence = parse_presence(presence_dir / "cases.raw")
+        conversion = parse_conversion(conversion_dir / "conversion-results.raw")
+        raw_outcomes = selected_raw_outcomes(presence, conversion)
+        write_raw_outcomes(raw_outcomes, args.jsonl)
+        rows = build_rows(presence, conversion)
+        write_tsv(rows, args.tsv)
+    except (OSError, ValueError) as failure:
+        print(f"T0012/S04 driver rejected oracle: {failure}", file=sys.stderr)
+        return 4
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
