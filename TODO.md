@@ -1,6 +1,6 @@
 # Emburk product backlog
 
-Last updated: 2026-09-05
+Last updated: 2026-09-06
 
 This file is the authoritative actionable-work inventory. GitHub Issues and the
 GitHub Project mirror these stable identifiers for coordination. Parent epics
@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0021` is `In Progress`, `T-0012/S03` is `Review`, and every other item is
+`T-0021` and `T-0012/S04` are `In Progress`, and every other item is
 `Backlog`. No item is `Blocked`. This is the two-item WIP limit.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -34,7 +34,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S03: internal raw scalar resolution; S01/S02 integrated) | Review | P0 | 5 | T-0011 | Rust Core Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S04: live scalar differential; S01–S03 integrated) | In Progress | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics | Backlog | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -131,7 +131,12 @@ integrated through PR #61 as `e2532e2` after recording nine
 presence/null/default observations. This is Reference Observation / Integration
 evidence only and cannot complete the parent Differential gate. T-0012/S02
 owned a separate, nine-case Boolean/Long conversion probe. It integrated
-through PR #65 as `d7b4838`. T-0012/S03 now owns a bounded original-Rust raw
-scalar resolver and project-owned contract tests. It is Unit/Contract work,
-not a Differential claim. T-0021 and T-0012/S03 occupy the combined `In
-Progress` plus `Review` WIP limit of two.
+through PR #65 as `d7b4838`. T-0012/S03 integrated its private original-Rust
+resolver through PR #66 as `e03a2bc`, with Unit/Contract evidence at `8432391`.
+S04 (3 SP) adds live comparison and malformed-evidence gates for 13 supported
+outcomes, reproduced by primary and independent Tester at `3fe6546`; integration
+is pending. T-0012's current estimate increases from 5 to 8 SP; Initial SP remains
+5. The refinement accounts for the explicit oracle adapter, private test bridge,
+and negative evidence validation omitted from the initial estimate. It does
+not award parent completion or change the remaining configuration/schema/value
+scope. T-0021 and T-0012 occupy the combined WIP limit of two.

@@ -1,6 +1,6 @@
 # Current status
 
-Last updated: 2026-09-05
+Last updated: 2026-09-06
 
 Development state: `bootstrap`
 
@@ -13,7 +13,9 @@ Development state: `bootstrap`
 - The binary does not load Embulk configuration, transfer records, execute
   plugins, or implement transaction and resume behavior.
 - No native, Java-hosted, or JRuby-hosted plugin is implemented or verified.
-- No compatibility or performance claim has passed an evidence gate.
+- Thirteen selected private raw-scalar outcomes match the pinned Embulk
+  executable in a live differential test. No full configuration, plugin,
+  data-transfer, or performance claim has passed its evidence gate.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
   native File-to-File vertical slice as the first runtime milestone.
@@ -24,7 +26,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 (`In Progress`) and T-0012/S03 (`Review`) are the only active work
+T-0021 (`In Progress`) and T-0012/S04 (`In Progress`) are the only active work
 items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 
 | Item | State | Purpose |
@@ -33,7 +35,7 @@ items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S03 | Review | Private raw scalar resolver accepted at `8432391`; awaits Tester and PR integration |
+| T-0012/S04 | In Progress | Live comparison of 13 supported scalar outcomes; S01–S03 integrated |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -48,8 +50,8 @@ plus `Review` WIP limit, and exposes reusable packet-validation checks. It does
 not automate lifecycle transitions or provide delivery analytics.
 
 T-0004/S01 added weekly Iteration, Start date, and Target date fields plus the
-requested delivery and missing-metadata views. The current iteration contains
-T-0004, blocked T-0012, and T-0021 for 15 Story Points. A read-only snapshot
+requested delivery and missing-metadata views. Its initial iteration snapshot
+contained T-0004, then-blocked T-0012, and T-0021 for 15 Story Points. A read-only snapshot
 records remaining Issues, remaining points, completion, and Status distribution
 without double-counting pull requests.
 
@@ -62,8 +64,9 @@ to add the `PROJECTS_TOKEN` secret, so no hosted-run success is claimed.
 
 ## Evidence and non-claims
 
-Current evidence is limited to repository inspection and the existing minimal
-Rust development path. Strategy and planning records are not runtime evidence.
+Current evidence includes repository checks, private scalar Unit/Contract tests,
+and a live comparison of 13 selected typed outcomes. Strategy and planning
+records are not runtime evidence.
 In particular, the repository does not yet demonstrate:
 
 - Embulk-compatible configuration, schema, value, lifecycle, or resume
@@ -103,5 +106,13 @@ as `e2532e2`. This is Reference Observation / Integration evidence only, not a
 generic typed-getter contract, a verified Emburk semantic, or the parent task's
 Differential (Embulk) evidence. T-0012/S02's nine-case Boolean/Long runtime
 observation integrated through PR #65 as `d7b4838`. Its evidence remains
-Reference Observation / Integration only. T-0012/S03 is packeted for a private
-Rust raw-scalar resolver and contract tests; it has no implementation result.
+Reference Observation / Integration only. T-0012/S03 implemented the private
+Rust raw-scalar resolver and integrated through PR #66 as `e03a2bc`. Independent
+and named Tester acceptance at `8432391` passed eight core tests, format,
+Clippy, and diff checks. Its evidence is Unit/Contract only. S04 implements
+a live oracle comparison for 13 supported outcomes. Primary acceptance at
+`3fe6546` passed the exact Demo Command and negative controls, nine offline core
+tests (one live test explicitly ignored), format, Clippy, and diff checks.
+Independent Tester acceptance reproduced the same results; PR integration
+remains pending. See the
+[S04 evidence record](provenance/T-0012-live-scalar-differential.md).

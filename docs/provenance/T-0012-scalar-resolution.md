@@ -4,8 +4,9 @@
 - Branch: `feat/t-0012-scalar-resolution`
 - Owner: Rust Core Implementer; canonical records and lifecycle: Project Manager
 - Estimate: 3 SP within the existing T-0012 parent estimate
-- State: `Review` (independent source and Tester acceptance passed; PR
-  integration pending)
+- State: `Done` (independent source and Tester acceptance passed;
+  [PR #66](https://github.com/bhind/emburk/pull/66) integrated as
+  `e03a2bc2e2353776a8f7c1c387dd481ee3a0062f`)
 
 ## Authority, inputs, and boundary
 
