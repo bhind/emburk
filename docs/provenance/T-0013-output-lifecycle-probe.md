@@ -1,7 +1,7 @@
 # T-0013/S02 output lifecycle reference observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; acceptance pending
+- State: Review; primary and independent acceptance passed, integration pending
 - Parent: T-0010; priority P0
 - Slice estimate: 3 SP within unchanged parent Current/Initial SP 8
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 1;
@@ -89,6 +89,11 @@ mutated copies must reach intended exact diagnostic labels, not merely stale
 checksum failures. Include valid synthetic null/empty message controls; these
 are format controls, not live fault observations.
 
+Input requested count and output transaction count are separate observed
+quantities. Validate output fields against the actual output transaction
+context, not against requested input count. Do not force executor settings to
+make the quantities equal or assert a portable fan-out factor.
+
 Run actual corrupt-executable-copy rejection (exit 3) and unavailable official
 asset rejection (exit 56); never skip a missing runtime or substitute a pin.
 Tester independently reproduces the exact full Demo at a frozen revision.
@@ -137,6 +142,62 @@ packet. Escalate unexpected trace interpretation to PM before choosing policy.
 Stop expansion for new artifacts, upstream implementation inspection, injected
 failures, resume/retry scenarios, production traits, redistribution or material
 IP/security uncertainty. Do not hide negative evidence or silently weaken gates.
+
+## Acceptance evidence (2026-09-06)
+
+Primary acceptance at `57390529daeb0d3f937f455f4e02f98d3cb742d6` ran the
+exact Demo from `/private/tmp`, exit 0. Per-file `bash -n` and
+`git diff --check` passed. No Rust code changed or new Rust test run is claimed.
+Evidence: `${TMPDIR}/t0013-output-lifecycle.3Tto9c/evidence`.
+
+| Fixture | Requested input tasks | Observed output tasks | Process exit | Input/output markers |
+|---|---:|---:|---:|---:|
+| Zero | 0 | 0 | 0 | 6 / 6 |
+| One empty input task | 1 | 8 | 0 | 10 / 70 |
+
+In the one-input case, the actual output trace records open, finish, commit
+and close entry/normal-return pairs for indices 0 through 7. All opens precede
+the input run marker; output finishes occur inside the input finish markers;
+commits then closes occur after input run normal return. Output control and
+transaction return normally, followed by input control/transaction return,
+input cleanup, then output cleanup. Both zero-task transactions return normally
+and input cleanup precedes output cleanup. Output cleanup report counts were
+zero/eight respectively. No add, abort or resume marker occurred.
+
+These are actual sequences for the two original empty fixtures, not universal
+callback ordering or report semantics. Runtime logging reported `max_threads=16`
+and output tasks `8 = input tasks 1 * 8`. PM accepted the differing task counts
+as evidence, not an incident, and explicitly rejected equating input/output
+counts or treating eight as a portable constant. The default mapping algorithm
+and executor configuration remain unverified.
+
+Evidence SHA-256:
+
+- `cases.raw`: `9c08408c10f8fd1a50c63eb9dc09f3ed8401fb65b9069965acb13625b8f9c3ca`
+- `traces.raw`: `06cc4542e428511062bfd575546471d1acd2dba2af64cc9e79ef468ee302b453`
+- Zero mixed trace: `12263d6c29045e10311b5e053b46c86c1f85d8189ce0dec1b0cd0479b1d4f2ec`
+- One mixed trace: `e6b18edff2a49aba53bb1ad7e5df2b9194e61427b8c7c4e5e7db39b1d81aa001`
+
+Corrupt-copy control exited 3 (`t0013-output-lifecycle.UJAZuL`); unavailable
+asset control exited 56 (`t0013-output-lifecycle.nKkXIn`). Thirty mutated
+invalid-evidence controls reached their exact intended diagnostics; null/empty
+synthetic transaction-exception messages remained valid transport forms.
+Checks include source-local marker ordering and a prior matching open before
+handle methods, without prescribing ordering among output tasks. Cleanup's
+received report count is not equated to the earlier control result. No fixed
+outcome hash, output task count or absent callback is an acceptance constant.
+
+Both separately identified local JAR/source hashes, executable hash, notices
+and Java settings remain in the evidence directory. Java is Temurin 17.0.20
+on macOS arm64, with Bash 3.2.57 and Python 3.14.6. This does not demonstrate
+sink durability or Rust lifecycle behavior.
+
+Independent Tester reproduced the exact Demo and per-file syntax/diff checks
+at `5739052`, all exit 0, with identical case/trace hashes and no findings.
+Evidence: `${TMPDIR}/t0013-output-lifecycle.UA5fzd/evidence`; full log
+`/private/tmp/t0013-s02-independent.HGLtLk/full-probe.log`, SHA-256
+`27fc9215c7ae3c9de88f4382341e74832e13bd045c3490fc3c2cec28bf3b0d6c`.
+Integration remains pending; parent #16 remains open.
 
 ## Non-claims
 

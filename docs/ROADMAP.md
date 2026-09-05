@@ -56,6 +56,9 @@ trace controls. This reference observation cannot satisfy the lifecycle exit
 gate; direct output-side and failure/recovery evidence are still missing.
 PR #70 integrated S01 as `e8b5726`; S02 now observes direct output callbacks
 for the same empty-task boundary before Rust policy or failure injection.
+S02 primary acceptance passed at `5739052`, including its actual one-input/
+eight-output observation and strict evidence controls. This does not resolve
+default scheduling, failure propagation, recovery or delivery gates.
 
 ## Phase 1: Native File-to-File MVP
 
