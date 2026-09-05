@@ -19,8 +19,9 @@ retrieval failures are repairable work, not incidents.
 ## Dependencies
 
 T-0011's pinned executable and S01/S02, integrated through PR #70 (`e8b5726`)
-and PR #71 (`d474b7b`). Reuse S02's unchanged original output source in a
-separately identified local output JAR. Input and output tasks are distinct;
+and PR #71 (`d474b7b`). Reuse S02's original output behavior in a separately
+identified S03 source/JAR with explicit capture-context instrumentation.
+The existing S02 source remains unchanged. Input and output tasks are distinct;
 do not equate counts or hardcode the observed factor eight. T-0012 and T-0021
 remain Backlog; combined WIP is one of two.
 
@@ -33,10 +34,11 @@ retry/resume, cleanup-error or partial-publication contracts.
 ## Branch and allowlist
 
 Branch: `research/t-0013-input-failure`.
-Compatibility Host Implementer owns exactly three new files:
+Compatibility Host Implementer owns exactly four new files:
 
 - `tools/t0013-input-failure/run.sh`
 - `tools/t0013-input-failure/src/T0013FailureInputPlugin.java`
+- `tools/t0013-input-failure/src/T0013FailureOutputPlugin.java`
 - `tests/t0013_input_failure_probe_test.sh`
 
 No existing S01/S02 source/runner/test mutation, Rust code, production host,
@@ -48,7 +50,8 @@ COMPATIBILITY, runtime design, provenance/index and dated log reconciliation.
 An original local input fixture and standalone runner/test execute exactly two
 isolated cases, each requesting one empty input task/schema and no Pages or
 values: normal positive control, and an input-run failure before the input's
-own PageOutput.finish call. Output source remains the original S02 fixture.
+own PageOutput.finish call. Output callback bodies remain equivalent to the
+original S02 fixture; only class and capture-context instrumentation changes.
 Reuse project-owned probe structure only, not upstream implementation/tests.
 Use distinct local input/output Maven-style coordinates, categories and JARs;
 retain both source/JAR hashes and never assume shared static marker state.
@@ -88,12 +91,35 @@ in transaction or open. This local empty sink establishes no durability boundary
 
 Validate exactly two complete fixture envelopes, marker grammar and exact
 arity, canonical UTF-8/Base64 and typed numerical fields, raw-log correspondence,
-component-local sequence continuity, source-local entry/return/exception
+capture-local sequence continuity, source-local entry/return/exception
 consistency, required positive/injected markers and count/digest consistency.
 Track per-invocation structure where needed; repeated genuine invocations are
 not duplicate transport records. Output fields use their own observed context;
 cleanup report counts are not equated to control reports. Any unexpected add,
 instrumentation/setup error or unsupported trace interpretation fails acceptance.
+
+### Capture-context refinement
+
+First live evidence at `${TMPDIR}/t0013-input-failure.qiKq6n/evidence` reached
+the injected failure, propagated the exact original exception and exited 1.
+Actual abort/close and cleanup markers occurred. The raw log reports plugin
+loading again during cleanup, and both static counters restart at 1. This is
+pre-refinement evidence, not acceptance of the original single-counter format.
+It does not prove a universal classloader or recovery identity contract.
+
+PM therefore expands the original three-file allowlist by one original S03
+output fixture file, without changing S02. Both S03 plugins emit a canonical
+random UUID capture ID initialized once per loaded class. Validate contiguous
+sequences per fixture/component/capture ID and preserve physical raw order.
+A sequence restart alone is never a new context. Duplicate sequences in the
+same capture must fail even when the repeated sequence is 1. Validate marker
+pairing and open-handle association within their capture context; a cleanup-only
+context need not have an open handle or transaction invocation of its own.
+IDs identify instrumentation contexts, not task attempts, processes or guaranteed
+classloader identities. They intentionally vary between executions; raw digests
+remain per-run identities rather than cross-run equality gates. The existing
+JDK UUID facility adds no dependency or external artifact. Review the output
+diff against S02 to confirm that only class/trace identity changed.
 
 Use mutated evidence copies to reject missing/unknown/truncated/duplicate-
 sequence records, malformed fields, stale counts/hashes/logs, fake injected

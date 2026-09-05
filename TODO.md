@@ -183,7 +183,8 @@ Tester reproduced the complete Demo; final-head acceptance at `55ed697` passed
 and PR #71 integrated as `d474b7b`.
 
 T-0013/S03 (3 SP within Current SP 13) observes one input-run exception before
-its own finish call plus a normal control, with unchanged S02 output source.
+its own finish call plus a normal control. S03 retains S02 output behavior in a
+new original fixture with explicit capture-context IDs; S02 remains unchanged.
 See its [packet](docs/provenance/T-0013-input-failure-probe.md). Current parent
 SP changes from 8 to 13 because distinct input/output task contexts and strict
 failure-evidence validation were underrepresented initially. Initial SP remains
