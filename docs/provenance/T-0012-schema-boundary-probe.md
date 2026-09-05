@@ -2,7 +2,8 @@
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
 - Branch: `research/t-0012-schema-boundary`
-- State: In Progress; independent acceptance passed, integration pending
+- State: Done as a slice; integrated through PR #68 as
+  `68559dc8b81d45c2b236db3d1e5266f70ab589a9`; parent remains open
 - Owner: Compatibility Host Implementer; records/integration: Project Manager
 - Slice estimate: 3 SP within Current SP 8; Initial SP remains 5. Do not sum
   parent and slice delivery or award parent completion.
@@ -128,4 +129,6 @@ Tester schema evidence `run.AgBYWy/evidence` has the same two raw-record hashes
 as primary acceptance above. Platform: macOS 26.5.1 arm64, Bash 3.2.57,
 Rust/Cargo 1.98.1, Python 3.14.6, Temurin JDK 17.0.20. No new source or runtime
 artifact is redistributed. Evidence remains Reference Observation / Integration
-only. PR integration remains pending; parent T-0012 is not complete.
+only. Final-head primary Demo at `cc40f0fae1730075271b37d348eeab34769e5158`
+exited 0 with evidence `run.r71A1u/evidence`. PR #68 integrated the slice;
+parent T-0012 is not complete.

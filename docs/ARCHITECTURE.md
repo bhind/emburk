@@ -29,6 +29,10 @@ private, dependency-free raw-scalar resolver inside `emburk-core`; it is neither
 a YAML loader nor a stable public API. Creating crate directories does not make
 their eventual Rust API stable.
 
+ADR-0007 permits a private ordered logical schema before any physical encoding
+or public exposure. Its S06 implementation and live comparison are pending;
+logical type tags alone do not establish value or Arrow representations.
+
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe
 plugin do not create an Emburk Java host, admitted plugin, runtime dependency,
