@@ -103,6 +103,10 @@ def make_snapshot(items: Iterable[dict[str, Any]], today: dt.date) -> Snapshot:
 CSV_FIELDS = ("date", "iteration", "start_date", "duration", "total_issues", "total_points", "remaining_issues", "remaining_points", "completed_issues", "completed_points", "status_counts")
 
 
+def csv_safe(value: str) -> str:
+    return "'" + value if value.startswith(("=", "+", "-", "@")) else value
+
+
 def append_snapshot(path: Path, snapshot: Snapshot) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     if path.exists():
@@ -110,7 +114,7 @@ def append_snapshot(path: Path, snapshot: Snapshot) -> list[dict[str, str]]:
             rows = list(csv.DictReader(handle))
     row = asdict(snapshot)
     row["status_counts"] = json.dumps(row["status_counts"], sort_keys=True)
-    encoded = {key: str(row[key]) for key in CSV_FIELDS}
+    encoded = {key: csv_safe(str(row[key])) for key in CSV_FIELDS}
     rows = [existing for existing in rows if existing["date"] != snapshot.date]
     rows.append(encoded)
     rows.sort(key=lambda value: value["date"])

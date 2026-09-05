@@ -88,7 +88,7 @@ The daily snapshot requires repository automation plus a user-Project
 credential. `GITHUB_TOKEN` cannot access a user Project. Use a repository
 secret named `PROJECTS_TOKEN` containing
 a fine-grained credential limited to this repository and Projects access, give
-the workflow only `contents: write`, `issues: read`, and `pull-requests: read`,
+the workflow only `contents: write`,
 and store the daily history on a dedicated `project-metrics` branch. Never
 print, persist, or place the credential in command arguments or artifacts.
 

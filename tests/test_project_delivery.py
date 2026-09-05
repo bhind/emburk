@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.project_delivery import AuditError, append_snapshot, ideal_remaining, make_snapshot, render_svg
+from scripts.project_delivery import AuditError, append_snapshot, csv_safe, ideal_remaining, make_snapshot, render_svg
 
 
 def item(number, status, points, iteration="i1", content_type="Issue"):
@@ -25,6 +25,10 @@ class ProjectDeliveryTest(unittest.TestCase):
     def test_ideal_line_reaches_zero_at_iteration_end(self):
         self.assertEqual(ideal_remaining(10, "2026-08-31", 7, "2026-08-31"), 10)
         self.assertEqual(ideal_remaining(10, "2026-08-31", 7, "2026-09-07"), 0)
+
+    def test_csv_formula_prefix_is_neutralized(self):
+        self.assertEqual(csv_safe("=HYPERLINK(1)"), "'=HYPERLINK(1)")
+        self.assertEqual(csv_safe("2026-W36"), "2026-W36")
 
     def test_append_is_idempotent_per_day_and_svg_is_rendered(self):
         value = make_snapshot([item(1, "In Progress", 5)], dt.date(2026, 9, 5))
