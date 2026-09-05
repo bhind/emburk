@@ -260,12 +260,20 @@ available to cleanup. Primary and independent acceptance pass at `876e861`;
 PR #75 integrated as `2901c31`. ADR-0009 and the T-0021/S04 packet now authorize
 the private candidate with typed output errors, incremental report retention and
 common typed scope outcomes while preserving S04 regressions. Primary and
-independent Unit/Contract acceptance pass at `b8dbc77`; integration is pending.
+independent Unit/Contract acceptance pass at `b8dbc77`; final-head acceptance
+passed at `d885ba2` and PR #76 integrated as `b5cfb87`.
 New output-failure
 Differential evidence remains a separate gate. Last-index evidence is not
 arbitrary-index coverage. Observe first/middle
 commit failures before choosing a broader policy, and never infer publication
 or rollback from these empty fixtures.
+
+T-0013/S06 primary acceptance at `a284f8b` compares both selected S05 live
+projections to actual private Rust execution. It preserves physical event order,
+compares actual result/report counts and validates exact runtime-local errors
+before category/index normalization. Independent Tester reproduced these results;
+final-head acceptance and integration remain pending. No production algorithm
+or arbitrary-index contract is added.
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output

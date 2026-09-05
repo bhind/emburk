@@ -20,8 +20,9 @@ Development state: `bootstrap`
   duplicates. Its live comparison matches three selected schema outcomes;
   values, nullability, lookup and physical encoding remain unimplemented.
 - A private synchronous empty-task coordinator executes original fake callbacks
-  with separate cleanup capabilities and reports. Its five Unit/Contract tests
-  cover zero/one-input plans and one selected input-run failure. Other callback
+  with separate cleanup capabilities and reports. Its Unit/Contract tests
+  cover zero/one-input plans, one selected input-run failure, and selected
+  last-output-commit failure with retained actual reports. Other callback
   failures and actual plugin execution are not implemented.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
@@ -33,8 +34,8 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021/S04 (`Review`, PR #76) is the only active work item. Combined WIP is one of
-two; no item is `Ready` or `Blocked`. T-0012 and T-0013 remain Backlog after
+T-0013/S06 (`Review`, PR #77) is the only serial work item. Combined active WIP is one of
+two; no item is `Blocked`. T-0012 and T-0021 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
 | Item | State | Purpose |
@@ -44,8 +45,8 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013 | Backlog | S01–S05 integrated; remaining lifecycle comparison/recovery contracts |
-| T-0021/S04 | Review | Private last-commit failure and retained reports; PR #76 |
+| T-0013/S06 | Review | Two selected live output-commit projections; PR #77 |
+| T-0021 | Backlog | S01–S04 integrated; remaining runtime contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -209,7 +210,18 @@ typed scope errors and retained reports. Primary and independent source
 acceptance passed at `b8dbc77`: seven local tests, two existing live projections,
 13 negative controls and workspace 21 passed/three intentionally ignored;
 format, explicit included-file Rust 2024 formatting and strict Clippy passed.
-PR integration is pending. Evidence is Unit/Contract plus existing regression,
+Final-head acceptance at `d885ba2` passed; PR #76 integrated as `b5cfb87`.
+Evidence is Unit/Contract plus existing regression,
 not a new output-failure Differential result; earlier/middle
 failure positions and general recovery remain outside its reference coverage.
 Current T-0021 SP is refined 5 to 8; Initial SP stays 5 and parent gates stay open.
+
+T-0013/S06 now has a reviewed comparison packet for normal and selected
+last-output-commit failure. It changes only test infrastructure. Primary source
+acceptance at `a284f8b` passes both live projections (normal 44/failure 43 events,
+cleanup reports 1/8 and 1/7 in the observed 1/8 plan), 30 raw controls, two local
+bridge tests and unchanged S04 live regression. Workspace tests pass 23 with
+four intentional ignores; formatting, strict Clippy and syntax checks pass.
+Independent Tester reproduced these results at the same source revision;
+final-head acceptance and integration remain pending. Current/Initial SP remain
+21/8; T-0021 is requeued without closing its parent.

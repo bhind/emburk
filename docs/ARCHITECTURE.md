@@ -54,9 +54,18 @@ is not a host API.
 ADR-0009 permits a private typed output-commit error and common input/output
 scope outcome, preserving actual reports on the observed last-index failure.
 T-0021/S04 implements this candidate; primary and independent Unit/Contract
-acceptance pass at `b8dbc77`, with integration pending. Its private
+acceptance pass at `b8dbc77`; final-head acceptance passed at `d885ba2` and
+PR #76 integrated as `b5cfb87`. Its private
 fallible signature does not establish arbitrary-index recovery, publication or
 rollback semantics or authorize a public plugin boundary.
+
+T-0013/S06 adds a separate test-only bridge for normal and selected last-commit
+failure, preserving S04 and the coordinator algorithm. Strict raw validation
+precedes physical-order projection; exact errors are validated within each
+runtime before comparing category/index. Each failed Rust scope is checked
+individually before excluding the two uninstrumented control failures. Primary
+and independent acceptance pass at `a284f8b`; final-head acceptance and
+integration remain required.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe
