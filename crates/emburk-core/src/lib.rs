@@ -14,6 +14,14 @@ mod scalar_resolution;
 )]
 mod logical_schema;
 
+// This is deliberately private: it is a bounded fake-fixture coordinator, not
+// a public plugin API or a production lifecycle contract.
+#[allow(
+    dead_code,
+    reason = "T-0021/S03 is an internal empty-task coordinator without a public consumer"
+)]
+mod empty_lifecycle;
+
 pub const DEVELOPMENT_STATUS: &str =
     "emburk: development environment ready (data transfer not implemented yet)";
 
