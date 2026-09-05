@@ -114,9 +114,17 @@ T-0013/S06 is the next test-only comparison packet for those two selected
 output-commit scenarios. Primary source acceptance at `a284f8b` now matches
 normal 44-event and selected last-failure 43-event projections, including
 cleanup reports 1/8 versus 1/7 for the observed 1/8 plan. Independent Tester
-reproduced these results; final-head acceptance and integration remain pending.
+reproduced these results; final-head acceptance at `7d90f5d` passed and PR #77
+integrated as `3b16aaf`.
 This is two selected Differential projections,
 not general commit handling or a public plugin certification.
+S07 prepares a separate first/middle reference-only observation; no new position
+coverage or Rust policy is claimed before its capture and acceptance gates.
+Its initial capture at `fb26813` records first/middle abort suffixes and retained
+report counts. Primary and independent full source acceptance pass at `76dbab0`:
+three cases, 57 semantic controls, two artifact controls and S05 regression.
+Integration remains pending. This is Reference Observation / Integration, not
+first/middle Rust compatibility; see the packet's per-index observation matrix.
 
 ## Adding an Entry
 

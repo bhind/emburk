@@ -64,8 +64,17 @@ failure, preserving S04 and the coordinator algorithm. Strict raw validation
 precedes physical-order projection; exact errors are validated within each
 runtime before comparing category/index. Each failed Rust scope is checked
 individually before excluding the two uninstrumented control failures. Primary
-and independent acceptance pass at `a284f8b`; final-head acceptance and
-integration remain required.
+and independent acceptance pass at `a284f8b`; final-head acceptance passed at
+`7d90f5d` and PR #77 integrated as `3b16aaf`.
+S07 prepares first/middle reference observations only. Unattempted-handle policy
+must follow raw evidence and a later decision, not extension by analogy.
+The S07 initial first/middle capture now observes aborts on the failed and
+unattempted suffix, with earlier reports retained and all handles closed. This
+motivates an explicit committed-prefix boundary in a future decision; current
+Rust behavior is unchanged and remains supported only for its declared fixtures.
+Primary and independent full source acceptance at `76dbab0` corroborate the
+three reference fixtures; a separate ADR and native packet remain prerequisites
+to changing the coordinator's abort boundary.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe
