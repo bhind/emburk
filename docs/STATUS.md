@@ -29,7 +29,7 @@ or `Blocked`.
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
-| T-0011 | Done | Pinned Embulk core, SPI, and admitted plugin reference versions |
+| T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
