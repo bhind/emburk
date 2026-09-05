@@ -7,7 +7,7 @@ Development state: `bootstrap`
 ## Implemented facts
 
 - The repository contains a minimal Rust binary and Cargo project suitable for
-  verifying the development environment. T-0021/S01 is establishing a virtual
+  verifying the development environment. T-0021/S01 establishes a virtual
   workspace with an inward-only `emburk-cli -> emburk-core` dependency while
   retaining the explicit not-yet-a-loader smoke test.
 - The binary does not load Embulk configuration, transfer records, execute
@@ -24,13 +24,14 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-No work item is currently `Ready`, `Review`, or `Blocked`.
+T-0021 is the only active task. No work item is currently `Ready`, `Review`,
+or `Blocked`.
 
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
-| T-0011 | Done | Pinned Embulk core, SPI, and admitted plugin reference versions |
-| T-0021/S01 | In Progress | Establish the non-semantic Rust workspace boundary |
+| T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
+| T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -61,3 +62,11 @@ boundaries described above.
 T-0021/S01 is structural only. It does not define configuration, schema,
 values, plugin traits, lifecycle, transactions, resume behavior, scheduling,
 or a stable public Rust API.
+
+T-0021/S01 is tracked in [PR #58](https://github.com/bhind/emburk/pull/58).
+T-0021/S02 was integrated through [PR #60](https://github.com/bhind/emburk/pull/60)
+as `341f285`, after review and `git diff --check` at `5059900`. It provides a
+[runtime design proposal](RUST_RUNTIME_DESIGN.md), configuration/value fixture
+worksheet, lifecycle responsibilities, and explicit uncertain commit outcomes.
+This is Planning evidence only. T-0012/T-0013 contracts and differential
+verification remain prerequisites to completing the parent task.
