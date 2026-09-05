@@ -93,9 +93,16 @@ Unit/Contract only, integrated through PR #73 (`14d5fb5`); no new Native/Verifie
 entry follows.
 
 T-0013/S04's two selected live projections pass primary acceptance at `98b6cac`;
-independent Tester reproduced the results, with integration pending. Its projections exclude
+independent Tester reproduced the results, and PR #74 integrated as `68d848c`
+after final-head acceptance at `09ac159`. Its projections exclude
 default planning, capture identity, Java report contents and zero-task live
 coverage; no generalized lifecycle claim follows from activation.
+
+S05's selected output commit failure observation passes primary acceptance at
+`876e861`: only the failed handle aborts, all close, and cleanup receives input
+1/output 7 reports for the observed 1/8 plan. Independent acceptance passes;
+integration remains pending. It adds no native output-failure, partial-publication or rollback
+policy, and does not observe arbitrary failure indexes.
 
 ## Adding an Entry
 

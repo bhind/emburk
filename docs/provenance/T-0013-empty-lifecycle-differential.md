@@ -1,7 +1,8 @@
 # T-0013/S04 selected empty-lifecycle differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review; PR #74, final-head acceptance and integration pending
+- State: Done (two selected Differential projections); PR #74 integrated
+- Parent: Issue #16 remains open for S05 and remaining contracts
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP within parent Current SP 13, Initial SP 8; no new parent
   points or parent completion. Refinement: implementation 1, uncertainty 1,
@@ -183,7 +184,10 @@ Independent reference evidence is `${TMPDIR}/t0013-input-failure.MdR7qO/evidence
 `3f438b9c3d85af64f9334119938cd68f058f455af5013c0348bb60afef187106`;
 `traces.raw` SHA-256:
 `3963a21d36a56ab3c4eae523f9e284853c6f7be136b5ceed11cb317bcf5b5e2d`.
-Final-head acceptance and integration remain pending.
+Final-head acceptance at `09ac159020d530136e20b82028935cbb4d61b589` reproduced
+the exact Demo and all strict checks (exit 0), with evidence root
+`${TMPDIR}/t0013-s04.1VYi4N`. PR #74 integrated as
+`68d848c0214d33077a80cfe4dafb5dbba85c3b06`; Issue #16 remains open.
 The live result applies only to the declared projection, not raw marker identity,
 default planning, report contents, zero-task behavior or complete lifecycle.
 

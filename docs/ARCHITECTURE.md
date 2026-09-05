@@ -48,7 +48,8 @@ T-0013/S04 adds a test-only driver and private child test bridge, leaving the
 coordinator and fake behavior unchanged. It compares two live declared event
 projections and separate cleanup counts using the reference output count as a
 supplied Rust plan. Primary and independent acceptance pass at `98b6cac`;
-integration remains pending. The test adapter is not a host API.
+final-head acceptance passed and PR #74 integrated as `68d848c`. The test adapter
+is not a host API.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe

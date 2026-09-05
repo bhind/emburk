@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S04` is `Review` (PR #74); `T-0012`, `T-0021` and all other unfinished items
+`T-0013/S05` is `Review` (PR #75); `T-0012`, `T-0021` and all other unfinished items
 are `Backlog`. No item is `Blocked`. Combined WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S04: selected live empty-lifecycle comparison) | Review | P0 | 13 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S05: output commit failure observation) | Review | P0 | 21 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -220,4 +220,17 @@ additional points follow. Combined WIP stays one.
 S04 primary acceptance at `98b6cac` passed both live comparisons and 13 raw
 controls; workspace tests passed 20 with three intentional live ignores, plus
 format and strict Clippy. Independent Tester reproduced these results;
-final-head acceptance and integration remain pending.
+final-head acceptance at `09ac159` passed and PR #74 integrated as `68d848c`.
+
+T-0013/S05 (3 SP) is active under its
+[packet](docs/provenance/T-0013-output-commit-failure-probe.md). Observe normal
+and selected output commit failure callbacks before choosing Rust output
+fallibility. Current parent SP is refined 13 to 21: S01–S04 already represent
+12 SP of accepted slices, while output-failure verification and recovery
+uncertainty remain. Initial SP stays 8; no parent completion or earned parent
+points are implied. Combined WIP stays one.
+
+S05 primary acceptance at `876e861` passed both live fixtures, 21 targeted
+evidence controls and two executable controls, separate shell syntax and diff
+checks. Independent Tester reproduced these results; integration remains pending. Only selected
+last-index reference observations are claimed, not general commit handling.
