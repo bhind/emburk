@@ -114,6 +114,15 @@ three selected live projections and unchanged S04/S06 regressions. This is a
 test-only Differential boundary; no runtime policy, public type or phase gate
 changes. Final-head acceptance and integration remain required.
 
+S08 final-head exact Demo passed at `ff8dec0`; PR #80 integrated as `de38a44`.
+Its three selected Differential projections are accepted, not a general recovery
+contract. Parent T-0013 returns to Backlog and remains open. T-0012/S07 now
+prepares two isolated PageBuilder/test-local collector/PageReader observations
+under its [packet](provenance/T-0012-page-value-probe.md), before selecting any
+Rust value representation. Only Boolean/Long/String and explicit null inputs
+are selected. No runtime, public API, Page encoding or transfer claim follows.
+
+
 ## Phase 1: Native File-to-File MVP
 
 - Build the compact execution core and MVP CLI.

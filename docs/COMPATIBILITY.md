@@ -143,6 +143,15 @@ selected Differential, not general index/concurrency, data transfer, durability,
 resume, public API or production readiness. Final-head acceptance and integration
 remain required; the parent and delivery gates stay open.
 
+S08 final-head exact Demo passed at `ff8dec0`; PR #80 integrated as `de38a44`.
+Its three selected Differential projections are accepted, not a general recovery
+contract. Parent T-0013 returns to Backlog and remains open. T-0012/S07 now
+prepares two isolated PageBuilder/test-local collector/PageReader observations
+under its [packet](provenance/T-0012-page-value-probe.md), before selecting any
+Rust value representation. Only Boolean/Long/String and explicit null inputs
+are selected. No runtime, public API, Page encoding or transfer claim follows.
+
+
 ## Adding an Entry
 
 Each entry must identify the Embulk version, exact plugin artifact, configuration fixture, expected evidence, source/provenance record, and known deviations. Claims enter this document only after review evidence exists.
