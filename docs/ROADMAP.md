@@ -51,6 +51,9 @@ T-0013/S01 now supplies a separate input lifecycle observation lane for zero
 and one empty task. T-0012 and T-0021 are requeued after their accepted slices
 to address this still-missing prerequisite. This is not parent completion or a
 blocker; callback traits, cleanup guarantees and resume remain unverified.
+Primary acceptance records successful zero/one empty task executions and strict
+trace controls. This reference observation cannot satisfy the lifecycle exit
+gate; direct output-side and failure/recovery evidence are still missing.
 
 ## Phase 1: Native File-to-File MVP
 

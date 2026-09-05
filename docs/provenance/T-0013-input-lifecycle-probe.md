@@ -1,7 +1,7 @@
 # T-0013/S01 input lifecycle reference observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; acceptance pending
+- State: Review; primary and independent acceptance passed, integration pending
 - Parent: T-0010; priority P0
 - Slice estimate: 3 SP within unchanged parent Current/Initial SP 8
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 1;
@@ -134,6 +134,60 @@ packet. Stop expansion for injected failure/retry/resume scenarios, new upstream
 implementation inspection, new artifacts, production traits, redistribution or
 material IP/security uncertainty requiring PM/legal review. Do not hide an
 unexpected trace; retain it and obtain PM interpretation before policy work.
+
+## Acceptance evidence (2026-09-06)
+
+Primary acceptance at source `b3f9c68bfd9da7255198cbb0790af11ffe80a6ba`
+ran the exact Demo from `/private/tmp`, exit 0. Per-file `bash -n` for the runner
+and test and `git diff --check` also passed. No Rust source changed, so this
+slice does not claim a new Rust regression run.
+
+Primary live evidence is retained outside the repository at
+`${TMPDIR}/t0013-input-lifecycle.qv38QN/evidence`. The two actual processes
+exited 0. Observed marker sequences were:
+
+- Zero tasks: transaction entry, control before/normal return, transaction
+  normal return, cleanup entry/normal return (six events).
+- One empty task: transaction entry, control before, run entry, finish
+  before/normal return, run normal return, control normal return, transaction
+  normal return, cleanup entry/normal return (ten events).
+
+The one-task index was 0; cleanup received zero and one reports respectively.
+No resume or guess marker occurred. These are observations of the original
+local probe under the pinned executable, not general callback guarantees or
+observations of the bundled output's internal callbacks.
+
+Evidence SHA-256:
+
+- `cases.raw`: `cc17f151d0def47f65d40ad6660396526b8dd5544d201ae51f069791e7ff8c9b`
+- `traces.raw`: `fc7d8b815e87a75eeec1ae87bbb01a44300c1469ca94f5cef26d9819b6c0d6b9`
+- Zero trace: `f0977282bd44bdd8a2dac41e6b3ba15dd0562b04c7622aa9491ae31d5df0a418`
+- One trace: `e3c7d993ecc6b59405516877d242368b5f59e8c3a35d7e7a97c5671f7dc30bc8`
+
+Actual corrupt-copy rejection exited 3 (`t0013-input-lifecycle.WUL1WR`), and
+the unavailable asset control exited 56 (`t0013-input-lifecycle.Ldvnrm`).
+Seventeen malformed/contradictory evidence controls each reached their intended
+diagnostic. Two synthetic transaction-exception messages (null and empty) were
+accepted as transport representations, not live fault observations. Review
+specifically required a transaction exception before accepting a nonzero
+zero-task rejection; an unrelated callback exception cannot substitute for it.
+Mutated copies update hashes and copied raw logs where necessary, so semantic
+controls do not merely fail a stale checksum. No outcome hash is an acceptance
+constant.
+
+The platform is macOS arm64 with Java Temurin 17.0.20, Python 3.14.6 and Bash
+3.2.57. Executable identity, Java settings, plugin source/JAR hashes and notices
+are retained per run. The known executable ZIP-prefix warning is not a changed
+artifact identity.
+
+Independent Tester acceptance reproduced the exact Demo at `b3f9c68`, exit 0,
+with identical case/trace hashes and all controls passing. Evidence:
+`${TMPDIR}/t0013-input-lifecycle.C1Wl7R/evidence`; complete run log
+`/private/tmp/t0013-independent-full-probe-network.log`, SHA-256
+`71751109dcc4d5b53a6ad49155c1e96bba337e850d1a314f80d366c45609b4c6`.
+The initial sandbox-only attempt could not resolve GitHub; the authorized
+network rerun succeeded without changing source or artifact. No acceptance
+findings remain. PR integration is pending; parent #16 stays open.
 
 ## Non-claims
 

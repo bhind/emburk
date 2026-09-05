@@ -129,6 +129,12 @@ The following sequence is an Emburk orchestration proposal. Exact upstream
 callbacks, nesting, retry rules and call counts are unverified until T-0013.
 No public trait signatures should be frozen from this sequence alone.
 
+T-0013/S01's bounded input probe now records successful zero/one empty task
+executions, including input cleanup and the normal return of the one-task
+probe's `PageOutput.finish()` call. This is reference observation only. It does
+not reveal output commit/abort/close behavior; observe that boundary directly
+before making those responsibilities part of the private Rust execution model.
+
 | Phase | Coordinator responsibility | Plugin/adapter responsibility | Trace evidence required |
 |---|---|---|---|
 | Resolve and validate | Select pinned factories, resolve configuration | Validate plugin options at the compatible stage | First error, defaults applied, side effects before failure |

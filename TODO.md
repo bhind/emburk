@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S01` is `In Progress`; `T-0012`, `T-0021` and all other unfinished items
+`T-0013/S01` is `Review`; `T-0012`, `T-0021` and all other unfinished items
 are `Backlog`. No item is `Blocked`. Combined WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01: input callback observations) | In Progress | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01: input callback observations) | Review | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -165,3 +165,9 @@ retry, resume, production traits and delivery guarantees. T-0012 and T-0021
 return to Backlog, not Done or Blocked, so this missing lifecycle evidence can
 advance the core-trait dependency. Accepted slices remain accepted; no parent
 velocity is awarded.
+
+S01 primary acceptance at `b3f9c68` passed the two live input fixtures and all
+artifact/trace controls. Independent Tester reproduced the complete Demo;
+integration remains pending.
+The next lifecycle decision needs direct output-side observations before
+assigning commit, abort or close responsibilities to private Rust traits.

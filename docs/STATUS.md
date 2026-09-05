@@ -29,7 +29,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S01 (`In Progress`) is the only active work item. Combined WIP is one of
+T-0013/S01 (`Review`) is the only active work item. Combined WIP is one of
 two; no item is `Ready` or `Blocked`. T-0012 and T-0021 return to Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
@@ -41,7 +41,7 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
 | T-0021 | Backlog | S01/S02 integrated; core traits await T-0012/T-0013 contracts |
-| T-0013/S01 | In Progress | Observe zero-task and one-task input lifecycle traces |
+| T-0013/S01 | Review | Accept zero-task and one-task input lifecycle traces |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -141,5 +141,9 @@ Differential for the three selected ordered outcomes only; no public schema
 support or physical encoding claim follows.
 
 T-0013/S01 now observes actual input callback traces before Rust lifecycle
-traits are chosen. Acceptance is pending; no callback, cleanup or resume
-contract is implemented or verified.
+traits are chosen. Primary acceptance at `b3f9c68` passed the exact Demo:
+zero/one empty task processes exited 0 with six/ten input probe markers,
+respectively, plus artifact and malformed-evidence controls. Independent
+Tester reproduced the complete Demo; integration is pending. No callback, cleanup or resume
+contract is implemented or verified. See the
+[S01 evidence record](provenance/T-0013-input-lifecycle-probe.md).
