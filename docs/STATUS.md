@@ -33,7 +33,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S04 (`Review`, PR #74) is the only active work item. Combined WIP is one of
+T-0013/S05 (`In Progress`) is the only active work item. Combined WIP is one of
 two; no item is `Ready` or `Blocked`. T-0012 and T-0021 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
@@ -44,7 +44,7 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013/S04 | Review | Two selected live empty-lifecycle projections; PR #74 |
+| T-0013/S05 | In Progress | Observe one output commit failure before Rust policy |
 | T-0021 | Backlog | S01–S03 integrated; remaining core contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -188,6 +188,11 @@ projections. It compares actual callbacks and cleanup counts for supplied plans,
 not default fan-out, raw instrumentation identity or general lifecycle behavior.
 Primary acceptance at `98b6cac` passed both comparisons, 13 raw-evidence controls,
 20 offline workspace tests (three intentional live ignores), format and strict
-Clippy. Independent Tester reproduced these results; final-head acceptance and
-integration remain pending. Evidence is
+Clippy. Independent Tester reproduced these results; final-head acceptance at
+`09ac159` passed and PR #74 integrated as `68d848c`. Evidence is
 Differential for those two projections only; zero tasks remain Unit/Contract.
+
+S05 now observes a normal control and one selected output commit exception.
+No output-failure Rust policy is added before that evidence. T-0013 Current SP
+is refined 13 to 21 to include output-failure verification and remaining lifecycle
+uncertainty; Initial SP stays 8 and the parent remains open.

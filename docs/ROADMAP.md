@@ -73,8 +73,11 @@ independent acceptance; final-head acceptance passed and PR #73 integrated as
 `14d5fb5`. T-0013/S04 now activates a separately scoped two-case live projection
 comparison. Neither slice completes Phase 0 or the File-to-File milestone.
 S04 primary acceptance at `98b6cac` passes both declared projections and strict
-negative controls; independent Tester reproduced the results. Integration remains
-pending.
+negative controls; independent Tester reproduced the results. Final-head
+acceptance at `09ac159` passed and PR #74 integrated as `68d848c`.
+S05 now observes selected output commit failure before expanding Rust output
+fallibility. This reference-only gate cannot establish partial publication,
+rollback, retry or resume behavior.
 
 ## Phase 1: Native File-to-File MVP
 

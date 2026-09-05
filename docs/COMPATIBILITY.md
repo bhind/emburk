@@ -93,9 +93,13 @@ Unit/Contract only, integrated through PR #73 (`14d5fb5`); no new Native/Verifie
 entry follows.
 
 T-0013/S04's two selected live projections pass primary acceptance at `98b6cac`;
-independent Tester reproduced the results, with integration pending. Its projections exclude
+independent Tester reproduced the results, and PR #74 integrated as `68d848c`
+after final-head acceptance at `09ac159`. Its projections exclude
 default planning, capture identity, Java report contents and zero-task live
 coverage; no generalized lifecycle claim follows from activation.
+
+S05's selected output commit failure observation is pending. It adds no native
+output-failure, partial-publication or rollback policy.
 
 ## Adding an Entry
 

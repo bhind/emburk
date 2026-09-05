@@ -250,7 +250,8 @@ and a complete lifecycle contract are not approved by this internal slice.
 |---|---|---|
 | Empty successful orchestration | Accepted S01 input and S02 output observations with actual component traces | A bounded normal-path candidate; not inferred failure handling |
 | Failure before the input's finish call | Same-runtime positive control and an original input-run exception fixture, retaining propagation and all actual output callbacks | A candidate for that exact failure boundary; not pre-publication, rollback, retry or recovery guarantees |
-| Private coordinator acceptance | Independently authored fake plugins and explicit input/output plans (T-0021/S03 Unit); two live declared projections pass T-0013/S04 primary and independent acceptance at `98b6cac`, integration pending | Private execution of those supplied plans; not default executor fan-out, identical instrumentation or a public plugin API |
+| Private coordinator acceptance | Independently authored fake plugins and explicit input/output plans (T-0021/S03 Unit); two live declared projections pass T-0013/S04 primary and independent acceptance at `98b6cac`, integrated by PR #74 (`68d848c`) | Private execution of those supplied plans; not default executor fan-out, identical instrumentation or a public plugin API |
+| Output commit callback exception | S05 original normal control plus one selected output commit exception; actual outcomes pending | Evidence to review before output fallibility; not durable publication, rollback or recovery guarantees |
 | Expansion beyond empty tasks | New fixtures for values, output mapping, concurrency and resource bounds | A separately reviewed execution slice; not a silent extension of empty-task evidence |
 
 The proposed failure fixture should throw inside input `run` before its own
