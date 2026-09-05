@@ -4,8 +4,8 @@
 - Branch: `feat/t-0012-scalar-resolution`
 - Owner: Rust Core Implementer; canonical records and lifecycle: Project Manager
 - Estimate: 3 SP within the existing T-0012 parent estimate
-- State: `Review` (independent source acceptance passed at `8432391`; named
-  Tester reproduction and PR integration pending)
+- State: `Review` (independent source and Tester acceptance passed; PR
+  integration pending)
 
 ## Authority, inputs, and boundary
 
@@ -58,3 +58,8 @@ general rule.
 - This is Unit/Contract evidence for the private original Rust resolver only.
   It does not compare an Emburk execution, reproduce Java exception text or
   timing, add a parser, or satisfy T-0012's Differential gate.
+- Named read-only Tester reproduction at `8432391` also passed core tests,
+  format, workspace Clippy with warnings denied, and diff check. Its local raw
+  log SHA-256 was
+  `297ac906ecc9030d5997ac0ad809207153806927b58af5fd7f92a7730d927657`;
+  the path is deliberately omitted from this public record.
