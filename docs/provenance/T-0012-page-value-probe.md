@@ -121,6 +121,68 @@ completeness but MUST NOT emit the full acceptance marker or assume successes.
 Stop after initial capture and provide source revision, raw evidence and actual
 outcomes to PM before adding fixture-specific semantic expectations.
 
+## Initial capture and PM Stage B decision
+
+Stage A source revision: `66ef66a66b9624d3072728656fb2d7bb8aee4e11`.
+Exact capture command exited 0. External evidence:
+`${TMPDIR}/t0012-page-value-probe/run.Ysvo8G/evidence`; outer logs:
+`/private/tmp/t0012-s07-stage-a.nJKQh7/capture.stdout.log` and
+`capture.stderr.log`. The latter retains known executable ZIP-prefix warnings
+and the Java deprecation note; it is not empty. No full acceptance marker was
+emitted. Primary read every decoded raw event and reviewed the original Java,
+runner and wrapper; the trace writer now raises a dedicated Error on output
+failure, outside the semantic RuntimeException boundary.
+
+Source SHA-256 (Java, runner, wrapper):
+
+- `bb49b204003b3d021d78f0a7113136471f4f0ab70ea9a3df971414a7a8f66836`
+- `dcfdb42aa36f00adcb82fea52eab543d8c91e7d5c8dea9894dfd5c87611cb5ee`
+- `65b38880328f1538d2eaa851313249b18833e49a5005a9357380561b00750a57`
+
+Cases/traces SHA-256:
+`8b546716e8cd9624e36f1f1a9c24a3e0427d5c7fff9eab80f0604c30c57b782e` /
+`5881d1ade93cccb6c81429b32415135fd3d9b87793e5f5834439a2aa8fba5b32`.
+
+| Fixture | Process / events | Actual local collector observation |
+|---|---|---|
+| empty | Exit 0 / 32 | No Page add, zero rows; collector finish then close |
+| typed-null | Exit 0 / 110 | One Page add; three ordered rows; nextRecord true, true, true, false |
+
+Both transaction/run schemas were exactly the selected three ordered columns.
+Typed getters returned true/MAX/empty text, then false/MIN/literal newline and
+lambda text as supplied; all three cells of the final row had isNull=true and
+no typed getter. For both fixtures, builder finish enclosed collector finish;
+the nonempty Page add/read sequence occurred before that collector finish.
+Builder close enclosed collector close, which enclosed reader close. Runtime
+output finish followed; run/control/transaction returned normally, then one
+success terminal and cleanup with one report. These are selected fixture facts,
+not a general delegation, batching or cleanup policy.
+
+PM authorizes Stage B semantic guards for these exact observations, with all
+input assignments kept separate from actual getter records. Validate complete
+physical order and event arities, including setter/addRecord pairs, every
+null check, matching typed getter or cell-null, final nextRecord=false, nested
+finish/close and terminal/cleanup. The observed 0/1 Pages and 32/110 events may
+constrain these tiny fixtures only, never become a general batch-size rule.
+Exact schema/row/value outcomes must be checked, not just those totals.
+No Java fixture or ownership-policy change is needed for Stage B. Preserve the
+Java source hash unless PM first approves an instrumentation correction.
+
+Validate canonical fixture/capture/sequence and raw-log extraction equality,
+not only the digest of a second trace copy. Reject unknown/extra PAGETRACE rows
+instead of silently dropping them. Every semantic negative starts from a fresh
+copy and repairs trace sequences, case counts, hashes and raw logs; assert its
+intended diagnostic. Include malformed/missing/duplicate/unknown cases and
+events, wrong arity/Base64/capture/sequence/log/digest, huge counts, wrong schema,
+changed Boolean/Long/String, null/getter contradictions, missing or reordered
+rows/page exhaustion, setters/addRecord, close/finish and terminal/cleanup.
+Validate artifact identity separately and exercise unavailable/corrupt controls.
+Capture-only and validate-only modes cannot emit the full live acceptance marker.
+
+This decision is based on the first raw capture, not frozen-source acceptance.
+Independent reproduction and final Demo remain required before any accepted
+Reference Observation / Integration claim; no Rust policy is authorized here.
+
 ## Stage B: reviewed expectations and controls
 
 After PM records the initial raw outcome matrix, validate exactly those bounded
