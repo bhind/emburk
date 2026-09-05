@@ -719,4 +719,10 @@ mod tests {
             "/src/empty_lifecycle/output_commit_differential_tests.rs"
         ));
     }
+    mod output_commit_position_differential_tests {
+        include!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/src/empty_lifecycle/output_commit_position_differential_tests.rs"
+        ));
+    }
 }

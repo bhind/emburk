@@ -1,0 +1,1028 @@
+#!/usr/bin/env python3
+"""Validate S07 raw evidence and project three ordered S08 lifecycle cases.
+
+Manifest CASE columns are: tag, fixture, input tasks, actual output tasks,
+output cap, selected index, scenario, result, input reports, output reports,
+and projected event count. Each CASE is followed by that many EVENT rows.
+Live mode requires the unchanged full S07 gate and retains its identity records;
+validate-only checks raw evidence and cannot substitute for that live gate.
+"""
+
+import argparse
+import base64
+import binascii
+import hashlib
+import pathlib
+import subprocess
+import sys
+import uuid
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+PROBE = ROOT / "tests/t0013_output_commit_position_probe_test.sh"
+OUTPUT_CAP = 1024
+HEADER = "T0013-S08\t1"
+FIXTURES = ("normal", "commit-first", "commit-middle")
+
+
+class InvalidEvidence(Exception):
+    pass
+
+
+def require(label, condition):
+    if not condition:
+        raise InvalidEvidence(label)
+
+
+def decimal(label, value):
+    require(label, value and value.isascii() and value.isdigit())
+    return int(value)
+
+
+def validate_reference(root):
+    stage = "full"
+    fixtures = ("normal", "commit-first", "commit-middle")
+    injected_class = "T0013CommitPositionOutputPlugin$InjectedCommitFailure"
+    injected_message = "t0013-output-commit-position-failure"
+
+    def decimal(label, value):
+        require(label, value and value.isascii() and value.isdigit())
+        return int(value)
+
+    def decode(label, value, *, numeric=False, nonempty=False):
+        require(label, value != "-")
+        try:
+            raw = base64.b64decode(value, validate=True)
+            text = raw.decode("utf-8")
+        except (binascii.Error, UnicodeDecodeError):
+            raise InvalidEvidence(label)
+        require(label, base64.b64encode(raw).decode("ascii") == value)
+        if numeric:
+            decimal(label, text)
+        if nonempty:
+            require(label, text != "")
+        return text
+
+    input_arity = {
+        "transaction-entry": 1,
+        "control-run-before": 1,
+        "control-run-normal-return": 1,
+        "transaction-normal-return": 1,
+        "transaction-runtime-exception": 2,
+        "run-entry": 1,
+        "injection-before": 1,
+        "finish-before": 1,
+        "finish-normal-return": 1,
+        "run-normal-return": 1,
+        "run-runtime-exception": 2,
+        "cleanup-entry": 2,
+        "cleanup-normal-return": 1,
+        "resume-entry": 1,
+        "resume-normal-return": 1,
+        "guess-entry": 0,
+        "guess-normal-return": 0,
+    }
+    input_numeric = {
+        "transaction-entry": {0},
+        "control-run-before": {0},
+        "control-run-normal-return": {0},
+        "transaction-normal-return": {0},
+        "run-entry": {0},
+        "injection-before": {0},
+        "finish-before": {0},
+        "finish-normal-return": {0},
+        "run-normal-return": {0},
+        "cleanup-entry": {0, 1},
+        "cleanup-normal-return": {0},
+        "resume-entry": {0},
+        "resume-normal-return": {0},
+    }
+    output_arity = {
+        "transaction-entry": 2,
+        "commit-selection": 3,
+        "control-run-before": 2,
+        "control-run-normal-return": 3,
+        "transaction-normal-return": 3,
+        "transaction-runtime-exception": 2,
+        "resume-entry": 2,
+        "resume-control-run-before": 2,
+        "resume-control-run-normal-return": 3,
+        "resume-normal-return": 3,
+        "resume-runtime-exception": 2,
+        "cleanup-entry": 3,
+        "cleanup-normal-return": 3,
+        "open-entry": 2,
+        "open-normal-return": 2,
+        "add-entry": 2,
+        "add-normal-return": 2,
+        "finish-entry": 2,
+        "finish-normal-return": 2,
+        "commit-entry": 2,
+        "commit-injection-before": 2,
+        "commit-normal-return": 2,
+        "commit-runtime-exception": 4,
+        "abort-entry": 2,
+        "abort-normal-return": 2,
+        "close-entry": 2,
+        "close-normal-return": 2,
+    }
+    output_numeric = {
+        event: set(range(arity))
+        for event, arity in output_arity.items()
+        if not event.endswith("runtime-exception")
+    }
+    output_numeric["commit-selection"] = {0, 2}
+    output_numeric["commit-runtime-exception"] = {0, 1}
+
+    def only(rows, component, event, label):
+        found = [row for row in rows if row[0] == component and row[1] == event]
+        require(label, len(found) == 1)
+        return found[0]
+
+    def positions(rows, component, event):
+        return [row[5] for row in rows if row[0] == component and row[1] == event]
+
+    def indexed_rows(rows, event):
+        return [
+            row for row in rows
+            if row[0] == "output" and row[1] == event
+        ]
+
+    def pair(rows, event, indices):
+        entries = indexed_rows(rows, f"{event}-entry")
+        returns = indexed_rows(rows, f"{event}-normal-return")
+        require(
+            f"{event}-entry-indexes",
+            len(entries) == len(indices)
+            and {decimal("pair-index", row[2][0]) for row in entries} == indices,
+        )
+        require(
+            f"{event}-return-indexes",
+            len(returns) == len(indices)
+            and {decimal("pair-index", row[2][0]) for row in returns} == indices,
+        )
+        for entry in entries:
+            index = decimal("pair-index", entry[2][0])
+            returned = next(
+                row
+                for row in returns
+                if decimal("pair-index", row[2][0]) == index
+            )
+            require(
+                f"{event}-callback-pair",
+                entry[2] == returned[2]
+                and entry[3] == returned[3]
+                and entry[4] < returned[4],
+            )
+
+    try:
+        case_lines = root.joinpath("cases.raw").read_text(encoding="utf-8").splitlines()
+        trace_lines = root.joinpath("traces.raw").read_text(encoding="utf-8").splitlines()
+        require("case-count", len(case_lines) == 3)
+        cases = {}
+        for expected_fixture, line in zip(fixtures, case_lines, strict=True):
+            fields = line.split("|")
+            require(
+                "case-arity",
+                len(fields) == 5 and fields[0] == "POSITIONCASE",
+            )
+            _, fixture, requested_text, exit_text, summary = fields
+            require(
+                "case-fixture",
+                fixture == expected_fixture and fixture not in cases,
+            )
+            values = summary.split(":")
+            require("case-summary-arity", len(values) == 4)
+            total, input_count, output_count = [
+                decimal("case-count-field", value) for value in values[:3]
+            ]
+            digest = values[3]
+            require(
+                "case-digest-format",
+                len(digest) == 64
+                and all(char in "0123456789abcdef" for char in digest),
+            )
+            cases[fixture] = (
+                decimal("requested-count", requested_text),
+                decimal("process-exit", exit_text),
+                total,
+                input_count,
+                output_count,
+                digest,
+            )
+        require("requested-count", all(case[0] == 1 for case in cases.values()))
+
+        grouped = {fixture: [] for fixture in fixtures}
+        decoded = {fixture: [] for fixture in fixtures}
+        sequences = {}
+        for physical, line in enumerate(trace_lines):
+            fields = line.split("|")
+            require("trace-minimum-arity", len(fields) >= 5)
+            tag, fixture, capture, sequence_text, event = fields[:5]
+            require("trace-component", tag in {"FAILTRACE", "POSITIONOUTTRACE"})
+            require("trace-fixture", fixture in grouped)
+            try:
+                parsed_capture = uuid.UUID(capture)
+            except ValueError:
+                raise InvalidEvidence("capture-id")
+            require(
+                "capture-id",
+                str(parsed_capture) == capture and parsed_capture.version == 4,
+            )
+            component = "input" if tag == "FAILTRACE" else "output"
+            sequence = decimal("capture-sequence", sequence_text)
+            key = (fixture, component, capture)
+            require(
+                f"{component}-sequence-contiguous",
+                sequence == sequences.get(key, 0) + 1,
+            )
+            sequences[key] = sequence
+            grammar = input_arity if component == "input" else output_arity
+            numeric = input_numeric if component == "input" else output_numeric
+            require(f"{component}-event-known", event in grammar)
+            require(f"{component}-event-arity", len(fields) == 5 + grammar[event])
+            values = []
+            for index, encoded in enumerate(fields[5:]):
+                if encoded == "-":
+                    is_message = (
+                        event.endswith("runtime-exception")
+                        and index == grammar[event] - 1
+                    )
+                    require(f"{component}-null-position", is_message)
+                    values.append(None)
+                else:
+                    exception_field = (
+                        event.endswith("runtime-exception")
+                        and index >= grammar[event] - 2
+                    )
+                    values.append(
+                        decode(
+                            f"{component}-canonical-field",
+                            encoded,
+                            numeric=index in numeric.get(event, set()),
+                            nonempty=exception_field
+                            and index == grammar[event] - 2,
+                        )
+                    )
+            grouped[fixture].append(line)
+            decoded[fixture].append(
+                (component, event, values, capture, sequence, physical)
+            )
+
+        for fixture in fixtures:
+            requested, process_exit, total, input_count, output_count, digest = (
+                cases[fixture]
+            )
+            raw_rows = grouped[fixture]
+            require("case-total-count-match", len(raw_rows) == total)
+            require(
+                "case-component-count-match",
+                sum(row.startswith("FAILTRACE|") for row in raw_rows)
+                == input_count
+                and sum(row.startswith("POSITIONOUTTRACE|") for row in raw_rows)
+                == output_count
+                and input_count + output_count == total,
+            )
+            material = ("\n".join(raw_rows) + "\n").encode("utf-8")
+            require(
+                "case-digest-match",
+                hashlib.sha256(material).hexdigest() == digest,
+            )
+            raw_log = root / f"{fixture}.raw.log"
+            require("raw-log-required", raw_log.is_file())
+            extracted = [
+                line
+                for line in raw_log.read_text(encoding="utf-8").splitlines()
+                if line.startswith("FAILTRACE|")
+                or line.startswith("POSITIONOUTTRACE|")
+            ]
+            require("raw-log-trace-match", extracted == raw_rows)
+
+            rows = decoded[fixture]
+            input_names = [row[1] for row in rows if row[0] == "input"]
+            output_names = [row[1] for row in rows if row[0] == "output"]
+            require(
+                "input-failure-branch-inactive",
+                "injection-before" not in input_names
+                and "run-runtime-exception" not in input_names,
+            )
+            require(
+                "unexpected-input-callback",
+                not any(name.startswith(("resume", "guess")) for name in input_names),
+            )
+            require(
+                "unexpected-output-callback",
+                not any(name.startswith(("resume", "add")) for name in output_names),
+            )
+
+            input_transaction = only(
+                rows, "input", "transaction-entry", "input-transaction-entry"
+            )
+            output_transaction = only(
+                rows, "output", "transaction-entry", "output-transaction-entry"
+            )
+            selection = only(rows, "output", "commit-selection", "commit-selection")
+            require("input-main-request", decimal("input-count", input_transaction[2][0]) == requested)
+            task_count = decimal("output-task-count", output_transaction[2][0])
+            require("output-task-cap", task_count <= OUTPUT_CAP)
+            schema_count = decimal("output-schema-count", output_transaction[2][1])
+            require("distinguishable-output-task-count", task_count >= 3)
+            require("empty-output-schema", schema_count == 0)
+            expected_mode = {
+                "normal": "normal",
+                "commit-first": "first",
+                "commit-middle": "middle",
+            }[fixture]
+            expected_index = {
+                "normal": task_count - 1,
+                "commit-first": 0,
+                "commit-middle": task_count // 2,
+            }[fixture]
+            require(
+                "selection-fields",
+                decimal("selection-count", selection[2][0]) == task_count
+                and selection[2][1] == expected_mode
+                and decimal("selection-index", selection[2][2]) == expected_index,
+            )
+            require(
+                "selection-capture",
+                selection[3] == output_transaction[3]
+                and output_transaction[4] < selection[4],
+            )
+
+            indexed_events = {
+                "open-entry",
+                "open-normal-return",
+                "finish-entry",
+                "finish-normal-return",
+                "commit-entry",
+                "commit-injection-before",
+                "commit-normal-return",
+                "commit-runtime-exception",
+                "abort-entry",
+                "abort-normal-return",
+                "close-entry",
+                "close-normal-return",
+            }
+            counted_events = {
+                "transaction-entry",
+                "control-run-before",
+                "control-run-normal-return",
+                "transaction-normal-return",
+                "cleanup-entry",
+                "cleanup-normal-return",
+            }
+            for component, event, values, _capture, _sequence, _physical in rows:
+                if component == "output" and event in indexed_events:
+                    require(
+                        "output-index-range",
+                        decimal("output-index", values[0]) < task_count,
+                    )
+                    require(
+                        "output-schema-consistency",
+                        decimal("output-schema", values[1]) == schema_count,
+                    )
+                if component == "output" and event in counted_events:
+                    require(
+                        "output-count-consistency",
+                        decimal("output-count", values[0]) == task_count,
+                    )
+                    require(
+                        "output-schema-consistency",
+                        decimal("output-schema", values[1]) == schema_count,
+                    )
+
+            injections = [
+                row
+                for row in rows
+                if row[0] == "output" and row[1] == "commit-injection-before"
+            ]
+            failures = [
+                row
+                for row in rows
+                if row[0] == "output" and row[1] == "commit-runtime-exception"
+            ]
+            if fixture == "normal":
+                require("normal-process-success", process_exit == 0)
+                require("normal-no-local-injection", not injections and not failures)
+            else:
+                require(
+                    "selected-local-injection",
+                    injections and len(injections) == len(failures),
+                )
+                used_commit_entries = set()
+                for injection, failure in zip(injections, failures, strict=True):
+                    require(
+                        "selected-injection-index",
+                        decimal("injection-index", injection[2][0])
+                        == expected_index
+                        and decimal("failure-index", failure[2][0])
+                        == expected_index,
+                    )
+                    require(
+                        "selected-injection-payload",
+                        failure[2][2:] == [injected_class, injected_message],
+                    )
+                    require(
+                        "selected-injection-pair",
+                        injection[3] == failure[3]
+                        and injection[4] < failure[4],
+                    )
+                    preceding_entries = [
+                        row
+                        for row in rows
+                        if row[0] == "output"
+                        and row[1] == "commit-entry"
+                        and row[3] == injection[3]
+                        and row[4] < injection[4]
+                        and decimal("commit-index", row[2][0])
+                        == expected_index
+                        and (row[3], row[4]) not in used_commit_entries
+                    ]
+                    require("selected-commit-entry", bool(preceding_entries))
+                    commit_entry = max(preceding_entries, key=lambda row: row[4])
+                    used_commit_entries.add((commit_entry[3], commit_entry[4]))
+                    same_invocation_returns = [
+                        row
+                        for row in rows
+                        if row[0] == "output"
+                        and row[1] == "commit-normal-return"
+                        and row[3] == commit_entry[3]
+                        and commit_entry[4] < row[4] < failure[4]
+                        and decimal("commit-index", row[2][0])
+                        == expected_index
+                    ]
+                    require(
+                        "selected-injection-order",
+                        not same_invocation_returns
+                        and commit_entry[4] < injection[4] < failure[4],
+                    )
+
+            if stage != "full":
+                continue
+
+            require("bounded-output-task-count", task_count <= len(rows))
+            expected_indices = set(range(task_count))
+            pair(rows, "open", expected_indices)
+            pair(rows, "finish", expected_indices)
+            pair(rows, "close", expected_indices)
+
+            input_required = {
+                "transaction-entry",
+                "control-run-before",
+                "run-entry",
+                "finish-before",
+                "finish-normal-return",
+                "run-normal-return",
+                "cleanup-entry",
+                "cleanup-normal-return",
+            }
+            require(
+                "input-callback-manifest",
+                input_required.issubset(input_names)
+                and all(input_names.count(name) == 1 for name in input_required),
+            )
+            for event in {
+                "transaction-entry",
+                "control-run-before",
+                "control-run-normal-return",
+                "transaction-normal-return",
+                "cleanup-entry",
+                "cleanup-normal-return",
+            }:
+                for row in [
+                    row
+                    for row in rows
+                    if row[0] == "input" and row[1] == event
+                ]:
+                    require(
+                        "input-count-consistency",
+                        decimal("input-count", row[2][0]) == requested,
+                    )
+            for event in {
+                "run-entry",
+                "finish-before",
+                "finish-normal-return",
+                "run-normal-return",
+            }:
+                row = only(rows, "input", event, f"input-{event}")
+                require(
+                    "input-index",
+                    decimal("input-index", row[2][0]) == 0,
+                )
+
+            input_main_capture = input_transaction[3]
+            output_main_capture = output_transaction[3]
+            input_main_events = [
+                row
+                for row in rows
+                if row[0] == "input" and not row[1].startswith("cleanup")
+            ]
+            output_main_events = [
+                row
+                for row in rows
+                if row[0] == "output" and not row[1].startswith("cleanup")
+            ]
+            require(
+                "input-main-capture",
+                all(row[3] == input_main_capture for row in input_main_events),
+            )
+            require(
+                "output-main-capture",
+                all(row[3] == output_main_capture for row in output_main_events),
+            )
+            input_chain_names = [
+                "transaction-entry",
+                "control-run-before",
+                "run-entry",
+                "finish-before",
+                "finish-normal-return",
+                "run-normal-return",
+            ]
+            input_chain_names += (
+                ["control-run-normal-return", "transaction-normal-return"]
+                if fixture == "normal"
+                else ["transaction-runtime-exception"]
+            )
+            input_chain = [
+                only(rows, "input", event, f"input-chain-{event}")
+                for event in input_chain_names
+            ]
+            require(
+                "input-main-chain-order",
+                [row[4] for row in input_chain]
+                == sorted(row[4] for row in input_chain),
+            )
+            output_chain_names = [
+                "transaction-entry",
+                "commit-selection",
+                "control-run-before",
+            ]
+            output_chain_names += (
+                ["control-run-normal-return", "transaction-normal-return"]
+                if fixture == "normal"
+                else ["transaction-runtime-exception"]
+            )
+            output_chain = [
+                only(rows, "output", event, f"output-chain-{event}")
+                for event in output_chain_names
+            ]
+            require(
+                "output-main-chain-order",
+                [row[4] for row in output_chain]
+                == sorted(row[4] for row in output_chain),
+            )
+
+            input_run = only(rows, "input", "run-entry", "input-run-entry")
+            input_finish_before = only(
+                rows, "input", "finish-before", "input-finish-before"
+            )
+            input_finish_return = only(
+                rows,
+                "input",
+                "finish-normal-return",
+                "input-finish-normal-return",
+            )
+            input_run_return = only(
+                rows, "input", "run-normal-return", "input-run-normal-return"
+            )
+            require(
+                "output-control-before-open",
+                only(
+                    rows,
+                    "output",
+                    "control-run-before",
+                    "output-control-run-before",
+                )[5]
+                < min(positions(rows, "output", "open-entry")),
+            )
+            require(
+                "open-before-input-run",
+                max(positions(rows, "output", "open-normal-return"))
+                < input_run[5],
+            )
+            require(
+                "output-finish-inside-input-finish",
+                input_finish_before[5]
+                < min(positions(rows, "output", "finish-entry"))
+                and max(positions(rows, "output", "finish-normal-return"))
+                < input_finish_return[5],
+            )
+            commit_entries = indexed_rows(rows, "commit-entry")
+            require("commit-entry-required", bool(commit_entries))
+            require(
+                "input-completes-before-commit",
+                input_finish_return[5] < input_run_return[5]
+                < min(row[5] for row in commit_entries),
+            )
+
+            input_cleanup = only(
+                rows, "input", "cleanup-entry", "input-cleanup-entry"
+            )
+            input_cleanup_return = only(
+                rows,
+                "input",
+                "cleanup-normal-return",
+                "input-cleanup-normal-return",
+            )
+            output_cleanup = only(
+                rows, "output", "cleanup-entry", "output-cleanup-entry"
+            )
+            output_cleanup_return = only(
+                rows,
+                "output",
+                "cleanup-normal-return",
+                "output-cleanup-normal-return",
+            )
+            require(
+                "input-cleanup-pair",
+                input_cleanup[3] == input_cleanup_return[3]
+                and input_cleanup[4] < input_cleanup_return[4],
+            )
+            require(
+                "output-cleanup-pair",
+                output_cleanup[2] == output_cleanup_return[2]
+                and output_cleanup[3] == output_cleanup_return[3]
+                and output_cleanup[4] < output_cleanup_return[4],
+            )
+
+            if fixture == "normal":
+                require(
+                    "normal-no-exception",
+                    not any(
+                        name.endswith("runtime-exception")
+                        for name in input_names + output_names
+                    ),
+                )
+                pair(rows, "commit", expected_indices)
+                pair(rows, "abort", set())
+                output_control = only(
+                    rows,
+                    "output",
+                    "control-run-normal-return",
+                    "normal-output-control-return",
+                )
+                output_scope = only(
+                    rows,
+                    "output",
+                    "transaction-normal-return",
+                    "normal-output-transaction-return",
+                )
+                input_control = only(
+                    rows,
+                    "input",
+                    "control-run-normal-return",
+                    "normal-input-control-return",
+                )
+                input_scope = only(
+                    rows,
+                    "input",
+                    "transaction-normal-return",
+                    "normal-input-transaction-return",
+                )
+                require(
+                    "normal-close-after-commit",
+                    max(positions(rows, "output", "commit-normal-return"))
+                    < min(positions(rows, "output", "close-entry")),
+                )
+                require(
+                    "normal-scope-order",
+                    max(positions(rows, "output", "close-normal-return"))
+                    < output_control[5]
+                    < output_scope[5]
+                    < input_control[5]
+                    < input_scope[5],
+                )
+                require(
+                    "normal-report-counts",
+                    decimal("input-reports", input_cleanup[2][1]) == 1
+                    and decimal("output-reports", output_cleanup[2][2])
+                    == task_count
+                    and decimal("control-reports", output_control[2][2])
+                    == task_count
+                    and decimal("transaction-reports", output_scope[2][2])
+                    == task_count,
+                )
+                outer_scope = input_scope
+            else:
+                require("failure-process-nonzero", process_exit != 0)
+                require(
+                    "failure-no-normal-scopes",
+                    "control-run-normal-return" not in input_names
+                    and "transaction-normal-return" not in input_names
+                    and "control-run-normal-return" not in output_names
+                    and "transaction-normal-return" not in output_names,
+                )
+                successful_indices = set(range(expected_index))
+                commit_entry_indices = [
+                    decimal("commit-index", row[2][0])
+                    for row in indexed_rows(rows, "commit-entry")
+                ]
+                commit_return_indices = [
+                    decimal("commit-index", row[2][0])
+                    for row in indexed_rows(rows, "commit-normal-return")
+                ]
+                require(
+                    "failure-commit-entry-indexes",
+                    len(commit_entry_indices) == expected_index + 1
+                    and commit_entry_indices == list(range(expected_index + 1)),
+                )
+                require(
+                    "failure-commit-return-indexes",
+                    len(commit_return_indices) == expected_index
+                    and commit_return_indices == list(range(expected_index)),
+                )
+                for index in successful_indices:
+                    entries = [
+                        row
+                        for row in indexed_rows(rows, "commit-entry")
+                        if decimal("commit-index", row[2][0]) == index
+                    ]
+                    returns = [
+                        row
+                        for row in indexed_rows(rows, "commit-normal-return")
+                        if decimal("commit-index", row[2][0]) == index
+                    ]
+                    require(
+                        "failure-prior-commit-pair",
+                        len(entries) == 1
+                        and len(returns) == 1
+                        and entries[0][2] == returns[0][2]
+                        and entries[0][3] == returns[0][3]
+                        and entries[0][4] < returns[0][4],
+                    )
+                require(
+                    "failure-single-terminal",
+                    len(injections) == 1 and len(failures) == 1,
+                )
+                selected_entry = next(
+                    row
+                    for row in indexed_rows(rows, "commit-entry")
+                    if decimal("commit-index", row[2][0]) == expected_index
+                )
+                require(
+                    "failure-prior-commits-before-selected",
+                    not successful_indices
+                    or max(positions(rows, "output", "commit-normal-return"))
+                    < selected_entry[5],
+                )
+                abort_indices = set(range(expected_index, task_count))
+                pair(rows, "abort", abort_indices)
+                require(
+                    "failure-abort-after-exception",
+                    failures[0][5]
+                    < min(positions(rows, "output", "abort-entry")),
+                )
+                require(
+                    "failure-close-after-abort",
+                    max(positions(rows, "output", "abort-normal-return"))
+                    < min(positions(rows, "output", "close-entry")),
+                )
+                output_error = only(
+                    rows,
+                    "output",
+                    "transaction-runtime-exception",
+                    "failure-output-transaction-error",
+                )
+                input_error = only(
+                    rows,
+                    "input",
+                    "transaction-runtime-exception",
+                    "failure-input-transaction-error",
+                )
+                require(
+                    "failure-outer-error-payload",
+                    output_error[2] == [injected_class, injected_message]
+                    and input_error[2] == [injected_class, injected_message],
+                )
+                require(
+                    "failure-scope-order",
+                    max(positions(rows, "output", "close-normal-return"))
+                    < output_error[5]
+                    < input_error[5],
+                )
+                require(
+                    "failure-fresh-cleanup-captures",
+                    input_cleanup[3] != input_main_capture
+                    and output_cleanup[3] != output_main_capture,
+                )
+                require(
+                    "failure-report-counts",
+                    decimal("input-reports", input_cleanup[2][1]) == 1
+                    and decimal("output-reports", output_cleanup[2][2])
+                    == expected_index,
+                )
+                outer_scope = input_error
+
+            require(
+                "cleanup-physical-order",
+                outer_scope[5]
+                < input_cleanup[5]
+                < input_cleanup_return[5]
+                < output_cleanup[5]
+                < output_cleanup_return[5],
+            )
+    except (InvalidEvidence, OSError, UnicodeError) as error:
+        label = error.args[0] if error.args else "unclassified"
+        raise InvalidEvidence(label) from error
+    return cases, decoded
+
+
+def only(rows, component, event, label):
+    found = [row for row in rows if row[0] == component and row[1] == event]
+    require(label, len(found) == 1)
+    return found[0]
+
+
+def event_projection(rows, fixture):
+    excluded_input = {"finish-before", "run-normal-return", "cleanup-entry"}
+    excluded_output = {
+        "commit-selection",
+        "commit-injection-before",
+        "cleanup-entry",
+        "open-entry",
+        "finish-entry",
+        "commit-entry",
+        "abort-entry",
+        "close-entry",
+    }
+    events = []
+    for component, event, values, _capture, _sequence, _physical in rows:
+        projected = None
+        if component == "input":
+            if event == "transaction-entry":
+                projected = "InputJobOpened"
+            elif event == "control-run-before":
+                projected = "InputControlOpened"
+            elif event == "run-entry":
+                projected = "InputRan"
+            elif event == "finish-normal-return":
+                projected = "InputFinished"
+            elif event == "control-run-normal-return":
+                projected = "InputControlClosed:Normal"
+            elif event == "transaction-normal-return":
+                projected = "InputJobClosed:Normal"
+            elif event == "transaction-runtime-exception":
+                projected = "InputJobClosed:FailedOutput"
+            elif event == "cleanup-normal-return":
+                projected = "InputCleaned"
+        else:
+            if event == "transaction-entry":
+                projected = "OutputJobOpened"
+            elif event == "control-run-before":
+                projected = "OutputControlOpened"
+            elif event == "open-normal-return":
+                projected = f"OutputTaskOpened:{decimal('output-index', values[0])}"
+            elif event == "finish-normal-return":
+                projected = f"OutputTaskFinished:{decimal('output-index', values[0])}"
+            elif event == "commit-normal-return":
+                projected = f"OutputTaskCommitted:{decimal('output-index', values[0])}"
+            elif event == "commit-runtime-exception":
+                projected = f"OutputTaskCommitFailed:{decimal('output-index', values[0])}"
+            elif event == "abort-normal-return":
+                projected = f"OutputTaskAborted:{decimal('output-index', values[0])}"
+            elif event == "close-normal-return":
+                projected = f"OutputTaskClosed:{decimal('output-index', values[0])}"
+            elif event == "control-run-normal-return":
+                projected = "OutputControlClosed:Normal"
+            elif event == "transaction-normal-return":
+                projected = "OutputJobClosed:Normal"
+            elif event == "transaction-runtime-exception":
+                projected = "OutputJobClosed:FailedOutput"
+            elif event == "cleanup-normal-return":
+                projected = "OutputCleaned"
+        excluded = excluded_input if component == "input" else excluded_output
+        require(
+            f"{component}-event-projected-or-excluded",
+            projected is not None or event in excluded,
+        )
+        if projected is not None:
+            events.append(projected)
+    require(f"{fixture}-projected-events", bool(events))
+    return events
+
+
+def project(root):
+    cases, decoded = validate_reference(root)
+    rows = [HEADER]
+    for fixture in FIXTURES:
+        raw = decoded[fixture]
+        transaction = only(raw, "output", "transaction-entry", "output-transaction-entry")
+        selection = only(raw, "output", "commit-selection", "commit-selection")
+        task_count = decimal("output-task-count", transaction[2][0])
+        require("output-task-cap", 3 <= task_count <= OUTPUT_CAP)
+        selected_index = decimal("selection-index", selection[2][2])
+        expected_index = {
+            "normal": task_count - 1,
+            "commit-first": 0,
+            "commit-middle": task_count // 2,
+        }[fixture]
+        require("selection-index", selected_index == expected_index)
+        scenario = {
+            "normal": "normal-output",
+            "commit-first": "fail-first-commit",
+            "commit-middle": "fail-middle-commit",
+        }[fixture]
+        process_exit = cases[fixture][1]
+        result = "success" if process_exit == 0 else "selected-output-commit-failure"
+        input_cleanup = only(raw, "input", "cleanup-entry", "input-cleanup-entry")
+        output_cleanup = only(raw, "output", "cleanup-entry", "output-cleanup-entry")
+        input_reports = decimal("input-reports", input_cleanup[2][1])
+        output_reports = decimal("output-reports", output_cleanup[2][2])
+        events = event_projection(raw, fixture)
+        rows.append(
+            f"CASE\t{fixture}\t1\t{task_count}\t{OUTPUT_CAP}\t{selected_index}\t"
+            f"{scenario}\t{result}\t{input_reports}\t{output_reports}\t{len(events)}"
+        )
+        rows.extend(f"EVENT\t{event}" for event in events)
+    return "\n".join(rows) + "\n"
+
+
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def run_probe(stdout_path, stderr_path):
+    process = subprocess.run(
+        ["bash", str(PROBE)], cwd=ROOT, text=True, capture_output=True, check=False
+    )
+    stdout_path.write_text(process.stdout, encoding="utf-8")
+    stderr_path.write_text(process.stderr, encoding="utf-8")
+    if process.returncode != 0:
+        raise RuntimeError(f"unchanged S07 gate exited {process.returncode}")
+    markers = [
+        line
+        for line in process.stdout.splitlines()
+        if line.startswith("T0013_POSITION_FULL_PROBE=passed|evidence=")
+    ]
+    require("unique-s07-final-marker", len(markers) == 1)
+    evidence = pathlib.Path(markers[0].split("=", 2)[2])
+    require("s07-evidence-directory", evidence.is_dir())
+    return evidence
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--manifest", required=True)
+    parser.add_argument("--validate-only")
+    parser.add_argument("--probe-stdout")
+    parser.add_argument("--probe-stderr")
+    parser.add_argument("--evidence-manifest")
+    parser.add_argument("--raw-hashes")
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    try:
+        if args.validate_only:
+            evidence = pathlib.Path(args.validate_only)
+        else:
+            require("probe-stdout-path", args.probe_stdout is not None)
+            require("probe-stderr-path", args.probe_stderr is not None)
+            evidence = run_probe(pathlib.Path(args.probe_stdout), pathlib.Path(args.probe_stderr))
+        manifest = project(evidence)
+        pathlib.Path(args.manifest).write_text(manifest, encoding="utf-8")
+        if args.evidence_manifest:
+            identity_files = (
+                "executable.sha256",
+                "executable-url.txt",
+                "input-source.sha256",
+                "input-source-path.txt",
+                "output-source.sha256",
+                "output-source-path.txt",
+                "input-jar.sha256",
+                "output-jar.sha256",
+                "input-coordinate.txt",
+                "output-coordinate.txt",
+            )
+            identity = [f"evidence={evidence}"]
+            for name in identity_files:
+                path = evidence / name
+                require(f"retained-{name}", path.is_file() and path.stat().st_size > 0)
+                identity.append(f"{name}={path.read_text(encoding='utf-8').strip()}")
+            pathlib.Path(args.evidence_manifest).write_text(
+                "\n".join(identity) + "\n", encoding="utf-8"
+            )
+        if args.raw_hashes:
+            raw_files = (
+                "cases.raw",
+                "traces.raw",
+                "normal.raw.log",
+                "commit-first.raw.log",
+                "commit-middle.raw.log",
+            )
+            pathlib.Path(args.raw_hashes).write_text(
+                "\n".join(f"{name}={sha256(evidence / name)}" for name in raw_files)
+                + "\n",
+                encoding="utf-8",
+            )
+        print("T0013_S08_PROJECTED_CASES=3")
+    except (InvalidEvidence, OSError, UnicodeError, RuntimeError) as error:
+        label = error.args[0] if error.args else "unclassified"
+        print(f"T0013/S08 driver rejected evidence: {label}", file=sys.stderr)
+        return 4
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
