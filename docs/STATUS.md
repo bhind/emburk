@@ -34,7 +34,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021/S05 is the only serial active work item after S07 integration.
+T-0021/S05 is the only serial active work item, in Review in PR #79.
 Combined active WIP is one of two; no item is `Blocked`. T-0012 and T-0013
 remain Backlog; all three parent contracts remain open.
 
@@ -46,7 +46,7 @@ remain Backlog; all three parent contracts remain open.
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
 | T-0013 | Backlog | S01–S07 integrated; remaining comparisons and recovery contracts |
-| T-0021/S05 | In Progress | Implement the private abort suffix under ADR-0010 |
+| T-0021/S05 | Review | Accept the private abort suffix in PR #79 under ADR-0010 |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -243,8 +243,8 @@ three-case Demo, 57 diagnostic-specific semantic controls, two artifact controls
 and unchanged S05 full regression. Both reproduce the observed abort suffix and
 retained report counts. Shell syntax, source hashes and diff checks pass.
 Evidence is Reference Observation / Integration only. Final-head acceptance at
-`133cddb` passed; PR #78 integrated as `14cc2a6`. First/middle Rust behavior is
-not yet implemented. ADR-0010 now permits the bounded T-0021/S05 abort-suffix
+`133cddb` passed; PR #78 integrated as `14cc2a6`. That reference slice added
+no Rust behavior. ADR-0010 now permits the bounded T-0021/S05 abort-suffix
 candidate, preserving existing live regressions. Current T-0021 SP is refined
 8 to 13; Initial stays 5. Parent completion and new Differential claims remain
 separate gates.

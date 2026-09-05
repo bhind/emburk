@@ -1,7 +1,7 @@
 # T-0021/S05 private commit abort suffix
 
 - Tracking issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: In Progress; independent planning review passed
+- State: Review in PR #79; primary and independent source acceptance passed
 - Priority: P1; parent T-0020
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP is refined 8 to 13; Initial remains 5.
