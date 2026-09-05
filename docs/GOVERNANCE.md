@@ -88,3 +88,9 @@ require explicit license, notice, redistribution, patent, or trademark review.
 
 Remote publication, Project visibility changes, paid services, new credentials,
 destructive actions, and legal-clearance claims always remain owner decisions.
+
+Automation and audits must discover the repository-associated Project from the
+authenticated repository context. They must not embed a personal login,
+Project number, URL, or credential. Discovery fails closed unless exactly one
+open linked Project is found, and audit output must never include tokens or
+secret values.

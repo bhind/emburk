@@ -24,13 +24,16 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 is the only active task. No work item is currently `Ready`, `Review`,
-or `Blocked`.
+T-0003 is in review and T-0021 occupies the other active lane. T-0012 is blocked on
+executing its pinned reference probe. No work item is currently `Ready` or
+`Review`.
 
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
+| T-0003 | Review | Add an executable governance and WIP audit |
+| T-0012 | Blocked | Pinned reference probe cannot yet execute successfully |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -38,6 +41,11 @@ unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/
 is the coordination mirror. Its 52 items, lifecycle states, initial estimates,
 roles, dependencies, workstreams, evidence classes, and views were reconciled
 to the repository records on 2026-09-05.
+
+T-0003 adds a fail-closed, read-only audit that dynamically discovers the one
+open Project linked to the repository, validates the combined `In Progress`
+plus `Review` WIP limit, and exposes reusable packet-validation checks. It does
+not automate lifecycle transitions or provide delivery analytics.
 
 ## Evidence and non-claims
 
