@@ -93,8 +93,11 @@ writes to an original test-local PageOutput collector, not the runtime's output.
 The collector synchronously reads the supplied Page through PageReader during
 add(Page). Read each null flag before its matching typed getter; never call a
 typed getter for null. Record actual values and row order, not input constants.
-Do not retain, forward or reread Pages after the collector returns; do not
-inspect physical bytes/layout. Use one explicit fixture-local reader lifetime
+Do not retain a separate Page reference, forward it, read asynchronously or
+reread it after the collector returns; do not inspect physical bytes/layout.
+The PageReader object itself has one explicit fixture-local lifetime ending
+at collector close. Its internal retention/ownership is neither inspected nor
+claimed. Use that one explicit fixture-local reader lifetime
 and record close/finish operations and exceptions. Do not claim that chosen
 fixture ownership is a general plugin handoff contract.
 
@@ -157,6 +160,12 @@ Builder close enclosed collector close, which enclosed reader close. Runtime
 output finish followed; run/control/transaction returned normally, then one
 success terminal and cleanup with one report. These are selected fixture facts,
 not a general delegation, batching or cleanup policy.
+
+PM clarified the no-retention wording to match the actual fixture boundary:
+the fixture keeps no separate Page reference and performs no reads after add
+returns; the PageReader object remains alive until collector close. This does
+not assert that PageReader internally drops or retains a Page at any point.
+No source change or production ownership decision follows from this correction.
 
 PM authorizes Stage B semantic guards for these exact observations, with all
 input assignments kept separate from actual getter records. Validate complete
