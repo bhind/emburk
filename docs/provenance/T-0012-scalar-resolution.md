@@ -4,7 +4,8 @@
 - Branch: `feat/t-0012-scalar-resolution`
 - Owner: Rust Core Implementer; canonical records and lifecycle: Project Manager
 - Estimate: 3 SP within the existing T-0012 parent estimate
-- State: `In Progress` (ADR-0006 accepted; implementation not yet recorded)
+- State: `Review` (independent source acceptance passed at `8432391`; named
+  Tester reproduction and PR integration pending)
 
 ## Authority, inputs, and boundary
 
@@ -46,3 +47,14 @@ general rule.
   material provenance, license, security, or reimplementation uncertainty.
 - Non-claims: no complete Emburk configuration behavior, compatibility,
   parser, external plugin, performance, security, patent, or FTO claim.
+
+## Runtime evidence
+
+- Independent primary-agent acceptance at
+  `8432391837a7877b7ab2d9e987b3720cbdc570d4` passed `cargo fmt --check`,
+  `cargo clippy --workspace --all-targets -- -D warnings`, `cargo test -p
+  emburk-core` (8 tests), `cargo test --workspace` (8 core tests and 0 CLI
+  tests), and `git diff --check`.
+- This is Unit/Contract evidence for the private original Rust resolver only.
+  It does not compare an Emburk execution, reproduce Java exception text or
+  timing, add a parser, or satisfy T-0012's Differential gate.
