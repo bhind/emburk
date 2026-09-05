@@ -16,6 +16,9 @@ Development state: `bootstrap`
 - Thirteen selected private raw-scalar outcomes match the pinned Embulk
   executable in a live differential test. No full configuration, plugin,
   data-transfer, or performance claim has passed its evidence gate.
+- A private ordered logical schema preserves owned names, type tags, order and
+  duplicates. Its live comparison matches three selected schema outcomes;
+  values, nullability, lookup and physical encoding remain unimplemented.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
   native File-to-File vertical slice as the first runtime milestone.
@@ -26,7 +29,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 (`In Progress`) and T-0012/S05 (`In Progress`) are the only active work
+T-0021 (`In Progress`) and T-0012/S06 (`In Progress`) are the only active work
 items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 
 | Item | State | Purpose |
@@ -35,7 +38,7 @@ items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S05 | In Progress | Schema-boundary reference observations; S01–S04 integrated |
+| T-0012/S06 | In Progress | Private ordered schema and live comparison; S01–S05 integrated |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -122,6 +125,15 @@ S05 primary acceptance at `cc24730` recorded three schema construction/handoff
 successes: zero columns, six ordered logical types, and two same-name columns
 with distinct types. Actual transaction/run fingerprints matched. Its strict
 evidence validator and mutated-copy controls passed the exact Demo. Independent
-Tester reproduced it and S01/S02/S04 regressions; integration remains pending.
+Tester reproduced it and S01/S02/S04 regressions; PR #68 integrated as `68559dc`.
 This is Reference Observation /
 Integration only; no Rust schema, values or batches are added.
+
+S06 implements the private ordered schema permitted by ADR-0007 and a
+three-case live comparator. Primary acceptance at `c7c7872` passed all three
+live outcomes and negative controls; workspace tests passed 14 with two
+explicitly ignored live tests, plus format and strict Clippy. Independent
+Tester reproduced S06 and S04 live regression; integration remains pending.
+Its evidence is Unit/Contract plus
+Differential for the three selected ordered outcomes only; no public schema
+support or physical encoding claim follows.

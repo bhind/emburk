@@ -37,9 +37,15 @@ that limited matrix does not satisfy the full configuration/schema/value or
 lifecycle gate.
 
 S05 primary schema observations at `cc24730` preserve ordered columns and
-duplicate names across handoff. Independent acceptance passed; integration is
-pending. They inform a future private schema representation, not Arrow/value
+duplicate names across handoff. Independent acceptance passed and PR #68
+integrated as `68559dc`. S06 adds a private ordered representation and bounded
+live comparison under ADR-0007, not Arrow/value
 encoding or completion of the Phase 0 contract gate.
+
+S06 primary acceptance at `c7c7872` matches three ordered schema outcomes with
+the private Rust model. The bounded result advances the logical-contract
+foundation but does not satisfy the full schema/value or lifecycle exit gate;
+independent acceptance passed and integration is pending.
 
 ## Phase 1: Native File-to-File MVP
 

@@ -1,0 +1,228 @@
+#!/usr/bin/env python3
+"""Validate S05 raw schema evidence and bridge it to the private Rust test."""
+import argparse
+import base64
+import binascii
+import hashlib
+import os
+import pathlib
+import subprocess
+import sys
+import tempfile
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+RUNNER = ROOT / "tools/t0012-config-presence/run.sh"
+CASES = ("empty", "ordered6types", "duplicate-name-differing-types")
+INPUT = {
+    "empty": (),
+    "ordered6types": (("boolean_column", "boolean"), ("long_column", "signed64"), ("double_column", "float64"), ("string_column", "text"), ("timestamp_column", "timestamp"), ("json_column", "json")),
+    "duplicate-name-differing-types": (("duplicate", "boolean"), ("duplicate", "text")),
+}
+TYPE_MAP = {"boolean": "boolean", "long": "signed64", "double": "float64", "string": "text", "timestamp": "timestamp", "json": "json"}
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+def b64(value):
+    try:
+        decoded = base64.b64decode(value, validate=True)
+        decoded.decode("utf-8")
+    except (binascii.Error, UnicodeDecodeError) as error:
+        raise ValueError("malformed base64/UTF-8 field") from error
+    require(base64.b64encode(decoded).decode("ascii") == value, "non-canonical base64 field")
+    return decoded.decode("utf-8")
+
+def invoke(manifest):
+    completed = subprocess.run([str(RUNNER)], env={**os.environ, "T0012_MODE": "schema"}, text=True, capture_output=True, check=False)
+    paths = [line.split("=", 1)[1] for line in completed.stdout.splitlines() if line.startswith("T0012_EVIDENCE_DIR=")]
+    require(len(paths) == 1, "schema oracle did not report exactly one evidence directory")
+    path = pathlib.Path(paths[0])
+    manifest.write_text(f"schema={path}\n", encoding="utf-8")
+    if completed.returncode:
+        sys.stderr.write(completed.stderr)
+        raise ValueError(f"schema oracle exited {completed.returncode}; evidence={path}")
+    return path
+
+def raw_hashes(evidence):
+    hashes = {}
+    for filename in ("schema-cases.raw", "schema-results.raw"):
+        payload = (evidence / filename).read_bytes()
+        require(payload, f"missing raw evidence: {filename}")
+        hashes[filename] = hashlib.sha256(payload).hexdigest()
+    return hashes
+
+def parse(evidence):
+    cases = {}
+    for line in (evidence / "schema-cases.raw").read_text(encoding="utf-8").splitlines():
+        fields = line.split("|")
+        require(len(fields) == 5 and fields[0] == "SCHEMA_CASE", "malformed schema case")
+        _, fixture, code, outcome, entered = fields
+        require(fixture in CASES and fixture not in cases, "unknown or duplicate schema case")
+        require(code == "0" and outcome == "SUCCESS" and entered == "1", "schema case did not reach successful run")
+        cases[fixture] = True
+    require(tuple(cases) == CASES, "schema case manifest is not exact")
+    data = {case: {"fields": {"transaction": [], "run": []}, "phases": {}, "entered": 0} for case in CASES}
+    for line in (evidence / "schema-results.raw").read_text(encoding="utf-8").splitlines():
+        fields = line.split("|")
+        require(len(fields) >= 2 and fields[1] in data, "unknown schema result fixture")
+        if fields[0] == "SCHEMA_FIELD":
+            require(len(fields) == 6, "malformed schema field")
+            _, fixture, phase, index, name, type_name = fields
+            require(phase in {"transaction", "run"} and index.isdigit(), "malformed schema field position")
+            data[fixture]["fields"][phase].append((int(index), b64(name), b64(type_name)))
+        elif fields[0] == "SCHEMA_PHASE":
+            require(len(fields) == 5, "malformed schema phase")
+            _, fixture, phase, count, fingerprint = fields
+            require(phase in {"transaction", "run"} and count.isdigit() and phase not in data[fixture]["phases"], "malformed schema phase")
+            require(len(fingerprint) == 64 and all(char in "0123456789abcdef" for char in fingerprint), "malformed schema fingerprint")
+            data[fixture]["phases"][phase] = (int(count), fingerprint)
+        elif fields[0] == "CONTROL_RUN_ENTERED":
+            require(len(fields) == 2, "malformed run entry")
+            data[fixture]["entered"] += 1
+        else:
+            raise ValueError("unexpected schema result row")
+    expected = {}
+    for fixture, entry in data.items():
+        require(entry["entered"] == 1, "schema case did not enter run exactly once")
+        require(set(entry["phases"]) == {"transaction", "run"}, "missing schema phase")
+        for phase, (count, fingerprint) in entry["phases"].items():
+            rows = entry["fields"][phase]
+            require(count == len(rows), "schema phase count does not match fields")
+            require([row[0] for row in rows] == list(range(count)), "schema indices are not contiguous")
+            material = "".join(f"{index}|{base64.b64encode(name.encode()).decode()}|{base64.b64encode(type_name.encode()).decode()}\n" for index, name, type_name in rows)
+            require(hashlib.sha256(material.encode()).hexdigest() == fingerprint, "schema fingerprint mismatch")
+        require(entry["phases"]["transaction"] == entry["phases"]["run"], "transaction/run phase mismatch")
+        columns = []
+        for _, name, type_name in entry["fields"]["run"]:
+            try:
+                columns.append((name, TYPE_MAP[type_name]))
+            except KeyError as error:
+                raise ValueError("unknown output type") from error
+        expected[fixture] = tuple(columns)
+    return expected
+
+def write_tsv(expected, output):
+    rows = ["T0012-S06\t1"]
+    for fixture in CASES:
+        input_columns = INPUT[fixture]
+        oracle_columns = expected[fixture]
+        require(len(input_columns) == len(oracle_columns), "oracle count differs from test-owned input")
+        rows.append(f"CASE\t{fixture}\t{len(input_columns)}")
+        for index, ((input_name, input_type), (expected_name, expected_type)) in enumerate(zip(input_columns, oracle_columns, strict=True)):
+            rows.append("\t".join(("FIELD", str(index), input_name.encode().hex(), input_type, expected_name.encode().hex(), expected_type)))
+    output.write_text("\n".join(rows) + "\n", encoding="utf-8")
+
+def self_test():
+    require(b64("Ym9vbGVhbl9jb2x1bW4=") == "boolean_column", "base64 decode failed")
+    for bad in ("!", "YQ", "//8="):
+        try: b64(bad)
+        except ValueError: pass
+        else: raise ValueError("broken encoding accepted")
+    with tempfile.TemporaryDirectory() as temporary:
+        root = pathlib.Path(temporary)
+        fields = {
+            "empty": (),
+            "ordered6types": (("boolean_column", "boolean"), ("long_column", "long"), ("double_column", "double"), ("string_column", "string"), ("timestamp_column", "timestamp"), ("json_column", "json")),
+            "duplicate-name-differing-types": (("duplicate", "boolean"), ("duplicate", "string")),
+        }
+        cases = []
+        results = []
+        for fixture in CASES:
+            rows = []
+            for phase in ("transaction", "run"):
+                phase_rows = []
+                for index, (name, kind) in enumerate(fields[fixture]):
+                    encoded_name = base64.b64encode(name.encode()).decode()
+                    encoded_kind = base64.b64encode(kind.encode()).decode()
+                    results.append(f"SCHEMA_FIELD|{fixture}|{phase}|{index}|{encoded_name}|{encoded_kind}")
+                    phase_rows.append(f"{index}|{encoded_name}|{encoded_kind}\n")
+                results.append(f"SCHEMA_PHASE|{fixture}|{phase}|{len(phase_rows)}|{hashlib.sha256(''.join(phase_rows).encode()).hexdigest()}")
+            results.append(f"CONTROL_RUN_ENTERED|{fixture}")
+            cases.append(f"SCHEMA_CASE|{fixture}|0|SUCCESS|1")
+        root.joinpath("schema-cases.raw").write_text("\n".join(cases) + "\n", encoding="utf-8")
+        root.joinpath("schema-results.raw").write_text("\n".join(results) + "\n", encoding="utf-8")
+        parsed = parse(root)
+        require(parsed["ordered6types"][0] == ("boolean_column", "boolean"), "valid fixture parse failed")
+        original_input = INPUT["ordered6types"]
+        changed = results.copy()
+        position = next(i for i, row in enumerate(changed) if row.startswith("SCHEMA_FIELD|ordered6types|transaction|0|"))
+        changed[position] = changed[position].replace("Ym9vbGVhbl9jb2x1bW4=", "Y2hhbmdlZF9jb2x1bW4=")
+        position = next(i for i, row in enumerate(changed) if row.startswith("SCHEMA_FIELD|ordered6types|run|0|"))
+        changed[position] = changed[position].replace("Ym9vbGVhbl9jb2x1bW4=", "Y2hhbmdlZF9jb2x1bW4=")
+        for phase in ("transaction", "run"):
+            start = [i for i, row in enumerate(changed) if row.startswith(f"SCHEMA_FIELD|ordered6types|{phase}|")]
+            material = "".join("|".join(changed[i].split("|")[3:]) + "\n" for i in start)
+            phase_index = next(i for i, row in enumerate(changed) if row.startswith(f"SCHEMA_PHASE|ordered6types|{phase}|"))
+            changed[phase_index] = f"SCHEMA_PHASE|ordered6types|{phase}|6|{hashlib.sha256(material.encode()).hexdigest()}"
+        root.joinpath("schema-results.raw").write_text("\n".join(changed) + "\n", encoding="utf-8")
+        require(parse(root)["ordered6types"][0][0] == "changed_column", "changed actual was not preserved")
+        require(INPUT["ordered6types"] == original_input, "actual mutation changed test-owned input")
+        write_tsv(parse(root), root / "changed.tsv")
+        changed_field = next(line.split("\t") for line in (root / "changed.tsv").read_text(encoding="utf-8").splitlines() if line.startswith("FIELD\t0\t") and "changed_column".encode().hex() in line)
+        require(changed_field[2] == "boolean_column".encode().hex() and changed_field[4] == "changed_column".encode().hex(), "TSV did not keep input and expected columns separate")
+        failures = {
+            "missing": None,
+            "duplicate": None,
+            "truncated": None,
+            "unknown-type": "unknown output type",
+            "bad-b64": None,
+            "phase-mismatch": "transaction/run phase mismatch",
+        }
+        for action, expected_failure in failures.items():
+            root.joinpath("schema-cases.raw").write_text("\n".join(cases) + "\n", encoding="utf-8")
+            mutated = results.copy()
+            if action == "missing":
+                mutated.pop(0)
+            elif action == "duplicate":
+                mutated.append(mutated[0])
+            elif action == "truncated":
+                index = next(i for i, row in enumerate(mutated) if row.startswith("SCHEMA_FIELD|ordered6types|transaction|0|"))
+                mutated[index] = "SCHEMA_FIELD"
+            else:
+                index = next(i for i, row in enumerate(mutated) if row.startswith("SCHEMA_FIELD|ordered6types|transaction|0|"))
+                if action == "unknown-type":
+                    mutated[index] = mutated[index].rsplit("|", 1)[0] + "|dW5rbm93bg=="
+                    run_index = next(i for i, row in enumerate(mutated) if row.startswith("SCHEMA_FIELD|ordered6types|run|0|"))
+                    mutated[run_index] = mutated[run_index].rsplit("|", 1)[0] + "|dW5rbm93bg=="
+                elif action == "bad-b64":
+                    mutated[index] = mutated[index].replace("Ym9vbGVhbl9jb2x1bW4=", "!")
+                else:
+                    run_index = next(i for i, row in enumerate(mutated) if row.startswith("SCHEMA_FIELD|ordered6types|run|0|"))
+                    mutated[run_index] = mutated[run_index].replace("Ym9vbGVhbl9jb2x1bW4=", "Y2hhbmdlZA==")
+                if action in {"unknown-type", "phase-mismatch"}:
+                    phases = ("transaction", "run") if action == "unknown-type" else ("run",)
+                    for phase in phases:
+                        field_indices = [i for i, row in enumerate(mutated) if row.startswith(f"SCHEMA_FIELD|ordered6types|{phase}|")]
+                        material = "".join("|".join(mutated[i].split("|")[3:]) + "\n" for i in field_indices)
+                        phase_index = next(i for i, row in enumerate(mutated) if row.startswith(f"SCHEMA_PHASE|ordered6types|{phase}|"))
+                        mutated[phase_index] = f"SCHEMA_PHASE|ordered6types|{phase}|6|{hashlib.sha256(material.encode()).hexdigest()}"
+            root.joinpath("schema-results.raw").write_text("\n".join(mutated) + "\n", encoding="utf-8")
+            try: parse(root)
+            except ValueError as error:
+                if expected_failure is not None:
+                    require(str(error) == expected_failure, f"{action} used the wrong rejection path")
+            else: raise ValueError(f"{action} evidence accepted")
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tsv", type=pathlib.Path)
+    parser.add_argument("--evidence-manifest", type=pathlib.Path)
+    parser.add_argument("--raw-hashes", type=pathlib.Path)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    try:
+        if args.self_test:
+            self_test(); return 0
+        require(args.tsv and args.evidence_manifest and args.raw_hashes, "--tsv, --evidence-manifest, and --raw-hashes are required")
+        evidence = invoke(args.evidence_manifest)
+        raw = raw_hashes(evidence)
+        args.raw_hashes.write_text("".join(f"{name}={digest}\n" for name, digest in raw.items()), encoding="utf-8")
+        expected = parse(evidence)
+        write_tsv(expected, args.tsv)
+    except (OSError, ValueError) as error:
+        print(f"T0012/S06 driver rejected oracle: {error}", file=sys.stderr)
+        return 4
+    return 0
+
+if __name__ == "__main__": sys.exit(main())
