@@ -1,5 +1,5 @@
-name = "jitro"
-description = "Jitro, the primary Emburk Project Manager for scope, records, acceptance, and integration."
+name = "emburk-project-manager"
+description = "Jitro, the primary Emburk owner for scope, stable records, roadmap decisions, and final integration."
 model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"

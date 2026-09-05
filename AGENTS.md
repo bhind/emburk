@@ -73,8 +73,8 @@ request. Do not rewrite published history or discard another worktree's edits.
 The Project Manager owns task classification, priority, canonical records,
 acceptance criteria, integration, and final status transitions. `Jitro` is the
 Project Manager's call sign; a request to ask or summon Jitro routes to the
-project-scoped `jitro` custom agent. Specialist roles operate within explicitly
-assigned boundaries.
+project-scoped `emburk-project-manager` custom agent. Specialist roles operate
+within explicitly assigned boundaries.
 
 - At most two Project items may be `In Progress` or `Review` in total.
 - Parallel tracked-file mutation is permitted only for independently acceptable
