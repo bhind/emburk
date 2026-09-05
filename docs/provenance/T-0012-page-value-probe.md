@@ -1,7 +1,7 @@
 # T-0012/S07 bounded Page value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; Stage A capture only after independent readiness review
+- State: Review in [PR #81](https://github.com/bhind/emburk/pull/81); primary and independent source acceptance passed
 - Branch: `research/t-0012-page-value-probe`
 - Priority: P0; parent T-0010
 - Owner: Compatibility Host Implementer; records/decisions/integration: PM

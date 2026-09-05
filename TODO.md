@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S08` and `T-0021/S05` are integrated. T-0012/S07 is `In Progress`;
+`T-0013/S08` and `T-0021/S05` are integrated. T-0012/S07 is `Review` in PR #81;
 T-0013, T-0021 and all other unfinished items are `Backlog`. No item is
 `Blocked`. Combined active WIP is one of two.
 
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S07: bounded Page value observation) | In Progress | P0 | 34 | T-0011 | Compatibility Host Implementer | Integration |
+| T-0012 | Specify configuration, schema, and value semantics (S07: bounded Page value observation) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -319,7 +319,7 @@ S08 final-head acceptance passed at `ff8dec0`; PR #80 integrated as `de38a44`.
 S01–S08 account for 24 accepted slice-estimate points. Parent #16 stays open
 and returns to Backlog; cleanup/recovery remains required.
 
-T-0012/S07 is In Progress under its [packet](docs/provenance/T-0012-page-value-probe.md):
+T-0012/S07 is Review in PR #81 under its [packet](docs/provenance/T-0012-page-value-probe.md):
 3 SP for two original Boolean/Long/String/null Page observations before Rust
 value policy. Current estimate refines 8 to 34, Initial stays 5: known S03–S06
 already total 12 accepted SP, with observation, native comparison and remaining
