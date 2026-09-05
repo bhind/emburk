@@ -509,4 +509,11 @@ mod tests {
             assert!(output_cleanup.contexts.is_empty());
         }
     }
+
+    mod differential_tests {
+        include!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/src/empty_lifecycle/differential_tests.rs"
+        ));
+    }
 }

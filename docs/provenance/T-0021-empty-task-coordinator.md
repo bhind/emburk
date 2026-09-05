@@ -1,7 +1,8 @@
 # T-0021/S03 private empty-task coordinator
 
 - Tracking issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: Review; PR #73, final-head acceptance and integration pending
+- State: Done (bounded Unit/Contract slice); PR #73 integrated as `14d5fb5`
+- Parent queue: Backlog for remaining contracts; Issue #18 remains open
 - Priority: P1; parent T-0020
 - Slice estimate: 3 SP within unchanged parent Current/Initial SP 5
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 0;
@@ -163,9 +164,11 @@ acceptance finding remains. Raw logs are local-only at
 `c9eca34fc1357c827c10ac65b846960f3c9f8a4bd249c56f74c068de340741c8`, workspace
 log SHA-256 is
 `943c519ade34e436258f9fcdf6ffae3c82c72e21e3d6f8ce2fac18c5860b9cb3`.
-Final-head acceptance and integration remain pending.
+Final-head acceptance at `264a12f5a74db68ac380d53af9469fbd0cc1495e` reproduced
+all checks successfully. PR #73 integrated as
+`14d5fb5b152eb8696e357b0876b31aed531289fe`; Issue #18 remains open.
 Evidence is Unit/Contract only; the parent Issue and live comparison gate stay
-open. This is not an integration or completion declaration.
+open. Only this bounded slice is complete.
 
 ## Stop rule
 

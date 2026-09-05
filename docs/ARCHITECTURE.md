@@ -39,10 +39,16 @@ ADR-0008 permits a private synchronous empty-task coordinator with explicit
 input/output task plans, separate report collections and owned output handles.
 T-0021/S03 implements this candidate with original fake plugins and separate
 cleanup capability receivers after dropping task handles. Five local lifecycle
-tests pass at `84edf00` under primary and independent acceptance; integration
-is pending.
+tests pass at `84edf00` under primary and independent acceptance; final-head
+acceptance passed at `264a12f` and PR #73 integrated as `14d5fb5`.
 Its limited callback fallibility is not a public production plugin
 contract, and it does not choose default fan-out or a parallel scheduler.
+
+T-0013/S04 adds a test-only driver and private child test bridge, leaving the
+coordinator and fake behavior unchanged. It compares two live declared event
+projections and separate cleanup counts using the reference output count as a
+supplied Rust plan. Primary and independent acceptance pass at `98b6cac`;
+integration remains pending. The test adapter is not a host API.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe

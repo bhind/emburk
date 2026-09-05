@@ -69,9 +69,12 @@ parent lifecycle, resume, cleanup-error and delivery gates remain open.
 Independent and final-head acceptance passed; PR #72 integrated as `8e43948`.
 ADR-0008 now permits the private empty-task coordinator slice T-0021/S03.
 Its five-test local Unit/Contract gate passes at `84edf00` under primary and
-independent acceptance, with integration pending. It precedes a separately
-scoped live comparison and
-does not complete Phase 0 or the File-to-File milestone.
+independent acceptance; final-head acceptance passed and PR #73 integrated as
+`14d5fb5`. T-0013/S04 now activates a separately scoped two-case live projection
+comparison. Neither slice completes Phase 0 or the File-to-File milestone.
+S04 primary acceptance at `98b6cac` passes both declared projections and strict
+negative controls; independent Tester reproduced the results. Integration remains
+pending.
 
 ## Phase 1: Native File-to-File MVP
 
