@@ -326,3 +326,9 @@ already total 12 accepted SP, with observation, native comparison and remaining
 configuration/Float64/time/JSON uncertainty ahead. S01/S02 receive no retroactive
 points. Independent readiness review passed after explicit per-page reader
 exhaustion/callback capture was required. No parent completion follows.
+
+S07 initial capture at `66ef66a` yielded two successful observations with zero
+and three rows. Complete raw records retain exact null flags, typed values,
+reader exhaustion and nested finish/close. PM reviewed all events and recorded
+Stage B expectations at `ec558d1`; the strict validator and negative gates are
+now being implemented. No accepted Rust values or full reference gate yet.

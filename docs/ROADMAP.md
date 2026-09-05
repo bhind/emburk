@@ -122,6 +122,14 @@ under its [packet](provenance/T-0012-page-value-probe.md), before selecting any
 Rust value representation. Only Boolean/Long/String and explicit null inputs
 are selected. No runtime, public API, Page encoding or transfer claim follows.
 
+S07 initial capture at `66ef66a` returned two successful reference executions:
+empty had zero Pages/rows; typed-null had one Page and three ordered rows with
+true/MAX/empty text, false/MIN/newline-and-lambda text, then three explicit nulls.
+Primary reviewed the complete raw capture before authorizing semantic guards
+at `ec558d1`. This is initial observation, not source acceptance or a selected
+Rust representation. Full negative gates, independent reproduction and final
+integration remain required.
+
 
 ## Phase 1: Native File-to-File MVP
 
