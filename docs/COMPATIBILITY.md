@@ -127,6 +127,10 @@ Final-head acceptance at `133cddb` passed and PR #78 integrated as `14cc2a6`.
 This is Reference Observation / Integration, not first/middle Rust compatibility;
 see the packet's per-index observation matrix. T-0021/S05 now prepares the
 private Unit/Contract candidate under ADR-0010 with no new Differential claim.
+Its primary and independent source acceptance pass at `f2d9755`: first/middle
+local execution retains prefix reports and aborts the uncommitted suffix, with
+existing S04/S06 live regressions unchanged. This adds no new first/middle
+Differential result or public verified plugin entry; integration is pending.
 
 ## Adding an Entry
 

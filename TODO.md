@@ -258,7 +258,7 @@ Keep S04 unchanged; no production mutation or broader failure claim. Requeue
 T-0021 to Backlog and retain a single serial implementation lane.
 
 S06 primary source acceptance at `a284f8b` passes the exact Demo: two new live
-projections, full S05 gate/23 controls, 30 raw controls, two local bridge tests,
+projections, full S05 gate/23 controls, 31 raw controls, two local bridge tests,
 and unchanged S04 two-case/13-control regression. Workspace 23 passed/four
 intentional ignores and strict checks pass. Evidence is Unit/Contract plus two
 selected Differential projections; independent Tester reproduced the same source
@@ -293,3 +293,9 @@ all existing S04/S06 live regressions. Current SP is refined 8 to 13, Initial
 stays 5: the eight accepted SP plus this three-point slice and remaining runtime
 uncertainty exceed the former forecast. No parent completion or new first/middle
 Differential claim follows.
+
+S05 primary and independent source acceptance pass at `f2d9755`: three new
+first/middle local fixtures, complete typed trace/report/cleanup assertions,
+12 focused passes, four existing live projections and 13/31 raw controls.
+Workspace 26 passed/four intentionally ignored and strict quality checks pass.
+Final-head acceptance and integration remain required; parent #18 stays open.

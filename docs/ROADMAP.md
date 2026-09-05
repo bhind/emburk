@@ -103,6 +103,9 @@ at `133cddb` passed; PR #78 integrated as `14cc2a6`. This reference-only slice
 does not pass a native or phase delivery gate. ADR-0010 permits T-0021/S05's
 bounded native abort-suffix candidate; a later separate comparison is required
 for first/middle Differential evidence.
+T-0021/S05 primary and independent source acceptance now pass at `f2d9755`,
+including all local suffix cases and unchanged S04/S06 live regressions.
+Final-head acceptance and integration remain pending; phase gates stay open.
 
 ## Phase 1: Native File-to-File MVP
 

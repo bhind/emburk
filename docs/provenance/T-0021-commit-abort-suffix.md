@@ -83,6 +83,59 @@ It confirmed the one-file boundary, all three new local cases, full typed trace/
 token/cleanup assertions, unchanged last-failure behavior and preserved S04/S06
 live gates. This is Planning only, not implementation acceptance.
 
+### Primary frozen-source acceptance
+
+Source revision: `f2d9755cc47f2451e41559f0c13719b92118fb09`.
+Only the allowed core file changed; SHA-256:
+`489ab3301b3b5f73747c269bd4e45ff2c3f61df88322470117c71737f57050fd`.
+PM reviewed the complete diff: actual commit errors select the abort suffix,
+prior reports remain intact, all handles close and no public/bridge type or
+existing test changes. Three new tests compare complete typed event vectors,
+actual tokens, identical plans and one separate cleanup per component; the
+existing cleanup fake verifies handles have been dropped.
+
+Primary exact combined Demo at this revision exited 0: 12 local tests passed,
+two live tests intentionally ignored in the local phase and then separately
+executed through their wrappers. S04 compared two cases with 13 raw controls;
+S06 compared two cases with 31 raw controls plus its separate bridge tests and
+unchanged S05 gate. Workspace tests passed 26 with four intentional ignores.
+Format, explicit included-child Rust 2024 checks, strict workspace/all-target
+Clippy and diff checks all exited 0.
+
+Primary logs: `/private/tmp/t0021-s05-primary-acceptance.oAdVUk`.
+S04 evidence: `${TMPDIR}/t0013-s04.eWPSwK`;
+S06 evidence: `${TMPDIR}/t0013-s06.D2FaJt`.
+Combined stdout/stderr SHA-256:
+`570c2c8f9b9570bd5f3a529e81eb7c64424b0ed57367d714a5e1586000d11090` /
+`2d6d1578c0228a8b196565b8452c011b0f83880e64fbbc4c546b8ffe187acae5`.
+
+Accounting correction: prior S06 records said 30 raw controls. PM counted 31
+calls and 31 markers in the unchanged wrapper, independently confirmed by the
+implementer. The two Rust bridge tests are separate, not the extra raw control.
+Correct STATUS/TODO/S06 provenance/log to 31; no test or acceptance gate changes.
+
+The implementer's early external-gate attempt exited 4 with only the driver
+diagnostic `S03 full probe exited 1` and empty nested stdout/stderr at
+`${TMPDIR}/t0013-s04.7yUVAQ`. Its detailed cause is not established. Retain that
+attempt, not a success claim. A later persistent combined invocation and the
+post-commit invocation both passed; final implementer logs remain at
+`/private/tmp/t0021-s05-primary.shZx2H/final-combined.stdout.log` and its stderr
+peer. Primary frozen-source acceptance above passed without weakening any gate.
+
+Independent read-only Tester reproduced the exact persistent combined Demo at
+`f2d9755`: exit 0, 12 local passes/two intentional ignores, S04 two projections/
+13 raw controls and S06 two projections/31 raw controls plus separate bridge
+execution. Workspace 26 passed/four intentionally ignored, formatting, explicit
+child formatting, strict Clippy and diff checks passed. No source finding remains.
+Retained S04/S06 evidence: `${TMPDIR}/t0013-s04.qLpg8l` and
+`${TMPDIR}/t0013-s06.3TVLjw`. Final output fragment logs reside at
+`/private/tmp/t0021-s05-independent.6LtwAh`; fragment stdout SHA-256
+`aa343e2b32ceca5642111022edea5e28383a8c82331a733a85bddb9c2994bdf2`
+is not represented as the complete combined output hash.
+
+Evidence is Unit/Contract for the new cases and existing Differential regression
+only. Final-head acceptance and PR integration remain required.
+
 ## Reference and provenance
 
 Use only the already integrated S07 observed behavior and original local fakes.

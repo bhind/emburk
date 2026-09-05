@@ -118,7 +118,7 @@ S06 compared exactly two live cases through one explicitly selected ignored
 Rust test. Normal execution projected 44 events and cleanup input 1/output 8
 reports; selected last-index failure projected 43 events and input 1/output 7
 reports for the observed 1/8 plan. The unchanged prerequisite S05 gate passed
-both fixtures and 23 controls. All 30 new raw controls rejected at their named
+both fixtures and 23 controls. All 31 new raw controls rejected at their named
 diagnostics. Two local bridge tests passed, including repaired event-count
 mutations, 1/1 and 1/8 local fixtures, and direct per-component/payload guards.
 The unchanged S04 regression compared two cases and rejected 13 raw controls.

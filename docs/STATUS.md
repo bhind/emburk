@@ -22,7 +22,7 @@ Development state: `bootstrap`
 - A private synchronous empty-task coordinator executes original fake callbacks
   with separate cleanup capabilities and reports. Its Unit/Contract tests
   cover zero/one-input plans, one selected input-run failure, and selected
-  last-output-commit failure with retained actual reports. Other callback
+  first/middle/last output-commit failures with retained actual reports. Other callback
   failures and actual plugin execution are not implemented.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
@@ -219,7 +219,7 @@ Current T-0021 SP is refined 5 to 8; Initial SP stays 5 and parent gates stay op
 T-0013/S06 now has a reviewed comparison packet for normal and selected
 last-output-commit failure. It changes only test infrastructure. Primary source
 acceptance at `a284f8b` passes both live projections (normal 44/failure 43 events,
-cleanup reports 1/8 and 1/7 in the observed 1/8 plan), 30 raw controls, two local
+cleanup reports 1/8 and 1/7 in the observed 1/8 plan), 31 raw controls, two local
 bridge tests and unchanged S04 live regression. Workspace tests pass 23 with
 four intentional ignores; formatting, strict Clippy and syntax checks pass.
 Independent Tester reproduced these results at the same source revision;
@@ -248,3 +248,12 @@ not yet implemented. ADR-0010 now permits the bounded T-0021/S05 abort-suffix
 candidate, preserving existing live regressions. Current T-0021 SP is refined
 8 to 13; Initial stays 5. Parent completion and new Differential claims remain
 separate gates.
+
+T-0021/S05 primary and independent source acceptance pass at `f2d9755`.
+The private coordinator preserves committed reports, aborts the failed and
+unattempted suffix and closes all handles. Three new local cases verify complete
+typed traces/tokens/cleanup. Exact Demo passes 12 local tests, S04/S06 four
+existing live projections and their 13/31 raw controls. Workspace tests pass
+26 with four intentional ignores, plus formatting and strict Clippy. Evidence
+is Unit/Contract plus existing Differential regression only; final-head
+acceptance and integration remain pending.

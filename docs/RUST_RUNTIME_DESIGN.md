@@ -283,8 +283,10 @@ Final-head acceptance at `133cddb` passed and PR #78 integrated as `14cc2a6`.
 ADR-0010 now accepts only the selected private abort-suffix expansion for
 T-0021/S05. Actual successful reports precede the failure boundary; abort starts
 at the failed handle and includes unattempted handles. The separately packeted
-native candidate still requires implementation and acceptance; neither the
-observation nor this decision establishes a production recovery policy.
+native candidate is implemented and independently accepted at `f2d9755` for
+the selected local cases, with unchanged S04/S06 regressions. Integration is
+pending; neither the observation nor this private candidate establishes a
+production recovery policy or first/middle Differential evidence.
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
