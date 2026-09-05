@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
-name = "emburk"
+name = "emburk-cli"
+version = "0.1.0"
+dependencies = [
+ "emburk-core",
+]
+
+[[package]]
+name = "emburk-core"
 version = "0.1.0"

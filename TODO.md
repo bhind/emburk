@@ -113,7 +113,8 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 T-0021 has two bounded slices under one serial integration lane:
 
 - S01 (1 SP): physical workspace skeleton, candidate in PR #58.
-- S02 (1 SP): [runtime design proposal](docs/RUST_RUNTIME_DESIGN.md), Planning
+- S02 (1 SP): [runtime design proposal](docs/RUST_RUNTIME_DESIGN.md), integrated
+  through PR #60 (`341f285`), Planning
   evidence only. Reviewable crate boundaries and contract worksheets do not
   complete T-0012/T-0013 or authorize guessed semantic implementations.
 
@@ -125,6 +126,5 @@ refinement candidates are:
 2. `T-0012`: specify configuration, schema, and value semantics from the
    pinned references without adopting upstream implementation code.
 
-Dependency completion only permits refinement; neither candidate moves to
-`Ready` until the Definition of Ready is satisfied. The combined `In Progress`
-plus `Review` WIP limit remains two.
+T-0003 and T-0012 remain the next refinement candidates. The combined `In
+Progress` plus `Review` WIP limit remains two.

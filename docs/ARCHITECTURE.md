@@ -9,6 +9,21 @@ crate dependencies, configuration/value worksheets, lifecycle responsibilities,
 and failure states for T-0021. Those API and scheduling choices remain proposed
 until T-0012/T-0013 reference evidence is available.
 
+## Initial Rust Workspace Boundary
+
+The first structural slice contains only two crates:
+
+- `emburk-core` is a dependency-light library for Emburk-owned coordination
+  primitives. It must not depend on the CLI or contain provider-specific code.
+- `emburk-cli` is the composition root and binary. It may depend on
+  `emburk-core`; the reverse dependency is forbidden.
+
+The initial dependency direction is therefore `emburk-cli -> emburk-core`.
+Plugin traits, configuration types, schema and value representations, runtime
+scheduling, transactions, resume state, and process protocols remain deferred
+until their compatibility contracts are accepted. Creating crate directories
+does not make their eventual Rust API stable.
+
 ## Runtime Layers
 
 ### Rust Execution Core

@@ -1,0 +1,12 @@
+[package]
+name = "emburk-cli"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+
+[[bin]]
+name = "emburk"
+path = "src/main.rs"
+
+[dependencies]
+emburk-core = { path = "../emburk-core" }

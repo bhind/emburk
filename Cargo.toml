@@ -1,7 +1,3 @@
-[package]
-name = "emburk"
-version = "0.1.0"
-edition = "2024"
-license = "Apache-2.0"
-
-[dependencies]
+[workspace]
+resolver = "3"
+members = ["crates/emburk-cli", "crates/emburk-core"]
