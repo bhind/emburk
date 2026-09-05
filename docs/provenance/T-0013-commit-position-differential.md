@@ -140,6 +140,25 @@ three-case projection, raw validation before exclusion, separate runtime-local
 error checks and unchanged S04/S06 regressions. This is Planning only, not a
 new observed match or source acceptance.
 
+### PM manifest and projection decision
+
+The reviewed owned format has header `T0013-S08\t1` and exactly 11 CASE fields:
+`CASE`, fixture, input_tasks, actual_N, cap, selected_index, scenario, result,
+input_reports, output_reports, event_count. EVENT rows retain actual projected
+physical order. Fixtures are normal/commit-first/commit-middle; scenarios are
+normal-output/fail-first-commit/fail-middle-commit. Results are success or
+selected-output-commit-failure. Mode/index formulas and counts must agree with
+the validated raw reference, never a missing-field fallback.
+
+After full raw validation, Java projection excludes only input finish-before,
+run-normal-return and cleanup-entry; output commit-selection,
+commit-injection-before and cleanup-entry; and output open/finish/commit/abort/
+close entry instrumentation. Their matching returns, normal scopes, failed
+transaction outcomes and cleanup returns remain represented. Rust excludes only
+the two validated failed control completions absent from that instrumentation;
+failed job/commit outcomes normalize category/index only after exact payload
+checks. All event mapping remains exhaustive. No further exclusion is approved.
+
 ## Provenance and non-claims
 
 Use original repository-owned S06/S07 patterns and their pinned Embulk 0.11.5
