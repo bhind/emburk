@@ -1,7 +1,7 @@
 # T-0021/S03 private empty-task coordinator
 
 - Tracking issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: In Progress; acceptance pending
+- State: Review; PR #73, final-head acceptance and integration pending
 - Priority: P1; parent T-0020
 - Slice estimate: 3 SP within unchanged parent Current/Initial SP 5
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 0;
