@@ -66,6 +66,12 @@ uname -s > "$evidence/os-family.txt"
 git -C "$root" rev-parse HEAD > "$evidence/source-revision.txt"
 printf '%s\n' "$source_file" > "$evidence/plugin-source-path.txt"
 shasum -a 256 "$source_file" | awk '{print $1}' > "$evidence/plugin-source.sha256"
+printf '%s\n' "$script_dir/run.sh" > "$evidence/runner-source-path.txt"
+shasum -a 256 "$script_dir/run.sh" | awk '{print $1}' > "$evidence/runner-source.sha256"
+printf '%s\n' "$root/tests/t0012_page_value_probe_test.sh" \
+  > "$evidence/wrapper-source-path.txt"
+shasum -a 256 "$root/tests/t0012_page_value_probe_test.sh" | awk '{print $1}' \
+  > "$evidence/wrapper-source.sha256"
 
 javac -cp "$executable" -d "$plugin/classes" "$source_file"
 manifest="$plugin/MANIFEST.MF"

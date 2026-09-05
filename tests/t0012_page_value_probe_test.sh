@@ -29,7 +29,9 @@ evidence=$(sed -n 's/^T0012_PAGE_CAPTURE_ONLY=collected|evidence=//p' \
 for file in executable-url.txt executable.sha256 executable-manifest.txt \
   LICENSE-executable NOTICE-executable executable-license-notice-locators.txt \
   java-version.txt os-family.txt source-revision.txt plugin-source-path.txt \
-  plugin-source.sha256 plugin-jar.sha256 plugin-coordinate.txt stage.txt \
+  plugin-source.sha256 runner-source-path.txt runner-source.sha256 \
+  wrapper-source-path.txt wrapper-source.sha256 plugin-jar.sha256 \
+  plugin-coordinate.txt stage.txt \
   page-cases.raw page-traces.raw raw-evidence-hashes.txt empty.raw.log \
   typed-null.raw.log empty.trace.raw typed-null.trace.raw; do
   [[ -s "$evidence/$file" ]]

@@ -88,6 +88,8 @@ public final class T0012PageValueInputPlugin implements InputPlugin {
             throw failure;
         } finally {
             if (builder != null) {
+                // Fixture-local best-effort closure after an operation failure;
+                // this does not establish a general retry or ownership policy.
                 try {
                     trace("builder-close-entry");
                     builder.close();
@@ -322,6 +324,9 @@ public final class T0012PageValueInputPlugin implements InputPlugin {
             row.append('|').append(encode(value));
         }
         System.out.println(row);
+        if (System.out.checkError()) {
+            throw new EvidenceWriteError("unable to write Page observation evidence");
+        }
     }
 
     private static String encode(String value) {
@@ -337,5 +342,11 @@ public final class T0012PageValueInputPlugin implements InputPlugin {
             throw new IllegalStateException("missing environment: " + name);
         }
         return value;
+    }
+
+    private static final class EvidenceWriteError extends Error {
+        EvidenceWriteError(String message) {
+            super(message);
+        }
     }
 }
