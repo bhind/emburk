@@ -29,7 +29,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S03 (`In Progress`) is the only active work item. Combined WIP is one of
+T-0013/S03 (`Review`) is the only active work item. Combined WIP is one of
 two; no item is `Ready` or `Blocked`. T-0012 and T-0021 return to Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
@@ -41,7 +41,7 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
 | T-0021 | Backlog | S01/S02 integrated; core traits await T-0012/T-0013 contracts |
-| T-0013/S03 | In Progress | Observe input-run failure before its finish call |
+| T-0013/S03 | Review | Accept input-run failure before its finish call |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -159,6 +159,10 @@ integrated as `d474b7b`. No Rust lifecycle trait or output durability policy
 is inferred; the fan-out factor is not a portable constant.
 
 S03 adds a normal control and one injected input-run exception before its own
-finish call. Acceptance is pending. T-0013 Current SP is refined from 8 to 13
+finish call. Primary acceptance at `f35cb49` passed: normal process exit 0,
+injected failure exit 1 with the exact fixture exception propagated. Failure
+output abort/close and cleanup under fresh capture IDs were observed.
+Independent Tester reproduced the complete Demo; integration is pending.
+T-0013 Current SP is refined from 8 to 13
 for distinct task contexts and failure-evidence validation; Initial SP remains
 8, and parent completion is not implied.

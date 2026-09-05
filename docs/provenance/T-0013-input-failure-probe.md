@@ -1,7 +1,7 @@
 # T-0013/S03 input-run failure reference observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; acceptance pending
+- State: Review; primary and independent acceptance passed, integration pending
 - Parent: T-0010; priority P0
 - Slice estimate: 3 SP within parent Current SP 13; Initial SP remains 8
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 1;
@@ -178,3 +178,64 @@ No Rust lifecycle, executor mapping, general callback count/order, durable
 publication, rollback, cleanup guarantee, retry/resume behavior, report
 semantics, transaction atomicity, exactly-once, plugin compatibility,
 performance, security or release claim. Parent #16 remains open after acceptance.
+
+## Acceptance evidence (2026-09-06)
+
+Primary acceptance at `f35cb494037be1f5304e7e8ef310ef47721757f9` ran the
+exact outside-worktree Demo, exit 0, plus per-file `bash -n` and
+`git diff --check`, all passing. Output source review against S02 confirms
+equivalent callback bodies; changes are class/comment identity, UUID capture
+initialization and the trace tag/envelope. No Rust source or suite changed.
+
+Evidence: `${TMPDIR}/t0013-input-failure.aHpYrI/evidence`.
+
+| Fixture | Process exit | Input/output markers | Actual output observations |
+|---|---:|---:|---|
+| Normal, one empty input task | 0 | 10 / 70 | Eight indices opened, finished, committed and closed; normal control/transaction return and cleanup |
+| Injected run failure before input finish | 1 | 8 / 53 | Eight indices opened, then aborted and closed; transaction exception and cleanup |
+
+The failure's input run and both instrumented transaction boundaries record
+the actual class `T0013FailureInputPlugin$InjectedRunFailure` and message
+`t0013-s03-injected-run-failure`. The input's own finish/run normal return and
+output finish/commit were absent in this execution. Input cleanup received
+task count 1 and zero reports; output cleanup received task count 8 and zero
+reports. Normal cleanup received one/eight reports, respectively. No add or
+resume marker occurred. No output absence, task count eight, general callback
+order or cleanup report equality is a hardcoded acceptance gate.
+
+Normal callbacks used one capture ID per component. The failure used separate
+main and cleanup capture IDs for each component, with sequences restarting
+at 1 under the fresh IDs. Raw logging also reported plugin loading in cleanup.
+PM accepts these bounded observations and the exact injected propagation;
+they do not establish rollback, classloader identity guarantees or a general
+reconstruction/serialization contract.
+
+Primary evidence SHA-256 (per-run identity, not cross-run expected values):
+
+- `cases.raw`: `22a2f53f0cc425e55395130ec74d40caabdfc09fec65dc646cfc4cc6489faa86`
+- `traces.raw`: `2aa888b7ae91d1b57da650b62edd531e69997ae6e5f2203f8cbb7d37eeed5d6b`
+- Normal trace: `b8a3cca5cfffb2959e33861d82508f7a34b6d5ccf1676dfabb8edc72b1ccd29d`
+- Failure trace: `cb6082066d7baff6bb7860b73692cfbe7f654ce6f2991c6bbd7eb07957dc66bd`
+
+Actual corrupt-copy control exited 3 (`t0013-input-failure.ISUJVB`) and
+unavailable asset control exited 56 (`t0013-input-failure.9tecAj`). Twenty-five
+invalid-evidence controls reached their intended exact diagnostics. Three
+synthetic valid controls cover null/empty message representation and fresh
+cleanup captures; they are not additional live resume/failure scenarios.
+Review rejected sequence-reset heuristics, changed missing-exception controls
+to genuine added-return contradictions, and required structure/termination
+checks in non-main captures. Malformed transport is not a semantic result.
+
+Java Temurin 17.0.20, Bash 3.2.57 and Python 3.14.6 on macOS arm64 were used;
+runtime identity/settings, notices and both source/JAR hashes are retained in
+the evidence. Independent Tester reproduced the exact Demo and syntax/diff
+checks at `f35cb49`, all exit 0, with no findings. Evidence:
+`${TMPDIR}/t0013-input-failure.T6Sdlj/evidence`; full log
+`/private/tmp/t0013-s03-independent.Q8oPXy/full-probe.log`, SHA-256
+`4bc07797fd898cee878ca02f885b5bcbeec935e3ec8dc984f83d7f516c17c98c`.
+Tester case/trace hashes were
+`6be446943cf625d14dad1c8dea2d4cf77e0c09d5413034c634ddd55dbbfc316c` and
+`303235adefefeb97c297c74195d70b88e8d38d97a304ab9756d795122b1a8b28`.
+Fresh random capture IDs intentionally make them differ from the primary run;
+the actual bounded outcomes and controls were reproduced. PR integration
+remains pending; parent #16 remains open.

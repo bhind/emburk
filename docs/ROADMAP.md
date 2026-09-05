@@ -62,6 +62,10 @@ default scheduling, failure propagation, recovery or delivery gates.
 Independent and final-head acceptance passed; PR #71 integrated as `d474b7b`.
 S03 now observes one input-run failure boundary before choosing a private
 empty-task coordinator. This is not a pre-publication or rollback guarantee.
+S03 primary acceptance at `f35cb49` passed the normal and injected-run-failure
+fixtures, capture identity validation and strict malformed-evidence controls.
+It supplies bounded candidate evidence for private empty-task execution only;
+parent lifecycle, resume, cleanup-error and delivery gates remain open.
 
 ## Phase 1: Native File-to-File MVP
 
