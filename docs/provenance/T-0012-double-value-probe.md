@@ -1,7 +1,7 @@
 # T-0012/S09 bounded double-value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Prepared; independent readiness review passed with parent clarification
+- State: In Progress; Stage A capture only, independent readiness review passed
 - Branch: `research/t-0012-double-value-probe`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
