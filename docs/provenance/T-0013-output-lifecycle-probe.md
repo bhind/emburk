@@ -1,7 +1,7 @@
 # T-0013/S02 output lifecycle reference observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review; primary and independent acceptance passed, integration pending
+- State: Done (bounded S02 only); PR #71 integrated as `d474b7b`
 - Parent: T-0010; priority P0
 - Slice estimate: 3 SP within unchanged parent Current/Initial SP 8
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 1;
@@ -197,7 +197,9 @@ at `5739052`, all exit 0, with identical case/trace hashes and no findings.
 Evidence: `${TMPDIR}/t0013-output-lifecycle.UA5fzd/evidence`; full log
 `/private/tmp/t0013-s02-independent.HGLtLk/full-probe.log`, SHA-256
 `27fc9215c7ae3c9de88f4382341e74832e13bd045c3490fc3c2cec28bf3b0d6c`.
-Integration remains pending; parent #16 remains open.
+Final-head acceptance at `55ed697` passed, evidence
+`${TMPDIR}/t0013-output-lifecycle.TnTiku/evidence`. PR #71 integrated as
+`d474b7b8dc1975d486f564b48ca4559ac37978d0`; parent #16 remains open.
 
 ## Non-claims
 

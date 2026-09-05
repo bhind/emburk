@@ -59,6 +59,9 @@ for the same empty-task boundary before Rust policy or failure injection.
 S02 primary acceptance passed at `5739052`, including its actual one-input/
 eight-output observation and strict evidence controls. This does not resolve
 default scheduling, failure propagation, recovery or delivery gates.
+Independent and final-head acceptance passed; PR #71 integrated as `d474b7b`.
+S03 now observes one input-run failure boundary before choosing a private
+empty-task coordinator. This is not a pre-publication or rollback guarantee.
 
 ## Phase 1: Native File-to-File MVP
 
