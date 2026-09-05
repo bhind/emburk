@@ -1,7 +1,7 @@
 # T-0013/S04 selected empty-lifecycle differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; acceptance pending
+- State: Review; PR #74, final-head acceptance and integration pending
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP within parent Current SP 13, Initial SP 8; no new parent
   points or parent completion. Refinement: implementation 1, uncertainty 1,
