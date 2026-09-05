@@ -85,7 +85,9 @@ records the exact injected exception propagating, output abort/close and
 cleanup with fresh capture IDs and zero reports. Normal control exited 0;
 failure exited 1. This is Reference Observation / Integration only, not native
 failure handling, rollback, cleanup/retry guarantees or a Java loading contract.
-Independent acceptance passed; integration remains pending.
+Independent acceptance passed; PR #72 integrated as `8e43948`.
+T-0021/S03's private coordinator is now being implemented for local
+Unit/Contract testing only; no new Native/Verified lifecycle entry follows.
 
 ## Adding an Entry
 

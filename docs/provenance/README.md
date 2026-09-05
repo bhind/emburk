@@ -15,4 +15,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S06 ordered schema differential](T-0012-ordered-schema-differential.md) | Done (selected schema Differential; PR #69) |
 | [T-0013/S01 input lifecycle observation](T-0013-input-lifecycle-probe.md) | Done (Reference Observation / Integration; PR #70) |
 | [T-0013/S02 output lifecycle observation](T-0013-output-lifecycle-probe.md) | Done (Reference Observation / Integration; PR #71) |
-| [T-0013/S03 input-run failure observation](T-0013-input-failure-probe.md) | Review (Reference Observation / Integration; integration pending) |
+| [T-0013/S03 input-run failure observation](T-0013-input-failure-probe.md) | Done (Reference Observation / Integration; PR #72) |
+| [T-0021/S03 private empty-task coordinator](T-0021-empty-task-coordinator.md) | In Progress (acceptance pending) |

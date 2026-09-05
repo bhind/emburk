@@ -22,8 +22,8 @@ The first structural slice contains only two crates:
   `emburk-core`; the reverse dependency is forbidden.
 
 The initial dependency direction is therefore `emburk-cli -> emburk-core`.
-Plugin traits, public configuration types, schema and value representations,
-runtime scheduling, transactions, resume state, and process protocols remain
+Public plugin/configuration/schema/value APIs, production runtime scheduling,
+transactions, resume state, and process protocols remain
 deferred until their compatibility contracts are accepted. ADR-0006 permits a
 private, dependency-free raw-scalar resolver inside `emburk-core`; it is neither
 a YAML loader nor a stable public API. Creating crate directories does not make
@@ -34,6 +34,12 @@ or public exposure. S06 implements it as an owned ordered vector in the core,
 with no name lookup or deduplication. Its three-case live comparison passed
 primary and independent Tester acceptance and integrated through PR #69.
 Logical type tags alone do not establish value or Arrow representations.
+
+ADR-0008 permits a private synchronous empty-task coordinator with explicit
+input/output task plans, separate report collections and owned output handles.
+T-0021/S03 is implementing this candidate with original fake plugins; acceptance
+is pending. Its limited callback fallibility is not a public production plugin
+contract, and it does not choose default fan-out or a parallel scheduler.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe

@@ -235,8 +235,11 @@ its original semantic dependencies and executable acceptance evidence.
 ### Bounded path from observation to private execution
 
 The immediate goal is a testable private empty-task coordinator, not completion
-of every compatibility cell before any execution code. Its activation still
-requires a separate packet and a reviewed decision delimiting unsupported paths.
+of every compatibility cell before any execution code. ADR-0008 and the
+T-0021/S03 packet now activate that bounded candidate with explicit plans,
+separate report collections and fresh cleanup capability. Other callback
+fallibility remains outside the initial fake-plugin boundary; public traits
+and a complete lifecycle contract are not approved by this internal slice.
 
 | Decision point | Required evidence | What it permits, and what it does not |
 |---|---|---|
