@@ -1,7 +1,7 @@
 # T-0013/S07 output commit position observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; Stage A fixture preparation, initial capture and acceptance pending
+- State: In Progress; Stage A captured, PM Stage B expectations recorded; acceptance pending
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP is refined 21 to 34; Initial SP remains 8.
@@ -129,6 +129,122 @@ Integration using the pinned executable and original local fixture only.
 No new Rust Differential result follows. Read-only planning review recommended
 the three-file, two-stage scope and dynamic first/middle selection; PM owns the
 forecast refinement and the later raw-to-expectation decision.
+Independent read-only planning review at
+`415c6977a0e4b23e63bbade93f3bc74e82c9faa6` found no material ambiguity.
+It confirmed distinct first/middle/last indices even at N=3, the exact three-file
+allowlist, fixed marker/error names and the capture-only-to-expectation gate.
+The review ran no fixture and provides no observed post-failure behavior.
+The Project's active-slice evidence field is `Integration`, reflecting the
+intended reference-fixture acceptance class, not a completed result. The parent
+Differential gate remains open. Replace its stale bootstrap Demo placeholder
+with the exact Stage B command; capture-only execution cannot satisfy it.
+
+### Pre-capture source review
+
+PM and read-only Tester reviewed Stage A before any positive fixture ran.
+Java SHA-256 is
+`fd82c85966b90190a82e8a29d4a2b4145bf82c8776045d362116ddd7ef6bbb64`;
+runner SHA-256 is
+`20ec0c780a243412ffbc20f4ad700bddeccd29fb4c8a12c4e2c448c02ba7c423`;
+capture wrapper SHA-256 is
+`993596195dab55b116ace71fc317cb83acfde2e91f3bee585d86ac8246bffc5e`.
+Both reviewers confirmed the three-file boundary, exact artifact/source identity,
+selection instrumentation and throw-before-TaskReport construction. Separate
+shell syntax, Python AST parsing, default-wrapper refusal (exit 2) and diff
+checks passed. Artifact-only controls rejected corrupt-copy at exit 3 and
+unavailable executable at exit 56; they did not execute the fixtures.
+Staging exposed one extra blank EOF line in each new Java/runner file that an
+unstaged diff check could not see. PM verified their removal was byte-for-byte
+whitespace-only by reconstructing both prior hashes; cached diff checks passed
+before approving the final hashes above. No fixture semantics changed.
+
+Review removed a premature failure-process-exit assertion. Stage A now records
+that exit without judging it, and checks each local injected error pair without
+assuming one commit invocation. Its singleton transaction/selection qualification
+only identifies an unambiguous supplied plan. Unexpected multiplicity still
+retains complete runner logs before capture validation rejects; PM must inspect
+and classify it rather than infer that host repetition is impossible.
+
+Tester recommended additional callback completeness checks. PM defers semantic
+completeness/per-index callback assertions to Stage B: capture-only is collection,
+not acceptance, and cannot qualify a truncated or unusual trace as compatible.
+PM will inspect all initial raw callbacks and process exits before freezing any
+expectation. The source is approved for the first capture only; neither review
+establishes post-failure behavior or task completion.
+
+### Initial capture and PM Stage B decision
+
+Stage A source revision: `fb26813b09cd0416d93cc171253c96931b3b32fe`.
+Command: `bash tests/t0013_output_commit_position_probe_test.sh --capture-only`.
+The capture wrapper exited 0 and emitted only its collection marker. Evidence:
+`${TMPDIR}/t0013-output-commit-position.vSfSxA/evidence`; retained wrapper output:
+`/private/tmp/t0013-s07-initial-capture.u5ITuQ`.
+
+The implementer's outer shell chain subsequently exited 1 because it incorrectly
+required empty stderr. PM inspected all 829 stderr bytes: the known pinned-JAR
+7451-byte ZIP-prefix warnings and Java deprecation notes, not a failed fixture
+or empty capture. Retain this result; do not claim the whole outer chain passed.
+The exact Stage B Demo will independently rerun the actual acceptance gate.
+Wrapper stdout/stderr SHA-256:
+`fe37e0463b44aaf1836ae202fe74c89998e1f4e0ecf81dd90fb0fc42776fec65` /
+`bccc90b82673e2c3d11d6d2e444c9b716ee1a328208d393a60ac1165055ed09b`.
+Raw cases/traces SHA-256:
+`ac6b0e6a4ccba08015e0256e1fa7535f8f28fb417048c856cd0e8cad2fdd404f` /
+`37e4cef7eac821f5393f9196f0da1dc32e3148c0548ed1842e40461e137f8148`.
+
+PM decoded and inspected all 245 raw markers before choosing expectations.
+Each fixture requested one input task; output transaction observed N=8, schema
+count 0. Selection modes were normal/7, first/0 and middle/4. The normal process
+exited 0 with 81 markers (input 10/output 71); each failure exited 1 with 82
+markers (input 9/output 73). Those marker totals alone do not distinguish which
+handles committed or aborted.
+
+| Fixture | Commit normal returns | Selected commit exception | No commit entry | Abort entry/return | Close entry/return | Cleanup reports input/output |
+|---|---|---|---|---|---|---|
+| normal | 0–7 | none | none | none | 0–7 | 1/8 |
+| commit-first | none | 0 | 1–7 | 0–7 | 0–7 | 1/0 |
+| commit-middle | 0–3 | 4 | 5–7 | 4–7 | 0–7 | 1/4 |
+
+In every fixture all outputs open before input run; input finish encloses all
+output finish pairs, and input finish/run return before the first commit entry.
+For each failure, every earlier successful commit returns before the selected
+commit entry/injection/exact exception. No selected normal return or later
+commit entry occurs. Abort applies to the selected and not-yet-attempted handles,
+not earlier committed handles. All abort returns precede all close entries;
+every handle closes before output then input transaction exceptions. Each
+exception is the exact original position-injection class/message. Neither
+component emits normal control/transaction completion on failure.
+
+Normal execution closes all handles after all commits, then returns from output
+control/transaction followed by input control/transaction. Cleanup follows outer
+scope completion: input entry/return then output entry/return. Failure cleanup
+uses fresh captures distinct from the corresponding original transaction
+captures and receives the observed input report plus prior successful output
+reports. No add, guess, resume or input-run injection occurred.
+
+PM now authorizes Stage B validation and negative controls for these recorded
+fixtures only. Derive N and selected k from observed transaction/selection
+markers, with k=0 or floor(N/2), not a fixed 8 or 4. Validate exact per-index
+manifests and callback pairs: successful commits [0,k), one selected exception
+at k, no commit beyond k, aborts [k,N), all closes [0,N), output report count k
+and input report count 1. Freeze the recorded physical phase/scope order and
+error propagation; distinguish absence from a successful callback with no report.
+Normal control retains [0,N) successful commits, no abort and N output reports.
+These bounded fixture expectations do not establish every index, arbitrary
+fan-out/concurrency or a general host recovery rule.
+
+Add diagnostic-specific mutations for both first and middle cases, including a
+fabricated later commit, missing later abort, abort of an earlier successful
+handle, altered retained reports, incomplete pairs, and reordered scope/cleanup.
+Repair transport envelopes before testing semantic mutations. Preserve Stage A
+mode and original Java/runner sources; default wrapper may now expose full
+acceptance only after all checks and the unchanged S05 regression pass.
+
+This observation motivates a later Rust decision to track the committed prefix
+separately from failed/unattempted outputs. It does not authorize that runtime
+change here. Existing last-index-only Rust behavior remains explicitly bounded
+and is not being presented as compatible at first/middle positions. New source
+acceptance, independent reproduction, final-head Demo and integration remain.
 
 ## Reference and reuse record
 

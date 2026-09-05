@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S07: first/middle commit observation) | In Progress | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S07: first/middle commit observation) | In Progress | P0 | 34 | T-0011 | Compatibility Host Implementer | Reference Observation / Integration (S07; parent Differential gate remains) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -272,3 +272,9 @@ S05/S06 tests remain unchanged. Current SP is refined 21 to 34, Initial remains
 8: 18 SP are accepted in S01–S06; further observation, native policy/comparison
 and remaining cleanup/recovery uncertainty exceed the old forecast. No parent
 completion, additional canonical task allocation or duplicate points follow.
+
+S07 Stage A captured at `fb26813`; PM reviewed all raw callbacks and recorded
+Stage B expectations: abort the selected and unattempted suffix, preserve prior
+commit reports, close all handles. The observed plan was 1/8 with failures at 0
+and 4. Initial capture is not acceptance or a Rust policy; Stage B tests and
+independent reproduction remain required.

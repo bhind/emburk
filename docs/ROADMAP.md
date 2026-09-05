@@ -95,6 +95,8 @@ Final-head acceptance passed at `7d90f5d` and PR #77 integrated as `3b16aaf`.
 This closes neither arbitrary-index failure nor phase delivery gates.
 S07 prepares a separate reference-only first/middle observation with an explicit
 capture-before-expectations gate; Rust policy remains unchanged.
+That initial capture is now reviewed at `fb26813`; Stage B validates the
+observed abort suffix and retained reports before any later native policy gate.
 
 ## Phase 1: Native File-to-File MVP
 

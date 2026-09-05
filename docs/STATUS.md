@@ -34,7 +34,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S07 (`In Progress`, Stage A) is the only serial work item. Combined active WIP is one of
+T-0013/S07 (`In Progress`, Stage B) is the only serial work item. Combined active WIP is one of
 two; no item is `Blocked`. T-0012 and T-0021 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
@@ -231,3 +231,9 @@ Its two-stage packet requires raw capture review before post-failure assertions;
 no Rust policy is selected. Current SP is refined 21 to 34, Initial remains 8:
 S01–S06 used 18 accepted SP, with position observation, native comparison and
 cleanup/recovery uncertainty still remaining. This is forecast, not completion.
+
+S07 initial capture at `fb26813` observed first failure aborting outputs 0–7,
+and middle failure at 4 retaining commits 0–3 then aborting 4–7. Both close all
+outputs; cleanup reports are input 1/output 0 and input 1/output 4. PM inspected
+the full raw logs and recorded Stage B expectations. This is initial reference
+observation only; acceptance and integration remain pending, with no Rust change.

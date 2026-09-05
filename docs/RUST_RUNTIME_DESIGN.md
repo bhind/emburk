@@ -276,6 +276,10 @@ final-head acceptance passed at `7d90f5d` and PR #77 integrated as `3b16aaf`.
 No production algorithm or arbitrary-index contract is added. S07 now prepares
 first/middle observations, explicitly recording later-handle callbacks and
 cleanup reports before any wider policy decision.
+At `fb26813`, first/middle observations show that selected failure and remaining
+unattempted outputs abort, while prior successful reports survive and all handles
+close. These are initial reference observations requiring full S07 acceptance,
+not an accepted expansion of ADR-0009 or a production recovery policy.
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
