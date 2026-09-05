@@ -74,7 +74,8 @@ with six and ten probe markers respectively, including cleanup. The one-task
 probe's call to `PageOutput.finish()` returned normally. No resume or guess
 marker occurred. This does not establish output callback ordering, delivery,
 cleanup guarantees, failure/retry behavior or Native/Verified lifecycle support.
-Primary and independent acceptance passed; integration is pending.
+Primary and independent acceptance passed; PR #70 integrated as `e8b5726`.
+S02's direct output-side observation is pending and adds no support claim.
 
 ## Adding an Entry
 

@@ -54,6 +54,8 @@ blocker; callback traits, cleanup guarantees and resume remain unverified.
 Primary acceptance records successful zero/one empty task executions and strict
 trace controls. This reference observation cannot satisfy the lifecycle exit
 gate; direct output-side and failure/recovery evidence are still missing.
+PR #70 integrated S01 as `e8b5726`; S02 now observes direct output callbacks
+for the same empty-task boundary before Rust policy or failure injection.
 
 ## Phase 1: Native File-to-File MVP
 

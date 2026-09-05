@@ -1,7 +1,7 @@
 # T-0013/S01 input lifecycle reference observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review; primary and independent acceptance passed, integration pending
+- State: Done (bounded S01 only); PR #70 integrated as `e8b5726`
 - Parent: T-0010; priority P0
 - Slice estimate: 3 SP within unchanged parent Current/Initial SP 8
 - Refinement: implementation 1, uncertainty 1, verification 1, environment 1;
@@ -187,7 +187,9 @@ with identical case/trace hashes and all controls passing. Evidence:
 `71751109dcc4d5b53a6ad49155c1e96bba337e850d1a314f80d366c45609b4c6`.
 The initial sandbox-only attempt could not resolve GitHub; the authorized
 network rerun succeeded without changing source or artifact. No acceptance
-findings remain. PR integration is pending; parent #16 stays open.
+findings remain. Final-head Demo at `84e692f` also passed, evidence
+`${TMPDIR}/t0013-input-lifecycle.WrGfX8/evidence`. PR #70 integrated as
+`e8b5726586fc79a4dd34dba50f4fdca51a7761a1`; parent #16 remains open.
 
 ## Non-claims
 
