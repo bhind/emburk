@@ -1,0 +1,37 @@
+name: Decision
+description: Record a product, architecture, compatibility, governance, or legal decision.
+title: "[Decision] "
+labels:
+  - project:emburk
+  - type:decision
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Options and trade-offs
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and provenance
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision owner and acceptance gate
+    validations:
+      required: true
+  - type: textarea
+    id: consequences
+    attributes:
+      label: Consequences and non-claims
+    validations:
+      required: true
