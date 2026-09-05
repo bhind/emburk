@@ -2,10 +2,13 @@
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
 - Branch: `research/t-0012-schema-boundary`
-- State: In Progress; acceptance pending
+- State: In Progress; independent acceptance passed, integration pending
 - Owner: Compatibility Host Implementer; records/integration: Project Manager
 - Slice estimate: 3 SP within Current SP 8; Initial SP remains 5. Do not sum
   parent and slice delivery or award parent completion.
+  Refinement score: implementation 1 (one bounded probe packet), uncertainty 1
+  (schema observations), verification 1 (instrumented reference checks),
+  environment 1 (established pinned Java route); raw 4 maps to 3 SP.
 - Dependencies: T-0011 and S01's pinned executable route; S04 integrated first
   through PR #67 as `79cbcb94b25cecf41bb5587f540a509445d08351`.
 
@@ -77,3 +80,52 @@ and reviewed before any policy implementation. Repair normal compilation,
 retrieval and harness failures within scope; stop expansion for new dependencies,
 production APIs, source translation, redistribution or material IP/security
 uncertainty requiring owner/legal review.
+
+## Primary acceptance and observations
+
+The primary agent ran the exact Demo by absolute path from `/private/tmp` at
+source revision `cc24730`: exit 0, three live successes, matching transaction/run
+fingerprints and all eleven mutated-copy format controls exercised. The
+unavailable-runtime 404/exit 56 and corrupted-copy exit 3 are expected negative
+controls, not successful semantic cases. A prior synthetic-exception test had
+retained a success marker incorrectly; primary reproduction failed with exit 4,
+and the selector was corrected before this accepted run.
+
+External evidence: `${TMPDIR}/t0012-config-presence-executable/run.qx7wtE/evidence`.
+Actual observations (not inferred from fixture IDs):
+
+| Fixture | Construction / process | Columns observed in transaction and run |
+|---|---|---|
+| empty | Success / 0 | Zero columns |
+| ordered6types | Success / 0 | Indices 0–5, names `boolean_column`, `long_column`, `double_column`, `string_column`, `timestamp_column`, `json_column`; type names `boolean`, `long`, `double`, `string`, `timestamp`, `json` respectively |
+| duplicate-name-differing-types | Success / 0 | Indices 0–1, both named `duplicate`, with type names `boolean`, `string` respectively |
+
+Each successful case emitted one marker immediately before Control.run and
+one independently read run-phase schema. This is not a callback-order, retry,
+lookup, nullability, or value-encoding contract. Duplicate names must not be
+silently lost by a future schema representation, but a Rust representation is
+not implemented by this slice.
+
+Evidence hashes (SHA-256):
+
+- `schema-cases.raw`: `937615ea17c89c66e2a50864d548056a58b10f212197e877e6f400c52581dfa0`
+- `schema-results.raw`: `89a418263b2cd2dca5eaf6d6b0e701af33d69f87cf8d9fc73cc9e66aa6718502`
+
+Synthetic validator cases demonstrate null-versus-empty exception-message
+transport only; they are not additional Embulk observations.
+
+Independent Tester acceptance at full revision
+`cc247301044627640656f7597445e47dc4a6aba6` reproduced the exact Demo, all eleven
+format mutations, S01 (9 cases), S02 (9 cases), and S04 (13 live comparisons):
+each full command exited 0. Primary shared-runner regression execution also
+exited 0. Format, strict workspace/all-target Clippy, shell syntax, workspace
+tests (9 passed, 1 intentionally ignored live test) and diff checks passed.
+
+Tester logs: `/private/tmp/emburk-t0012-s05-acceptance-20260906T005027/`.
+`schema-demo.log` SHA-256:
+`758e07774a41ad1923babcc70e1f0caaaec331ac905b8db3bdd4321f6c17be89`.
+Tester schema evidence `run.AgBYWy/evidence` has the same two raw-record hashes
+as primary acceptance above. Platform: macOS 26.5.1 arm64, Bash 3.2.57,
+Rust/Cargo 1.98.1, Python 3.14.6, Temurin JDK 17.0.20. No new source or runtime
+artifact is redistributed. Evidence remains Reference Observation / Integration
+only. PR integration remains pending; parent T-0012 is not complete.

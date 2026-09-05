@@ -85,6 +85,13 @@ each a fixture ID, pinned source locator, expected result and normalization
 rule. Normalization may remove only demonstrated nondeterminism; it must not
 erase a mismatch in precision, ordering, coercion, or externally visible error.
 
+T-0012/S05's [bounded reference record](provenance/T-0012-schema-boundary-probe.md)
+now observes empty, ordered six-type and duplicate-name schema handoff. These
+observations motivate preserving order and duplicate names in a future private
+representation; a name-keyed map alone would lose the observed duplicate case.
+They do not settle lookup, renaming, null handling, mismatch timing or physical
+value encodings, and do not establish a Rust schema API.
+
 ## Logical records and physical batches
 
 Keep the logical compatibility contract independent of physical Arrow storage.

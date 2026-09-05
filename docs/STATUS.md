@@ -117,3 +117,11 @@ Independent Tester acceptance reproduced the same results; PR #67 integrated
 the slice as `79cbcb9`. S05 is observing schema construction and phase handoff
 before any Rust schema policy. See the
 [S04 evidence record](provenance/T-0012-live-scalar-differential.md).
+
+S05 primary acceptance at `cc24730` recorded three schema construction/handoff
+successes: zero columns, six ordered logical types, and two same-name columns
+with distinct types. Actual transaction/run fingerprints matched. Its strict
+evidence validator and mutated-copy controls passed the exact Demo. Independent
+Tester reproduced it and S01/S02/S04 regressions; integration remains pending.
+This is Reference Observation /
+Integration only; no Rust schema, values or batches are added.

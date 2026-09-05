@@ -145,3 +145,6 @@ S05 (3 SP within Current SP 8, not additional points) observes three schema
 construction/handoff cases through the pinned executable before choosing a
 Rust schema representation. See its [packet](docs/provenance/T-0012-schema-boundary-probe.md).
 This is existing T-0012 scope and does not trigger another parent re-estimate.
+Primary and independent Tester acceptance passed at `cc24730`, including all
+three schema cases, validator controls and S01/S02/S04 regressions. Integration
+is pending; parent completion and schema support are not claimed.

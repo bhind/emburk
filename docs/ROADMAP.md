@@ -36,6 +36,11 @@ these bounded slices,
 that limited matrix does not satisfy the full configuration/schema/value or
 lifecycle gate.
 
+S05 primary schema observations at `cc24730` preserve ordered columns and
+duplicate names across handoff. Independent acceptance passed; integration is
+pending. They inform a future private schema representation, not Arrow/value
+encoding or completion of the Phase 0 contract gate.
+
 ## Phase 1: Native File-to-File MVP
 
 - Build the compact execution core and MVP CLI.
