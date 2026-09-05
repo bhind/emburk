@@ -13,4 +13,12 @@ Legacy plugins run in optional out-of-process JVM and JRuby hosts behind an Embu
 
 ## Consequences
 
-Class loaders, dependencies, and crashes are isolated from the Rust coordinator. Host failure cannot commit partial output. Hosted does not mean Native or Verified. Bundled hosts and artifacts require separate license and NOTICE review.
+Class loaders, dependencies, and crashes are isolated from the Rust coordinator.
+Host failure can leave external effects committed, partially published, or of
+unknown outcome; recovery depends on the source/sink contract. Hosted does not
+mean Native or Verified. Bundled hosts and artifacts require separate license
+and NOTICE review.
+
+Correction (2026-09-05, T-0021/S02): removed the unsupported guarantee that host
+failure cannot commit partial output. The accepted out-of-process boundary is
+unchanged; it does not supply an external transaction or rollback guarantee.
