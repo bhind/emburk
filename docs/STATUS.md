@@ -24,13 +24,16 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 is the only active task. No work item is currently `Ready`, `Review`,
-or `Blocked`.
+T-0021 is the only active work item. T-0012/S01 is `Blocked` on a missing
+runtime dependency admission decision and does not count toward the two-item
+combined `In Progress`/`Review` WIP limit. No work item is currently `Ready` or
+`Review`.
 
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
+| T-0012/S01 | Blocked | Core POM runtime cannot initialize `ModelManagerDelegateImpl`; missing artifact is not admitted |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -63,10 +66,21 @@ T-0021/S01 is structural only. It does not define configuration, schema,
 values, plugin traits, lifecycle, transactions, resume behavior, scheduling,
 or a stable public Rust API.
 
-T-0021/S01 is tracked in [PR #58](https://github.com/bhind/emburk/pull/58).
+T-0021/S01 was integrated through [PR #58](https://github.com/bhind/emburk/pull/58)
+as `5fe306a`. Independent acceptance at `cf56841` recorded successful format,
+Clippy, one unit test, workspace metadata, CLI run, and `git diff --check`.
+This is Unit/Contract evidence for the structural workspace boundary only.
 T-0021/S02 was integrated through [PR #60](https://github.com/bhind/emburk/pull/60)
-as `341f285`, after review and `git diff --check` at `5059900`. It provides a
-[runtime design proposal](RUST_RUNTIME_DESIGN.md), configuration/value fixture
+as `341f285`, after review and `git diff --check` at `5059900`. Planning is
+complete: it provides a [runtime design proposal](RUST_RUNTIME_DESIGN.md), configuration/value fixture
 worksheet, lifecycle responsibilities, and explicit uncertain commit outcomes.
 This is Planning evidence only. T-0012/T-0013 contracts and differential
 verification remain prerequisites to completing the parent task.
+
+T-0012/S01 executed a bounded public-artifact probe documented in [its
+provenance record](provenance/T-0012-config-presence-probe.md). The pinned core
+and two declared runtime dependencies resolved, but Java 17 failed before any
+matrix case because `ModelManagerDelegateImpl` was unavailable. The missing
+artifact was not added. This is a blocked Reference Observation / Integration
+diagnostic, not a verified Emburk semantic or the parent task's Differential
+(Embulk) evidence.

@@ -6,4 +6,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 
 | Record | Status |
 | --- | --- |
-| [T-0011 Embulk reference inventory](T-0011-embulk-reference-inventory.md) | Review |
+| [T-0011 Embulk reference inventory](T-0011-embulk-reference-inventory.md) | Done (Planning evidence) |
+| [T-0012/S01 configuration-presence reference probe](T-0012-config-presence-probe.md) | Blocked — runtime-only admission decision |

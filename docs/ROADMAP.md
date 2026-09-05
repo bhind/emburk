@@ -15,6 +15,11 @@ T-0021/S02 supplies the [Rust design worksheet](RUST_RUNTIME_DESIGN.md) for
 configuration/value fixtures and lifecycle/failure traces. Its proposed
 structure does not satisfy this exit gate; T-0012 and T-0013 must resolve the
 reference-dependent questions before semantic APIs are accepted.
+T-0012/S01 is blocked after its narrow public-artifact route found that the
+core POM runtime cannot initialize its configuration delegate. A separately
+reviewed runtime-only admission decision is required before it can gather the
+absent/null/default observation. It does not itself satisfy the
+configuration/schema/value contract or the Phase 0 exit gate.
 
 ## Phase 1: Native File-to-File MVP
 
