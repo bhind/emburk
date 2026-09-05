@@ -8,8 +8,8 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S07` and `T-0021/S05` are integrated. T-0013/S08 is `Review` in PR #80;
-T-0012, T-0021 and all other unfinished items are `Backlog`. No item is
+`T-0013/S08` and `T-0021/S05` are integrated. T-0012/S07 is `Review` in PR #81;
+T-0013, T-0021 and all other unfinished items are `Backlog`. No item is
 `Blocked`. Combined active WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -35,8 +35,8 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S08: commit-position comparison) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S07: bounded Page value observation) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Integration |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -314,3 +314,27 @@ and unchanged S04/S06 regressions. Workspace 29 passed/five intentional ignores
 and strict quality checks pass. Runtime policy is unchanged; evidence is
 Unit/Contract plus selected Differential only. Final-head acceptance and PR
 integration remain required; parent #16 remains open.
+
+S08 final-head acceptance passed at `ff8dec0`; PR #80 integrated as `de38a44`.
+S01–S08 account for 24 accepted slice-estimate points. Parent #16 stays open
+and returns to Backlog; cleanup/recovery remains required.
+
+T-0012/S07 is Review in PR #81 under its [packet](docs/provenance/T-0012-page-value-probe.md):
+3 SP for two original Boolean/Long/String/null Page observations before Rust
+value policy. Current estimate refines 8 to 34, Initial stays 5: known S03–S06
+already total 12 accepted SP, with observation, native comparison and remaining
+configuration/Float64/time/JSON uncertainty ahead. S01/S02 receive no retroactive
+points. Independent readiness review passed after explicit per-page reader
+exhaustion/callback capture was required. No parent completion follows.
+
+S07 initial capture at `66ef66a` yielded two successful observations with zero
+and three rows. Complete raw records retain exact null flags, typed values,
+reader exhaustion and nested finish/close. PM reviewed all events and recorded
+Stage B expectations at `ec558d1`; the strict validator and negative gates are
+now being implemented. No accepted Rust values or full reference gate yet.
+
+S07 primary and independent source acceptance pass at `1e7d5c9`: two live
+fixtures, 39 raw controls, two artifact controls, unchanged three-schema
+regression and strict quality gates. Final-head acceptance and PR integration
+remain required. Parent #15 remains open; no Rust values or new Differential
+claim follows from this bounded reference observation.

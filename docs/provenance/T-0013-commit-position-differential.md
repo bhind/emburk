@@ -1,7 +1,7 @@
 # T-0013/S08 selected commit-position differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review in [PR #80](https://github.com/bhind/emburk/pull/80); primary and independent source acceptance passed
+- State: Done as a bounded slice; PR #80 integrated as `de38a44`; parent remains open
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current 34 / Initial 8 remain unchanged. S01–S07
@@ -240,6 +240,23 @@ Two incorrect explicit-rustfmt filename attempts were harness errors, corrected
 in the final successful command. No source guard was weakened. Evidence remains
 Unit/Contract plus the three selected Differential projections only. Final-head
 acceptance and PR integration remain required.
+
+### Final-head acceptance and integration
+
+Exact three-script Demo passed with exit 0 at PR head
+`ff8dec0853b2bc130939fda28ca01aaa2db394fa`. All seven selected live projections
+and S08/S04/S06 57/13/31 raw controls passed; source hashes still match the
+independently accepted revision. Combined logs:
+`/private/tmp/t0013-s08-final-head.5D5wob`; stdout SHA-256
+`127653bcb34fc936d08b2ff1264d5ab8e50cd564db9057b5478c6d9fbb517a5e`;
+stderr empty. Evidence roots: `${TMPDIR}/t0013-s08.IqcjnY`,
+`${TMPDIR}/t0013-s04.GkerLX`, `${TMPDIR}/t0013-s06.PkqMQS`.
+Normalized S08 manifest hash matches both frozen-source runs. Project delivery
+and governance audits passed (52 items, WIP 1/2), and source/worktree/head checks
+passed before exact-head guarded squash integration. PR #80 merged as
+`de38a442d57060759d1a78a4ec206fc48a477e23`. This 3 SP slice is accepted;
+S01–S08 total 24 accepted slice-estimate points, not parent completion. Parent
+#16 stays open and returns to Backlog for remaining cleanup/recovery work.
 
 ## Provenance and non-claims
 

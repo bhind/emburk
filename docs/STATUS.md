@@ -34,9 +34,9 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S08 is the only serial active test-only comparison after S05 integration.
-Combined active WIP is one of two; no item is `Blocked`. T-0012 and T-0021
-remain Backlog; all three parent contracts remain open.
+T-0013/S08 is integrated through PR #80. T-0012/S07 is the single active
+isolated reference observation. Combined active WIP is one of two;
+no item is `Blocked`. T-0012, T-0013 and T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -44,8 +44,8 @@ remain Backlog; all three parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013/S08 | Review | PR #80; three selected commit-position projections |
+| T-0012/S07 | Review | PR #81; two bounded Page value observations |
+| T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -267,3 +267,27 @@ and unchanged S04/S06 regressions. Workspace 29 passed/five intentional ignores
 and strict quality checks pass. Runtime policy is unchanged; evidence is
 Unit/Contract plus selected Differential only. Final-head acceptance and PR
 integration remain required; parent #16 remains open.
+
+S08 final-head exact Demo passed at `ff8dec0`; PR #80 integrated as `de38a44`.
+Its three selected Differential projections are accepted, not a general recovery
+contract. Parent T-0013 returns to Backlog and remains open. T-0012/S07 now
+prepares two isolated PageBuilder/test-local collector/PageReader observations
+under its [packet](provenance/T-0012-page-value-probe.md), before selecting any
+Rust value representation. Only Boolean/Long/String and explicit null inputs
+are selected. No runtime, public API, Page encoding or transfer claim follows.
+
+S07 initial capture at `66ef66a` returned two successful reference executions:
+empty had zero Pages/rows; typed-null had one Page and three ordered rows with
+true/MAX/empty text, false/MIN/newline-and-lambda text, then three explicit nulls.
+Primary reviewed the complete raw capture before authorizing semantic guards
+at `ec558d1`. This is initial observation, not source acceptance or a selected
+Rust representation. Full negative gates, independent reproduction and final
+integration remain required.
+
+S07 primary and independent source acceptance pass at `1e7d5c9`: two fresh
+Page observations, 39 diagnostic-specific repaired raw controls, two artifact
+negatives and unchanged S06 three-schema comparison. Workspace 29 passed/five
+intentional ignores, formatting, strict Clippy and Bash syntax pass. Evidence
+is selected Reference Observation / Integration plus validator Unit/Contract;
+no Rust values, production transfer or new Differential result. Final-head
+acceptance and integration remain required; parent and phase gates stay open.

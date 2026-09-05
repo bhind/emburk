@@ -299,6 +299,31 @@ selected Differential, not general index/concurrency, data transfer, durability,
 resume, public API or production readiness. Final-head acceptance and integration
 remain required; the parent and delivery gates stay open.
 
+S08 final-head exact Demo passed at `ff8dec0`; PR #80 integrated as `de38a44`.
+Its three selected Differential projections are accepted, not a general recovery
+contract. Parent T-0013 returns to Backlog and remains open. T-0012/S07 now
+prepares two isolated PageBuilder/test-local collector/PageReader observations
+under its [packet](provenance/T-0012-page-value-probe.md), before selecting any
+Rust value representation. Only Boolean/Long/String and explicit null inputs
+are selected. No runtime, public API, Page encoding or transfer claim follows.
+
+S07 initial capture at `66ef66a` returned two successful reference executions:
+empty had zero Pages/rows; typed-null had one Page and three ordered rows with
+true/MAX/empty text, false/MIN/newline-and-lambda text, then three explicit nulls.
+Primary reviewed the complete raw capture before authorizing semantic guards
+at `ec558d1`. This is initial observation, not source acceptance or a selected
+Rust representation. Full negative gates, independent reproduction and final
+integration remain required.
+
+S07 primary and independent source acceptance pass at `1e7d5c9`: two fresh
+Page observations, 39 diagnostic-specific repaired raw controls, two artifact
+negatives and unchanged S06 three-schema comparison. Workspace 29 passed/five
+intentional ignores, formatting, strict Clippy and Bash syntax pass. Evidence
+is selected Reference Observation / Integration plus validator Unit/Contract;
+no Rust values, production transfer or new Differential result. Final-head
+acceptance and integration remain required; parent and phase gates stay open.
+
+
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
 transaction/open could already have effects in a real plugin. Commit durability
