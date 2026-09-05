@@ -260,3 +260,10 @@ Demo passed at `02673ba`; PR #79 integrated as `d36cf28`. T-0021 stays open and
 returns to Backlog. T-0013/S08 now prepares three selected live commit-position
 comparisons without changing runtime policy. Current 34 / Initial 8 SP remain
 unchanged; the 3 SP slice fits the current forecast.
+
+S08 primary and independent source acceptance pass at `4c591a0`: three selected
+normal/first/middle live projections, 57 raw controls, three local Rust tests,
+and unchanged S04/S06 regressions. Workspace 29 passed/five intentional ignores
+and strict quality checks pass. Runtime policy is unchanged; evidence is
+Unit/Contract plus selected Differential only. Final-head acceptance and PR
+integration remain required; parent #16 remains open.

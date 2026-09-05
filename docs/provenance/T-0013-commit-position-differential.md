@@ -169,6 +169,78 @@ the PM's requested cap-before-allocation, ordinary validator function, exact
 Bash invocation and complete identity-retention corrections. Final source and
 actual acceptance remain required.
 
+### Primary frozen-source acceptance
+
+Source revision: `4c591a064b3196b243db9f9b5befd885749b9628`.
+Exactly the four owned paths changed; the coordinator edit only registers the
+new child. SHA-256 (driver, wrapper, Rust child, registration file):
+
+- `f1ba46d6f581bf51abfaaccaa0325532c6ae35cbd1e9283dafc461cc29c47389`
+- `3a7faa157c590dd23c4ab231feb7a0ce4e9e26bc07ad4b49bb61ffefd5b9cec0`
+- `9dab02e74d1d63c1e4c96c10d8df6fb36974518454e1684585744b1fb6ed8769`
+- `61d24e7a4d74826db1ea732e4c42cc9518a1d6ae4cba3f18c13b2dca1b356878`
+
+PM reviewed the complete adapter/bridge/wrapper. Before freezing, review moved
+the cap before allocation, replaced dynamic execution with an ordinary validator,
+made exclusions exhaustive, removed an unapproved cross-case equal-N assumption,
+and added mixed N=3/8 local validity. Direct negative tests now start from fresh
+execution contexts and assert the intended diagnostic; a draft had accidentally
+left a mutated plan that could mask later trace defects. Failed control closure
+order is checked before those otherwise unobserved events are excluded.
+All findings were resolved before the frozen-source acceptance below.
+
+Primary exact three-script Demo at this revision exited 0. S08 compared three
+live projections with 57 repaired raw controls, three local Rust contract tests
+and one actually executed ignored-live test. The unique full S07 gate passed,
+including its 57 controls, two artifact controls and unchanged full S05 gate.
+Unchanged S04 and S06 regressions compared two cases each with 13/31 raw controls.
+Workspace tests passed 29 with five intentional live-test ignores; format,
+strict workspace/all-target Clippy, explicit Rust 2024 child formatting, separate
+shell syntax, external-cache Python syntax and diff checks all passed.
+
+Primary combined logs: `/private/tmp/t0013-s08-primary-acceptance.eTcg45`.
+S08/S04/S06 evidence: `${TMPDIR}/t0013-s08.f4vL9U`,
+`${TMPDIR}/t0013-s04.3mC8zx`, `${TMPDIR}/t0013-s06.F6dYCx`.
+Reference evidence: `${TMPDIR}/t0013-output-commit-position.YiBPe0/evidence`.
+Combined stdout SHA-256:
+`45a218333b2028c5227ce94e63e4cae0ac3b5fc3743ff89018a86e00556fe3ba`;
+stderr is empty. Normalized manifest SHA-256:
+`29421eae3f2d625b8f4f9576644c3d9b3648df70c6d9a05792351f1faff8ec06`.
+Raw cases/traces SHA-256:
+`093a3679990378fa3a756d80ff2d99f88781478ac9e20387ebbc0d3ee091a386` /
+`f5ff0dd583128b49343b380472e08e3e988beaccbd51cb99b4642be1767f71d2`.
+
+Observed N=8 in this run: normal compares 44 events and reports 1/8; first k=0
+and middle k=4 each compare 43 events with reports 1/0 and 1/4. Complete event
+equality, not those equal failure totals, establishes the different committed
+prefix and aborted suffix for each selected case. Exact runtime-local errors
+were validated before normalization. Local N=3 and mixed N tests are
+Unit/Contract, not additional reference observations. Independent reproduction,
+final-head acceptance and integration remain required; no wider claim follows.
+
+### Independent frozen-source acceptance
+
+The read-only Tester independently reproduced the exact three-script Demo at
+`4c591a064b3196b243db9f9b5befd885749b9628`, with actual tool exit 0 and
+`CHILD_EXIT=0`. All four source hashes and the registration-only boundary match.
+Combined logs: `/private/tmp/t0013-s08-independent-persistent`; stdout SHA-256
+`20ffdb8a76b575c39faf4a065ab36003315c9bf29dbb7bb5e21691ab87438db`;
+stderr is empty. S08/S04/S06 roots are `${TMPDIR}/t0013-s08.mrgCcv`,
+`${TMPDIR}/t0013-s04.fklU8w`, `${TMPDIR}/t0013-s06.MZXU4h`.
+The normalized manifest hash matches the primary run. Three selected live
+projections, 57 new raw controls, three local Rust controls, actual ignored-live
+execution, full S07 gate and unchanged S04/S06 regressions passed. Workspace
+29 passed/five intentional ignores, formatting, strict Clippy, explicit child
+formatting, shell/Python syntax and diff checks passed independently.
+
+Retained non-passing attempts remain distinct: the sandbox run under
+`/private/tmp/t0013-s08-independent.TC9pWu` encountered an artifact-control
+download failure; early nonpersistent network yields were not child exits.
+Two incorrect explicit-rustfmt filename attempts were harness errors, corrected
+in the final successful command. No source guard was weakened. Evidence remains
+Unit/Contract plus the three selected Differential projections only. Final-head
+acceptance and PR integration remain required.
+
 ## Provenance and non-claims
 
 Use original repository-owned S06/S07 patterns and their pinned Embulk 0.11.5

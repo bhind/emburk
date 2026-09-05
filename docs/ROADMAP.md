@@ -109,6 +109,11 @@ Final-head exact Demo passed at `02673ba` and PR #79 integrated as `d36cf28`;
 phase gates stay open. T-0013/S08 now prepares three selected position
 comparisons with unchanged S04/S06 regressions, not a wider recovery claim.
 
+S08 primary and independent source acceptance now passes at `4c591a0`, including
+three selected live projections and unchanged S04/S06 regressions. This is a
+test-only Differential boundary; no runtime policy, public type or phase gate
+changes. Final-head acceptance and integration remain required.
+
 ## Phase 1: Native File-to-File MVP
 
 - Build the compact execution core and MVP CLI.

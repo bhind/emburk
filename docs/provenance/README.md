@@ -23,4 +23,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0013/S06 selected output-commit differential](T-0013-output-commit-differential.md) | Done (two selected Differential projections; PR #77) |
 | [T-0013/S07 output commit position observation](T-0013-output-commit-position-probe.md) | Done (bounded reference slice; PR #78, `14cc2a6`) |
 | [T-0021/S05 private commit abort suffix](T-0021-commit-abort-suffix.md) | Done (bounded slice; PR #79, `d36cf28`) |
-| [T-0013/S08 selected commit-position differential](T-0013-commit-position-differential.md) | In Progress; independent packet readiness passed |
+| [T-0013/S08 selected commit-position differential](T-0013-commit-position-differential.md) | In Progress; primary and independent source acceptance passed at `4c591a0` |

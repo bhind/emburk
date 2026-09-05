@@ -134,6 +134,15 @@ Differential result or public verified plugin entry. Final-head acceptance
 passed at `02673ba`; PR #79 integrated as `d36cf28`. S08 prepares the separate
 three-case first/middle comparison gate; no new match is claimed before it passes.
 
+S08 primary and independent acceptance at `4c591a0` now passes three selected
+normal/first/middle empty-fixture comparisons, 57 raw controls and unchanged
+S04/S06 regressions. Full event order, committed reports and aborted suffixes
+match after exact runtime-local error validation. Workspace 29 passed/five
+intentional ignores and strict checks pass. Evidence is Unit/Contract plus
+selected Differential, not general index/concurrency, data transfer, durability,
+resume, public API or production readiness. Final-head acceptance and integration
+remain required; the parent and delivery gates stay open.
+
 ## Adding an Entry
 
 Each entry must identify the Embulk version, exact plugin artifact, configuration fixture, expected evidence, source/provenance record, and known deviations. Claims enter this document only after review evidence exists.

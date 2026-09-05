@@ -290,6 +290,15 @@ observation nor this private candidate establishes a production recovery policy
 or first/middle Differential evidence. S08 prepares the separate three-case
 comparison of actual event order/reports after exact runtime-local error checks.
 
+S08 primary and independent acceptance at `4c591a0` now passes three selected
+normal/first/middle empty-fixture comparisons, 57 raw controls and unchanged
+S04/S06 regressions. Full event order, committed reports and aborted suffixes
+match after exact runtime-local error validation. Workspace 29 passed/five
+intentional ignores and strict checks pass. Evidence is Unit/Contract plus
+selected Differential, not general index/concurrency, data transfer, durability,
+resume, public API or production readiness. Final-head acceptance and integration
+remain required; the parent and delivery gates stay open.
+
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
 transaction/open could already have effects in a real plugin. Commit durability

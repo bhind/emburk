@@ -307,3 +307,10 @@ normal/first/middle empty-fixture projections with actual private Rust execution
 strict raw validation and negative controls. S04/S06/S07 sources remain unchanged;
 no production algorithm or public type changes. S01–S07 account for 21 accepted
 SP, not parent completion; remaining cleanup/recovery work stays queued.
+
+S08 primary and independent source acceptance pass at `4c591a0`: three selected
+normal/first/middle live projections, 57 raw controls, three local Rust tests,
+and unchanged S04/S06 regressions. Workspace 29 passed/five intentional ignores
+and strict quality checks pass. Runtime policy is unchanged; evidence is
+Unit/Contract plus selected Differential only. Final-head acceptance and PR
+integration remain required; parent #16 remains open.
