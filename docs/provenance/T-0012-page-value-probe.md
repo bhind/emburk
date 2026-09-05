@@ -1,7 +1,7 @@
 # T-0012/S07 bounded Page value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Review in [PR #81](https://github.com/bhind/emburk/pull/81); primary and independent source acceptance passed
+- State: Done as a bounded slice; PR #81 integrated as `203d7da`; parent remains open
 - Branch: `research/t-0012-page-value-probe`
 - Priority: P0; parent T-0010
 - Owner: Compatibility Host Implementer; records/decisions/integration: PM
@@ -300,6 +300,21 @@ S06: `${TMPDIR}/t0012-s06.ZJKLSy`. Raw cases/traces SHA-256:
 `c4c9d48f54ad164bfa7f2bd4646835419809647ac54c86c85395b2b30c5bc584`.
 No remaining acceptance finding. Final-head Demo and PR integration remain
 required; source acceptance does not complete parent #15 or any native value gate.
+
+### Final-head acceptance and integration
+
+Final PR-head exact Demo passed with exit 0 at
+`3b95ecdb6918b6ff6449ffb977ee79dba1c0dc21`: two Page fixtures, 39 raw controls,
+artifact controls, one full marker and unchanged three-schema regression.
+Source hashes match frozen acceptance; only canonical records changed afterward.
+Logs: `/private/tmp/t0012-s07-final-head.pFH4ht`; stdout SHA-256
+`8b6a73766fc2f0f35c41041d58d30bc19a1753cd3c5c99ab5a6790867ae287b3`;
+stderr empty. Page evidence: `${TMPDIR}/t0012-page-value-probe/run.kbwGa8/evidence`;
+S06: `${TMPDIR}/t0012-s06.sHVg2E`. Project delivery/governance and clean-head
+checks passed before exact-head guarded squash integration. PR #81 merged as
+`203d7daa9fe27f7421e06ea0a0eca91cc1dc1ff8`. This 3 SP slice is accepted;
+known S03–S07 slice estimates total 15 SP, not parent completion or retroactive
+S01/S02 points. Parent #15 stays open for remaining contracts.
 
 ## Evidence class and non-claims
 

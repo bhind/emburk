@@ -323,6 +323,13 @@ is selected Reference Observation / Integration plus validator Unit/Contract;
 no Rust values, production transfer or new Differential result. Final-head
 acceptance and integration remain required; parent and phase gates stay open.
 
+S07 final-head Demo passed at `3b95ecd`; PR #81 integrated as `203d7da`.
+Its two bounded reference observations are accepted. T-0012/S08 now prepares
+private Null/Boolean/Signed64/Text records and selected getter-result comparison
+under ADR-0011. Schema coupling, physical encoding and public API remain outside
+this packet. No new native value or Differential claim before source acceptance;
+parent and phase delivery gates remain open.
+
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
