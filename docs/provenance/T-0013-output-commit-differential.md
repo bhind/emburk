@@ -1,7 +1,7 @@
 # T-0013/S06 selected output-commit differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review; primary and independent source acceptance passed, [PR #77](https://github.com/bhind/emburk/pull/77) integration pending
+- State: Done (bounded slice only); [PR #77](https://github.com/bhind/emburk/pull/77) integrated as `3b16aaf`
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP remains 21; Initial SP remains 8.
@@ -179,8 +179,11 @@ log SHA-256:
 driver evidence-manifest SHA-256:
 `3db9d97094a45bd65c2add81908e110e5c33b9e40e3da13f5c246c31e677b5f4`.
 Platform is the same macOS 26.5.1 build 25F80 / Darwin 25.5.0 ARM64.
-All source hashes remained unchanged. Final PR-head acceptance and integration
-remain required; parent #16 remains open.
+All source hashes remained unchanged. Final PR-head acceptance at
+`7d90f5d1edb7873daff3fbe1754b0caf8bfa5687` passed the exact Demo and strict
+checks; final roots `${TMPDIR}/t0013-s06.amEKT4` and
+`${TMPDIR}/t0013-s04.UjEDqa`. PR #77 integrated as
+`3b16aaf71794200f02e4eacac16de377a23f8ad3`; parent #16 remains open.
 
 ## Reference and reuse record
 

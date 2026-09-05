@@ -64,8 +64,10 @@ failure, preserving S04 and the coordinator algorithm. Strict raw validation
 precedes physical-order projection; exact errors are validated within each
 runtime before comparing category/index. Each failed Rust scope is checked
 individually before excluding the two uninstrumented control failures. Primary
-and independent acceptance pass at `a284f8b`; final-head acceptance and
-integration remain required.
+and independent acceptance pass at `a284f8b`; final-head acceptance passed at
+`7d90f5d` and PR #77 integrated as `3b16aaf`.
+S07 prepares first/middle reference observations only. Unattempted-handle policy
+must follow raw evidence and a later decision, not extension by analogy.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe

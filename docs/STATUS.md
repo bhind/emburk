@@ -34,7 +34,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S06 (`Review`, PR #77) is the only serial work item. Combined active WIP is one of
+T-0013/S07 (`Ready`) is the next serial work item. Combined active WIP is zero of
 two; no item is `Blocked`. T-0012 and T-0021 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
@@ -45,7 +45,7 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013/S06 | Review | Two selected live output-commit projections; PR #77 |
+| T-0013/S07 | Ready | Observe first/middle commit failures before choosing Rust policy |
 | T-0021 | Backlog | S01–S04 integrated; remaining runtime contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -223,5 +223,11 @@ cleanup reports 1/8 and 1/7 in the observed 1/8 plan), 30 raw controls, two loca
 bridge tests and unchanged S04 live regression. Workspace tests pass 23 with
 four intentional ignores; formatting, strict Clippy and syntax checks pass.
 Independent Tester reproduced these results at the same source revision;
-final-head acceptance and integration remain pending. Current/Initial SP remain
-21/8; T-0021 is requeued without closing its parent.
+final-head acceptance at `7d90f5d` passed and PR #77 integrated as `3b16aaf`.
+T-0021 remains requeued without closing its parent.
+
+T-0013/S07 is prepared as a reference-only first/middle commit observation.
+Its two-stage packet requires raw capture review before post-failure assertions;
+no Rust policy is selected. Current SP is refined 21 to 34, Initial remains 8:
+S01–S06 used 18 accepted SP, with position observation, native comparison and
+cleanup/recovery uncertainty still remaining. This is forecast, not completion.

@@ -272,8 +272,10 @@ T-0013/S06 primary acceptance at `a284f8b` compares both selected S05 live
 projections to actual private Rust execution. It preserves physical event order,
 compares actual result/report counts and validates exact runtime-local errors
 before category/index normalization. Independent Tester reproduced these results;
-final-head acceptance and integration remain pending. No production algorithm
-or arbitrary-index contract is added.
+final-head acceptance passed at `7d90f5d` and PR #77 integrated as `3b16aaf`.
+No production algorithm or arbitrary-index contract is added. S07 now prepares
+first/middle observations, explicitly recording later-handle callbacks and
+cleanup reports before any wider policy decision.
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output

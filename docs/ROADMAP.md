@@ -91,8 +91,10 @@ PR #76 integrated as `b5cfb87`. Phase gates remain open. T-0013/S06 now prepares
 two selected output-commit comparisons without widening the runtime contract.
 S06 primary acceptance at `a284f8b` passes both declared live projections and
 strict negative controls; independent Tester reproduced these results.
-Final-head acceptance and integration remain pending.
+Final-head acceptance passed at `7d90f5d` and PR #77 integrated as `3b16aaf`.
 This closes neither arbitrary-index failure nor phase delivery gates.
+S07 prepares a separate reference-only first/middle observation with an explicit
+capture-before-expectations gate; Rust policy remains unchanged.
 
 ## Phase 1: Native File-to-File MVP
 
