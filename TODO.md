@@ -332,3 +332,9 @@ and three rows. Complete raw records retain exact null flags, typed values,
 reader exhaustion and nested finish/close. PM reviewed all events and recorded
 Stage B expectations at `ec558d1`; the strict validator and negative gates are
 now being implemented. No accepted Rust values or full reference gate yet.
+
+S07 primary and independent source acceptance pass at `1e7d5c9`: two live
+fixtures, 39 raw controls, two artifact controls, unchanged three-schema
+regression and strict quality gates. Final-head acceptance and PR integration
+remain required. Parent #15 remains open; no Rust values or new Differential
+claim follows from this bounded reference observation.

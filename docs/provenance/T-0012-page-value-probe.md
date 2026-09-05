@@ -229,6 +229,78 @@ Also run separate Bash syntax checks, source/diff hashes and workspace tests,
 format and strict Clippy. Primary and read-only Tester reproduce the exact Demo
 at frozen source; final PR-head Demo passes before integration.
 
+## Primary frozen-source acceptance
+
+Frozen source: `1e7d5c987bac2ca9068606b7bb9a57147c3dea0c`.
+Exactly the three owned new source/test paths differ from the activation base;
+all existing schema/lifecycle/Rust sources remain unchanged. Java hash remains
+`bb49b204003b3d021d78f0a7113136471f4f0ab70ea9a3df971414a7a8f66836`.
+Final runner/wrapper SHA-256:
+`c11df66e397beef649d65ee07bd757a6b64b98fd58ab216bcfa7af0ac07aaafa` /
+`08644bf4695df0753a8ba049aacc726e098aac58dcff97e57a7f95234411bb2b`.
+
+PM reviewed the complete source. Before freeze, review separated transport-only
+capture from exact semantic validation, bounded canonical decimals before int
+conversion, enforced combined trace order and actual log extraction equality,
+and made duplicate-case testing preserve two rows to reach identity rejection.
+Wrong process exit and overlong sequence received diagnostic-specific controls.
+The writer's dedicated Error keeps evidence failures outside semantic catches.
+The final full marker is emitted only by the wrapper after fresh positive,
+artifact-negative and repaired raw-negative gates; validate-only cannot emit it.
+
+Primary exact two-script Demo exited 0 at this frozen revision. It validated
+two fresh Page fixtures (32/110 events), all 39 repaired raw controls, corrupt
+artifact exit 3 and unavailable-runtime exit 56, exactly one full marker, and
+unchanged S06 three live schema comparisons. Source identity in the live
+evidence records the exact revision. Workspace tests passed 29 with five
+intentional live ignores; formatting, strict workspace/all-target Clippy,
+separate Bash syntax and ordinary/staged diff checks passed. Platform remains
+macOS 26.5.1 arm64, Temurin 17.0.20, Rust/Cargo 1.98.1, Python 3.14.6,
+Bash 3.2.57. No broader suite or live-test ignore is counted as a Page observation.
+
+Primary combined logs: `/private/tmp/t0012-s07-primary-acceptance.JONwid`.
+Stdout SHA-256:
+`1e06241f0081e161a82b95ed9b5d02a09157ed882daa858f7d8232e6b72e216a`;
+stderr is empty (runner warnings remain in its separate retained attempt log).
+Page evidence: `${TMPDIR}/t0012-page-value-probe/run.JxF6HZ/evidence`;
+S06 regression: `${TMPDIR}/t0012-s06.YP3O0O`.
+Raw cases/traces SHA-256:
+`cbff932bf5f6a30e130313a4f64ae39e5641d8d1ccc521da6a89df8a942387f8` /
+`fd3e90c5f2a21c3ebebdd703d3402d4e604e3728f5bcd99530ec340841900295`.
+Empty/typed-null trace SHA-256:
+`22325d9f5e9a61936064b69e91e6eb359558bf3966c29c401383a7e910e19b92` /
+`4e32f5b1a74157c73c0803a182febb2aaf6b1d99be0b048f2d9439ad8c42ba45`.
+
+Implementer post-freeze exact Demo independently of the primary run also passed:
+`/private/tmp/t0012-s07-stage-b.SMrOYM/frozen-demo.stdout.log`, Page evidence
+`run.dCXoHy/evidence`, S06 `t0012-s06.8o2CAz`. Earlier 37-control/pre-commit
+passing drafts remain separate and do not substitute for frozen acceptance.
+Read-only Tester reproduction, final-head acceptance and integration remain
+required. Evidence is selected Reference Observation / Integration plus local
+validator Unit/Contract; unchanged S06 regression adds no new Differential claim.
+
+### Independent frozen-source acceptance
+
+Read-only Tester reproduced the exact Demo at `1e7d5c9` with persistent-session
+actual child/tool exit 0. Two Page cases, 39 intended-diagnostic raw controls,
+both artifact controls, one full marker and three unchanged S06 live schema
+comparisons passed. Source hashes and the three-path source boundary match.
+Workspace 29 passed/five intentional ignores, formatting, strict Clippy,
+separate new runner/wrapper Bash syntax and diff checks passed independently.
+The runner syntax check was added explicitly after the initial report listed
+the existing S06 wrapper instead; no full Demo rerun or source change was needed.
+
+Logs: `/private/tmp/t0012-s07-independent-persistent/demo.stdout.log` and
+`demo.stderr.log`; stdout SHA-256
+`14f8fef53349d0a10b59fcb4c0916a5265b3df2e5fe82ef0f03f88dfce50fae2`;
+stderr empty. Primary inspected the retained logs and hashes.
+Page evidence: `${TMPDIR}/t0012-page-value-probe/run.dX6Riz/evidence`;
+S06: `${TMPDIR}/t0012-s06.ZJKLSy`. Raw cases/traces SHA-256:
+`ff209a22d53e6cd29bdcfe4bdb1d0903ef5a127a12ba019db52dd7253cfddd04` /
+`c4c9d48f54ad164bfa7f2bd4646835419809647ac54c86c85395b2b30c5bc584`.
+No remaining acceptance finding. Final-head Demo and PR integration remain
+required; source acceptance does not complete parent #15 or any native value gate.
+
 ## Evidence class and non-claims
 
 Planning until capture; Reference Observation / Integration only after accepted

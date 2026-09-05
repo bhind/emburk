@@ -315,6 +315,14 @@ at `ec558d1`. This is initial observation, not source acceptance or a selected
 Rust representation. Full negative gates, independent reproduction and final
 integration remain required.
 
+S07 primary and independent source acceptance pass at `1e7d5c9`: two fresh
+Page observations, 39 diagnostic-specific repaired raw controls, two artifact
+negatives and unchanged S06 three-schema comparison. Workspace 29 passed/five
+intentional ignores, formatting, strict Clippy and Bash syntax pass. Evidence
+is selected Reference Observation / Integration plus validator Unit/Contract;
+no Rust values, production transfer or new Differential result. Final-head
+acceptance and integration remain required; parent and phase gates stay open.
+
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
