@@ -88,3 +88,14 @@ require explicit license, notice, redistribution, patent, or trademark review.
 
 Remote publication, Project visibility changes, paid services, new credentials,
 destructive actions, and legal-clearance claims always remain owner decisions.
+
+Automation and audits must discover the repository-associated Project from the
+authenticated repository context. They must not embed a personal login,
+Project number, URL, or credential. Discovery fails closed unless exactly one
+open linked Project is found, and audit output must never include tokens or
+secret values.
+
+Project delivery operations preserve established field meanings: Story Points
+is Estimate, Work Type is Type, Assignees identifies people, and Owner Role
+identifies authority. Iteration and date fields add scheduling metadata without
+changing repository records into forecasts or delivery claims.

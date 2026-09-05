@@ -7,7 +7,7 @@
 - Lifecycle owner: Project Manager
 - Mutation owner: Compatibility Host Implementer
 - Required reviewer: Librarian (Vreji), reviewed 2026-09-05; Project Manager
-  acceptance remains pending
+  independently reproduced the Demo Command at `1f2e737` on 2026-09-05
 - Access date: 2026-09-05
 - State: `In Progress`; the core-POM diagnosis is retained, while the active
   route uses the official self-contained executable's normal initialization.
@@ -106,9 +106,16 @@ exact boundary and continue once corrected; stop scope expansion only for a
 material license/NOTICE/redistribution uncertainty, or if work would add
 Emburk semantics or an upstream build.
 
+The pull request references, but must not close, Issue #15 because S01 is a
+partial slice and T-0012 remains open. The repository's automatic Review
+transition is intentionally limited to a closing-linked Issue. The Project
+Manager therefore records the S01 Review transition manually after the pull
+request head and acceptance evidence are reconciled.
+
 ## Runtime evidence state
 
-- Demo Command: passed on 2026-09-05 at the reviewed candidate; corrupt-copy
+- Demo Command: `tests/t0012_config_presence_probe_test.sh` passed at
+  `1f2e73767d6091375c89b7355b2a44d24f3495c2` on 2026-09-05; corrupt-copy
   checksum rejection exited 3 and unavailable-asset retrieval exited 56.
 - Environment: Temurin Java 17.0.20 on macOS arm64.
 - Official executable: v0.11.5 asset URL recorded above; SHA-256

@@ -7,9 +7,10 @@ GitHub Project mirror these stable identifiers for coordination. Parent epics
 are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
-Current queue state: `T-0002` and `T-0011` are `Done`; `T-0021` and
-`T-0012/S01` are `In Progress`; and every other item is `Backlog`. No item is
-`Ready`, `Review`, or `Blocked`. This is the two-item WIP limit.
+Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
+`T-0021` and `T-0012/S01` are `In Progress`; and every other item is
+`Backlog`. No item is `Ready`, `Review`, or `Blocked`. This is the two-item
+WIP limit.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -23,8 +24,8 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0001 | Epic: Governance and traceability | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0002 | Establish canonical records and stable IDs | Done | P0 | 3 | None | Project Manager | Unit/Contract |
-| T-0003 | Establish roles, mutation ownership, and WIP enforcement | Backlog | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
-| T-0004 | Implement Project synchronization audit | Backlog | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
+| T-0003 | Establish roles, mutation ownership, and WIP enforcement | Done | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
+| T-0004 | Implement Project synchronization audit | Done | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
 | T-0005 | Establish provenance, license, NOTICE, and SBOM gates | Backlog | P0 | 5 | T-0002 | Project Manager | Release |
 | T-0006 | Establish trademark and patent review checkpoints | Backlog | P1 | 2 | T-0005 | Project Manager | Planning |
 
@@ -122,9 +123,11 @@ T-0021 has two bounded slices under one serial integration lane:
   complete T-0012/T-0013 or authorize guessed semantic implementations.
 
 These estimates are within the parent's 5 SP, not additional points or accepted
-velocity. Parent completion retains its listed dependencies. T-0012/S01 uses
-the official self-contained executable through a local-only Maven-style input
-plugin, rather than assembling the core POM graph. It probes only
-presence/null/default behavior from the pinned reference and cannot complete
-the parent Differential gate. The combined `In Progress` plus `Review` WIP
-limit remains two.
+velocity. Parent completion retains its listed dependencies.
+
+T-0003 is complete through PR #62, and T-0004/S01 is complete through PR #63.
+T-0012/S01 uses the official self-contained executable through a local-only
+Maven-style input plugin, rather than assembling the core POM graph. It probes
+only presence/null/default behavior from the pinned reference and cannot
+complete the parent Differential gate. T-0021 and T-0012/S01 occupy the
+combined `In Progress` plus `Review` WIP limit of two.

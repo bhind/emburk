@@ -32,6 +32,8 @@ combined `In Progress`/`Review` WIP limit. No work item is currently `Ready`,
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
+| T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
+| T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012/S01 | In Progress | Local-only probe through the pinned official self-contained executable |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
@@ -40,6 +42,24 @@ unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/
 is the coordination mirror. Its 52 items, lifecycle states, initial estimates,
 roles, dependencies, workstreams, evidence classes, and views were reconciled
 to the repository records on 2026-09-05.
+
+T-0003 adds a fail-closed, read-only audit that dynamically discovers the one
+open Project linked to the repository, validates the combined `In Progress`
+plus `Review` WIP limit, and exposes reusable packet-validation checks. It does
+not automate lifecycle transitions or provide delivery analytics.
+
+T-0004/S01 added weekly Iteration, Start date, and Target date fields plus the
+requested delivery and missing-metadata views. The current iteration contains
+T-0004, blocked T-0012, and T-0021 for 15 Story Points. A read-only snapshot
+records remaining Issues, remaining points, completion, and Status distribution
+without double-counting pull requests.
+
+T-0004 was integrated through PR #63 as `fce883c`. Issue #11 closed and its
+Project item moved to Done. The first `project-metrics` snapshot was committed
+as `7bd0807`: W36 had 2 remaining Issues / 10 Story Points and 1 completed
+Issue / 5 Story Points after integration. The Action is installed and active;
+scheduled and ready-for-review executions still require the repository owner
+to add the `PROJECTS_TOKEN` secret, so no hosted-run success is claimed.
 
 ## Evidence and non-claims
 
