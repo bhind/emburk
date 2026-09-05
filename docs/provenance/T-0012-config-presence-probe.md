@@ -9,8 +9,8 @@
 - Required reviewer: Librarian (Vreji), reviewed 2026-09-05; Project Manager
   independently reproduced the Demo Command at `1f2e737` on 2026-09-05
 - Access date: 2026-09-05
-- State: `In Progress`; the core-POM diagnosis is retained, while the active
-  route uses the official self-contained executable's normal initialization.
+- State: `Done` as a slice; integrated through PR #61 as
+  `e2532e245bff8114d075c8f35e9871d889d717a3`. The parent T-0012 remains open.
 
 ## Outcome and boundary
 
@@ -117,6 +117,10 @@ request head and acceptance evidence are reconciled.
 - Demo Command: `tests/t0012_config_presence_probe_test.sh` passed at
   `1f2e73767d6091375c89b7355b2a44d24f3495c2` on 2026-09-05; corrupt-copy
   checksum rejection exited 3 and unavailable-asset retrieval exited 56.
+- Integration: PR #61 was manually moved to Review because it references,
+  rather than closes, parent Issue #15. It was then squash-merged as
+  `e2532e245bff8114d075c8f35e9871d889d717a3`; Issue #15 remains open for
+  subsequent slices.
 - Environment: Temurin Java 17.0.20 on macOS arm64.
 - Official executable: v0.11.5 asset URL recorded above; SHA-256
   `e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47`;
