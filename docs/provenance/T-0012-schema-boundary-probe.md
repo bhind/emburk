@@ -41,6 +41,8 @@ Also rerun S01/S02 demos and S04's live differential regression because their
 runner is shared. No missing runtime skip or zero-observation pass is allowed.
 Independent Tester reproduction and exact-revision evidence precede integration.
 PM owns STATUS/TODO/ROADMAP/COMPATIBILITY, provenance/index and dated log;
+ARCHITECTURE is also assigned to PM for correcting target-versus-implemented
+wording and aligning recovery non-claims with the accepted design records.
 RUST_RUNTIME_DESIGN may change only to reflect accepted observations.
 
 ## Provenance gate (2026-09-06)
