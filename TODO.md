@@ -8,8 +8,8 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S07` is `Ready`; `T-0012`, `T-0021` and all other unfinished items
-are `Backlog`. No item is `Blocked`. Combined active WIP is zero of two.
+`T-0013/S07` is `In Progress`; `T-0012`, `T-0021` and all other unfinished items
+are `Backlog`. No item is `Blocked`. Combined active WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S07: first/middle commit observation) | Ready | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S07: first/middle commit observation) | In Progress | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -264,7 +264,7 @@ selected Differential projections; independent Tester reproduced the same source
 results. Final-head acceptance at `7d90f5d` passed and PR #77 integrated as
 `3b16aaf`; parent #16 remains open.
 
-T-0013/S07 (3 SP) is Ready under its
+T-0013/S07 (3 SP) is In Progress under its
 [packet](docs/provenance/T-0013-output-commit-position-probe.md). Observe three
 fixtures: normal, first-index failure and middle-index failure. Raw capture must
 precede PM's per-index/cleanup expectation decision. All Rust and accepted

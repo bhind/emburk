@@ -1,7 +1,7 @@
 # T-0013/S07 output commit position observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Ready; initial capture and acceptance have not run
+- State: In Progress; Stage A fixture preparation, initial capture and acceptance pending
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP is refined 21 to 34; Initial SP remains 8.
