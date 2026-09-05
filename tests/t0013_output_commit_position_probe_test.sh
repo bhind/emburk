@@ -28,7 +28,7 @@ run_artifact_controls() {
 }
 
 validate_capture() {
-  python3 - "$1" <<'PY'
+  python3 - "$1" "$2" <<'PY'
 import base64
 import binascii
 import hashlib
@@ -37,6 +37,9 @@ import sys
 import uuid
 
 root = pathlib.Path(sys.argv[1])
+stage = sys.argv[2]
+if stage not in {"capture", "full"}:
+    raise SystemExit(2)
 fixtures = ("normal", "commit-first", "commit-middle")
 injected_class = "T0013CommitPositionOutputPlugin$InjectedCommitFailure"
 injected_message = "t0013-output-commit-position-failure"
@@ -141,6 +144,42 @@ def only(rows, component, event, label):
     found = [row for row in rows if row[0] == component and row[1] == event]
     require(label, len(found) == 1)
     return found[0]
+
+def positions(rows, component, event):
+    return [row[5] for row in rows if row[0] == component and row[1] == event]
+
+def indexed_rows(rows, event):
+    return [
+        row for row in rows
+        if row[0] == "output" and row[1] == event
+    ]
+
+def pair(rows, event, indices):
+    entries = indexed_rows(rows, f"{event}-entry")
+    returns = indexed_rows(rows, f"{event}-normal-return")
+    require(
+        f"{event}-entry-indexes",
+        len(entries) == len(indices)
+        and {decimal("pair-index", row[2][0]) for row in entries} == indices,
+    )
+    require(
+        f"{event}-return-indexes",
+        len(returns) == len(indices)
+        and {decimal("pair-index", row[2][0]) for row in returns} == indices,
+    )
+    for entry in entries:
+        index = decimal("pair-index", entry[2][0])
+        returned = next(
+            row
+            for row in returns
+            if decimal("pair-index", row[2][0]) == index
+        )
+        require(
+            f"{event}-callback-pair",
+            entry[2] == returned[2]
+            and entry[3] == returned[3]
+            and entry[4] < returned[4],
+        )
 
 try:
     case_lines = root.joinpath("cases.raw").read_text(encoding="utf-8").splitlines()
@@ -423,6 +462,371 @@ try:
                     not same_invocation_returns
                     and commit_entry[4] < injection[4] < failure[4],
                 )
+
+        if stage != "full":
+            continue
+
+        require("bounded-output-task-count", task_count <= len(rows))
+        expected_indices = set(range(task_count))
+        pair(rows, "open", expected_indices)
+        pair(rows, "finish", expected_indices)
+        pair(rows, "close", expected_indices)
+
+        input_required = {
+            "transaction-entry",
+            "control-run-before",
+            "run-entry",
+            "finish-before",
+            "finish-normal-return",
+            "run-normal-return",
+            "cleanup-entry",
+            "cleanup-normal-return",
+        }
+        require(
+            "input-callback-manifest",
+            input_required.issubset(input_names)
+            and all(input_names.count(name) == 1 for name in input_required),
+        )
+        for event in {
+            "transaction-entry",
+            "control-run-before",
+            "control-run-normal-return",
+            "transaction-normal-return",
+            "cleanup-entry",
+            "cleanup-normal-return",
+        }:
+            for row in [
+                row
+                for row in rows
+                if row[0] == "input" and row[1] == event
+            ]:
+                require(
+                    "input-count-consistency",
+                    decimal("input-count", row[2][0]) == requested,
+                )
+        for event in {
+            "run-entry",
+            "finish-before",
+            "finish-normal-return",
+            "run-normal-return",
+        }:
+            row = only(rows, "input", event, f"input-{event}")
+            require(
+                "input-index",
+                decimal("input-index", row[2][0]) == 0,
+            )
+
+        input_main_capture = input_transaction[3]
+        output_main_capture = output_transaction[3]
+        input_main_events = [
+            row
+            for row in rows
+            if row[0] == "input" and not row[1].startswith("cleanup")
+        ]
+        output_main_events = [
+            row
+            for row in rows
+            if row[0] == "output" and not row[1].startswith("cleanup")
+        ]
+        require(
+            "input-main-capture",
+            all(row[3] == input_main_capture for row in input_main_events),
+        )
+        require(
+            "output-main-capture",
+            all(row[3] == output_main_capture for row in output_main_events),
+        )
+        input_chain_names = [
+            "transaction-entry",
+            "control-run-before",
+            "run-entry",
+            "finish-before",
+            "finish-normal-return",
+            "run-normal-return",
+        ]
+        input_chain_names += (
+            ["control-run-normal-return", "transaction-normal-return"]
+            if fixture == "normal"
+            else ["transaction-runtime-exception"]
+        )
+        input_chain = [
+            only(rows, "input", event, f"input-chain-{event}")
+            for event in input_chain_names
+        ]
+        require(
+            "input-main-chain-order",
+            [row[4] for row in input_chain]
+            == sorted(row[4] for row in input_chain),
+        )
+        output_chain_names = [
+            "transaction-entry",
+            "commit-selection",
+            "control-run-before",
+        ]
+        output_chain_names += (
+            ["control-run-normal-return", "transaction-normal-return"]
+            if fixture == "normal"
+            else ["transaction-runtime-exception"]
+        )
+        output_chain = [
+            only(rows, "output", event, f"output-chain-{event}")
+            for event in output_chain_names
+        ]
+        require(
+            "output-main-chain-order",
+            [row[4] for row in output_chain]
+            == sorted(row[4] for row in output_chain),
+        )
+
+        input_run = only(rows, "input", "run-entry", "input-run-entry")
+        input_finish_before = only(
+            rows, "input", "finish-before", "input-finish-before"
+        )
+        input_finish_return = only(
+            rows,
+            "input",
+            "finish-normal-return",
+            "input-finish-normal-return",
+        )
+        input_run_return = only(
+            rows, "input", "run-normal-return", "input-run-normal-return"
+        )
+        require(
+            "output-control-before-open",
+            only(
+                rows,
+                "output",
+                "control-run-before",
+                "output-control-run-before",
+            )[5]
+            < min(positions(rows, "output", "open-entry")),
+        )
+        require(
+            "open-before-input-run",
+            max(positions(rows, "output", "open-normal-return"))
+            < input_run[5],
+        )
+        require(
+            "output-finish-inside-input-finish",
+            input_finish_before[5]
+            < min(positions(rows, "output", "finish-entry"))
+            and max(positions(rows, "output", "finish-normal-return"))
+            < input_finish_return[5],
+        )
+        commit_entries = indexed_rows(rows, "commit-entry")
+        require("commit-entry-required", bool(commit_entries))
+        require(
+            "input-completes-before-commit",
+            input_finish_return[5] < input_run_return[5]
+            < min(row[5] for row in commit_entries),
+        )
+
+        input_cleanup = only(
+            rows, "input", "cleanup-entry", "input-cleanup-entry"
+        )
+        input_cleanup_return = only(
+            rows,
+            "input",
+            "cleanup-normal-return",
+            "input-cleanup-normal-return",
+        )
+        output_cleanup = only(
+            rows, "output", "cleanup-entry", "output-cleanup-entry"
+        )
+        output_cleanup_return = only(
+            rows,
+            "output",
+            "cleanup-normal-return",
+            "output-cleanup-normal-return",
+        )
+        require(
+            "input-cleanup-pair",
+            input_cleanup[3] == input_cleanup_return[3]
+            and input_cleanup[4] < input_cleanup_return[4],
+        )
+        require(
+            "output-cleanup-pair",
+            output_cleanup[2] == output_cleanup_return[2]
+            and output_cleanup[3] == output_cleanup_return[3]
+            and output_cleanup[4] < output_cleanup_return[4],
+        )
+
+        if fixture == "normal":
+            require(
+                "normal-no-exception",
+                not any(
+                    name.endswith("runtime-exception")
+                    for name in input_names + output_names
+                ),
+            )
+            pair(rows, "commit", expected_indices)
+            pair(rows, "abort", set())
+            output_control = only(
+                rows,
+                "output",
+                "control-run-normal-return",
+                "normal-output-control-return",
+            )
+            output_scope = only(
+                rows,
+                "output",
+                "transaction-normal-return",
+                "normal-output-transaction-return",
+            )
+            input_control = only(
+                rows,
+                "input",
+                "control-run-normal-return",
+                "normal-input-control-return",
+            )
+            input_scope = only(
+                rows,
+                "input",
+                "transaction-normal-return",
+                "normal-input-transaction-return",
+            )
+            require(
+                "normal-close-after-commit",
+                max(positions(rows, "output", "commit-normal-return"))
+                < min(positions(rows, "output", "close-entry")),
+            )
+            require(
+                "normal-scope-order",
+                max(positions(rows, "output", "close-normal-return"))
+                < output_control[5]
+                < output_scope[5]
+                < input_control[5]
+                < input_scope[5],
+            )
+            require(
+                "normal-report-counts",
+                decimal("input-reports", input_cleanup[2][1]) == 1
+                and decimal("output-reports", output_cleanup[2][2])
+                == task_count
+                and decimal("control-reports", output_control[2][2])
+                == task_count
+                and decimal("transaction-reports", output_scope[2][2])
+                == task_count,
+            )
+            outer_scope = input_scope
+        else:
+            require("failure-process-nonzero", process_exit != 0)
+            require(
+                "failure-no-normal-scopes",
+                "control-run-normal-return" not in input_names
+                and "transaction-normal-return" not in input_names
+                and "control-run-normal-return" not in output_names
+                and "transaction-normal-return" not in output_names,
+            )
+            successful_indices = set(range(expected_index))
+            commit_entry_indices = [
+                decimal("commit-index", row[2][0])
+                for row in indexed_rows(rows, "commit-entry")
+            ]
+            commit_return_indices = [
+                decimal("commit-index", row[2][0])
+                for row in indexed_rows(rows, "commit-normal-return")
+            ]
+            require(
+                "failure-commit-entry-indexes",
+                len(commit_entry_indices) == expected_index + 1
+                and commit_entry_indices == list(range(expected_index + 1)),
+            )
+            require(
+                "failure-commit-return-indexes",
+                len(commit_return_indices) == expected_index
+                and commit_return_indices == list(range(expected_index)),
+            )
+            for index in successful_indices:
+                entries = [
+                    row
+                    for row in indexed_rows(rows, "commit-entry")
+                    if decimal("commit-index", row[2][0]) == index
+                ]
+                returns = [
+                    row
+                    for row in indexed_rows(rows, "commit-normal-return")
+                    if decimal("commit-index", row[2][0]) == index
+                ]
+                require(
+                    "failure-prior-commit-pair",
+                    len(entries) == 1
+                    and len(returns) == 1
+                    and entries[0][2] == returns[0][2]
+                    and entries[0][3] == returns[0][3]
+                    and entries[0][4] < returns[0][4],
+                )
+            require(
+                "failure-single-terminal",
+                len(injections) == 1 and len(failures) == 1,
+            )
+            selected_entry = next(
+                row
+                for row in indexed_rows(rows, "commit-entry")
+                if decimal("commit-index", row[2][0]) == expected_index
+            )
+            require(
+                "failure-prior-commits-before-selected",
+                not successful_indices
+                or max(positions(rows, "output", "commit-normal-return"))
+                < selected_entry[5],
+            )
+            abort_indices = set(range(expected_index, task_count))
+            pair(rows, "abort", abort_indices)
+            require(
+                "failure-abort-after-exception",
+                failures[0][5]
+                < min(positions(rows, "output", "abort-entry")),
+            )
+            require(
+                "failure-close-after-abort",
+                max(positions(rows, "output", "abort-normal-return"))
+                < min(positions(rows, "output", "close-entry")),
+            )
+            output_error = only(
+                rows,
+                "output",
+                "transaction-runtime-exception",
+                "failure-output-transaction-error",
+            )
+            input_error = only(
+                rows,
+                "input",
+                "transaction-runtime-exception",
+                "failure-input-transaction-error",
+            )
+            require(
+                "failure-outer-error-payload",
+                output_error[2] == [injected_class, injected_message]
+                and input_error[2] == [injected_class, injected_message],
+            )
+            require(
+                "failure-scope-order",
+                max(positions(rows, "output", "close-normal-return"))
+                < output_error[5]
+                < input_error[5],
+            )
+            require(
+                "failure-fresh-cleanup-captures",
+                input_cleanup[3] != input_main_capture
+                and output_cleanup[3] != output_main_capture,
+            )
+            require(
+                "failure-report-counts",
+                decimal("input-reports", input_cleanup[2][1]) == 1
+                and decimal("output-reports", output_cleanup[2][2])
+                == expected_index,
+            )
+            outer_scope = input_error
+
+        require(
+            "cleanup-physical-order",
+            outer_scope[5]
+            < input_cleanup[5]
+            < input_cleanup_return[5]
+            < output_cleanup[5]
+            < output_cleanup_return[5],
+        )
 except (InvalidEvidence, OSError, UnicodeError) as error:
     label = error.args[0] if error.args else "unclassified"
     print(f"CAPTURE_VALIDATION_ERROR|{label}", file=sys.stderr)
@@ -430,7 +834,400 @@ except (InvalidEvidence, OSError, UnicodeError) as error:
 PY
 }
 
+
+mutated_copy() {
+  local action=$1 fixture=$2 reference=$3 copy
+  copy=$(mktemp -d "${TMPDIR:-/private/tmp}/t0013-position-validator.XXXXXX")
+  cp "$reference/cases.raw" "$reference/traces.raw" \
+    "$reference/normal.raw.log" "$reference/commit-first.raw.log" \
+    "$reference/commit-middle.raw.log" "$copy/"
+  python3 - "$action" "$fixture" "$copy" <<'PY'
+import base64
+import hashlib
+import pathlib
+import sys
+
+action, fixture, directory = sys.argv[1:]
+root = pathlib.Path(directory)
+cases = root.joinpath("cases.raw").read_text(encoding="utf-8").splitlines()
+traces = root.joinpath("traces.raw").read_text(encoding="utf-8").splitlines()
+
+def encoded(text):
+    return base64.b64encode(text.encode()).decode()
+
+def fields(index):
+    return traces[index].split("|")
+
+def find(tag, event, *, selected_fixture=None, index=None):
+    target_fixture = selected_fixture or fixture
+    for row_index, row in enumerate(traces):
+        values = row.split("|")
+        if (
+            values[0] == tag
+            and values[1] == target_fixture
+            and values[4] == event
+            and (index is None or base64.b64decode(values[5]).decode() == str(index))
+        ):
+            return row_index
+    raise ValueError(f"mutation target absent: {tag}/{target_fixture}/{event}/{index}")
+
+def selection():
+    values = fields(find("POSITIONOUTTRACE", "commit-selection"))
+    return (
+        int(base64.b64decode(values[5]).decode()),
+        int(base64.b64decode(values[7]).decode()),
+    )
+
+def renumber(target_fixture):
+    next_sequence = {}
+    for row_index, row in enumerate(traces):
+        values = row.split("|")
+        if values[1] != target_fixture:
+            continue
+        key = (values[0], values[2])
+        next_sequence[key] = next_sequence.get(key, 0) + 1
+        values[3] = str(next_sequence[key])
+        traces[row_index] = "|".join(values)
+
+def remove(tag, event, *, index=None):
+    traces.pop(find(tag, event, index=index))
+
+def insert_after(row_index, new_rows):
+    traces[row_index + 1:row_index + 1] = new_rows
+
+def output_row(template, event, index):
+    values = fields(template)
+    return "|".join(values[:4] + [event, encoded(str(index)), encoded("0")])
+
+count, selected = selection()
+
+if action == "missing-event":
+    remove("POSITIONOUTTRACE", "open-normal-return", index=0)
+elif action == "duplicate-event":
+    row_index = find("FAILTRACE", "run-entry")
+    traces.insert(row_index + 1, traces[row_index])
+elif action == "unknown-event":
+    row_index = find("POSITIONOUTTRACE", "open-entry")
+    values = fields(row_index)
+    values[4] = "invented"
+    traces[row_index] = "|".join(values)
+elif action == "malformed-event":
+    row_index = find("POSITIONOUTTRACE", "open-entry")
+    values = fields(row_index)
+    values[5] = "!"
+    traces[row_index] = "|".join(values)
+elif action == "sequence":
+    row_index = find("POSITIONOUTTRACE", "open-entry")
+    values = fields(row_index)
+    values[3] = "1"
+    traces[row_index] = "|".join(values)
+elif action == "capture":
+    row_index = find("POSITIONOUTTRACE", "open-entry")
+    values = fields(row_index)
+    values[2] = "not-a-uuid"
+    traces[row_index] = "|".join(values)
+elif action == "fabricated-later-commit":
+    terminal = find("POSITIONOUTTRACE", "commit-runtime-exception")
+    template = find("POSITIONOUTTRACE", "commit-entry", index=selected)
+    insert_after(
+        terminal,
+        [
+            output_row(template, "commit-entry", selected + 1),
+            output_row(template, "commit-normal-return", selected + 1),
+        ],
+    )
+elif action == "missing-later-abort":
+    remove("POSITIONOUTTRACE", "abort-normal-return", index=selected + 1)
+elif action == "abort-prior":
+    terminal = find("POSITIONOUTTRACE", "commit-runtime-exception")
+    template = find("POSITIONOUTTRACE", "commit-entry", index=selected)
+    insert_after(
+        terminal,
+        [
+            output_row(template, "abort-entry", 0),
+            output_row(template, "abort-normal-return", 0),
+        ],
+    )
+elif action in {"altered-reports", "normal-reports"}:
+    for event in ("cleanup-entry", "cleanup-normal-return"):
+        row_index = find("POSITIONOUTTRACE", event)
+        values = fields(row_index)
+        baseline = count if action == "normal-reports" else selected
+        values[7] = encoded(str(baseline + 1))
+        traces[row_index] = "|".join(values)
+elif action == "missing-terminal":
+    remove("POSITIONOUTTRACE", "commit-runtime-exception")
+elif action == "missing-pair":
+    remove("POSITIONOUTTRACE", "close-normal-return", index=selected)
+elif action == "wrong-payload":
+    row_index = find("POSITIONOUTTRACE", "commit-runtime-exception")
+    values = fields(row_index)
+    values[-1] = encoded("changed")
+    traces[row_index] = "|".join(values)
+elif action == "wrong-class":
+    row_index = find("POSITIONOUTTRACE", "commit-runtime-exception")
+    values = fields(row_index)
+    values[-2] = encoded("java.lang.RuntimeException")
+    traces[row_index] = "|".join(values)
+elif action == "wrong-outer-payload":
+    for tag in ("POSITIONOUTTRACE", "FAILTRACE"):
+        row_index = find(tag, "transaction-runtime-exception")
+        values = fields(row_index)
+        values[-1] = encoded("changed")
+        traces[row_index] = "|".join(values)
+elif action == "wrong-index":
+    for event in ("commit-injection-before", "commit-runtime-exception"):
+        row_index = find("POSITIONOUTTRACE", event)
+        values = fields(row_index)
+        values[5] = encoded(str(selected + 1))
+        traces[row_index] = "|".join(values)
+elif action in {"selection-index", "selection-mode"}:
+    row_index = find("POSITIONOUTTRACE", "commit-selection")
+    values = fields(row_index)
+    if action == "selection-index":
+        values[7] = encoded(str(selected + 1))
+    else:
+        values[6] = encoded("changed")
+    traces[row_index] = "|".join(values)
+elif action == "count":
+    row_index = find("POSITIONOUTTRACE", "commit-selection")
+    values = fields(row_index)
+    values[5] = encoded(str(count + 1))
+    traces[row_index] = "|".join(values)
+elif action == "oversized-count":
+    oversized = 1000000
+    for event in (
+        "transaction-entry",
+        "control-run-before",
+        "control-run-normal-return",
+        "transaction-normal-return",
+        "cleanup-entry",
+        "cleanup-normal-return",
+    ):
+        for row_index, row in enumerate(traces):
+            values = row.split("|")
+            if (
+                values[0] == "POSITIONOUTTRACE"
+                and values[1] == fixture
+                and values[4] == event
+            ):
+                values[5] = encoded(str(oversized))
+                traces[row_index] = "|".join(values)
+    row_index = find("POSITIONOUTTRACE", "commit-selection")
+    values = fields(row_index)
+    values[5] = encoded(str(oversized))
+    values[7] = encoded(str(oversized - 1))
+    traces[row_index] = "|".join(values)
+elif action == "schema":
+    row_index = find("POSITIONOUTTRACE", "transaction-entry")
+    values = fields(row_index)
+    values[6] = encoded("1")
+    traces[row_index] = "|".join(values)
+elif action == "scope-order":
+    output_error = find("POSITIONOUTTRACE", "transaction-runtime-exception")
+    input_error = find("FAILTRACE", "transaction-runtime-exception")
+    traces[output_error], traces[input_error] = traces[input_error], traces[output_error]
+elif action == "cleanup-order":
+    entry = find("FAILTRACE", "cleanup-entry")
+    returned = find("FAILTRACE", "cleanup-normal-return")
+    pair_rows = [traces[entry], traces[returned]]
+    for row_index in sorted((entry, returned), reverse=True):
+        traces.pop(row_index)
+    input_error = find("FAILTRACE", "transaction-runtime-exception")
+    traces[input_error:input_error] = pair_rows
+elif action == "missing-successful-commit":
+    remove("POSITIONOUTTRACE", "commit-normal-return", index=0)
+elif action == "missing-selected-abort":
+    remove("POSITIONOUTTRACE", "abort-normal-return", index=selected)
+elif action == "missing-selected-close":
+    remove("POSITIONOUTTRACE", "close-normal-return", index=selected)
+elif action == "normal-missing-commit":
+    remove("POSITIONOUTTRACE", "commit-normal-return", index=0)
+elif action == "reorder-input-boundary":
+    before = find("FAILTRACE", "finish-before")
+    returned = find("FAILTRACE", "finish-normal-return")
+    row = traces.pop(before)
+    if before < returned:
+        returned -= 1
+    traces.insert(returned + 1, row)
+elif action == "reorder-selection-control":
+    selection_row = find("POSITIONOUTTRACE", "commit-selection")
+    control_row = find("POSITIONOUTTRACE", "control-run-before")
+    traces[selection_row], traces[control_row] = traces[control_row], traces[selection_row]
+elif action == "missing-case":
+    cases.pop(0)
+elif action == "duplicate-case":
+    cases.append(cases[0])
+elif action == "unknown-case":
+    values = cases[0].split("|")
+    values[1] = "unknown"
+    cases[0] = "|".join(values)
+elif action == "malformed-case":
+    values = cases[0].split("|")
+    cases[0] = "|".join(values[:-1])
+
+def synchronize():
+    for selected_fixture in ("normal", "commit-first", "commit-middle"):
+        rows = [row for row in traces if row.split("|")[1] == selected_fixture]
+        log = root / f"{selected_fixture}.raw.log"
+        other = [
+            line
+            for line in log.read_text(encoding="utf-8").splitlines()
+            if not line.startswith("FAILTRACE|")
+            and not line.startswith("POSITIONOUTTRACE|")
+        ]
+        log.write_text("\n".join(rows + other) + "\n", encoding="utf-8")
+        case_index = next(
+            index
+            for index, row in enumerate(cases)
+            if row.startswith(f"POSITIONCASE|{selected_fixture}|")
+        )
+        values = cases[case_index].split("|")
+        input_count = sum(row.startswith("FAILTRACE|") for row in rows)
+        output_count = sum(row.startswith("POSITIONOUTTRACE|") for row in rows)
+        digest = hashlib.sha256(("\n".join(rows) + "\n").encode()).hexdigest()
+        values[4] = f"{len(rows)}:{input_count}:{output_count}:{digest}"
+        cases[case_index] = "|".join(values)
+
+if action == "hash":
+    values = cases[0].split("|")
+    summary = values[4].split(":")
+    summary[3] = "0" * 64
+    values[4] = ":".join(summary)
+    cases[0] = "|".join(values)
+elif action == "raw-log":
+    log = root / f"{fixture}.raw.log"
+    log.write_text(
+        log.read_text(encoding="utf-8").replace("POSITIONOUTTRACE|", "BROKEN|", 1),
+        encoding="utf-8",
+    )
+elif action not in {"missing-case", "duplicate-case", "unknown-case", "malformed-case"}:
+    if action not in {"sequence", "capture"}:
+        renumber(fixture)
+    synchronize()
+
+root.joinpath("cases.raw").write_text("\n".join(cases) + "\n", encoding="utf-8")
+root.joinpath("traces.raw").write_text("\n".join(traces) + "\n", encoding="utf-8")
+PY
+  printf '%s\n' "$copy"
+}
+
+validator_fails() {
+  local reference=$1 fixture=$2 action=$3 expected=$4 copy result result_code
+  copy=$(mutated_copy "$action" "$fixture" "$reference")
+  printf 'T0013_POSITION_MUTATION=%s:%s|evidence=%s\n' \
+    "$fixture" "$action" "$copy"
+  if result=$(validate_capture "$copy" full 2>&1); then
+    printf 'mutation unexpectedly accepted: %s:%s\n' "$fixture" "$action" >&2
+    exit 1
+  else
+    result_code=$?
+  fi
+  [[ "$result_code" == 4 ]]
+  [[ "$result" == "CAPTURE_VALIDATION_ERROR|$expected" ]] || {
+    printf 'unexpected validator result for %s:%s: %s\n' \
+      "$fixture" "$action" "$result" >&2
+    exit 1
+  }
+}
+
+run_stage_b_controls() {
+  local reference=$1 fixture
+  validator_fails "$reference" normal missing-case case-count
+  validator_fails "$reference" normal duplicate-case case-count
+  validator_fails "$reference" normal unknown-case case-fixture
+  validator_fails "$reference" normal malformed-case case-arity
+  validator_fails "$reference" normal missing-event open-return-indexes
+  validator_fails "$reference" normal duplicate-event input-callback-manifest
+  validator_fails "$reference" normal unknown-event output-event-known
+  validator_fails "$reference" normal malformed-event output-canonical-field
+  validator_fails "$reference" normal sequence output-sequence-contiguous
+  validator_fails "$reference" normal capture capture-id
+  validator_fails "$reference" normal hash case-digest-match
+  validator_fails "$reference" normal raw-log raw-log-trace-match
+  validator_fails "$reference" normal normal-reports normal-report-counts
+  validator_fails "$reference" normal normal-missing-commit commit-return-indexes
+  validator_fails "$reference" normal reorder-input-boundary input-main-chain-order
+  validator_fails "$reference" normal reorder-selection-control output-main-chain-order
+  validator_fails "$reference" normal oversized-count bounded-output-task-count
+  for fixture in commit-first commit-middle; do
+    validator_fails "$reference" "$fixture" fabricated-later-commit failure-commit-entry-indexes
+    validator_fails "$reference" "$fixture" missing-later-abort abort-return-indexes
+    validator_fails "$reference" "$fixture" altered-reports failure-report-counts
+    validator_fails "$reference" "$fixture" missing-terminal selected-local-injection
+    validator_fails "$reference" "$fixture" missing-pair close-return-indexes
+    validator_fails "$reference" "$fixture" wrong-payload selected-injection-payload
+    validator_fails "$reference" "$fixture" wrong-class selected-injection-payload
+    validator_fails "$reference" "$fixture" wrong-outer-payload failure-outer-error-payload
+    validator_fails "$reference" "$fixture" wrong-index selected-injection-index
+    validator_fails "$reference" "$fixture" selection-index selection-fields
+    validator_fails "$reference" "$fixture" selection-mode selection-fields
+    validator_fails "$reference" "$fixture" count selection-fields
+    validator_fails "$reference" "$fixture" schema empty-output-schema
+    validator_fails "$reference" "$fixture" scope-order failure-scope-order
+    validator_fails "$reference" "$fixture" cleanup-order cleanup-physical-order
+    validator_fails "$reference" "$fixture" missing-selected-abort abort-return-indexes
+    validator_fails "$reference" "$fixture" missing-selected-close close-return-indexes
+    validator_fails "$reference" "$fixture" reorder-input-boundary input-main-chain-order
+    validator_fails "$reference" "$fixture" reorder-selection-control output-main-chain-order
+  done
+  validator_fails "$reference" commit-middle abort-prior abort-entry-indexes
+  validator_fails "$reference" commit-middle missing-successful-commit failure-commit-return-indexes
+}
+
+
 case ${1:-} in
+  "")
+    [[ "$#" == 0 ]] || exit 2
+    run_artifact_controls
+    stage_dir=$(mktemp -d "${TMPDIR:-/private/tmp}/t0013-position-stage-b.XXXXXX")
+    if "$runner" > "$stage_dir/runner.stdout.log" \
+        2> "$stage_dir/runner.stderr.log"; then
+      :
+    else
+      result_code=$?
+      cat "$stage_dir/runner.stdout.log"
+      cat "$stage_dir/runner.stderr.log" >&2
+      exit "$result_code"
+    fi
+    cat "$stage_dir/runner.stdout.log"
+    cat "$stage_dir/runner.stderr.log" >&2
+    [[ $(grep -c '^T0013_POSITION_EVIDENCE_DIR=' \
+      "$stage_dir/runner.stdout.log") == 1 ]]
+    evidence=$(sed -n 's/^T0013_POSITION_EVIDENCE_DIR=//p' \
+      "$stage_dir/runner.stdout.log")
+    [[ -n "$evidence" && -d "$evidence" ]]
+    cp "$stage_dir/runner.stdout.log" "$evidence/stage-b-runner.stdout.log"
+    cp "$stage_dir/runner.stderr.log" "$evidence/stage-b-runner.stderr.log"
+    for file in executable.sha256 executable-url.txt LICENSE-executable \
+      NOTICE-executable java-version.txt input-source.sha256 input-source-path.txt \
+      output-source.sha256 output-source-path.txt output-source-vs-s05.diff \
+      input-jar.sha256 output-jar.sha256 input-coordinate.txt output-coordinate.txt \
+      cases.raw traces.raw normal.raw.log commit-first.raw.log \
+      commit-middle.raw.log; do
+      [[ -s "$evidence/$file" ]]
+    done
+    [[ -f "$evidence/stage-b-runner.stdout.log" \
+      && -f "$evidence/stage-b-runner.stderr.log" ]]
+    grep -Fqx 'd45f0b6e83d39458331a2cf1be27a01d1b6863017bd87807f0e49d160c96d252' \
+      "$evidence/input-source.sha256"
+    grep -Fqx 'fd82c85966b90190a82e8a29d4a2b4145bf82c8776045d362116ddd7ef6bbb64' \
+      "$evidence/output-source.sha256"
+    validate_capture "$evidence" full
+    run_stage_b_controls "$evidence"
+    if bash "$root/tests/t0013_output_commit_failure_probe_test.sh" \
+        > "$evidence/s05-regression.stdout.log" \
+        2> "$evidence/s05-regression.stderr.log"; then
+      :
+    else
+      result_code=$?
+      exit "$result_code"
+    fi
+    [[ $(grep -c '^T0013_COMMIT_FULL_PROBE=passed|evidence=' \
+      "$evidence/s05-regression.stdout.log") == 1 ]]
+    printf 'T0013_POSITION_VALIDATED_CASES=3|evidence=%s\n' "$evidence"
+    printf 'T0013_POSITION_FULL_PROBE=passed|evidence=%s\n' "$evidence"
+    ;;
   --artifact-controls-only)
     [[ "$#" == 1 ]] || exit 2
     run_artifact_controls
@@ -463,11 +1260,11 @@ case ${1:-} in
       "$evidence/input-coordinate.txt"
     grep -Fqx 'source=maven|group=org.embulk.t0013.s07|name=t0013s07output|version=0.0.1|artifact=embulk-output-t0013s07output|category=output|local-only' \
       "$evidence/output-coordinate.txt"
-    validate_capture "$evidence"
+    validate_capture "$evidence" capture
     printf 'T0013_POSITION_CAPTURE_ONLY=collected|evidence=%s\n' "$evidence"
     ;;
   *)
-    printf '%s\n' 'Stage A requires --artifact-controls-only or --capture-only' >&2
+    printf '%s\n' 'expected no arguments, --artifact-controls-only or --capture-only' >&2
     exit 2
     ;;
 esac
