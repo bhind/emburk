@@ -44,6 +44,12 @@ acceptance passed at `264a12f` and PR #73 integrated as `14d5fb5`.
 Its limited callback fallibility is not a public production plugin
 contract, and it does not choose default fan-out or a parallel scheduler.
 
+T-0013/S04 adds a test-only driver and private child test bridge, leaving the
+coordinator and fake behavior unchanged. It compares two live declared event
+projections and separate cleanup counts using the reference output count as a
+supplied Rust plan. Primary and independent acceptance pass at `98b6cac`;
+integration remains pending. The test adapter is not a host API.
+
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe
 plugin do not create an Emburk Java host, admitted plugin, runtime dependency,

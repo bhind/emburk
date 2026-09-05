@@ -216,3 +216,8 @@ the live S03 normal/failure reference projections to the actual private Rust
 coordinator with observed output counts as supplied plans. Zero-task behavior
 remains Unit/Contract only. T-0021 returns to Backlog; no parent completion or
 additional points follow. Combined WIP stays one.
+
+S04 primary acceptance at `98b6cac` passed both live comparisons and 13 raw
+controls; workspace tests passed 20 with three intentional live ignores, plus
+format and strict Clippy. Independent Tester reproduced these results;
+final-head acceptance and integration remain pending.

@@ -92,7 +92,8 @@ input failure. Independent Tester reproduced these results. This is
 Unit/Contract only, integrated through PR #73 (`14d5fb5`); no new Native/Verified lifecycle
 entry follows.
 
-T-0013/S04's live comparison is pending. Its two selected projections exclude
+T-0013/S04's two selected live projections pass primary acceptance at `98b6cac`;
+independent Tester reproduced the results, with integration pending. Its projections exclude
 default planning, capture identity, Java report contents and zero-task live
 coverage; no generalized lifecycle claim follows from activation.
 

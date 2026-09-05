@@ -72,6 +72,9 @@ Its five-test local Unit/Contract gate passes at `84edf00` under primary and
 independent acceptance; final-head acceptance passed and PR #73 integrated as
 `14d5fb5`. T-0013/S04 now activates a separately scoped two-case live projection
 comparison. Neither slice completes Phase 0 or the File-to-File milestone.
+S04 primary acceptance at `98b6cac` passes both declared projections and strict
+negative controls; independent Tester reproduced the results. Integration remains
+pending.
 
 ## Phase 1: Native File-to-File MVP
 

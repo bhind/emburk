@@ -131,6 +131,62 @@ raw evidence and trigger safe diagnosis/retry, not fabricated acceptance.
 Unit/Contract plus Differential (Embulk) for the two selected projections only,
 if acceptance passes. Initial state is Planning, not an existing passing result.
 
+Independent read-only packet review at `5a7076e` found no material executable
+ambiguity or overclaim. It confirmed the two-case boundary, supplied counts,
+single transaction-error projection, local failed-control assertions and
+separate cleanup counts. This is Planning review, not source acceptance.
+
+## Source acceptance
+
+Primary acceptance at `98b6cacb8fdea06faece6ea33ccd0ca49aef5383` on 2026-09-06
+passed the exact Demo (exit 0). The existing complete S03 probe and its controls
+passed. Both selected live cases used observed input/output counts 1/8, supplied
+to Rust with cap 1024, not a hardcoded fan-out rule. Normal comparison retained
+44 events and input/output cleanup counts 1/8; failure retained 34 events and
+counts 0/0. The exact ignored Rust test ran once and passed; two cases were
+compared. These counts describe this run, not portable executor defaults.
+
+Thirteen S04 raw controls rejected corrupted evidence. Missing cleanup, commit,
+abort and close controls repair transport sequences, raw-log correspondence and
+hashes, then assert the specific missing-marker diagnostic. A reordered excluded
+input boundary likewise fails its order diagnostic; a mere sequence gap would
+not establish that check. Rust's offline manifest controls reject malformed,
+truncated, duplicate, unsupported and outcome-mutated inputs. Failed control
+events must actually occur once per component before their explicit exclusion.
+
+Workspace tests passed 20 with three intentional external live ignores. Format,
+strict workspace/all-target Clippy, per-file shell syntax and diff checks exited
+0. Environment: macOS arm64, rustc/cargo 1.98.1, Python 3.14.6, Temurin Java 17.
+No production coordinator, existing probe or dependency source changed.
+
+Primary local-only evidence:
+
+- Driver root: `${TMPDIR}/t0013-s04.912Lk1`
+- Reference root: `${TMPDIR}/t0013-input-failure.42cuJ2/evidence`
+- `cases.raw` SHA-256:
+  `608bc041f24ace78030bb8f7cd09eaf8c145f3ecffdf891cc24491e9083b45b9`
+- `traces.raw` SHA-256:
+  `ec35f0e32ac1a5d1455a905161c5ed39ae4abe91c7c6b3c2d6fcd8991643f0b5`
+- Normalized manifest SHA-256:
+  `5c3355c7c4993a8abffc2db7a04cf2f277fd7937088e1d2c031862a17b442913`
+
+Raw hashes are per-run capture evidence, not cross-run goldens. Independent
+Tester reproduced the frozen source: exact Demo exit 0, two comparisons,
+13 rejected raw controls, 20 offline passes/three intentional ignores and all
+strict checks passing. The initial sandbox-only attempt exited 4 without probe
+output; the approved pinned-network rerun passed. No acceptance finding remains.
+Tester logs are local-only at `/private/tmp/emburk-t0013-s04-acceptance.1RpvxZ`;
+`demo-escalated.log` SHA-256:
+`25d9c827398908058a72db7a3c1315773e7520878434e9a2b1d8f32f794a881f`.
+Independent reference evidence is `${TMPDIR}/t0013-input-failure.MdR7qO/evidence`;
+`cases.raw` SHA-256:
+`3f438b9c3d85af64f9334119938cd68f058f455af5013c0348bb60afef187106`;
+`traces.raw` SHA-256:
+`3963a21d36a56ab3c4eae523f9e284853c6f7be136b5ceed11cb317bcf5b5e2d`.
+Final-head acceptance and integration remain pending.
+The live result applies only to the declared projection, not raw marker identity,
+default planning, report contents, zero-task behavior or complete lifecycle.
+
 ## Reference and reuse record
 
 Access/review date 2026-09-06. Reuses only repository-owned original fixtures,

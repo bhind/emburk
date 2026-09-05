@@ -19,6 +19,10 @@ Development state: `bootstrap`
 - A private ordered logical schema preserves owned names, type tags, order and
   duplicates. Its live comparison matches three selected schema outcomes;
   values, nullability, lookup and physical encoding remain unimplemented.
+- A private synchronous empty-task coordinator executes original fake callbacks
+  with separate cleanup capabilities and reports. Its five Unit/Contract tests
+  cover zero/one-input plans and one selected input-run failure. Other callback
+  failures and actual plugin execution are not implemented.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
   native File-to-File vertical slice as the first runtime milestone.
@@ -182,3 +186,8 @@ it adds no public API, default scheduling, JVM host or loader claim.
 T-0013/S04 now implements a live comparison of two explicitly defined empty-job
 projections. It compares actual callbacks and cleanup counts for supplied plans,
 not default fan-out, raw instrumentation identity or general lifecycle behavior.
+Primary acceptance at `98b6cac` passed both comparisons, 13 raw-evidence controls,
+20 offline workspace tests (three intentional live ignores), format and strict
+Clippy. Independent Tester reproduced these results; final-head acceptance and
+integration remain pending. Evidence is
+Differential for those two projections only; zero tasks remain Unit/Contract.
