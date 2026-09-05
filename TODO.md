@@ -7,8 +7,8 @@ GitHub Project mirror these stable identifiers for coordination. Parent epics
 are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
-Current queue state: `T-0002` and `T-0011` are in `Review`, and every other
-item is `Backlog`. No item is `Ready`, `In Progress`, `Blocked`, or `Done`.
+Current queue state: `T-0002` is `In Progress`, `T-0011` is in `Review`, and
+every other item is `Backlog`. No item is `Ready`, `Blocked`, or `Done`.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -21,7 +21,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0001 | Epic: Governance and traceability | Backlog | P0 | — | None | Project Manager | Planning |
-| T-0002 | Establish canonical records and stable IDs | Review | P0 | 3 | None | Project Manager | Unit/Contract |
+| T-0002 | Establish canonical records and stable IDs | In Progress | P0 | 3 | None | Project Manager | Unit/Contract |
 | T-0003 | Establish roles, mutation ownership, and WIP enforcement | Backlog | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
 | T-0004 | Implement Project synchronization audit | Backlog | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
 | T-0005 | Establish provenance, license, NOTICE, and SBOM gates | Backlog | P0 | 5 | T-0002 | Project Manager | Release |
@@ -110,10 +110,10 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 
 ## Pull order
 
-The current review lanes are:
+The current active lanes are:
 
-1. `T-0002` (`Review`): establish the canonical governance records and
-   stable-ID inventory used by every later task.
+1. `T-0002` (`In Progress`): establish the canonical governance records,
+   stable-ID inventory, and verified bootstrap boundary used by later tasks.
 2. `T-0011` (`Review`): pin the exact upstream references needed to write
    compatibility contracts without adopting upstream implementation code.
 
