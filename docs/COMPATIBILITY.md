@@ -123,8 +123,10 @@ coverage or Rust policy is claimed before its capture and acceptance gates.
 Its initial capture at `fb26813` records first/middle abort suffixes and retained
 report counts. Primary and independent full source acceptance pass at `76dbab0`:
 three cases, 57 semantic controls, two artifact controls and S05 regression.
-Integration remains pending. This is Reference Observation / Integration, not
-first/middle Rust compatibility; see the packet's per-index observation matrix.
+Final-head acceptance at `133cddb` passed and PR #78 integrated as `14cc2a6`.
+This is Reference Observation / Integration, not first/middle Rust compatibility;
+see the packet's per-index observation matrix. T-0021/S05 now prepares the
+private Unit/Contract candidate under ADR-0010 with no new Differential claim.
 
 ## Adding an Entry
 

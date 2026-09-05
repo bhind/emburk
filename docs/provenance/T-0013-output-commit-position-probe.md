@@ -1,7 +1,7 @@
 # T-0013/S07 output commit position observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review in PR #78; primary and independent source acceptance passed
+- State: Done (bounded slice only); PR #78 integrated as `14cc2a6`
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP is refined 21 to 34; Initial SP remains 8.
@@ -293,8 +293,13 @@ Cases/traces SHA-256:
 Stdout/stderr SHA-256:
 `034b6734dbe07637bbcf43d2ded83f178c7290e3debf961a109d74a8e9df0eb4` /
 `4502b13c20c87f60fdeb96eaf54a0c2d63ad505cb7d0601dfc3f866e3a0b13e0`.
-No source finding remains. Final-head acceptance and integration are still
-required; the parent remains open.
+No source finding remains. Final-head exact Demo passed at
+`133cddb264b5d5d01313b938a5995b625b22adae`, including all three cases, 57 semantic
+controls, two artifact controls and unchanged S05 regression. Evidence:
+`${TMPDIR}/t0013-output-commit-position.0oDdCD/evidence`; retained logs:
+`/private/tmp/t0013-s07-final-head.QvIYg3`. Project audits passed (WIP 1/2).
+PR #78 integrated as `14cc2a677b02a86cbb4a7d51f9260b90dc83de28`.
+The bounded slice is complete; parent #16 remains open and returns to Backlog.
 
 ## Reference and reuse record
 

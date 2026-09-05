@@ -21,4 +21,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0013/S05 output commit failure observation](T-0013-output-commit-failure-probe.md) | Done (Reference Observation / Integration; PR #75) |
 | [T-0021/S04 private last-commit failure](T-0021-last-commit-failure.md) | Done (Unit/Contract plus existing regression; PR #76) |
 | [T-0013/S06 selected output-commit differential](T-0013-output-commit-differential.md) | Done (two selected Differential projections; PR #77) |
-| [T-0013/S07 output commit position observation](T-0013-output-commit-position-probe.md) | Review in PR #78 (primary and independent source acceptance passed; integration pending) |
+| [T-0013/S07 output commit position observation](T-0013-output-commit-position-probe.md) | Done (bounded reference slice; PR #78, `14cc2a6`) |
+| [T-0021/S05 private commit abort suffix](T-0021-commit-abort-suffix.md) | Prepared under ADR-0010; implementation not started |

@@ -98,8 +98,11 @@ capture-before-expectations gate; Rust policy remains unchanged.
 That initial capture is now reviewed at `fb26813`; Stage B validates the
 observed abort suffix and retained reports before any later native policy gate.
 Primary and independent Stage B acceptance pass at `76dbab0`, including three
-cases, 57 semantic controls and unchanged S05 regression. Integration remains
-pending; this reference-only slice does not pass a native or phase delivery gate.
+cases, 57 semantic controls and unchanged S05 regression. Final-head acceptance
+at `133cddb` passed; PR #78 integrated as `14cc2a6`. This reference-only slice
+does not pass a native or phase delivery gate. ADR-0010 permits T-0021/S05's
+bounded native abort-suffix candidate; a later separate comparison is required
+for first/middle Differential evidence.
 
 ## Phase 1: Native File-to-File MVP
 
