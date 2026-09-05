@@ -23,11 +23,13 @@ T-0021/S02 supplies the [Rust design worksheet](RUST_RUNTIME_DESIGN.md) for
 configuration/value fixtures and lifecycle/failure traces. Its proposed
 structure does not satisfy this exit gate; T-0012 and T-0013 must resolve the
 reference-dependent questions before semantic APIs are accepted.
-T-0012/S01 is actively gathering a narrow absent/null/default observation via
-the pinned official self-contained executable and a local-only probe plugin.
-Its annotated String/Optional reference observation is complete and awaits
-serial review; it does not itself satisfy the configuration/schema/value
-contract or the Phase 0 exit gate.
+T-0012/S01 gathered a narrow absent/null/default observation via the pinned
+official self-contained executable and a local-only probe plugin. Its annotated
+String/Optional reference observation integrated through PR #61 as `e2532e2`;
+it does not itself satisfy the configuration/schema/value contract or the
+Phase 0 exit gate. T-0012/S02 has an independently reproduced Boolean/Long
+conversion observation at `86970ea` and awaits PR integration. It likewise
+cannot satisfy that gate without an independently implemented Emburk comparator.
 
 ## Phase 1: Native File-to-File MVP
 

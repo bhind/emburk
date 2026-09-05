@@ -7,4 +7,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | Record | Status |
 | --- | --- |
 | [T-0011 Embulk reference inventory](T-0011-embulk-reference-inventory.md) | Done (Planning evidence) |
-| [T-0012/S01 configuration-presence reference probe](T-0012-config-presence-probe.md) | In Progress |
+| [T-0012/S01 configuration-presence reference probe](T-0012-config-presence-probe.md) | Done (Reference Observation / Integration) |
+| [T-0012/S02 configuration-conversion reference probe](T-0012-config-conversion-probe.md) | In Progress (packet only) |

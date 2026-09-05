@@ -24,9 +24,9 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 and T-0012/S01 are the only active work items, meeting the two-item
-combined `In Progress`/`Review` WIP limit. No work item is currently `Ready`,
-`Review`, or `Blocked`.
+T-0021 (`In Progress`) and T-0012/S02 (`Review`) are the only active work
+items, meeting the two-item combined `In Progress`/`Review` WIP limit. No work
+item is currently `Ready` or `Blocked`.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -34,7 +34,7 @@ combined `In Progress`/`Review` WIP limit. No work item is currently `Ready`,
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S01 | In Progress | Local-only probe through the pinned official self-contained executable |
+| T-0012/S02 | Review | Local-only Boolean/Long conversion probe accepted at `86970ea`; awaits PR integration |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -97,9 +97,12 @@ This is Planning evidence only. T-0012/T-0013 contracts and differential
 verification remain prerequisites to completing the parent task.
 
 T-0012/S01 initially diagnosed why the core POM graph cannot initialize its
-configuration delegate; that graph was not expanded. The active, bounded route
-uses the pinned official self-contained executable and a local-only Maven-style
-input plugin, following the executable's normal initialization path. Its nine
-annotated String/Optional fixture cases now pass as Reference Observation /
-Integration evidence. This is not a generic typed-getter contract, a verified
-Emburk semantic, or the parent task's Differential (Embulk) evidence.
+configuration delegate; that graph was not expanded. Its bounded official-
+executable route and local-only Maven-style input plugin recorded nine
+annotated String/Optional fixture observations and integrated through PR #61
+as `e2532e2`. This is Reference Observation / Integration evidence only, not a
+generic typed-getter contract, a verified Emburk semantic, or the parent task's
+Differential (Embulk) evidence. T-0012/S02 has a nine-case Boolean/Long
+runtime observation through the same pinned executable. An independent
+primary-agent reproduction passed at `86970ea`; this is Review-stage Reference
+Observation / Integration evidence only, pending PR integration.

@@ -20,7 +20,7 @@ import org.embulk.spi.PageOutput;
 import org.embulk.spi.Schema;
 
 /**
- * Test-only local input plugin for the T-0012/S01 presence-observation matrix.
+ * Test-only local input plugin for the T-0012/S01 and S02 observation matrices.
  * It is neither distributed nor an admitted Embulk plugin.
  */
 public final class T0012InputPlugin implements InputPlugin {
@@ -41,10 +41,24 @@ public final class T0012InputPlugin implements InputPlugin {
         Optional<String> getField();
     }
 
+    public interface BooleanField extends Task {
+        @Config("field")
+        Boolean getField();
+    }
+
+    public interface LongField extends Task {
+        @Config("field")
+        Long getField();
+    }
+
     @Override
     public ConfigDiff transaction(ConfigSource config, Control control) {
         String declaration = System.getenv("T0012_DECLARATION");
         String state = System.getenv("T0012_STATE");
+        if ("conversion".equals(System.getenv("T0012_MODE"))) {
+            observeConversion(config, control, System.getenv("T0012_TYPE"), System.getenv("T0012_CASE"));
+            return Exec.newConfigDiff();
+        }
         String outcome;
         String first;
         String message;
@@ -111,6 +125,50 @@ public final class T0012InputPlugin implements InputPlugin {
         throw new IllegalArgumentException("unknown declaration: " + declaration);
     }
 
+    private static void observeConversion(ConfigSource config, Control control, String type, String caseName) {
+        String outcome;
+        String first;
+        String message;
+        Class<? extends Task> configurationType = conversionType(type);
+        System.out.println("probe config load");
+        try {
+            Object value = configurationType.getMethod("getField").invoke(config.loadConfig(configurationType));
+            outcome = "SUCCESS";
+            first = renderValue(value);
+            message = "";
+        } catch (InvocationTargetException failure) {
+            Throwable cause = failure.getCause();
+            if (cause instanceof Error) {
+                throw (Error) cause;
+            }
+            if (!(cause instanceof RuntimeException)) {
+                throw new IllegalStateException(cause);
+            }
+            outcome = "EXCEPTION";
+            first = cause.getClass().getName();
+            message = cause.getMessage();
+        } catch (RuntimeException failure) {
+            outcome = "EXCEPTION";
+            first = failure.getClass().getName();
+            message = failure.getMessage();
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException(failure);
+        }
+
+        emitConversion(type, caseName, outcome, first, message);
+        control.run(Exec.newTaskSource(), Schema.builder().build(), 1);
+    }
+
+    private static Class<? extends Task> conversionType(String type) {
+        if ("boolean".equals(type)) {
+            return BooleanField.class;
+        }
+        if ("long".equals(type)) {
+            return LongField.class;
+        }
+        throw new IllegalArgumentException("unknown conversion type: " + type);
+    }
+
     private static String renderValue(Object value) {
         if (value instanceof Optional) {
             Optional<?> optional = (Optional<?>) value;
@@ -122,6 +180,12 @@ public final class T0012InputPlugin implements InputPlugin {
     private static void emit(String declaration, String state, String outcome, String first, String message) {
         writeRawObservation(declaration, state, outcome, first, message);
         System.out.println("CASE|" + declaration + "|" + state + "|" + outcome + "|"
+                + encode(first) + "|" + encode(message));
+    }
+
+    private static void emitConversion(String type, String caseName, String outcome, String first, String message) {
+        writeRawObservation(type, caseName, outcome, first, message);
+        System.out.println("CONVERSION_CASE|" + type + "|" + caseName + "|" + outcome + "|"
                 + encode(first) + "|" + encode(message));
     }
 
