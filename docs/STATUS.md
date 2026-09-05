@@ -7,8 +7,9 @@ Development state: `bootstrap`
 ## Implemented facts
 
 - The repository contains a minimal Rust binary and Cargo project suitable for
-  verifying the development environment. A unit smoke test fixes its explicit
-  not-yet-a-loader status message.
+  verifying the development environment. T-0021/S01 is establishing a virtual
+  workspace with an inward-only `emburk-cli -> emburk-core` dependency while
+  retaining the explicit not-yet-a-loader smoke test.
 - The binary does not load Embulk configuration, transfer records, execute
   plugins, or implement transaction and resume behavior.
 - No native, Java-hosted, or JRuby-hosted plugin is implemented or verified.
@@ -23,12 +24,13 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-No work item is currently `Ready`, `In Progress`, `Review`, or `Blocked`.
+No work item is currently `Ready`, `Review`, or `Blocked`.
 
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
 | T-0011 | Done | Pinned Embulk core, SPI, and admitted plugin reference versions |
+| T-0021/S01 | In Progress | Establish the non-semantic Rust workspace boundary |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -55,3 +57,7 @@ checks at revision `9416ec3` and was squash-merged by
 [PR #53](https://github.com/bhind/emburk/pull/53) as `230e3af`. The two tasks
 are complete; their evidence establishes only the bootstrap and reference-pin
 boundaries described above.
+
+T-0021/S01 is structural only. It does not define configuration, schema,
+values, plugin traits, lifecycle, transactions, resume behavior, scheduling,
+or a stable public Rust API.

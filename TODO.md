@@ -7,8 +7,9 @@ GitHub Project mirror these stable identifiers for coordination. Parent epics
 are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
-Current queue state: `T-0002` and `T-0011` are `Done`, and every other item is
-`Backlog`. No item is `Ready`, `In Progress`, `Review`, or `Blocked`.
+Current queue state: `T-0002` and `T-0011` are `Done`; `T-0021/S01` is `In
+Progress`; and every other item is `Backlog`. No item is `Ready`, `Review`, or
+`Blocked`.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -42,7 +43,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
-| T-0021 | Define workspace boundaries and core traits | Backlog | P1 | 5 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
+| T-0021 | Define workspace boundaries and core traits | In Progress | P1 | 5 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches | Backlog | P1 | 8 | T-0012, T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
@@ -110,12 +111,11 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 
 ## Pull order
 
-There are no active lanes. The next refinement candidates are:
+The current active lane is:
 
-1. `T-0003`: establish role, mutation-ownership, and WIP enforcement checks.
-2. `T-0012`: specify configuration, schema, and value semantics from the
-   pinned references without adopting upstream implementation code.
+1. `T-0021/S01`: establish only the physical `emburk-cli -> emburk-core`
+   workspace boundary. The owner-authorized slice introduces no compatibility
+   semantics and does not satisfy the parent task's T-0012/T-0013 dependencies.
 
-Dependency completion only permits refinement; neither candidate moves to
-`Ready` until the Definition of Ready is satisfied. The combined `In Progress`
-plus `Review` WIP limit remains two.
+T-0003 and T-0012 remain the next refinement candidates. The combined `In
+Progress` plus `Review` WIP limit remains two.

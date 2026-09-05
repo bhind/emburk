@@ -1,9 +1,7 @@
-const DEVELOPMENT_STATUS: &str =
-    "emburk: development environment ready (data transfer not implemented yet)";
+#![forbid(unsafe_code)]
 
-fn main() {
-    println!("{DEVELOPMENT_STATUS}");
-}
+pub const DEVELOPMENT_STATUS: &str =
+    "emburk: development environment ready (data transfer not implemented yet)";
 
 #[cfg(test)]
 mod tests {
