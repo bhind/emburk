@@ -7,8 +7,9 @@ GitHub Project mirror these stable identifiers for coordination. Parent epics
 are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
-Current queue state: `T-0002` and `T-0011` are `Done`, `T-0021` is `In Progress`,
-and every other item is `Backlog`. No item is `Ready`, `Review`, or `Blocked`.
+Current queue state: `T-0002` and `T-0011` are `Done`; `T-0003` and `T-0021`
+are `In Progress`; `T-0012` is `Blocked`; and every other item is `Backlog`.
+No item is `Ready` or `Review`.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -22,7 +23,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0001 | Epic: Governance and traceability | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0002 | Establish canonical records and stable IDs | Done | P0 | 3 | None | Project Manager | Unit/Contract |
-| T-0003 | Establish roles, mutation ownership, and WIP enforcement | Backlog | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
+| T-0003 | Establish roles, mutation ownership, and WIP enforcement | In Progress | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
 | T-0004 | Implement Project synchronization audit | Backlog | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
 | T-0005 | Establish provenance, license, NOTICE, and SBOM gates | Backlog | P0 | 5 | T-0002 | Project Manager | Release |
 | T-0006 | Establish trademark and patent review checkpoints | Backlog | P1 | 2 | T-0005 | Project Manager | Planning |
@@ -33,7 +34,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics | Backlog | P0 | 5 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics | Blocked | P0 | 5 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics | Backlog | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -119,12 +120,9 @@ T-0021 has two bounded slices under one serial integration lane:
   complete T-0012/T-0013 or authorize guessed semantic implementations.
 
 These estimates are within the parent's 5 SP, not additional points or accepted
-velocity. Parent completion retains its listed dependencies. The next
-refinement candidates are:
+velocity. Parent completion retains its listed dependencies.
 
-1. `T-0003`: establish role, mutation-ownership, and WIP enforcement checks.
-2. `T-0012`: specify configuration, schema, and value semantics from the
-   pinned references without adopting upstream implementation code.
-
-T-0003 and T-0012 remain the next refinement candidates. The combined `In
-Progress` plus `Review` WIP limit remains two.
+T-0003 is implementing the governance audit required before T-0004 can refine
+Project synchronization and delivery analytics. T-0012 remains blocked with
+its exact clearing condition in Issue #15. The combined `In Progress` plus
+`Review` WIP limit is fully occupied by T-0003 and T-0021.

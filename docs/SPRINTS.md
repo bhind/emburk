@@ -50,6 +50,12 @@ Do not repeat broad scans or full test suites unless a changed artifact or new
 failure justifies them. A local two-thread cap is recommended; it limits
 concurrency but cannot measure or reset an account's weekly usage allowance.
 
+Run `python3 scripts/project_governance_audit.py audit` before lifecycle
+transitions that would occupy an execution lane. The audit discovers the
+repository-linked Project at runtime and fails closed when discovery is
+ambiguous or the combined WIP limit is exceeded. It is read-only; the Project
+Manager remains responsible for every transition.
+
 ## Definition of Ready
 
 An item may enter `Ready` only when it has:

@@ -3,6 +3,8 @@
 - Work item:
 - Authority:
 - Mutation owner:
+- Branch and allowlist:
+- Dependencies:
 
 ## Change
 
@@ -14,6 +16,7 @@
 
 - Acceptance criteria:
 - Commands and evidence:
+- Stop rule:
 
 ## Provenance and release impact
 

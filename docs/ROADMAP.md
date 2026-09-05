@@ -11,6 +11,10 @@ The roadmap is ordered by evidence gates. Dates are intentionally omitted until 
 
 Exit gate: the first implementation tasks have approved contracts and reproducible reference fixtures.
 
+The governance portion of this phase also requires T-0003's executable packet
+and WIP audit before T-0004 may automate Project synchronization or delivery
+analytics.
+
 T-0021/S02 supplies the [Rust design worksheet](RUST_RUNTIME_DESIGN.md) for
 configuration/value fixtures and lifecycle/failure traces. Its proposed
 structure does not satisfy this exit gate; T-0012 and T-0013 must resolve the

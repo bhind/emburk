@@ -42,6 +42,13 @@ body:
       description: Exact files, directories, generated artifacts, and external systems in scope.
     validations:
       required: true
+  - type: input
+    id: branch
+    attributes:
+      label: Branch
+      description: Dedicated branch matching the repository naming convention.
+    validations:
+      required: true
   - type: textarea
     id: acceptance
     attributes:
