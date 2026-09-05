@@ -34,7 +34,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S07 (`In Progress`, Stage B) is the only serial work item. Combined active WIP is one of
+T-0013/S07 (`Review`, PR #78) is the only serial work item. Combined active WIP is one of
 two; no item is `Blocked`. T-0012 and T-0021 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
@@ -45,7 +45,7 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013/S07 | In Progress | Observe first/middle commit failures before choosing Rust policy |
+| T-0013/S07 | Review | Accept first/middle reference observations in PR #78 before Rust policy |
 | T-0021 | Backlog | S01–S04 integrated; remaining runtime contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are

@@ -1,7 +1,7 @@
 # T-0013/S07 output commit position observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; Stage A captured, PM Stage B expectations recorded; acceptance pending
+- State: Review in PR #78; primary and independent source acceptance passed
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP is refined 21 to 34; Initial SP remains 8.
