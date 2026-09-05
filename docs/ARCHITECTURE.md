@@ -37,8 +37,11 @@ Logical type tags alone do not establish value or Arrow representations.
 
 ADR-0008 permits a private synchronous empty-task coordinator with explicit
 input/output task plans, separate report collections and owned output handles.
-T-0021/S03 is implementing this candidate with original fake plugins; acceptance
-is pending. Its limited callback fallibility is not a public production plugin
+T-0021/S03 implements this candidate with original fake plugins and separate
+cleanup capability receivers after dropping task handles. Five local lifecycle
+tests pass at `84edf00` under primary and independent acceptance; integration
+is pending.
+Its limited callback fallibility is not a public production plugin
 contract, and it does not choose default fan-out or a parallel scheduler.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools

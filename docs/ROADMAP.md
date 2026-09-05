@@ -68,7 +68,9 @@ It supplies bounded candidate evidence for private empty-task execution only;
 parent lifecycle, resume, cleanup-error and delivery gates remain open.
 Independent and final-head acceptance passed; PR #72 integrated as `8e43948`.
 ADR-0008 now permits the private empty-task coordinator slice T-0021/S03.
-Its local Unit/Contract gate precedes a separately scoped live comparison and
+Its five-test local Unit/Contract gate passes at `84edf00` under primary and
+independent acceptance, with integration pending. It precedes a separately
+scoped live comparison and
 does not complete Phase 0 or the File-to-File milestone.
 
 ## Phase 1: Native File-to-File MVP

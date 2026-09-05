@@ -203,3 +203,9 @@ are bounded; other callback fallibility remains explicit unsupported scope.
 No default fan-out, public plugin API or data transfer is inferred. Local
 Unit/Contract acceptance precedes a separately packeted live callback comparison
 under T-0013. T-0013 returns to Backlog, not Done or Blocked; WIP stays one.
+
+S03 primary source acceptance at `84edf00` passed five selected lifecycle tests,
+19 workspace tests with two intentional live ignores, format, strict Clippy
+and diff checks. Independent Tester reproduced these results; PR integration
+remains pending;
+the parent semantic dependencies and live comparison gate remain open.

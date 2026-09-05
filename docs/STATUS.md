@@ -169,5 +169,11 @@ for distinct task contexts and failure-evidence validation; Initial SP remains
 8, and parent completion is not implied.
 
 ADR-0008 permits T-0021/S03 to implement a private synchronous empty-task
-coordinator with explicit plans and original fake plugins. Acceptance is
-pending; it adds no public API, default scheduling, JVM host or loader claim.
+coordinator with explicit plans and original fake plugins. Source acceptance at
+`84edf00` passed five selected lifecycle tests and 19 workspace tests (two
+intentional live-test ignores), format, strict Clippy and diff checks. Separate
+cleanup receivers receive preserved reports after task handles are dropped;
+the selected input failure aborts all handles before closing all handles.
+Independent Tester reproduced these results at the same source revision;
+final-head acceptance and integration are pending. This is Unit/Contract only;
+it adds no public API, default scheduling, JVM host or loader claim.
