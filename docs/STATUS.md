@@ -217,6 +217,11 @@ failure positions and general recovery remain outside its reference coverage.
 Current T-0021 SP is refined 5 to 8; Initial SP stays 5 and parent gates stay open.
 
 T-0013/S06 now has a reviewed comparison packet for normal and selected
-last-output-commit failure. It changes only test infrastructure; no new
-Differential result is claimed until live acceptance. Current/Initial SP remain
+last-output-commit failure. It changes only test infrastructure. Primary source
+acceptance at `a284f8b` passes both live projections (normal 44/failure 43 events,
+cleanup reports 1/8 and 1/7 in the observed 1/8 plan), 30 raw controls, two local
+bridge tests and unchanged S04 live regression. Workspace tests pass 23 with
+four intentional ignores; formatting, strict Clippy and syntax checks pass.
+Independent Tester reproduced these results at the same source revision;
+final-head acceptance and integration remain pending. Current/Initial SP remain
 21/8; T-0021 is requeued without closing its parent.

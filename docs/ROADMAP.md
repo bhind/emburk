@@ -89,6 +89,10 @@ Primary and independent S04 source acceptance passed at `b8dbc77`, including
 both unchanged live regressions; final-head acceptance at `d885ba2` passed and
 PR #76 integrated as `b5cfb87`. Phase gates remain open. T-0013/S06 now prepares
 two selected output-commit comparisons without widening the runtime contract.
+S06 primary acceptance at `a284f8b` passes both declared live projections and
+strict negative controls; independent Tester reproduced these results.
+Final-head acceptance and integration remain pending.
+This closes neither arbitrary-index failure nor phase delivery gates.
 
 ## Phase 1: Native File-to-File MVP
 

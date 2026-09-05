@@ -255,3 +255,10 @@ T-0013/S06 (3 SP within unchanged Current 21/Initial 8) is In Progress under its
 and selected last-output-commit execution to the unchanged S05 reference gate.
 Keep S04 unchanged; no production mutation or broader failure claim. Requeue
 T-0021 to Backlog and retain a single serial implementation lane.
+
+S06 primary source acceptance at `a284f8b` passes the exact Demo: two new live
+projections, full S05 gate/23 controls, 30 raw controls, two local bridge tests,
+and unchanged S04 two-case/13-control regression. Workspace 23 passed/four
+intentional ignores and strict checks pass. Evidence is Unit/Contract plus two
+selected Differential projections; independent Tester reproduced the same source
+results. Final-head acceptance and integration remain required.

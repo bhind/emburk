@@ -59,6 +59,14 @@ PR #76 integrated as `b5cfb87`. Its private
 fallible signature does not establish arbitrary-index recovery, publication or
 rollback semantics or authorize a public plugin boundary.
 
+T-0013/S06 adds a separate test-only bridge for normal and selected last-commit
+failure, preserving S04 and the coordinator algorithm. Strict raw validation
+precedes physical-order projection; exact errors are validated within each
+runtime before comparing category/index. Each failed Rust scope is checked
+individually before excluding the two uninstrumented control failures. Primary
+and independent acceptance pass at `a284f8b`; final-head acceptance and
+integration remain required.
+
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe
 plugin do not create an Emburk Java host, admitted plugin, runtime dependency,

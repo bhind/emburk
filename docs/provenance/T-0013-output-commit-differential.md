@@ -1,7 +1,7 @@
 # T-0013/S06 selected output-commit differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; runtime acceptance pending
+- State: In Progress; primary and independent source acceptance passed, integration pending
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP remains 21; Initial SP remains 8.
@@ -105,6 +105,82 @@ Planning only until executed. Intended acceptance: Unit/Contract for validators
 and two selected Differential (Embulk) projections. Independent read-only
 planning review supports this scope. PM fixes the cap at 1024 (not N), preserving
 the existing harness safety policy; N remains observed, not a planner claim.
+Independent read-only packet review at `935878e` found no missing material
+condition. It specifically requires `COMMITCASE` (not S03's `CASE`) envelopes,
+the main-capture selection marker, complete callback/phase validation before
+exclusion, four exact Rust output-error scope payloads and diagnostic-specific
+negative controls. This is Planning evidence, not frozen-source acceptance.
+
+### Primary frozen-source acceptance
+
+The exact Demo passed at `a284f8bf0f14c2f01a5cf1c196514fcc586f7660`.
+S06 compared exactly two live cases through one explicitly selected ignored
+Rust test. Normal execution projected 44 events and cleanup input 1/output 8
+reports; selected last-index failure projected 43 events and input 1/output 7
+reports for the observed 1/8 plan. The unchanged prerequisite S05 gate passed
+both fixtures and 23 controls. All 30 new raw controls rejected at their named
+diagnostics. Two local bridge tests passed, including repaired event-count
+mutations, 1/1 and 1/8 local fixtures, and direct per-component/payload guards.
+The unchanged S04 regression compared two cases and rejected 13 raw controls.
+
+Primary S06 evidence: `${TMPDIR}/t0013-s06.B5smPC`; reference:
+`${TMPDIR}/t0013-output-commit-failure.SOR3zQ/evidence`.
+Primary S04 evidence: `${TMPDIR}/t0013-s04.zQVUFu`.
+Raw cases/traces SHA-256:
+`03d0c5e33683d91c391e2992e3c314cbe6f6f10dcadec2c01e10e431ab6d6c4c` /
+`b8e505aceb03bdfea097650529db3245841b806342c497e03fc353fd15e32224`.
+Normalized manifest SHA-256:
+`045dd55a4282a560052aa77c3ec9b28ea2be4b23177478f58fe4580d6a9f70ce`.
+These hashes identify evidence, not hard-coded acceptance expectations.
+
+Workspace tests passed 23 with four intentional live ignores. Cargo formatting,
+explicit Rust 2024 included-file formatting, strict all-target Clippy, separate
+shell syntax checks, Python compilation with an external cache, and diff checks
+all exited 0. Environment: macOS 26.5.1 ARM64, Rust/Cargo 1.98.1,
+Temurin 17.0.20+8, Python 3.14.6 and Bash 3.2.57.
+
+Frozen source SHA-256:
+
+- Registration-only `empty_lifecycle.rs`:
+  `5b77d1820982196c13cacb45e46bdb01c79244493129327fdaae50a2eced255a`
+- Rust child:
+  `a58579549d58069725c0fb4149303cdaa291802505e47868c012c5a420fd922d`
+- Shell wrapper:
+  `62ac4f75f1e243a3390a1e2bfd27a4580c700c8ef68e61a0f19874110e42357a`
+- Python driver:
+  `10b0b4c91ae035501df41fb10ba9dcc2f8b1a40c892b7debfb84d6c781fe929d`
+
+Review rejected the initial count-only scaffold. The accepted candidate uses
+the repository-owned S05 validator and repaired-transport controls, preserves
+the original raw-size check while adding the 1024 cap, and explicitly classifies
+every event before exclusion. Review also required raw-derived cleanup/result
+fields, category/index-only comparison, and one exact failure per scope variant
+rather than aggregate counts. No production coordinator algorithm changed.
+Evidence is Unit/Contract plus only these two selected Differential projections.
+Independent acceptance, final PR-head Demo and integration remain required.
+
+### Independent acceptance
+
+Read-only Tester reproduced the exact Demo and every strict check at the same
+`a284f8b` source revision, with the same counts and no unresolved findings.
+The initial sandbox DNS failure passed on approved network retry; no gate was
+weakened. Manual review confirmed the four-file allowlist, actual Rust execution,
+strict raw validation, individual scope guards and repaired-transport controls.
+
+Tester S06 root: `${TMPDIR}/t0013-s06.ahDEQp`; S05 raw root:
+`${TMPDIR}/t0013-output-commit-failure.Wjamwc/evidence`; S04 regression root:
+`${TMPDIR}/t0013-s04.5l6zHR`.
+Tester cases/traces SHA-256:
+`4e7c5b6a090d3211fcaad6c29c8ba726de4c867b8a7a3abb32492f44cc51a4dd` /
+`311a8e295f15abdbd86fdce5a37a85c5d5bdb0e16124e85ed7599a95969c9778`.
+The normalized manifest hash matches primary acceptance. Tester selected-live
+log SHA-256:
+`642e0781ac220b3e8f3148f3402785cdd94ad3501c40bfb64c7d17cf2451c640`;
+driver evidence-manifest SHA-256:
+`3db9d97094a45bd65c2add81908e110e5c33b9e40e3da13f5c246c31e677b5f4`.
+Platform is the same macOS 26.5.1 build 25F80 / Darwin 25.5.0 ARM64.
+All source hashes remained unchanged. Final PR-head acceptance and integration
+remain required; parent #16 remains open.
 
 ## Reference and reuse record
 

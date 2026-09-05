@@ -111,7 +111,12 @@ passed at `d885ba2` and PR #76 integrated as `b5cfb87`.
 Its local candidate and existing input-failure live regression do not establish
 a new output-failure Differential result or a public Native/Verified entry.
 T-0013/S06 is the next test-only comparison packet for those two selected
-output-commit scenarios; it has no runtime acceptance evidence yet.
+output-commit scenarios. Primary source acceptance at `a284f8b` now matches
+normal 44-event and selected last-failure 43-event projections, including
+cleanup reports 1/8 versus 1/7 for the observed 1/8 plan. Independent Tester
+reproduced these results; final-head acceptance and integration remain pending.
+This is two selected Differential projections,
+not general commit handling or a public plugin certification.
 
 ## Adding an Entry
 

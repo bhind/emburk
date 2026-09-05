@@ -268,6 +268,13 @@ arbitrary-index coverage. Observe first/middle
 commit failures before choosing a broader policy, and never infer publication
 or rollback from these empty fixtures.
 
+T-0013/S06 primary acceptance at `a284f8b` compares both selected S05 live
+projections to actual private Rust execution. It preserves physical event order,
+compares actual result/report counts and validates exact runtime-local errors
+before category/index normalization. Independent Tester reproduced these results;
+final-head acceptance and integration remain pending. No production algorithm
+or arbitrary-index contract is added.
+
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
 transaction/open could already have effects in a real plugin. Commit durability
