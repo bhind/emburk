@@ -8,8 +8,8 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0021` and `T-0012/S06` are `In Progress`, and every other item is
-`Backlog`. No item is `Blocked`. This is the two-item WIP limit.
+`T-0013/S01` is `In Progress`; `T-0012`, `T-0021` and all other unfinished items
+are `Backlog`. No item is `Blocked`. Combined WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -34,8 +34,8 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S06: ordered schema differential; S01–S05 integrated) | In Progress | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics | Backlog | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01: input callback observations) | In Progress | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -43,7 +43,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
-| T-0021 | Define workspace boundaries and core traits | In Progress | P1 | 5 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
+| T-0021 | Define workspace boundaries and core traits | Backlog | P1 | 5 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches | Backlog | P1 | 8 | T-0012, T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
@@ -139,7 +139,7 @@ integrated as `79cbcb9`. T-0012's current estimate increased from 5 to 8 SP; Ini
 5. The refinement accounts for the explicit oracle adapter, private test bridge,
 and negative evidence validation omitted from the initial estimate. It does
 not award parent completion or change the remaining configuration/schema/value
-scope. T-0021 and T-0012 occupy the combined WIP limit of two.
+scope. T-0021 and T-0012 previously occupied the combined WIP limit of two.
 
 S05 (3 SP within Current SP 8, not additional points) observes three schema
 construction/handoff cases through the pinned executable before choosing a
@@ -156,4 +156,12 @@ nullability, values, Arrow, public APIs and plugin traits. No parent re-estimate
 or completion follows from activation.
 Primary and independent Tester acceptance passed at `c7c7872`: three live schema
 outcomes, S04 regression, strict checks and 14 offline tests with two intentional
-live ignores. Integration remains pending.
+live ignores. PR #69 integrated as `5de35b7`.
+
+T-0013/S01 (3 SP within unchanged Current/Initial SP 8) observes zero-task and
+one-task input callback traces using a separate pinned-runtime probe. Its
+[packet](docs/provenance/T-0013-input-lifecycle-probe.md) excludes fault injection,
+retry, resume, production traits and delivery guarantees. T-0012 and T-0021
+return to Backlog, not Done or Blocked, so this missing lifecycle evidence can
+advance the core-trait dependency. Accepted slices remain accepted; no parent
+velocity is awarded.

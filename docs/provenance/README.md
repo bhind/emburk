@@ -12,4 +12,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S03 internal scalar resolution](T-0012-scalar-resolution.md) | Done (Unit/Contract; PR #66) |
 | [T-0012/S04 live scalar differential](T-0012-live-scalar-differential.md) | Done (selected typed Differential; PR #67) |
 | [T-0012/S05 schema-boundary observation](T-0012-schema-boundary-probe.md) | Done (Reference Observation / Integration; PR #68) |
-| [T-0012/S06 ordered schema differential](T-0012-ordered-schema-differential.md) | In Progress (independent acceptance passed; integration pending) |
+| [T-0012/S06 ordered schema differential](T-0012-ordered-schema-differential.md) | Done (selected schema Differential; PR #69) |
+| [T-0013/S01 input lifecycle observation](T-0013-input-lifecycle-probe.md) | In Progress (acceptance pending) |

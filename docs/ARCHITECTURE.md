@@ -32,7 +32,7 @@ their eventual Rust API stable.
 ADR-0007 permits a private ordered logical schema before any physical encoding
 or public exposure. S06 implements it as an owned ordered vector in the core,
 with no name lookup or deduplication. Its three-case live comparison passed
-primary and independent Tester acceptance; integration remains pending.
+primary and independent Tester acceptance and integrated through PR #69.
 Logical type tags alone do not establish value or Arrow representations.
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools

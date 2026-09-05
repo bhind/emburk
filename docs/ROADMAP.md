@@ -45,7 +45,12 @@ encoding or completion of the Phase 0 contract gate.
 S06 primary acceptance at `c7c7872` matches three ordered schema outcomes with
 the private Rust model. The bounded result advances the logical-contract
 foundation but does not satisfy the full schema/value or lifecycle exit gate;
-independent acceptance passed and integration is pending.
+independent acceptance passed and PR #69 integrated as `5de35b7`.
+
+T-0013/S01 now supplies a separate input lifecycle observation lane for zero
+and one empty task. T-0012 and T-0021 are requeued after their accepted slices
+to address this still-missing prerequisite. This is not parent completion or a
+blocker; callback traits, cleanup guarantees and resume remain unverified.
 
 ## Phase 1: Native File-to-File MVP
 

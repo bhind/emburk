@@ -29,8 +29,9 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 (`In Progress`) and T-0012/S06 (`In Progress`) are the only active work
-items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
+T-0013/S01 (`In Progress`) is the only active work item. Combined WIP is one of
+two; no item is `Ready` or `Blocked`. T-0012 and T-0021 return to Backlog after
+their accepted slices; their remaining contracts/dependencies are not complete.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -38,8 +39,9 @@ items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S06 | In Progress | Private ordered schema and live comparison; S01–S05 integrated |
-| T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
+| T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
+| T-0021 | Backlog | S01/S02 integrated; core traits await T-0012/T-0013 contracts |
+| T-0013/S01 | In Progress | Observe zero-task and one-task input lifecycle traces |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -133,7 +135,11 @@ S06 implements the private ordered schema permitted by ADR-0007 and a
 three-case live comparator. Primary acceptance at `c7c7872` passed all three
 live outcomes and negative controls; workspace tests passed 14 with two
 explicitly ignored live tests, plus format and strict Clippy. Independent
-Tester reproduced S06 and S04 live regression; integration remains pending.
+Tester reproduced S06 and S04 live regression; PR #69 integrated as `5de35b7`.
 Its evidence is Unit/Contract plus
 Differential for the three selected ordered outcomes only; no public schema
 support or physical encoding claim follows.
+
+T-0013/S01 now observes actual input callback traces before Rust lifecycle
+traits are chosen. Acceptance is pending; no callback, cleanup or resume
+contract is implemented or verified.

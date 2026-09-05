@@ -93,8 +93,8 @@ They do not settle lookup, renaming, null handling, mismatch timing or physical
 value encodings, and do not establish a Rust schema API.
 
 S06 now implements the private ordered-vector boundary under ADR-0007. Its
-three-case live comparison has primary and independent acceptance; integration
-is pending. This storage-only model does not resolve the remaining
+three-case live comparison has primary and independent acceptance and integrated
+through PR #69. This storage-only model does not resolve the remaining
 worksheet cells or authorize physical encoding/public API choices.
 
 ## Logical records and physical batches

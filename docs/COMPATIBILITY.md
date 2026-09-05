@@ -66,7 +66,7 @@ same three selected cases against actual S05 run-phase data and preserves
 the duplicate-name pair as two ordered positions. Internal tests also cover
 owned-name storage and malformed evidence. This is not a full schema API,
 validation policy, arbitrary-name compatibility, lookup, nullability, values,
-Page/Arrow encoding or lifecycle claim. Integration is pending.
+Page/Arrow encoding or lifecycle claim. PR #69 integrated the slice as `5de35b7`.
 
 ## Adding an Entry
 

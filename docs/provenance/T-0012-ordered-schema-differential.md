@@ -2,7 +2,8 @@
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
 - Branch: `feat/t-0012-ordered-logical-schema`
-- State: In Progress; independent acceptance passed, integration pending
+- State: Done as a slice; integrated through PR #69 as
+  `5de35b790f717175668eb660852e2d7aef11f2dd`; parent remains open
 - Owner: Rust Core Implementer; canonical records/integration: Project Manager
 - Dependencies: T-0011 and S05, integrated through PR #68 as
   `68559dc8b81d45c2b236db3d1e5266f70ab589a9`
@@ -130,4 +131,7 @@ Tester live evidence `${TMPDIR}/t0012-s06.dpJVxD` has the same TSV hash as prima
 acceptance. Its raw-record hash file SHA-256 is
 `9946b294746847657f31dca792953d09163d923f2fb9a3bb96f1c52bc5428476`.
 Platform: macOS 26.5.1 arm64, Bash 3.2.57, Python 3.14.6, Rust/Cargo 1.98.1,
-Temurin JDK 17.0.20. PR integration remains pending; parent T-0012 is not complete.
+Temurin JDK 17.0.20. Each shell script was also syntax-checked individually.
+Final-head primary Demo at `1b1301623a157614ba2c94118daffcd49eae3e2c` passed
+with evidence `${TMPDIR}/t0012-s06.weWGJE`. PR #69 integrated the slice;
+parent T-0012 is not complete.
