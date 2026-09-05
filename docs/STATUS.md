@@ -23,13 +23,12 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-No work item is currently `Ready`, `Blocked`, or `Done`. The two active WIP
-slots are listed below.
+No work item is currently `Ready`, `In Progress`, `Review`, or `Blocked`.
 
 | Item | State | Purpose |
 |---|---|---|
-| T-0002 | In Progress | Establish canonical records and stable IDs |
-| T-0011 | Review | Pin Embulk core, SPI, and admitted plugin reference versions |
+| T-0002 | Done | Established canonical records and stable IDs |
+| T-0011 | Done | Pinned Embulk core, SPI, and admitted plugin reference versions |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -51,8 +50,8 @@ In particular, the repository does not yet demonstrate:
 - a performance, security-isolation, production-readiness, or ecosystem
   coverage claim.
 
-The shared bootstrap integration for `T-0002` and `T-0011` is in
-[PR #53](https://github.com/bhind/emburk/pull/53). T-0002 is active again for a
-bounded Rust smoke-test addition; T-0011 remains in Review. Neither item becomes
-`Done` until the reviewed revision passes, the pull request is integrated, and
-the Issues and repository records are reconciled.
+The shared bootstrap integration for `T-0002` and `T-0011` passed its stated
+checks at revision `9416ec3` and was squash-merged by
+[PR #53](https://github.com/bhind/emburk/pull/53) as `230e3af`. The two tasks
+are complete; their evidence establishes only the bootstrap and reference-pin
+boundaries described above.
