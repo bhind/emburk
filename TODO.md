@@ -229,3 +229,8 @@ fallibility. Current parent SP is refined 13 to 21: S01–S04 already represent
 12 SP of accepted slices, while output-failure verification and recovery
 uncertainty remain. Initial SP stays 8; no parent completion or earned parent
 points are implied. Combined WIP stays one.
+
+S05 primary acceptance at `876e861` passed both live fixtures, 21 targeted
+evidence controls and two executable controls, separate shell syntax and diff
+checks. Independent Tester reproduced these results; integration remains pending. Only selected
+last-index reference observations are claimed, not general commit handling.

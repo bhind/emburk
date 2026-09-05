@@ -78,6 +78,9 @@ acceptance at `09ac159` passed and PR #74 integrated as `68d848c`.
 S05 now observes selected output commit failure before expanding Rust output
 fallibility. This reference-only gate cannot establish partial publication,
 rollback, retry or resume behavior.
+S05 primary acceptance at `876e861` passes the two live fixtures and 23 controls;
+independent Tester reproduced these results, with integration pending. It distinguishes selected
+output commit failure from input-run failure without completing parent gates.
 
 ## Phase 1: Native File-to-File MVP
 

@@ -251,8 +251,18 @@ and a complete lifecycle contract are not approved by this internal slice.
 | Empty successful orchestration | Accepted S01 input and S02 output observations with actual component traces | A bounded normal-path candidate; not inferred failure handling |
 | Failure before the input's finish call | Same-runtime positive control and an original input-run exception fixture, retaining propagation and all actual output callbacks | A candidate for that exact failure boundary; not pre-publication, rollback, retry or recovery guarantees |
 | Private coordinator acceptance | Independently authored fake plugins and explicit input/output plans (T-0021/S03 Unit); two live declared projections pass T-0013/S04 primary and independent acceptance at `98b6cac`, integrated by PR #74 (`68d848c`) | Private execution of those supplied plans; not default executor fan-out, identical instrumentation or a public plugin API |
-| Output commit callback exception | S05 original normal control plus one selected output commit exception; actual outcomes pending | Evidence to review before output fallibility; not durable publication, rollback or recovery guarantees |
+| Output commit callback exception | S05 original normal control plus one selected output commit exception; primary and independent acceptance pass at `876e861`, integration pending | Evidence to review before output fallibility; not durable publication, rollback or recovery guarantees |
 | Expansion beyond empty tasks | New fixtures for values, output mapping, concurrency and resource bounds | A separately reviewed execution slice; not a silent extension of empty-task evidence |
+
+S05's initial last-index observation differs from input-run failure: only the
+failed output is aborted, all handles close, and earlier returned reports remain
+available to cleanup. Primary and independent acceptance pass at `876e861`;
+integration is pending. A future private candidate
+would need typed output errors, incremental report retention and common typed
+scope outcomes while preserving S04 regressions; no such mutation is authorized
+here. Last-index evidence is not arbitrary-index coverage. Observe first/middle
+commit failures before choosing a broader policy, and never infer publication
+or rollback from these empty fixtures.
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output

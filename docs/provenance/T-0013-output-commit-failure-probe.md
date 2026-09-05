@@ -130,6 +130,100 @@ Reference Observation / Integration only if acceptance passes. No Rust behavior
 or Differential result is added by this observation. Planning is not evidence
 that the injection has been reached or that cleanup/rollback works.
 
+Independent read-only Planning review at `45839d5` found no material ambiguity
+or overclaim. It confirmed the unchanged-input/new-output boundary, dynamic
+capture-local selection, first-trace interpretation gate and explicit absence
+of rollback/publication or Rust-policy claims. Source acceptance remains pending.
+
+## Initial observation and PM interpretation
+
+Before failure-outcome assertions were added, the original runner produced
+local-only evidence at `${TMPDIR}/t0013-output-commit-failure.Whvtnv/evidence`.
+PM read the full decoded failure trace on 2026-09-06. Normal process exit was 0
+with 81 markers (10 input, 71 output); failure exit was 1 with 82 (9 input,
+73 output). Both observed output counts were 8, schema count 0, selected index 7.
+
+All eight output handles opened and finished, and the input finish/run returned
+normally before commit. Failure commits at indexes 0–6 returned normally;
+index 7 reached the injection and recorded the exact original exception without
+a commit normal return. Only index 7 received abort; all eight received close.
+Output transaction then input transaction recorded the same original exception,
+not normal control/transaction returns. Fresh input cleanup capture received
+task count 1/report count 1; fresh output cleanup capture received task count
+8/schema count 0/report count 7. These are distinct from S03 input-run failure's
+all-output abort and empty report collections.
+
+PM authorizes assertions for that selected fixture pattern using observed N and
+selected N - 1, retaining physical event order and independent cleanup counts.
+This is not a universal equality between successful commits and cleanup reports,
+an arbitrary failing-index observation, or evidence of durable publication or
+rollback. Numerical last-index selection does not establish a concurrent order.
+No Rust output-failure policy is implemented or accepted by this interpretation.
+
+Initial raw SHA-256 (per-run evidence, not golden values):
+
+- `cases.raw`:
+  `57f4a36145ac0336cd2b6318bc68d0ca86130d923a41e9eb65be999e08e875d6`
+- `traces.raw`:
+  `095a51068f1273a6d573e9c3e71ddc0002faf4d84a2cbd9e58c724a939d1eec0`
+- `normal.raw.log`:
+  `3ccb2c5b34a27a45efc37fb042c26c8b5d18501b6e755cc7fb0318206d54ba28`
+- `commit-failure.raw.log`:
+  `91a429bb8594250edff725be4e20b8a5f5a25c62bb7f2c862272894fe645599b`
+
+This initial capture preceded strict source acceptance; later evidence follows.
+
+## Source acceptance
+
+Primary acceptance at `876e861853e723391347f2473e9da630c2dfb033` on 2026-09-06
+passed the exact Demo (exit 0): normal exit 0 with 81 markers (10 input/71
+output), selected commit failure exit 1 with 82 (9/73), matching the interpreted
+boundary above. Actual N was 8 and selected index 7; those are observations,
+not constants inside selection or validation. Both executable controls and all
+21 targeted semantic/envelope controls passed. Missing, duplicate, contradictory
+and reordered semantic markers have repaired sequence/hash/raw-log metadata and
+must fail with their specific diagnostic. A one-output plan no longer crashes
+the parser's zero-prior-commit ordering check; this is parser robustness, not a
+new live observation of N = 1.
+
+Both shell syntax checks were run separately and passed; `git diff --check`
+exited 0. Environment remains macOS arm64, Temurin 17.0.20+8, Python 3.14.6 and
+Bash 3.2.57. The pinned self-executable's known 7451-byte zip prefix warning and
+public-API deprecation notes are retained, not suppressed or new artifacts.
+No Rust or existing probe source changed. PM reviewed the output/S03 source diff:
+changes are confined to fixture identity, selection and the original injection.
+
+Primary local-only evidence:
+`${TMPDIR}/t0013-output-commit-failure.tQ5LZR/evidence`.
+
+- `cases.raw` SHA-256:
+  `55e3794bffd144418edce00386214c14151846e47436c47c8121495e1c80ff8c`
+- `traces.raw` SHA-256:
+  `a9c4ddac0cca23f796118269f2cb784a70cd76dbf8057b7af236404124d81b4a`
+- Runner SHA-256:
+  `a49aa3869677fa1db7ad7e989697fd59d78fbd9bad64d895ff71ed7468b1acb3`
+- New output Java SHA-256:
+  `6889081e838e19052ba7ea34193a8ad7bf64ec5b7339e4d825e1ad09adfb65d3`
+- Acceptance wrapper SHA-256:
+  `2c5c7e20cc515836459d4d15b52f1dde4ed1bc4fbd0bdf3cf9a7ba53752275b6`
+- Unchanged S03 input Java SHA-256:
+  `d45f0b6e83d39458331a2cf1be27a01d1b6863017bd87807f0e49d160c96d252`
+
+Independent Tester reproduced the frozen source: exact Demo exit 0 with both
+fixtures and all 23 controls, separate shell syntax and diff checks passing.
+The initial sandbox attempt exited 1 without evidence; the approved exact
+pinned-network rerun passed. No acceptance finding remains. Logs are local-only
+at `/private/tmp/emburk-t0013-s05-acceptance.X684fr`; `demo-escalated.log` SHA-256:
+`a129739e86bab0d7328dfe76b04f922631f21363cf47e01936374456ac3995b9`.
+Independent reference root is
+`${TMPDIR}/t0013-output-commit-failure.z9E3Nq/evidence`; `cases.raw` SHA-256:
+`38acff4e916c0fbd18d193390b652f4c3e9d423242986c15b66a785721c714e8`;
+`traces.raw` SHA-256:
+`1b4048b0b32450e0b910fdc7bdeb1fc08776037cf8c1193299e6fa6b84f28114`.
+Final-head acceptance and integration remain pending.
+Evidence is Reference Observation / Integration only. Other commit positions,
+general output-error semantics, publication and rollback remain unverified.
+
 ## Reference and reuse record
 
 Access/review date: 2026-09-06. Uses the exact official executable URL recorded

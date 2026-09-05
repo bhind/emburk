@@ -98,8 +98,11 @@ after final-head acceptance at `09ac159`. Its projections exclude
 default planning, capture identity, Java report contents and zero-task live
 coverage; no generalized lifecycle claim follows from activation.
 
-S05's selected output commit failure observation is pending. It adds no native
-output-failure, partial-publication or rollback policy.
+S05's selected output commit failure observation passes primary acceptance at
+`876e861`: only the failed handle aborts, all close, and cleanup receives input
+1/output 7 reports for the observed 1/8 plan. Independent acceptance passes;
+integration remains pending. It adds no native output-failure, partial-publication or rollback
+policy, and does not observe arbitrary failure indexes.
 
 ## Adding an Entry
 

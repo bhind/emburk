@@ -196,3 +196,10 @@ S05 now observes a normal control and one selected output commit exception.
 No output-failure Rust policy is added before that evidence. T-0013 Current SP
 is refined 13 to 21 to include output-failure verification and remaining lifecycle
 uncertainty; Initial SP stays 8 and the parent remains open.
+
+S05 primary acceptance at `876e861` passed the normal/selected commit-failure
+Demo and 23 controls. Failure aborted only the failed handle, closed all, and
+fresh cleanup captures received input 1/output 7 reports in the observed 1/8
+plan. Independent Tester reproduced these results. This is Reference Observation
+/ Integration only; final-head acceptance and integration remain pending, with
+no Rust output-failure policy added.
