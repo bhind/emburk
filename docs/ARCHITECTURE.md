@@ -54,7 +54,8 @@ is not a host API.
 ADR-0009 permits a private typed output-commit error and common input/output
 scope outcome, preserving actual reports on the observed last-index failure.
 T-0021/S04 implements this candidate; primary and independent Unit/Contract
-acceptance pass at `b8dbc77`, with integration pending. Its private
+acceptance pass at `b8dbc77`; final-head acceptance passed at `d885ba2` and
+PR #76 integrated as `b5cfb87`. Its private
 fallible signature does not establish arbitrary-index recovery, publication or
 rollback semantics or authorize a public plugin boundary.
 

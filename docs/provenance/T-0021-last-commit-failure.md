@@ -1,7 +1,7 @@
 # T-0021/S04 private last-commit failure
 
 - Tracking issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: Review; source acceptance passed, [PR #76](https://github.com/bhind/emburk/pull/76) integration pending
+- State: Done (bounded slice only); [PR #76](https://github.com/bhind/emburk/pull/76) integrated as `b5cfb87`
 - Priority: P1; parent T-0020
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0; raw 3 maps to 3 SP)
@@ -146,8 +146,10 @@ Environment: macOS 26.5.1 ARM64, Rust/Cargo 1.98.1, Temurin 17.0.20+8,
 Python 3.14.6 and Bash 3.2.57. The initially restricted reference download
 passed on approved network retry; no acceptance gate was weakened.
 Evidence remains Unit/Contract plus existing S04 regression, not a new
-output-failure Differential claim. Final PR-head acceptance and integration
-remain required; parent #18 stays open.
+output-failure Differential claim. Final PR-head acceptance at
+`d885ba2e4b394f5b8b204c2983827915fee93dfe` passed the same exact Demo and strict
+checks; evidence root `${TMPDIR}/t0013-s04.IYWEO3`. PR #76 integrated as
+`b5cfb8722aea4c0abff3b41b1e73597dd3691738`; parent #18 stays open and is requeued.
 
 ## Reference and reuse record
 
