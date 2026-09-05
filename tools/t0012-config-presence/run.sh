@@ -27,6 +27,93 @@ if [[ ! -f "$probe_source" ]]; then
   exit 2
 fi
 
+validate_schema_evidence() {
+  PYTHONOPTIMIZE= python3 - "$1" <<'PY'
+import base64, hashlib, pathlib, sys
+d = pathlib.Path(sys.argv[1]); fixtures = {"empty", "ordered6types", "duplicate-name-differing-types"}
+def require(value):
+    if not value: raise ValueError()
+try:
+    cases = (d / "schema-cases.raw").read_text().splitlines()
+    rows = (d / "schema-results.raw").read_text().splitlines()
+    require(len(cases) == 3)
+    parsed = {}
+    for row in cases:
+        tag, fixture, code, outcome, entered = row.split("|")
+        require(tag == "SCHEMA_CASE" and fixture in fixtures and fixture not in parsed)
+        require(code.isdigit() and outcome in {"SUCCESS", "EXCEPTION"} and entered in {"0", "1"})
+        parsed[fixture] = (code, outcome, entered)
+    require(set(parsed) == fixtures)
+    data = {
+        fixture: {
+            "field": {"transaction": [], "run": []},
+            "phase": {}, "exception": [], "entered": [],
+        }
+        for fixture in fixtures
+    }
+
+    def b64(value):
+        decoded = base64.b64decode(value, validate=True)
+        decoded.decode("utf-8")
+        require(base64.b64encode(decoded).decode() == value)
+
+    for row in rows:
+        parts = row.split("|")
+        require(len(parts) >= 2)
+        tag = parts[0]
+        fixture = parts[1]
+        require(fixture in fixtures)
+        if tag == "SCHEMA_FIELD" and len(parts) == 6:
+            _, _, phase, index, name, type_name = parts
+            require(phase in {"transaction", "run"} and index.isdigit())
+            b64(name)
+            b64(type_name)
+            data[fixture]["field"][phase].append((int(index), name, type_name))
+        elif tag == "SCHEMA_PHASE" and len(parts) == 5:
+            _, _, phase, count, digest = parts
+            require(phase in {"transaction", "run"})
+            require(count.isdigit())
+            require(len(digest) == 64)
+            require(all(c in "0123456789abcdef" for c in digest))
+            require(phase not in data[fixture]["phase"])
+            data[fixture]["phase"][phase] = (int(count), digest)
+        elif tag == "SCHEMA_EXCEPTION" and len(parts) == 5:
+            _, _, phase, kind, message = parts
+            require(phase == "transaction")
+            require(kind != "")
+            b64(kind)
+            if message != "-":
+                b64(message)
+            data[fixture]["exception"].append(row)
+        elif tag == "CONTROL_RUN_ENTERED" and len(parts) == 2:
+            data[fixture]["entered"].append(row)
+        else:
+            raise ValueError(row)
+    for fixture, (code, outcome, entered) in parsed.items():
+        entry = data[fixture]
+        if outcome == "SUCCESS":
+            require(code == "0" and entered == "1" and not entry["exception"] and len(entry["entered"]) == 1 and set(entry["phase"]) == {"transaction", "run"})
+            for phase, (count, digest) in entry["phase"].items():
+                fields = entry["field"][phase]; require([field[0] for field in fields] == list(range(count)))
+                material = "".join(f"{i}|{name}|{type_name}\n" for i, name, type_name in fields)
+                require(hashlib.sha256(material.encode()).hexdigest() == digest)
+            require(entry["phase"]["transaction"] == entry["phase"]["run"])
+        else:
+            require(code == "0" and entered == "0")
+            require(len(entry["exception"]) == 1)
+            require(not entry["entered"] and not entry["phase"])
+            require(not entry["field"]["transaction"])
+            require(not entry["field"]["run"])
+    require(parsed["empty"][1] == "SUCCESS" and parsed["ordered6types"][1] == "SUCCESS")
+except (OSError, UnicodeError, ValueError, IndexError, base64.binascii.Error): sys.exit(4)
+PY
+}
+
+if [[ ${T0012_MODE:-presence} == schema-validate ]]; then
+  validate_schema_evidence "${T0012_SCHEMA_EVIDENCE_DIR:-}"
+  exit $?
+fi
+
 run_dir=$(mktemp -d "$temporary_root/run.XXXXXX")
 evidence_dir="$run_dir/evidence"
 plugin_dir="$run_dir/plugin"
@@ -189,8 +276,35 @@ run_conversion() {
   cat "$evidence_dir/conversion-cases.raw"
 }
 
+run_schema() {
+  : > "$evidence_dir/observations.raw.bin"
+  : > "$evidence_dir/schema-cases.raw"
+  : > "$evidence_dir/schema-results.raw"
+  local fixture config_file raw_log exit_code rows exception phase_rows control_rows outcome
+  for fixture in empty ordered6types duplicate-name-differing-types; do
+    config_file="$run_dir/schema-$fixture.yml"
+    raw_log="$evidence_dir/schema-$fixture.raw.log"
+    printf '%s\n' 'in:' '  type:' '    source: maven' '    group: org.embulk.t0012' '    name: t0012' '    version: 0.0.1' 'out:' '  type: "null"' > "$config_file"
+    if T0012_MODE=schema T0012_SCHEMA_FIXTURE="$fixture" T0012_RAW_FILE="$evidence_dir/observations.raw.bin" \
+      java -jar "$executable" "-Xembulk_home=$EMBULK_HOME" run "$config_file" > "$raw_log" 2>&1; then exit_code=0; else exit_code=$?; fi
+    rows=$(grep -E '^(SCHEMA_(FIELD|PHASE|EXCEPTION)|CONTROL_RUN_ENTERED)\|' "$raw_log" || true)
+    printf '%s\n' "$rows" >> "$evidence_dir/schema-results.raw"
+    exception=$(grep -Ec "^SCHEMA_EXCEPTION\\|$fixture\\|transaction\\|" "$raw_log" || true)
+    phase_rows=$(grep -Ec "^SCHEMA_PHASE\\|$fixture\\|" "$raw_log" || true)
+    control_rows=$(grep -Ec "^CONTROL_RUN_ENTERED\\|$fixture$" "$raw_log" || true)
+    if [[ "$exception" == 1 && "$phase_rows" == 0 && "$control_rows" == 0 ]]; then outcome=EXCEPTION
+    elif [[ "$exception" == 0 && "$phase_rows" == 2 && "$control_rows" == 1 ]]; then outcome=SUCCESS
+    else printf 'invalid schema observation for %s (exit=%s exception=%s phase=%s control=%s)\n' "$fixture" "$exit_code" "$exception" "$phase_rows" "$control_rows" >&2; exit 4; fi
+    printf 'SCHEMA_CASE|%s|%s|%s|%s\n' "$fixture" "$exit_code" "$outcome" "$control_rows" >> "$evidence_dir/schema-cases.raw"
+  done
+  validate_schema_evidence "$evidence_dir" || { printf '%s\n' 'schema evidence validation failed' >&2; exit 4; }
+  [[ -s "$evidence_dir/observations.raw.bin" ]] || exit 4
+  cat "$evidence_dir/schema-cases.raw"
+}
+
 case ${T0012_MODE:-presence} in
   presence) run_presence ;;
   conversion) run_conversion ;;
+  schema) run_schema ;;
   *) printf 'unknown T0012_MODE: %s\n' "${T0012_MODE}" >&2; exit 2 ;;
 esac
