@@ -27,9 +27,9 @@ T-0012/S01 gathered a narrow absent/null/default observation via the pinned
 official self-contained executable and a local-only probe plugin. Its annotated
 String/Optional reference observation integrated through PR #61 as `e2532e2`;
 it does not itself satisfy the configuration/schema/value contract or the
-Phase 0 exit gate. T-0012/S02 has a preliminary independent Boolean/Long
-conversion observation awaiting Tester reproduction and likewise cannot satisfy
-that gate without an independently implemented Emburk comparator.
+Phase 0 exit gate. T-0012/S02 has an independently reproduced Boolean/Long
+conversion observation at `86970ea` and awaits PR integration. It likewise
+cannot satisfy that gate without an independently implemented Emburk comparator.
 
 ## Phase 1: Native File-to-File MVP
 

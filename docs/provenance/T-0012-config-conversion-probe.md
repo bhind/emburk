@@ -7,11 +7,10 @@
 - Branch: `research/t-0012-config-conversion`
 - Lifecycle owner: Project Manager
 - Mutation owner: Compatibility Host Implementer
-- Required reviewer: Librarian (Vreji), reviewed 2026-09-05; independent Tester
-  review is required before acceptance.
+- Required reviewer: Librarian (Vreji), reviewed 2026-09-05; independent
+  primary-agent reproduction passed on 2026-09-05.
 - Access date: 2026-09-05
-- State: `In Progress` (runtime candidate recorded; independent Tester review
-  remains required before acceptance)
+- State: `Review` (accepted source evidence recorded; PR integration pending)
 
 ## Outcome and boundary
 
@@ -86,7 +85,7 @@ remain unreviewed. The Librarian found no material provenance blocker for this
 observation-only packet, conditional on retaining S01 identity and isolation
 controls. That review is not legal advice or patent/FTO clearance.
 
-## Preliminary runtime evidence
+## Runtime evidence
 
 - Command: `tests/t0012_config_conversion_probe_test.sh` exited 0 on
   2026-09-05 after `bash -n` also checked the S01 runner and both Demo scripts.
@@ -98,7 +97,8 @@ controls. That review is not legal advice or patent/FTO clearance.
   `a0ea3894e9674e2129c3495557adace6ef2fb6d3c813e142dba0922e2375fb3d`;
   generated JAR SHA-256:
   `43918a93153a3bb295bf84092dcc8dc35f8c27bd7ed0a4dac2aac664d90aa114`.
-  Both are external temporary artifacts and are not distributed.
+  The independently authored source is tracked in this repository; only the
+  generated JAR is an external temporary artifact and is not distributed.
 - All nine case records reached `probe config load` with exit 0. Within this
   pinned fixture, Boolean true/false and quoted true succeeded; invalid Boolean
   recorded a `ConfigException`; Long 37, quoted 37, maximum Long, and
@@ -106,10 +106,13 @@ controls. That review is not legal advice or patent/FTO clearance.
   above-maximum Long recorded a `ConfigException`. Raw exception messages,
   inputs, exits, and logs remain local because they may include personal paths.
 
-This is preliminary Reference Observation / Integration evidence only. It is
-not accepted until an independent Tester reproduces the Demo Command at the
-reviewed commit. The listed outcomes do not establish general conversion,
-rounding, default, parser-cause, or Emburk behavior.
+An independent primary-agent reproduction ran both exact Demo commands at
+`86970ea4064a64260bfa2863c68a200bf15ce1fb` on 2026-09-05. Both exited 0 with
+their checksum and unavailable-runtime controls exiting 3 and 56; it recorded
+nine S02 rows at `probe config load` with exit 0. The source evidence is
+accepted as Reference Observation / Integration only; PR integration remains
+required before this slice can be closed. The listed outcomes do not establish
+general conversion, rounding, default, parser-cause, or Emburk behavior.
 
 ## Stop rule and non-claims
 
