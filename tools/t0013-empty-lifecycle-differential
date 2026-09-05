@@ -1,0 +1,435 @@
+#!/usr/bin/env python3
+"""Run and strictly project the T-0013/S03 evidence into the Rust test bridge."""
+import argparse
+import base64
+import binascii
+import hashlib
+import os
+import pathlib
+import re
+import subprocess
+import sys
+import uuid
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+PROBE = ROOT / "tests/t0013_input_failure_probe_test.sh"
+CASES = ("normal", "failure")
+OUTPUT_CAP = 1024
+INJECTED_CLASS = "T0013FailureInputPlugin$InjectedRunFailure"
+INJECTED_MESSAGE = "t0013-s03-injected-run-failure"
+
+INPUT_ARITY = {
+    "transaction-entry": 1, "control-run-before": 1, "control-run-normal-return": 1,
+    "transaction-normal-return": 1, "transaction-runtime-exception": 2,
+    "run-entry": 1, "injection-before": 1, "finish-before": 1,
+    "finish-normal-return": 1, "run-normal-return": 1, "run-runtime-exception": 2,
+    "cleanup-entry": 2, "cleanup-normal-return": 1, "resume-entry": 1,
+    "resume-normal-return": 1, "guess-entry": 0, "guess-normal-return": 0,
+}
+OUTPUT_ARITY = {
+    "transaction-entry": 2, "control-run-before": 2, "control-run-normal-return": 3,
+    "transaction-normal-return": 3, "transaction-runtime-exception": 2,
+    "resume-entry": 2, "resume-control-run-before": 2,
+    "resume-control-run-normal-return": 3, "resume-normal-return": 3,
+    "resume-runtime-exception": 2, "cleanup-entry": 3, "cleanup-normal-return": 3,
+    "open-entry": 2, "open-normal-return": 2, "add-entry": 2,
+    "add-normal-return": 2, "finish-entry": 2, "finish-normal-return": 2,
+    "commit-entry": 2, "commit-normal-return": 2, "abort-entry": 2,
+    "abort-normal-return": 2, "close-entry": 2, "close-normal-return": 2,
+}
+INPUT_NUMERIC = {
+    "transaction-entry": {0}, "control-run-before": {0}, "control-run-normal-return": {0},
+    "transaction-normal-return": {0}, "run-entry": {0}, "injection-before": {0},
+    "finish-before": {0}, "finish-normal-return": {0}, "run-normal-return": {0},
+    "cleanup-entry": {0, 1}, "cleanup-normal-return": {0}, "resume-entry": {0},
+    "resume-normal-return": {0},
+}
+OUTPUT_NUMERIC = {
+    event: set(range(arity)) for event, arity in OUTPUT_ARITY.items()
+    if not event.endswith("runtime-exception")
+}
+FORBIDDEN_INPUT = {"resume-entry", "resume-normal-return", "guess-entry", "guess-normal-return"}
+FORBIDDEN_OUTPUT = {
+    "resume-entry", "resume-control-run-before", "resume-control-run-normal-return",
+    "resume-normal-return", "resume-runtime-exception", "add-entry", "add-normal-return",
+}
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def decimal(value, label):
+    require(value and value.isascii() and value.isdigit(), f"malformed {label}")
+    return int(value)
+
+
+def decode(value, label, numeric=False):
+    require(value != "-", f"unexpected null {label}")
+    try:
+        raw = base64.b64decode(value, validate=True)
+        text = raw.decode("utf-8")
+    except (binascii.Error, UnicodeDecodeError) as error:
+        raise ValueError(f"malformed {label}") from error
+    require(base64.b64encode(raw).decode("ascii") == value, f"non-canonical {label}")
+    if numeric:
+        decimal(text, label)
+    return text
+
+
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def parse_cases(evidence):
+    rows = evidence.joinpath("cases.raw").read_text(encoding="utf-8").splitlines()
+    require(len(rows) == 2, "case count is not exact")
+    parsed = {}
+    for position, row in enumerate(rows):
+        fields = row.split("|")
+        require(len(fields) == 5 and fields[0] == "CASE", "malformed case row")
+        _, fixture, requested, process_exit, summary = fields
+        require(fixture == CASES[position] and fixture not in parsed, "case order/identity is not exact")
+        counts = summary.split(":")
+        require(len(counts) == 4, "malformed case summary")
+        total, input_count, output_count = [decimal(value, "case count") for value in counts[:3]]
+        digest = counts[3]
+        require(len(digest) == 64 and all(char in "0123456789abcdef" for char in digest), "malformed case hash")
+        parsed[fixture] = {
+            "requested": decimal(requested, "requested count"),
+            "exit": decimal(process_exit, "process exit"),
+            "total": total, "input_count": input_count, "output_count": output_count,
+            "digest": digest,
+        }
+    require(all(case["requested"] == 1 for case in parsed.values()), "unsupported input plan")
+    require(parsed["normal"]["exit"] == 0 and parsed["failure"]["exit"] != 0,
+            "unexpected result category")
+    return parsed
+
+
+def parse_traces(evidence, cases):
+    rows = evidence.joinpath("traces.raw").read_text(encoding="utf-8").splitlines()
+    grouped = {case: [] for case in CASES}
+    decoded = {case: [] for case in CASES}
+    sequence_state = {}
+    for row in rows:
+        fields = row.split("|")
+        require(len(fields) >= 5, "truncated trace row")
+        tag, fixture, capture, sequence_text, event = fields[:5]
+        require(tag in {"FAILTRACE", "FAILOUTTRACE"}, "unknown trace component")
+        require(fixture in grouped, "unknown trace fixture")
+        try:
+            identity = uuid.UUID(capture)
+        except ValueError as error:
+            raise ValueError("malformed capture identity") from error
+        require(str(identity) == capture and identity.version == 4, "non-canonical capture identity")
+        sequence = decimal(sequence_text, "capture sequence")
+        component = "input" if tag == "FAILTRACE" else "output"
+        key = (fixture, component, capture)
+        require(sequence == sequence_state.get(key, 0) + 1, "non-contiguous capture sequence")
+        sequence_state[key] = sequence
+        grammar = INPUT_ARITY if component == "input" else OUTPUT_ARITY
+        numeric = INPUT_NUMERIC if component == "input" else OUTPUT_NUMERIC
+        require(event in grammar, "unknown trace event")
+        require(len(fields) == 5 + grammar[event], "wrong trace arity")
+        values = []
+        for index, value in enumerate(fields[5:]):
+            if value == "-":
+                require(event.endswith("runtime-exception") and index == 1,
+                        "null outside exception message")
+                values.append(None)
+            else:
+                values.append(decode(value, "trace field", index in numeric.get(event, set())))
+        require(event not in (FORBIDDEN_INPUT if component == "input" else FORBIDDEN_OUTPUT),
+                "excluded callback appeared")
+        grouped[fixture].append(row)
+        decoded[fixture].append((component, event, values, capture, sequence))
+
+    for fixture in CASES:
+        case_rows = grouped[fixture]
+        case = cases[fixture]
+        require(len(case_rows) == case["total"], "case total differs")
+        require(sum(row.startswith("FAILTRACE|") for row in case_rows) == case["input_count"],
+                "input marker count differs")
+        require(sum(row.startswith("FAILOUTTRACE|") for row in case_rows) == case["output_count"],
+                "output marker count differs")
+        material = ("\n".join(case_rows) + "\n").encode("utf-8")
+        require(hashlib.sha256(material).hexdigest() == case["digest"], "case trace hash differs")
+        log = evidence / f"{fixture}.raw.log"
+        require(log.is_file(), "raw log missing")
+        extracted = [line for line in log.read_text(encoding="utf-8").splitlines()
+                     if line.startswith("FAILTRACE|") or line.startswith("FAILOUTTRACE|")]
+        require(extracted == case_rows, "raw log differs from trace envelope")
+    return decoded
+
+
+def unique(events, component, name):
+    matches = [row for row in events if row[0] == component and row[1] == name]
+    require(len(matches) == 1, f"expected exactly one {component} {name}")
+    return matches[0]
+
+
+def validate_and_project(evidence):
+    cases = parse_cases(evidence)
+    traces = parse_traces(evidence, cases)
+    results = []
+    input_map = {
+        "transaction-entry": "InputJobOpened", "control-run-before": "InputControlOpened",
+        "run-entry": "InputRan", "finish-normal-return": "InputFinished",
+        "run-runtime-exception": "InputFailed", "control-run-normal-return": "InputControlClosed:Normal",
+        "transaction-normal-return": "InputJobClosed:Normal",
+        "transaction-runtime-exception": "InputJobClosed:Failed",
+        "cleanup-normal-return": "InputCleaned",
+    }
+    output_map = {
+        "transaction-entry": "OutputJobOpened", "control-run-before": "OutputControlOpened",
+        "control-run-normal-return": "OutputControlClosed:Normal",
+        "transaction-normal-return": "OutputJobClosed:Normal",
+        "transaction-runtime-exception": "OutputJobClosed:Failed",
+        "cleanup-normal-return": "OutputCleaned",
+    }
+    output_task_map = {
+        "open-normal-return": "OutputTaskOpened", "finish-normal-return": "OutputTaskFinished",
+        "commit-normal-return": "OutputTaskCommitted", "abort-normal-return": "OutputTaskAborted",
+        "close-normal-return": "OutputTaskClosed",
+    }
+    excluded_input = {"injection-before", "finish-before", "run-normal-return", "cleanup-entry"}
+    excluded_output = {
+        "open-entry", "finish-entry", "commit-entry", "abort-entry", "close-entry", "cleanup-entry"
+    }
+    for fixture in CASES:
+        events = traces[fixture]
+        transaction = unique(events, "output", "transaction-entry")
+        output_tasks = decimal(transaction[2][0], "output task count")
+        require(output_tasks <= OUTPUT_CAP, "output task cap exceeded")
+        require(decimal(transaction[2][1], "schema count") == 0, "non-empty schema")
+        require(output_tasks > 0, "unsupported output plan")
+        for component, event, values, _, _ in events:
+            if component == "input" and event in {
+                "transaction-entry", "control-run-before", "control-run-normal-return",
+                "transaction-normal-return", "cleanup-entry", "cleanup-normal-return",
+            }:
+                require(decimal(values[0], "input task count") == 1, "input task count differs")
+            if component == "input" and event in {
+                "run-entry", "injection-before", "finish-before", "finish-normal-return",
+                "run-normal-return",
+            }:
+                require(decimal(values[0], "input task index") == 0, "input task index differs")
+            if component == "output" and event not in {"transaction-runtime-exception", "resume-runtime-exception"}:
+                if event in {"open-entry", "open-normal-return", "finish-entry", "finish-normal-return",
+                             "commit-entry", "commit-normal-return", "abort-entry", "abort-normal-return",
+                             "close-entry", "close-normal-return"}:
+                    require(decimal(values[0], "output index") < output_tasks, "output index out of range")
+                    require(decimal(values[1], "schema count") == 0, "non-empty schema")
+                else:
+                    require(decimal(values[0], "output task count") == output_tasks,
+                            "output task count differs")
+                    require(decimal(values[1], "schema count") == 0, "non-empty schema")
+
+        input_normal = {
+            "transaction-entry", "control-run-before", "run-entry", "finish-before",
+            "finish-normal-return", "run-normal-return", "control-run-normal-return",
+            "transaction-normal-return", "cleanup-entry", "cleanup-normal-return",
+        }
+        input_failure = {
+            "transaction-entry", "control-run-before", "run-entry", "injection-before",
+            "run-runtime-exception", "transaction-runtime-exception", "cleanup-entry",
+            "cleanup-normal-return",
+        }
+        output_common = {"transaction-entry", "control-run-before", "cleanup-entry", "cleanup-normal-return"}
+        output_normal = output_common | {"control-run-normal-return", "transaction-normal-return"}
+        output_failure = output_common | {"transaction-runtime-exception"}
+        expected_input = input_normal if fixture == "normal" else input_failure
+        expected_output = output_normal if fixture == "normal" else output_failure
+        input_names = [event for component, event, _, _, _ in events if component == "input"]
+        output_names = [event for component, event, _, _, _ in events if component == "output"]
+        require(set(input_names) == expected_input and all(input_names.count(name) == 1 for name in expected_input),
+                "input marker manifest is not exact")
+        input_chain = (["transaction-entry", "control-run-before", "run-entry", "finish-before",
+                        "finish-normal-return", "run-normal-return", "control-run-normal-return",
+                        "transaction-normal-return"] if fixture == "normal" else
+                       ["transaction-entry", "control-run-before", "run-entry", "injection-before",
+                        "run-runtime-exception", "transaction-runtime-exception"])
+        input_chain_rows = [unique(events, "input", name) for name in input_chain]
+        require(len({row[3] for row in input_chain_rows}) == 1
+                and [row[4] for row in input_chain_rows] == sorted(row[4] for row in input_chain_rows),
+                "input callback boundary order differs")
+        output_chain = (["transaction-entry", "control-run-before", "control-run-normal-return",
+                         "transaction-normal-return"] if fixture == "normal" else
+                        ["transaction-entry", "control-run-before", "transaction-runtime-exception"])
+        output_chain_rows = [unique(events, "output", name) for name in output_chain]
+        require(len({row[3] for row in output_chain_rows}) == 1
+                and [row[4] for row in output_chain_rows] == sorted(row[4] for row in output_chain_rows),
+                "output transaction boundary order differs")
+        if fixture == "normal":
+            control_return = unique(events, "output", "control-run-normal-return")
+            transaction_return = unique(events, "output", "transaction-normal-return")
+            require(control_return[2][2] == transaction_return[2][2],
+                    "output transaction report count differs")
+        for operation in ("open", "finish", "commit", "abort", "close"):
+            entry, returned = f"{operation}-entry", f"{operation}-normal-return"
+            should_exist = operation in ({"open", "finish", "commit", "close"} if fixture == "normal"
+                                         else {"open", "abort", "close"})
+            expected_indices = list(range(output_tasks)) if should_exist else []
+            for marker in (entry, returned):
+                indices = [decimal(values[0], "output index")
+                           for component, event, values, _, _ in events
+                           if component == "output" and event == marker]
+                require(len(indices) == len(expected_indices) and sorted(indices) == expected_indices,
+                        f"output {marker} manifest is not exact")
+            if should_exist:
+                for index in expected_indices:
+                    entry_row = next(row for row in events if row[0] == "output" and row[1] == entry
+                                     and decimal(row[2][0], "output index") == index)
+                    return_row = next(row for row in events if row[0] == "output" and row[1] == returned
+                                      and decimal(row[2][0], "output index") == index)
+                    require(entry_row[3] == return_row[3] and entry_row[4] < return_row[4],
+                            f"output {operation} pair differs")
+        non_operation_output = [name for name in output_names if not any(
+            name == f"{operation}-{suffix}"
+            for operation in ("open", "finish", "commit", "abort", "close")
+            for suffix in ("entry", "normal-return"))]
+        require(set(non_operation_output) == expected_output
+                and all(non_operation_output.count(name) == 1 for name in expected_output),
+                "output marker manifest is not exact")
+        for component in ("input", "output"):
+            cleanup_entry = unique(events, component, "cleanup-entry")
+            cleanup_return = unique(events, component, "cleanup-normal-return")
+            require(cleanup_entry[3] == cleanup_return[3] and cleanup_entry[4] < cleanup_return[4],
+                    f"{component} cleanup boundary order differs")
+            if component == "output":
+                require(cleanup_entry[2] == cleanup_return[2],
+                        "output cleanup boundary fields differ")
+            report_count = decimal(cleanup_entry[2][1 if component == "input" else 2],
+                                   f"{component} cleanup report count")
+            if component == "input":
+                input_reports = report_count
+            else:
+                output_reports = report_count
+
+        projection = []
+        for component, event, values, _, _ in events:
+            if event.endswith("runtime-exception"):
+                require(values == [INJECTED_CLASS, INJECTED_MESSAGE], "unknown exception evidence")
+            if component == "input":
+                if event in input_map:
+                    projection.append(input_map[event])
+                else:
+                    require(event in excluded_input, "unclassified input event")
+            else:
+                if event in output_map:
+                    projection.append(output_map[event])
+                elif event in output_task_map:
+                    projection.append(f"{output_task_map[event]}:{decimal(values[0], 'output index')}")
+                else:
+                    require(event in excluded_output, "unclassified output event")
+
+        if fixture == "normal":
+            require(not any(event.endswith("runtime-exception") for _, event, _, _, _ in events),
+                    "normal case contains exception")
+            require(input_reports == 1 and output_reports == output_tasks,
+                    "normal cleanup report counts differ")
+            scenario, result = "normal-input", "success"
+        else:
+            for component, name in (("input", "run-runtime-exception"),
+                                    ("input", "transaction-runtime-exception"),
+                                    ("output", "transaction-runtime-exception")):
+                unique(events, component, name)
+            require(input_reports == 0 and output_reports == 0, "failure cleanup reports are nonzero")
+            scenario, result = "fail-before-finish", "selected-input-failure"
+        results.append({"fixture": fixture, "output_tasks": output_tasks, "scenario": scenario,
+                        "result": result, "input_reports": input_reports,
+                        "output_reports": output_reports, "events": projection})
+    return results
+
+
+def write_manifest(results, path):
+    rows = ["T0013-S04\t1"]
+    for case in results:
+        rows.append("\t".join(("CASE", case["fixture"], "1", str(case["output_tasks"]),
+                               str(OUTPUT_CAP), case["scenario"], case["result"],
+                               str(case["input_reports"]), str(case["output_reports"]),
+                               str(len(case["events"])))))
+        rows.extend(f"EVENT\t{event}" for event in case["events"])
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+
+
+def run_probe(stdout_path, stderr_path, evidence_manifest):
+    completed = subprocess.run(["bash", str(PROBE)], cwd=ROOT, env=os.environ.copy(),
+                               text=True, capture_output=True, check=False)
+    stdout_path.write_text(completed.stdout, encoding="utf-8")
+    stderr_path.write_text(completed.stderr, encoding="utf-8")
+    matches = re.findall(r"^T0013_FAILURE_FULL_PROBE=passed\|evidence=(.+)$",
+                         completed.stdout, flags=re.MULTILINE)
+    require(completed.returncode == 0, f"S03 full probe exited {completed.returncode}")
+    require(len(matches) == 1, "S03 full probe did not identify exactly one primary evidence directory")
+    evidence = pathlib.Path(matches[0])
+    require(evidence.is_dir(), "S03 primary evidence directory is unavailable")
+    evidence_manifest.write_text(
+        "T0013-S04-EVIDENCE\t1\n"
+        f"command=bash tests/t0013_input_failure_probe_test.sh\n"
+        f"evidence={evidence}\n"
+        f"probe-stdout-sha256={sha256(stdout_path)}\n"
+        f"probe-stderr-sha256={sha256(stderr_path)}\n",
+        encoding="utf-8",
+    )
+    return evidence
+
+
+def self_test():
+    require(decode("8J+mgA==", "self-test") == "🦀", "UTF-8 decode failed")
+    for bad in ("!", "YQ", "//8="):
+        try:
+            decode(bad, "self-test")
+        except ValueError:
+            pass
+        else:
+            raise ValueError("malformed Base64/UTF-8 accepted")
+    require(decimal("1024", "self-test") == OUTPUT_CAP, "decimal parse failed")
+    for bad in ("", "+1", "01x", "１"):
+        try:
+            decimal(bad, "self-test")
+        except ValueError:
+            pass
+        else:
+            raise ValueError("malformed decimal accepted")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--manifest", type=pathlib.Path)
+    parser.add_argument("--evidence-manifest", type=pathlib.Path)
+    parser.add_argument("--raw-hashes", type=pathlib.Path)
+    parser.add_argument("--probe-stdout", type=pathlib.Path)
+    parser.add_argument("--probe-stderr", type=pathlib.Path)
+    parser.add_argument("--validate-only", type=pathlib.Path)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    try:
+        if args.self_test:
+            self_test()
+            return 0
+        if args.validate_only:
+            require(args.manifest is not None, "--validate-only requires --manifest")
+            write_manifest(validate_and_project(args.validate_only), args.manifest)
+            return 0
+        required = (args.manifest, args.evidence_manifest, args.raw_hashes,
+                    args.probe_stdout, args.probe_stderr)
+        require(all(required), "all output paths are required")
+        evidence = run_probe(args.probe_stdout, args.probe_stderr, args.evidence_manifest)
+        results = validate_and_project(evidence)
+        raw_names = ("cases.raw", "traces.raw", "normal.raw.log", "failure.raw.log")
+        args.raw_hashes.write_text("".join(f"{name}={sha256(evidence / name)}\n" for name in raw_names),
+                                   encoding="utf-8")
+        write_manifest(results, args.manifest)
+        print(f"T0013_S04_REFERENCE_EVIDENCE={evidence}")
+        print(f"T0013_S04_PROJECTED_CASES={len(results)}")
+    except (OSError, ValueError) as error:
+        print(f"T0013/S04 driver rejected evidence: {error}", file=sys.stderr)
+        return 4
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
