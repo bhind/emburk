@@ -15,7 +15,7 @@ The governance portion of this phase also requires T-0003's executable packet
 and WIP audit before T-0004 may automate Project synchronization or delivery
 analytics.
 
-T-0003 completed through PR #62. T-0004/S01 is establishing weekly Iterations,
+T-0003 completed through PR #62. T-0004/S01 established weekly Iterations,
 saved delivery views, read-only configuration checks, and burndown inputs. Its
 planning charts do not satisfy a runtime evidence gate.
 
@@ -29,7 +29,9 @@ String/Optional reference observation integrated through PR #61 as `e2532e2`;
 it does not itself satisfy the configuration/schema/value contract or the
 Phase 0 exit gate. T-0012/S02's Boolean/Long observation integrated through PR
 #65 as `d7b4838`. T-0012/S03 integrated its private original-Rust scalar resolver
-through PR #66 as `e03a2bc`. S04 adds a live comparator for 13 selected outcomes;
+through PR #66 as `e03a2bc`. S04's live comparator matched 13 selected outcomes
+at `3fe6546` in primary and independent Tester acceptance; integration is
+pending. Even after integration,
 that limited matrix does not satisfy the full configuration/schema/value or
 lifecycle gate.
 

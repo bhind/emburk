@@ -2,7 +2,7 @@
 
 - Tracking issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
 - Branch: `test/t-0012-live-scalar-differential`
-- State: In Progress; acceptance pending
+- State: In Progress; independent acceptance passed, integration pending
 - Slice estimate: 3 SP; parent Current SP 8, Initial SP unchanged at 5
 - Owner: Rust Core Implementer; canonical records and integration: Project Manager
 - Access dates: 2026-09-05–2026-09-06
@@ -67,7 +67,7 @@ Runtime artifacts are local-only; none are redistributed by this slice.
 Transitive dependency/SBOM and redistribution review remain pending T-0005;
 patent/standards/trademark and freedom-to-operate questions remain unreviewed.
 Prior S01/S02 provenance review does not constitute legal clearance. Independent
-code/test review and Project Manager acceptance of this comparator are pending.
+code/test review passed for the bounded comparator; this is not legal approval.
 
 ## Stop boundary
 
@@ -76,3 +76,34 @@ for material security, license, redistribution or reimplementation uncertainty,
 or before adding production dependencies, a parser or a public API. No plugin,
 data-transfer, performance, production-readiness or general compatibility claim
 is made by this slice.
+
+## Primary acceptance
+
+At source revision `3fe6546`, the primary agent ran the absolute path to
+`tests/t0012_live_scalar_differential_test.sh` from `/private/tmp`: exit 0,
+13 actual outcomes and 13 TSV rows plus one header. Exactly one selected live
+Rust test passed (zero ignored); exactly one selected negative-control Rust
+test passed. `cargo test -p emburk-core --offline` passed nine tests with one
+explicitly ignored live test. Format, workspace/all-target Clippy with warnings
+denied, and `git diff --check` each exited 0.
+
+External evidence directory: `${TMPDIR}/t0012-s04.E2DAE9` (not a distributed
+artifact). SHA-256:
+
+- `live.tsv`: `0173df227ed0268f4cd30bf1f5b7b02ee94c4a1e5df1ad9d4b9b05363dbe14d6`
+- `oracle-actual.jsonl`: `6d9922dcb534b674cacd2406b899abc678d558e8ad799dc90f8221cb6d2ae387`
+
+The JSONL retains actual exception classes/messages and values. The manifest
+retains both upstream evidence directories. PR integration is pending; the
+parent T-0012 remains open.
+
+Independent Tester reproduced the exact Demo and all auxiliary checks at full
+revision `3fe654610d7b34d5eeb3a5b582accb7f94964b18`, with no findings. Its
+external evidence directory is
+`/private/tmp/t0012-s04-acceptance-3fe654610d7b34d5eeb3a5b582accb7f94964b18`.
+TSV and JSONL hashes match primary acceptance above. The live Rust test log
+hash is `c6c4b1e66c87249a022d170c8da9d1c97fb2ee837acc393097e07b4c90060ee9`;
+exactly one live test passed, with zero ignored. Offline workspace tests passed
+nine tests and intentionally ignored that live test. Platform: macOS 26.5.1
+arm64, Rust/Cargo 1.98.1, Python 3.14.6, Bash 3.2.57, Temurin JDK 17.0.20.
+Evidence class: Differential (selected typed outcomes only).

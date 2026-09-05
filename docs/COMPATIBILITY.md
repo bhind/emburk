@@ -42,6 +42,18 @@ Verification covers configuration defaults and validation; schema and value sema
 
 No data-transfer path or plugin is Verified yet. The first target is a native File-to-File path covering CSV, JSON, gzip/bzip2, basic column filters, guessing, transaction handling, and resume.
 
+The private raw-scalar resolver is Partial/internal, with 13 selected typed
+outcomes compared live against the pinned Embulk 0.11.5 executable: nine
+missing/null/value cases for required String, explicit String default, and
+Optional<String> with null default; Boolean true/false; and Long 37/maximum.
+The comparator uses actual reference results and rejects unknown exceptions,
+malformed or incomplete evidence, and a changed expected outcome. See
+[T-0012/S04](provenance/T-0012-live-scalar-differential.md) for acceptance status.
+This is not YAML parsing, a public configuration API, whole-domain differential
+coverage, exact Java diagnostics, lexical/fractional coercion, overflow behavior,
+schema/value support, or end-to-end configuration compatibility. Those gaps
+are pending work, not accepted deviations.
+
 ## Adding an Entry
 
 Each entry must identify the Embulk version, exact plugin artifact, configuration fixture, expected evidence, source/provenance record, and known deviations. Claims enter this document only after review evidence exists.

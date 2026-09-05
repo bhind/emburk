@@ -134,7 +134,8 @@ owned a separate, nine-case Boolean/Long conversion probe. It integrated
 through PR #65 as `d7b4838`. T-0012/S03 integrated its private original-Rust
 resolver through PR #66 as `e03a2bc`, with Unit/Contract evidence at `8432391`.
 S04 (3 SP) adds live comparison and malformed-evidence gates for 13 supported
-outcomes. T-0012's current estimate increases from 5 to 8 SP; Initial SP remains
+outcomes, reproduced by primary and independent Tester at `3fe6546`; integration
+is pending. T-0012's current estimate increases from 5 to 8 SP; Initial SP remains
 5. The refinement accounts for the explicit oracle adapter, private test bridge,
 and negative evidence validation omitted from the initial estimate. It does
 not award parent completion or change the remaining configuration/schema/value

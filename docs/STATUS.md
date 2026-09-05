@@ -13,7 +13,9 @@ Development state: `bootstrap`
 - The binary does not load Embulk configuration, transfer records, execute
   plugins, or implement transaction and resume behavior.
 - No native, Java-hosted, or JRuby-hosted plugin is implemented or verified.
-- No compatibility or performance claim has passed an evidence gate.
+- Thirteen selected private raw-scalar outcomes match the pinned Embulk
+  executable in a live differential test. No full configuration, plugin,
+  data-transfer, or performance claim has passed its evidence gate.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
   native File-to-File vertical slice as the first runtime milestone.
@@ -62,8 +64,9 @@ to add the `PROJECTS_TOKEN` secret, so no hosted-run success is claimed.
 
 ## Evidence and non-claims
 
-Current evidence is limited to repository inspection and the existing minimal
-Rust development path. Strategy and planning records are not runtime evidence.
+Current evidence includes repository checks, private scalar Unit/Contract tests,
+and a live comparison of 13 selected typed outcomes. Strategy and planning
+records are not runtime evidence.
 In particular, the repository does not yet demonstrate:
 
 - Embulk-compatible configuration, schema, value, lifecycle, or resume
@@ -106,5 +109,10 @@ observation integrated through PR #65 as `d7b4838`. Its evidence remains
 Reference Observation / Integration only. T-0012/S03 implemented the private
 Rust raw-scalar resolver and integrated through PR #66 as `e03a2bc`. Independent
 and named Tester acceptance at `8432391` passed eight core tests, format,
-Clippy, and diff checks. Its evidence is Unit/Contract only. S04 is implementing
-a live oracle comparison for 13 supported outcomes; acceptance is pending.
+Clippy, and diff checks. Its evidence is Unit/Contract only. S04 implements
+a live oracle comparison for 13 supported outcomes. Primary acceptance at
+`3fe6546` passed the exact Demo Command and negative controls, nine offline core
+tests (one live test explicitly ignored), format, Clippy, and diff checks.
+Independent Tester acceptance reproduced the same results; PR integration
+remains pending. See the
+[S04 evidence record](provenance/T-0012-live-scalar-differential.md).
