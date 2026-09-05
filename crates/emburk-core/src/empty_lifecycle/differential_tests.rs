@@ -155,7 +155,7 @@ fn compare_manifest(manifest: &str) -> Result<usize, String> {
                 return Err(format!(
                     "unexpected Rust result for {}: {other:?}",
                     case.name
-                ))
+                ));
             }
         };
         if actual_result != case.expected_result {
