@@ -33,7 +33,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021/S04 (`In Progress`) is the only active work item. Combined WIP is one of
+T-0021/S04 (`Review`, PR #76) is the only active work item. Combined WIP is one of
 two; no item is `Ready` or `Blocked`. T-0012 and T-0013 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
@@ -45,7 +45,7 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
 | T-0013 | Backlog | S01–S05 integrated; remaining lifecycle comparison/recovery contracts |
-| T-0021/S04 | In Progress | Private last-commit failure and retained reports |
+| T-0021/S04 | Review | Private last-commit failure and retained reports; PR #76 |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)

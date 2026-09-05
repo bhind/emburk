@@ -1,7 +1,7 @@
 # T-0021/S04 private last-commit failure
 
 - Tracking issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: In Progress; source acceptance passed, PR integration pending
+- State: Review; source acceptance passed, [PR #76](https://github.com/bhind/emburk/pull/76) integration pending
 - Priority: P1; parent T-0020
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0; raw 3 maps to 3 SP)
