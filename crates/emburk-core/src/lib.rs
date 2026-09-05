@@ -14,6 +14,13 @@ mod scalar_resolution;
 )]
 mod logical_schema;
 
+// This is deliberately private until a later packet authorizes a record API.
+#[allow(
+    dead_code,
+    reason = "T-0012/S08 is private values-only storage without a public consumer"
+)]
+mod logical_record;
+
 // This is deliberately private: it is a bounded fake-fixture coordinator, not
 // a public plugin API or a production lifecycle contract.
 #[allow(

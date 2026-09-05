@@ -18,7 +18,12 @@ Development state: `bootstrap`
   data-transfer, or performance claim has passed its evidence gate.
 - A private ordered logical schema preserves owned names, type tags, order and
   duplicates. Its live comparison matches three selected schema outcomes;
-  values, nullability, lookup and physical encoding remain unimplemented.
+  schema coupling to values, nullability, lookup and physical encoding remain
+  unimplemented.
+- Private owned Null/Boolean/Signed64/Text records preserve row/cell order and
+  distinguish null from false, zero and empty text. Primary acceptance matches
+  two selected reference getter-result projections, reproduced by an independent
+  Tester. Integration is pending; this is not a production record-transfer path.
 - A private synchronous empty-task coordinator executes original fake callbacks
   with separate cleanup capabilities and reports. Its Unit/Contract tests
   cover zero/one-input plans, one selected input-run failure, and selected
@@ -34,9 +39,10 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S08 is integrated through PR #80. T-0012/S07 is the single active
-isolated reference observation. Combined active WIP is one of two;
-no item is `Blocked`. T-0012, T-0013 and T-0021 parent contracts remain open.
+T-0013/S08 and T-0012/S07 are integrated through PRs #80 and #81. T-0012/S08
+is the single active private values-only storage and selected comparison slice.
+Combined active WIP is one of two; no item is `Blocked`. T-0012, T-0013 and
+T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -44,7 +50,7 @@ no item is `Blocked`. T-0012, T-0013 and T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S07 | Review | PR #81; two bounded Page value observations |
+| T-0012/S08 | Review | PR #82: private values-only records and selected comparison |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
@@ -291,3 +297,13 @@ intentional ignores, formatting, strict Clippy and Bash syntax pass. Evidence
 is selected Reference Observation / Integration plus validator Unit/Contract;
 no Rust values, production transfer or new Differential result. Final-head
 acceptance and integration remain required; parent and phase gates stay open.
+
+S07 final-head Demo passed at `3b95ecd`; PR #81 integrated as `203d7da`.
+Its two bounded reference observations are accepted. T-0012/S08 implements
+private owned Null/Boolean/Signed64/Text records under ADR-0011. At frozen source
+`914ad2e`, primary and independent acceptance pass two selected getter-result comparisons,
+18 raw controls, six local storage/transport tests and the unchanged three-schema
+regression. Workspace 35 passed/six intentionally ignored, formatting and strict
+Clippy pass. Final PR-head acceptance and integration remain required.
+Schema coupling, physical encoding, public API and production transfer remain
+outside this slice; parent and phase delivery gates stay open.

@@ -8,9 +8,9 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S08` and `T-0021/S05` are integrated. T-0012/S07 is `Review` in PR #81;
-T-0013, T-0021 and all other unfinished items are `Backlog`. No item is
-`Blocked`. Combined active WIP is one of two.
+`T-0013/S08`, `T-0012/S07` and `T-0021/S05` are integrated. T-0012/S08 is
+`Review` in PR #82; T-0013, T-0021 and all other unfinished items are `Backlog`.
+No item is `Blocked`. Combined active WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S07: bounded Page value observation) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Integration |
+| T-0012 | Specify configuration, schema, and value semantics (S08: private record values and comparison) | Review | P0 | 34 | T-0011 | Rust Core Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -338,3 +338,14 @@ fixtures, 39 raw controls, two artifact controls, unchanged three-schema
 regression and strict quality gates. Final-head acceptance and PR integration
 remain required. Parent #15 remains open; no Rust values or new Differential
 claim follows from this bounded reference observation.
+
+S07 final-head Demo passed at `3b95ecd`; PR #81 integrated as `203d7da`.
+T-0012/S08 (5 SP within unchanged Current 34 / Initial 5) is prepared under
+ADR-0011 and its [packet](docs/provenance/T-0012-private-record-values.md).
+Only private values-only records and two selected live getter projections are
+in scope; schema/physical/public coupling remain excluded. Primary source
+acceptance at `914ad2e` passes both projections, 18 raw controls, six local tests,
+unchanged S06 regression and strict checks. Independent Tester reproduced the
+frozen source. Final PR-head acceptance and integration remain pending.
+Known accepted S03–S07 slice estimates total 15 SP;
+no S08 points are awarded yet and parent #15 remains open.

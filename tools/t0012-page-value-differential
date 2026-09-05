@@ -1,0 +1,331 @@
+#!/usr/bin/env python3
+"""Validate S07 evidence and project its two selected logical-value cases.
+
+Live mode admits artifacts only through the complete S07 wrapper. The
+--validate-evidence mode runs both the unchanged S07 raw gate and independent
+evidence/projection checks; it is not artifact admission or a live gate.
+"""
+import argparse
+import base64
+import binascii
+import hashlib
+import os
+import pathlib
+import subprocess
+import sys
+import uuid
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+RUNNER = ROOT / "tools/t0012-page-value-probe/run.sh"
+FIXTURES = ("empty", "typed-null")
+HASHED_FILES = ("page-cases.raw", "page-traces.raw", "empty.raw.log",
+                "typed-null.raw.log", "empty.trace.raw", "typed-null.trace.raw")
+CASE_COUNTS = {"empty": 32, "typed-null": 110}
+CAP = 1024
+
+
+class InvalidEvidence(ValueError):
+    pass
+
+
+def require(condition, label):
+    if not condition:
+        raise InvalidEvidence(label)
+
+
+def decimal(value, label, cap=CAP):
+    require(value.isascii() and value.isdigit() and len(value) <= 6
+            and (value == "0" or not value.startswith("0")), label)
+    parsed = int(value)
+    require(parsed <= cap, label)
+    return parsed
+
+
+def decode(value):
+    if value == "-":
+        return None
+    try:
+        raw = base64.b64decode(value, validate=True)
+        decoded = raw.decode("utf-8")
+    except (binascii.Error, UnicodeDecodeError) as error:
+        raise InvalidEvidence("raw-canonical-base64") from error
+    require(base64.b64encode(raw).decode("ascii") == value,
+            "raw-canonical-base64")
+    return decoded
+
+
+def raw_gate(evidence):
+    run = subprocess.run(
+        ["bash", str(RUNNER)], cwd=ROOT, text=True, capture_output=True,
+        env={**os.environ, "T0012_PAGE_MODE": "validate",
+             "T0012_PAGE_EVIDENCE_DIR": str(evidence)})
+    if run.returncode != 0:
+        raise InvalidEvidence(
+            f"S07-raw-gate:{run.returncode}:{run.stderr.rstrip(chr(10))}")
+    require(run.stdout == "T0012_PAGE_VALIDATE_ONLY=passed\n" and run.stderr == "",
+            "S07-raw-gate-output")
+
+
+def validate_hash_manifest(evidence):
+    lines = evidence.joinpath("raw-evidence-hashes.txt").read_text(
+        encoding="utf-8").splitlines()
+    require(len(lines) == len(HASHED_FILES), "raw-hash-file-count")
+    entries = {}
+    for wanted, line in zip(HASHED_FILES, lines, strict=True):
+        fields = line.split("=")
+        require(len(fields) == 2, "raw-hash-grammar")
+        name, digest = fields
+        require(name == wanted and pathlib.PurePath(name).name == name
+                and "/" not in name and "\\" not in name and name not in entries,
+                "raw-hash-name")
+        require(len(digest) == 64
+                and all(character in "0123456789abcdef" for character in digest),
+                "raw-hash-digest")
+        entries[name] = digest
+    require(tuple(entries) == HASHED_FILES, "raw-hash-completeness")
+    # Validate every name and digest before opening any manifest-selected path.
+    for name in HASHED_FILES:
+        require(hashlib.sha256(evidence.joinpath(name).read_bytes()).hexdigest()
+                == entries[name], "raw-hash-identity")
+
+
+def read_cases(evidence):
+    lines = evidence.joinpath("page-cases.raw").read_text(
+        encoding="utf-8").splitlines()
+    require(len(lines) == 2, "raw-case-count")
+    cases = {}
+    for wanted, line in zip(FIXTURES, lines, strict=True):
+        fields = line.split("|")
+        require(len(fields) == 5 and fields[0] == "PAGECASE",
+                "raw-case-grammar")
+        _, fixture, exit_text, count_text, digest = fields
+        require(fixture == wanted and fixture not in cases, "raw-case-order")
+        require(decimal(exit_text, "raw-case-exit") == 0, "raw-process-success")
+        count = decimal(count_text, "raw-case-event-count")
+        require(count == CASE_COUNTS[fixture], "raw-selected-event-count")
+        require(len(digest) == 64
+                and all(character in "0123456789abcdef" for character in digest),
+                "raw-case-digest")
+        cases[fixture] = (count, digest)
+    return cases
+
+
+def read_traces(evidence, cases):
+    lines = evidence.joinpath("page-traces.raw").read_text(
+        encoding="utf-8").splitlines()
+    require(len(lines) <= CAP, "raw-combined-event-cap")
+    grouped = {fixture: [] for fixture in FIXTURES}
+    decoded = {fixture: [] for fixture in FIXTURES}
+    captures = {fixture: set() for fixture in FIXTURES}
+    sequences = {fixture: 0 for fixture in FIXTURES}
+    for line in lines:
+        fields = line.split("|")
+        require(len(fields) >= 5 and fields[0] == "PAGETRACE",
+                "raw-trace-grammar")
+        _, fixture, capture, sequence_text, name, *encoded = fields
+        require(fixture in grouped, "raw-trace-fixture")
+        try:
+            parsed_capture = uuid.UUID(capture)
+        except ValueError as error:
+            raise InvalidEvidence("raw-capture-id") from error
+        require(str(parsed_capture) == capture and parsed_capture.version == 4,
+                "raw-capture-id")
+        captures[fixture].add(capture)
+        sequence = decimal(sequence_text, "raw-sequence")
+        require(sequence == sequences[fixture] + 1, "raw-sequence-order")
+        sequences[fixture] = sequence
+        grouped[fixture].append(line)
+        decoded[fixture].append((name, [decode(value) for value in encoded]))
+    require(lines == grouped["empty"] + grouped["typed-null"],
+            "raw-combined-order")
+    for fixture in FIXTURES:
+        rows = grouped[fixture]
+        count, digest = cases[fixture]
+        require(len(captures[fixture]) == 1, "raw-single-capture")
+        require(len(rows) == count, "raw-case-count-match")
+        material = ("\n".join(rows) + "\n").encode("utf-8")
+        require(hashlib.sha256(material).hexdigest() == digest,
+                "raw-case-digest-match")
+        require(evidence.joinpath(f"{fixture}.trace.raw").read_bytes() == material,
+                "raw-trace-copy")
+        extracted = [line for line in evidence.joinpath(
+            f"{fixture}.raw.log").read_text(encoding="utf-8").splitlines()
+                     if line.startswith("PAGETRACE|")]
+        require(extracted == rows, "raw-log-extraction")
+    return decoded
+
+
+def one(events, name, label):
+    selected = [values for event_name, values in events if event_name == name]
+    require(len(selected) == 1, label)
+    return selected[0]
+
+
+def selected_projection(decoded):
+    expected_schema = [
+        ["transaction", "0", "flag", "boolean"],
+        ["transaction", "1", "number", "long"],
+        ["transaction", "2", "text", "string"],
+        ["run", "0", "flag", "boolean"],
+        ["run", "1", "number", "long"],
+        ["run", "2", "text", "string"],
+    ]
+    projected = {}
+    for fixture in FIXTURES:
+        events = decoded[fixture]
+        require([values for name, values in events if name == "schema-column"]
+                == expected_schema, "projection-schema")
+        count_values = one(events, "input-row-count", "projection-row-count")
+        require(len(count_values) == 1, "projection-row-count")
+        row_count = decimal(count_values[0], "projection-row-count")
+        inputs, null_returns, getter_returns = {}, {}, {}
+        null_entries, getter_entries, next_returns = [], [], []
+        for name, values in events:
+            if name == "input-cell":
+                require(len(values) == 4, "projection-input-arity")
+                row = decimal(values[0], "projection-input-index")
+                cell = decimal(values[1], "projection-input-index")
+                tag, payload = values[2:]
+                require((row, cell) not in inputs, "projection-input-duplicate")
+                require(tag in {"null", "boolean", "long", "string"},
+                        "projection-input-type")
+                require((tag == "null") == (payload is None),
+                        "projection-input-null")
+                inputs[(row, cell)] = (tag, payload)
+            elif name == "reader-is-null-entry":
+                require(len(values) == 4, "projection-null-arity")
+                null_entries.append(tuple(values))
+            elif name == "reader-is-null-return":
+                require(len(values) == 5 and values[4] in {"true", "false"},
+                        "projection-null-result")
+                position = tuple(values[:4])
+                require(position not in null_returns, "projection-null-result")
+                null_returns[position] = values[4]
+            elif name.startswith("reader-get-") and name.endswith("-entry"):
+                require(len(values) == 4, "projection-getter-arity")
+                getter_entries.append((name[11:-6], tuple(values)))
+            elif name.startswith("reader-get-") and name.endswith("-return"):
+                require(len(values) == 5, "projection-getter-arity")
+                key = (name[11:-7], tuple(values[:4]))
+                require(key not in getter_returns, "projection-getter-duplicate")
+                getter_returns[key] = values[4]
+            elif name == "reader-next-record-return":
+                require(len(values) == 3, "projection-next-arity")
+                next_returns.append(values)
+        if fixture == "empty":
+            require(row_count == 0, "projection-empty-row-count")
+            require(not inputs, "projection-empty-input-absence")
+            require(not null_entries and not null_returns and not getter_entries
+                    and not getter_returns and not next_returns,
+                    "projection-empty-read-absence")
+            require(one(events, "collector-finish-entry", "projection-empty-finish")
+                    == ["0", "0"], "projection-empty-finish")
+            projected[fixture] = []
+            continue
+        require(row_count == 3, "projection-selected-row-count")
+        expected_keys = {(row, cell) for row in range(3) for cell in range(3)}
+        require(set(inputs) == expected_keys, "projection-input-completeness")
+        require(next_returns == [["0", str(row), "true"] for row in range(3)]
+                + [["0", "3", "false"]], "projection-exhaustion")
+        positions = {("0", str(row), str(row), str(cell))
+                     for row, cell in expected_keys}
+        require(set(null_entries) == positions and len(null_entries) == 9
+                and set(null_returns) == positions, "projection-null-pairs")
+        require(set(getter_entries) == set(getter_returns)
+                and len(getter_entries) == len(getter_returns),
+                "projection-getter-pairs")
+        tags = {"null": "N", "boolean": "B", "long": "L", "string": "S"}
+        rows = []
+        for row in range(3):
+            cells = []
+            for cell in range(3):
+                input_kind, input_payload = inputs[(row, cell)]
+                position = ("0", str(row), str(row), str(cell))
+                matches = [(kind, value) for (kind, selected), value
+                           in getter_returns.items() if selected == position]
+                if null_returns[position] == "true":
+                    require(not matches, "projection-null-getter-contradiction")
+                    reference_tag, reference_payload = "N", "-"
+                else:
+                    require(len(matches) == 1, "projection-getter-completeness")
+                    reference_kind, reference_payload = matches[0]
+                    require(reference_kind in {"boolean", "long", "string"},
+                            "projection-getter-type")
+                    reference_tag = tags[reference_kind]
+                cells.append((tags[input_kind],
+                              "-" if input_kind == "null" else input_payload,
+                              reference_tag, reference_payload))
+            rows.append(cells)
+        projected[fixture] = rows
+    return projected
+
+
+def validate_and_project(evidence):
+    evidence = evidence.resolve(strict=True)
+    require(evidence.is_dir(), "evidence-directory")
+    raw_gate(evidence)
+    validate_hash_manifest(evidence)
+    return selected_projection(read_traces(evidence, read_cases(evidence)))
+
+
+def encode(tag, payload):
+    return payload.encode("utf-8").hex() if tag == "S" else payload
+
+
+def write_manifest(data, output):
+    rows = ["T0012-S08\t1"]
+    for fixture in FIXTURES:
+        records = data[fixture]
+        require(len(records) <= CAP, "manifest-row-cap")
+        rows.append(f"CASE\t{fixture}\t{len(records)}\t3")
+        for row_index, cells in enumerate(records):
+            require(len(cells) == 3, "manifest-cell-count")
+            rows.append(f"ROW\t{row_index}")
+            for cell_index, (it, ip, rt, rp) in enumerate(cells):
+                rows.append("\t".join(("CELL", str(cell_index), it,
+                                       encode(it, ip), rt, encode(rt, rp))))
+    output.write_text("\n".join(rows) + "\n", encoding="utf-8")
+
+
+def run_live_probe():
+    completed = subprocess.run(
+        ["bash", "tests/t0012_page_value_probe_test.sh"], cwd=ROOT,
+        text=True, capture_output=True)
+    sys.stdout.write(completed.stdout)
+    sys.stderr.write(completed.stderr)
+    require(completed.returncode == 0, f"S07-full-exit:{completed.returncode}")
+    prefix = "T0012_PAGE_FULL_PROBE=passed|evidence="
+    markers = [line for line in completed.stdout.splitlines()
+               if line.startswith(prefix)]
+    require(len(markers) == 1, "S07-full-marker-count")
+    return pathlib.Path(markers[0][len(prefix):])
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--output", type=pathlib.Path)
+    group.add_argument("--validate-evidence", type=pathlib.Path)
+    args = parser.parse_args()
+    try:
+        if args.validate_evidence is not None:
+            validate_and_project(args.validate_evidence)
+            print("T0012_S08_RAW_VALIDATE_ONLY=passed|evidence="
+                  f"{args.validate_evidence.resolve()}")
+            return 0
+        evidence = run_live_probe()
+        data = validate_and_project(evidence)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        write_manifest(data, args.output)
+        digest = hashlib.sha256(args.output.read_bytes()).hexdigest()
+        args.output.with_suffix(".sha256").write_text(digest + "\n",
+                                                      encoding="utf-8")
+        print(f"T0012_S08_PROJECTED_CASES=2|evidence={evidence}|manifest={args.output}")
+    except (InvalidEvidence, OSError, UnicodeError) as error:
+        print(f"T0012_S08_VALIDATION_ERROR|{error}", file=sys.stderr)
+        return 4
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
