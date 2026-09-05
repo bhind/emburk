@@ -1,6 +1,6 @@
 # Current status
 
-Last updated: 2026-09-05
+Last updated: 2026-09-06
 
 Development state: `bootstrap`
 
@@ -24,7 +24,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 (`In Progress`) and T-0012/S03 (`Review`) are the only active work
+T-0021 (`In Progress`) and T-0012/S04 (`In Progress`) are the only active work
 items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 
 | Item | State | Purpose |
@@ -33,7 +33,7 @@ items. The combined WIP is two of two; no item is `Ready` or `Blocked`.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S03 | Review | Private raw scalar resolver accepted at `8432391`; awaits Tester and PR integration |
+| T-0012/S04 | In Progress | Live comparison of 13 supported scalar outcomes; S01–S03 integrated |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -103,5 +103,8 @@ as `e2532e2`. This is Reference Observation / Integration evidence only, not a
 generic typed-getter contract, a verified Emburk semantic, or the parent task's
 Differential (Embulk) evidence. T-0012/S02's nine-case Boolean/Long runtime
 observation integrated through PR #65 as `d7b4838`. Its evidence remains
-Reference Observation / Integration only. T-0012/S03 is packeted for a private
-Rust raw-scalar resolver and contract tests; it has no implementation result.
+Reference Observation / Integration only. T-0012/S03 implemented the private
+Rust raw-scalar resolver and integrated through PR #66 as `e03a2bc`. Independent
+and named Tester acceptance at `8432391` passed eight core tests, format,
+Clippy, and diff checks. Its evidence is Unit/Contract only. S04 is implementing
+a live oracle comparison for 13 supported outcomes; acceptance is pending.

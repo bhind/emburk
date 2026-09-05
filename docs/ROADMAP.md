@@ -28,9 +28,10 @@ official self-contained executable and a local-only probe plugin. Its annotated
 String/Optional reference observation integrated through PR #61 as `e2532e2`;
 it does not itself satisfy the configuration/schema/value contract or the
 Phase 0 exit gate. T-0012/S02's Boolean/Long observation integrated through PR
-#65 as `d7b4838`. T-0012/S03 may add a private original-Rust scalar resolver
-and contract tests, but neither slice can satisfy the gate without an
-independently implemented Emburk comparator.
+#65 as `d7b4838`. T-0012/S03 integrated its private original-Rust scalar resolver
+through PR #66 as `e03a2bc`. S04 adds a live comparator for 13 selected outcomes;
+that limited matrix does not satisfy the full configuration/schema/value or
+lifecycle gate.
 
 ## Phase 1: Native File-to-File MVP
 

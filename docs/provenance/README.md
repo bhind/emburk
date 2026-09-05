@@ -9,4 +9,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0011 Embulk reference inventory](T-0011-embulk-reference-inventory.md) | Done (Planning evidence) |
 | [T-0012/S01 configuration-presence reference probe](T-0012-config-presence-probe.md) | Done (Reference Observation / Integration) |
 | [T-0012/S02 configuration-conversion reference probe](T-0012-config-conversion-probe.md) | Done (Reference Observation / Integration) |
-| [T-0012/S03 internal scalar resolution](T-0012-scalar-resolution.md) | In Progress (packet only) |
+| [T-0012/S03 internal scalar resolution](T-0012-scalar-resolution.md) | Done (Unit/Contract; PR #66) |
+| [T-0012/S04 live scalar differential](T-0012-live-scalar-differential.md) | In Progress (acceptance pending) |

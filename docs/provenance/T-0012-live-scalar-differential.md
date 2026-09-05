@@ -1,11 +1,74 @@
 # T-0012/S04 live scalar differential
 
-State: In Progress. Compare exactly 13 S01/S02-supported typed outcomes through
-the pinned local oracle and private Rust resolver. A Python-stdlib driver retains
-raw JSONL externally and writes versioned TSV with hex strings; Rust parses only
-that TSV. IDs validate manifest membership/count, never select outcomes. Unknown
-oracle errors fail closed. Demo runs the oracle and exactly one ignored Rust test;
-normal tests skip it. Negative tests cover missing, duplicate, truncated,
-malformed-tag/hex, unknown-exception, and mutated-outcome evidence. No lexical,
-decimal, overflow, message/timing, YAML, parser, public API, dependency, or
-full-compatibility claim.
+- Tracking issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
+- Branch: `test/t-0012-live-scalar-differential`
+- State: In Progress; acceptance pending
+- Slice estimate: 3 SP; parent Current SP 8, Initial SP unchanged at 5
+- Owner: Rust Core Implementer; canonical records and integration: Project Manager
+- Access dates: 2026-09-05–2026-09-06
+
+## Scope and transport
+
+Compare exactly 13 S01/S02-supported typed outcomes through the pinned local
+oracle and the actual private Rust resolver. The nine presence cases cover
+required String, explicit String default, and Optional<String> with explicit
+null default, each with missing/null/value input. The four native-value cases
+cover Boolean true/false and Long 37/maximum. Lexical conversion, fractional
+conversion and overflow cases from S02 remain outside this comparison.
+
+A Python-standard-library driver retains actual oracle outcomes, exception
+classes and messages as external JSONL and writes versioned TSV with hex-encoded
+strings. Rust parses only that TSV. IDs validate manifest membership and count;
+they never select resolver outputs. Input/request specifications are test-owned;
+expected typed outcomes must derive from actual oracle results, not those input
+specifications. Only recognized ConfigException messages may map to the two
+observed rejection categories; unknown errors fail closed.
+
+## Mutation and acceptance packet
+
+Implementer allowlist: `crates/emburk-core/src/scalar_resolution.rs` test-only
+bridge, executable Python driver `tools/t0012-live-differential`, and
+`tests/t0012_live_scalar_differential_test.sh`. The resolver implementation,
+existing oracle runner/plugin, Cargo manifests and public APIs must not change.
+The Project Manager separately owns STATUS/TODO/ROADMAP/COMPATIBILITY,
+provenance records and the dated log.
+
+Demo Command: `tests/t0012_live_scalar_differential_test.sh`. It must run the
+pinned oracle and exactly one ignored Rust test comparing all 13 cases. Missing
+oracle evidence, network failure or zero selected tests cannot pass or skip the
+Demo. Ordinary tests remain offline and explicitly ignore that one live test.
+Negative tests cover missing/duplicate/truncated evidence, malformed tags and
+hex, unknown oracle exceptions, and mutation of only the expected outcome.
+Retain temporary evidence; do not commit raw logs or downloaded artifacts.
+
+Evidence class on successful independent acceptance: Differential (selected
+typed outcomes only). Exact Java exception text/timing, YAML parsing and the
+full configuration contract remain unimplemented or unverified, not approved
+semantic deviations. No whole-scope Verified status or parent completion follows.
+
+## Reference and reuse record
+
+The only upstream inputs are the integrated S01/S02 observation records and
+their existing official Embulk v0.11.5 executable, corresponding to core commit
+`c5ac2d471edac465b45088669d376a7e2a525f8f`:
+[release artifact](https://github.com/embulk/embulk/releases/download/v0.11.5/embulk-0.11.5.jar),
+SHA-256 `e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47`.
+Embedded `META-INF/LICENSE` and `META-INF/NOTICE` are retained by the oracle
+runner; core/SPI source classification remains Apache-2.0 per T-0011.
+No new upstream source or tests are inspected, copied or translated. Recorded
+runtime outputs are observations, not reused implementation code. Source
+categories: prior public-interface observations and current executable behavior.
+
+Runtime artifacts are local-only; none are redistributed by this slice.
+Transitive dependency/SBOM and redistribution review remain pending T-0005;
+patent/standards/trademark and freedom-to-operate questions remain unreviewed.
+Prior S01/S02 provenance review does not constitute legal clearance. Independent
+code/test review and Project Manager acceptance of this comparator are pending.
+
+## Stop boundary
+
+Repair ordinary harness and retrieval failures within the packet. Stop expansion
+for material security, license, redistribution or reimplementation uncertainty,
+or before adding production dependencies, a parser or a public API. No plugin,
+data-transfer, performance, production-readiness or general compatibility claim
+is made by this slice.
