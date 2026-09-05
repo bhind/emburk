@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/brand/emburk-icon-256.png" width="256" height="256" alt="Emburk whale shark icon">
+</p>
+
 # embuяk
 
 Emburk is an independent, Rust-native bulk data loader inspired by Embulk. It is intended to give existing Embulk users a practical migration path while developing a smaller, safer, and more observable execution engine.
