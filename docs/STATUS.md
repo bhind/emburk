@@ -24,7 +24,7 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 (`In Progress`) and T-0012/S02 (`Review`) are the only active work
+T-0021 and T-0012/S03 are the only active work
 items, meeting the two-item combined `In Progress`/`Review` WIP limit. No work
 item is currently `Ready` or `Blocked`.
 
@@ -34,7 +34,7 @@ item is currently `Ready` or `Blocked`.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S02 | Review | Local-only Boolean/Long conversion probe accepted at `86970ea`; awaits PR integration |
+| T-0012/S03 | In Progress | Internal raw scalar resolver bounded by S01/S02 observations |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -102,7 +102,7 @@ executable route and local-only Maven-style input plugin recorded nine
 annotated String/Optional fixture observations and integrated through PR #61
 as `e2532e2`. This is Reference Observation / Integration evidence only, not a
 generic typed-getter contract, a verified Emburk semantic, or the parent task's
-Differential (Embulk) evidence. T-0012/S02 has a nine-case Boolean/Long
-runtime observation through the same pinned executable. An independent
-primary-agent reproduction passed at `86970ea`; this is Review-stage Reference
-Observation / Integration evidence only, pending PR integration.
+Differential (Embulk) evidence. T-0012/S02's nine-case Boolean/Long runtime
+observation integrated through PR #65 as `d7b4838`. Its evidence remains
+Reference Observation / Integration only. T-0012/S03 is packeted for a private
+Rust raw-scalar resolver and contract tests; it has no implementation result.
