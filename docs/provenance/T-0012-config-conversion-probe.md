@@ -10,7 +10,8 @@
 - Required reviewer: Librarian (Vreji), reviewed 2026-09-05; independent
   primary-agent reproduction passed on 2026-09-05.
 - Access date: 2026-09-05
-- State: `Review` (accepted source evidence recorded; PR integration pending)
+- State: `Done` as a slice; integrated through PR #65 as
+  `d7b4838661660e43a039e1710f83397d289af3b1`. The parent T-0012 remains open.
 
 ## Outcome and boundary
 
@@ -110,8 +111,8 @@ An independent primary-agent reproduction ran both exact Demo commands at
 `86970ea4064a64260bfa2863c68a200bf15ce1fb` on 2026-09-05. Both exited 0 with
 their checksum and unavailable-runtime controls exiting 3 and 56; it recorded
 nine S02 rows at `probe config load` with exit 0. The source evidence is
-accepted as Reference Observation / Integration only; PR integration remains
-required before this slice can be closed. The listed outcomes do not establish
+accepted as Reference Observation / Integration only. PR #65 integrated as
+`d7b4838661660e43a039e1710f83397d289af3b1`; the listed outcomes do not establish
 general conversion, rounding, default, parser-cause, or Emburk behavior.
 
 ## Stop rule and non-claims

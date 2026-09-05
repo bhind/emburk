@@ -19,10 +19,12 @@ The first structural slice contains only two crates:
   `emburk-core`; the reverse dependency is forbidden.
 
 The initial dependency direction is therefore `emburk-cli -> emburk-core`.
-Plugin traits, configuration types, schema and value representations, runtime
-scheduling, transactions, resume state, and process protocols remain deferred
-until their compatibility contracts are accepted. Creating crate directories
-does not make their eventual Rust API stable.
+Plugin traits, public configuration types, schema and value representations,
+runtime scheduling, transactions, resume state, and process protocols remain
+deferred until their compatibility contracts are accepted. ADR-0006 permits a
+private, dependency-free raw-scalar resolver inside `emburk-core`; it is neither
+a YAML loader nor a stable public API. Creating crate directories does not make
+their eventual Rust API stable.
 
 ## Runtime Layers
 
