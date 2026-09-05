@@ -22,7 +22,7 @@ Development state: `bootstrap`
 - A private synchronous empty-task coordinator executes original fake callbacks
   with separate cleanup capabilities and reports. Its Unit/Contract tests
   cover zero/one-input plans, one selected input-run failure, and selected
-  last-output-commit failure with retained actual reports. Other callback
+  first/middle/last output-commit failures with retained actual reports. Other callback
   failures and actual plugin execution are not implemented.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
@@ -34,9 +34,9 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S07 (`Review`, PR #78) is the only serial work item. Combined active WIP is one of
-two; no item is `Blocked`. T-0012 and T-0021 remain Backlog after
-their accepted slices; their remaining contracts/dependencies are not complete.
+T-0021/S05 is the only serial active work item, in Review in PR #79.
+Combined active WIP is one of two; no item is `Blocked`. T-0012 and T-0013
+remain Backlog; all three parent contracts remain open.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -45,8 +45,8 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013/S07 | Review | Accept first/middle reference observations in PR #78 before Rust policy |
-| T-0021 | Backlog | S01–S04 integrated; remaining runtime contracts |
+| T-0013 | Backlog | S01–S07 integrated; remaining comparisons and recovery contracts |
+| T-0021/S05 | Review | Accept the private abort suffix in PR #79 under ADR-0010 |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -219,7 +219,7 @@ Current T-0021 SP is refined 5 to 8; Initial SP stays 5 and parent gates stay op
 T-0013/S06 now has a reviewed comparison packet for normal and selected
 last-output-commit failure. It changes only test infrastructure. Primary source
 acceptance at `a284f8b` passes both live projections (normal 44/failure 43 events,
-cleanup reports 1/8 and 1/7 in the observed 1/8 plan), 30 raw controls, two local
+cleanup reports 1/8 and 1/7 in the observed 1/8 plan), 31 raw controls, two local
 bridge tests and unchanged S04 live regression. Workspace tests pass 23 with
 four intentional ignores; formatting, strict Clippy and syntax checks pass.
 Independent Tester reproduced these results at the same source revision;
@@ -242,5 +242,18 @@ S07 primary and independent source acceptance at `76dbab0` pass the exact
 three-case Demo, 57 diagnostic-specific semantic controls, two artifact controls
 and unchanged S05 full regression. Both reproduce the observed abort suffix and
 retained report counts. Shell syntax, source hashes and diff checks pass.
-Evidence is Reference Observation / Integration only; final-head acceptance and
-integration remain pending. First/middle Rust behavior is not yet implemented.
+Evidence is Reference Observation / Integration only. Final-head acceptance at
+`133cddb` passed; PR #78 integrated as `14cc2a6`. That reference slice added
+no Rust behavior. ADR-0010 now permits the bounded T-0021/S05 abort-suffix
+candidate, preserving existing live regressions. Current T-0021 SP is refined
+8 to 13; Initial stays 5. Parent completion and new Differential claims remain
+separate gates.
+
+T-0021/S05 primary and independent source acceptance pass at `f2d9755`.
+The private coordinator preserves committed reports, aborts the failed and
+unattempted suffix and closes all handles. Three new local cases verify complete
+typed traces/tokens/cleanup. Exact Demo passes 12 local tests, S04/S06 four
+existing live projections and their 13/31 raw controls. Workspace tests pass
+26 with four intentional ignores, plus formatting and strict Clippy. Evidence
+is Unit/Contract plus existing Differential regression only; final-head
+acceptance and integration remain pending.

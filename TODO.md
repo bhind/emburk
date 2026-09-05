@@ -8,8 +8,9 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S07` is `Review` in PR #78; `T-0012`, `T-0021` and all other unfinished items
-are `Backlog`. No item is `Blocked`. Combined active WIP is one of two.
+`T-0013/S07` is integrated; `T-0021/S05` is `Review` in PR #79. T-0012, T-0013 and
+all other unfinished items are `Backlog`. No item is `Blocked`.
+Combined active WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -35,7 +36,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S07: first/middle commit observation) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Reference Observation / Integration (S07; parent Differential gate remains) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S07 integrated; remaining comparisons/recovery queued) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -43,7 +44,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
-| T-0021 | Define workspace boundaries and core traits (S01–S04 integrated; remaining contracts queued) | Backlog | P1 | 8 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
+| T-0021 | Define workspace boundaries and core traits (S05: private abort suffix) | Review | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches | Backlog | P1 | 8 | T-0012, T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
@@ -257,7 +258,7 @@ Keep S04 unchanged; no production mutation or broader failure claim. Requeue
 T-0021 to Backlog and retain a single serial implementation lane.
 
 S06 primary source acceptance at `a284f8b` passes the exact Demo: two new live
-projections, full S05 gate/23 controls, 30 raw controls, two local bridge tests,
+projections, full S05 gate/23 controls, 31 raw controls, two local bridge tests,
 and unchanged S04 two-case/13-control regression. Workspace 23 passed/four
 intentional ignores and strict checks pass. Evidence is Unit/Contract plus two
 selected Differential projections; independent Tester reproduced the same source
@@ -282,5 +283,19 @@ independent reproduction remain required.
 S07 source acceptance at `76dbab0` passes primary and independent Tester:
 three live cases, 57 semantic controls, two artifact controls and unchanged
 S05 full regression. Syntax, source hashes and diff checks pass. Final-head
-acceptance and integration remain pending; parent #16 remains open and no
-first/middle Rust policy is added.
+acceptance at `133cddb` passed and PR #78 integrated as `14cc2a6`; parent #16
+remains open and returns to Backlog for native comparison/recovery work.
+
+T-0021/S05 (3 SP) is Review in PR #79 under ADR-0010 and its
+[packet](docs/provenance/T-0021-commit-abort-suffix.md). Extend only the private
+coordinator's failed/unattempted abort suffix, retaining committed reports and
+all existing S04/S06 live regressions. Current SP is refined 8 to 13, Initial
+stays 5: the eight accepted SP plus this three-point slice and remaining runtime
+uncertainty exceed the former forecast. No parent completion or new first/middle
+Differential claim follows.
+
+S05 primary and independent source acceptance pass at `f2d9755`: three new
+first/middle local fixtures, complete typed trace/report/cleanup assertions,
+12 focused passes, four existing live projections and 13/31 raw controls.
+Workspace 26 passed/four intentionally ignored and strict quality checks pass.
+Final-head acceptance and integration remain required; parent #18 stays open.
