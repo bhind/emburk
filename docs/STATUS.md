@@ -24,16 +24,15 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021 is the only active work item. T-0012/S01 is `Blocked` on a missing
-runtime dependency admission decision and does not count toward the two-item
-combined `In Progress`/`Review` WIP limit. No work item is currently `Ready` or
-`Review`.
+T-0021 and T-0012/S01 are the only active work items, meeting the two-item
+combined `In Progress`/`Review` WIP limit. No work item is currently `Ready`,
+`Review`, or `Blocked`.
 
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
-| T-0012/S01 | Blocked | Core POM runtime cannot initialize `ModelManagerDelegateImpl`; missing artifact is not admitted |
+| T-0012/S01 | In Progress | Local-only probe through the pinned official self-contained executable |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
@@ -77,10 +76,10 @@ worksheet, lifecycle responsibilities, and explicit uncertain commit outcomes.
 This is Planning evidence only. T-0012/T-0013 contracts and differential
 verification remain prerequisites to completing the parent task.
 
-T-0012/S01 executed a bounded public-artifact probe documented in [its
-provenance record](provenance/T-0012-config-presence-probe.md). The pinned core
-and two declared runtime dependencies resolved, but Java 17 failed before any
-matrix case because `ModelManagerDelegateImpl` was unavailable. The missing
-artifact was not added. This is a blocked Reference Observation / Integration
-diagnostic, not a verified Emburk semantic or the parent task's Differential
-(Embulk) evidence.
+T-0012/S01 initially diagnosed why the core POM graph cannot initialize its
+configuration delegate; that graph was not expanded. The active, bounded route
+uses the pinned official self-contained executable and a local-only Maven-style
+input plugin, following the executable's normal initialization path. Its nine
+annotated String/Optional fixture cases now pass as Reference Observation /
+Integration evidence. This is not a generic typed-getter contract, a verified
+Emburk semantic, or the parent task's Differential (Embulk) evidence.

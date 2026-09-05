@@ -9,8 +9,8 @@
 - Required reviewer: Librarian (Vreji), reviewed 2026-09-05; Project Manager
   acceptance remains pending
 - Access date: 2026-09-05
-- State: `Blocked`; the public core runtime resolves but cannot initialize its
-  configuration delegate without an unadmitted artifact.
+- State: `In Progress`; the core-POM diagnosis is retained, while the active
+  route uses the official self-contained executable's normal initialization.
 
 ## Outcome and boundary
 
@@ -21,8 +21,10 @@ an `Optional<String>` configuration field. The probe records a raw success
 value or the raw exception class and message for every case.
 
 The probe does not add Rust configuration code, define Emburk configuration,
-schema, or value semantics, load a plugin, or compare an Emburk result with
-Embulk. Its successful execution is **Reference Observation / Integration**
+schema, or value semantics, or compare an Emburk result with Embulk. It loads
+only an independently authored, generated, local test plugin plus the
+executable's bundled null output; neither is an admitted Emburk plugin. Its
+successful execution is **Reference Observation / Integration**
 evidence only. It cannot satisfy T-0012's `Differential (Embulk)` evidence
 gate until an independently implemented Emburk comparator exists.
 
@@ -42,18 +44,18 @@ outputs untracked.
 The required Demo Command is `tests/t0012_config_presence_probe_test.sh`.
 It must invoke the runtime probe; an offline structural check is a separate
 implementation check and cannot satisfy this Demo Command or accept S01. The
-runner resolves the public `org.embulk:embulk-core:0.11.5` runtime and its
-declared runtime classpath into its temporary directory, compiles the
-independently authored probe, and runs it. Before execution it writes the
-resolved coordinates, SHA-256 for every resolved JAR, Java vendor/version,
-operating-system family, Gradle version, probe-source SHA-256, and the full raw
-probe output to that temporary evidence directory. That temporary evidence is
-not committed; any later public record must omit credentials, tokens, personal
-paths, and raw classpaths. A user-supplied local runtime is
-also acceptable only when the same identity and checksum record is produced.
-Any downloaded build tool must likewise use a fixed HTTPS source and a recorded
-verified SHA-256 before execution. The runner hashes the exact resolved artifact
-paths reported by its resolver, not matching filenames found in a cache.
+runner downloads the official unmodified v0.11.5 release asset
+`https://github.com/embulk/embulk/releases/download/v0.11.5/embulk-0.11.5.jar`
+into a per-run external temporary directory, records its resolved URL, SHA-256,
+manifest version, Java/OS identity, and local probe-JAR SHA-256, then invokes
+the downloaded filename through `java -jar` with an isolated `EMBULK_HOME`.
+The independently authored probe is a test-only Maven-style input plugin and
+is not a distributed or admitted Emburk plugin. The executable's normal CLI
+initialization loads its bundled dependencies before plugin dispatch. Temporary
+evidence is not committed; public records omit credentials, tokens, personal
+paths, and raw classpaths. GitHub did not expose a release digest during route
+selection, so the recorded local digest is identity evidence, not a
+published-checksum verification.
 
 The matrix preserves distinctions rather than normalizing them:
 
@@ -77,12 +79,20 @@ fail setup or linkage errors rather than recasting them as case results.
 | Embulk core | `v0.11.5`, commit `c5ac2d471edac465b45088669d376a7e2a525f8f`; `embulk-core/src/main/java/org/embulk/config/Config.java`, `ConfigDefault.java`, `ConfigLoader.java`, and `ModelManager.java` | Locate public configuration annotations and source creation/loading entry points | No source text, implementation, or test is reused. |
 | Embulk core test-only context | Same commit; `embulk-deps/src/test/java/org/embulk/deps/config/TestConfigSource.java` | Identifies that optional/default presence cases deserve independent observation | No test text, vectors, fixtures, or expected outputs are reused. |
 | Embulk SPI | `v0.11`, commit `576e98033a14ba8ac994ed581d3c9d8fcdda2749` | Resolve exact separately-versioned API signatures during compilation | Interface reference only; no source text reused. |
+| Executable CLI and plugin route | Core commit `c5ac…`; `org/embulk/cli/Main.java`, `plugin/maven/MavenPluginSource.java`, `MavenPluginRegistry.java`, and `spi/InputPlugin.java` | Locate documented CLI initialization and local Maven-style test-plugin loading route | Public-interface observation only; no source text or implementation copied. |
 
 The core and SPI source licenses are recorded as Apache-2.0 in the T-0011
 inventory. The executable distribution's NOTICE and dependency inventory, all
 transitive runtime licenses, artifact redistribution, patent/standards and
 freedom-to-operate questions remain unreviewed. This slice downloads only a
 local test runtime and must not commit, package, or redistribute it.
+
+The executable route corresponds to pinned tag commit
+`c5ac2d471edac465b45088669d376a7e2a525f8f`. `LICENSE` and
+`NOTICE-executable` are required executable provenance locators. The bundled
+third-party obligations, local-plugin compatibility, redistribution, security,
+patent/standards, and freedom-to-operate questions remain unreviewed. No
+`embulk-deps` artifact is admitted by this route.
 
 ## Acceptance and stop rule
 
@@ -91,15 +101,37 @@ required Demo Command proves it used the pinned coordinate and records complete
 raw results for all nine cases. A diagnostic artifact-resolution or runtime
 failure must be retained with its identity/environment record, but does not
 pass the Demo Command or accept S01. A successful upstream-only run is not a
-compatibility result. Stop and report instead of extending scope if Java 17 is
-incompatible, a pinned public artifact cannot be resolved, a material
-license/NOTICE/redistribution uncertainty affects the probe, or work would add
+compatibility result. Report ordinary retrieval or setup failures with their
+exact boundary and continue once corrected; stop scope expansion only for a
+material license/NOTICE/redistribution uncertainty, or if work would add
 Emburk semantics or an upstream build.
 
 ## Runtime evidence state
 
-- Demo Command: `tests/t0012_config_presence_probe_test.sh` exited 1 before a
-  matrix row at the reviewed candidate; S01 is not accepted.
+- Demo Command: passed on 2026-09-05 at the reviewed candidate; corrupt-copy
+  checksum rejection exited 3 and unavailable-asset retrieval exited 56.
+- Environment: Temurin Java 17.0.20 on macOS arm64.
+- Official executable: v0.11.5 asset URL recorded above; SHA-256
+  `e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47`;
+  manifest `Main-Class: org.embulk.cli.Main`; extracted executable locators
+  `META-INF/LICENSE` and `META-INF/NOTICE` were nonempty.
+- Generated local test plugin: source SHA-256
+  `8c18185fa65077a9880b8add9341adbe7efb8735cd573b702bdbab551507f0c7`;
+  JAR SHA-256 `1f1b96f17ba96133440ddfc307bc8398dc22e960d229275f731a0d019c86758b`;
+  isolated coordinate `org.embulk.t0012:embulk-input-t0012:0.0.1`. The CLI
+  loaded it through the local Maven registry. It is generated externally and
+  not distributed.
+- Observed matrix, limited to this pinned loader and annotated fixture:
+  required `String` was an exception when absent or null and `observed-value`
+  when present; defaulted `String` was `fallback` when absent, an exception
+  when null, and `observed-value` when present; defaulted `Optional<String>`
+  was empty when absent or null and `present:observed-value` when present.
+- External raw evidence is retained locally and deliberately not linked here
+  because it can contain personal paths; it contains raw binary observations,
+  exact exception messages, executable/plugin hashes, and environment data.
+
+### Prior core-POM diagnostic
+
 - Environment: Temurin Java 17.0.20 on macOS arm64; Gradle 8.10.2.
 - Resolved public runtime graph: `org.embulk:embulk-core:0.11.5`
   (`231ec2c7c68833a14a5d522b23879e03af1b83d86b79213137f0c1951d849f77`),
@@ -128,10 +160,8 @@ Emburk semantics or an upstream build.
 - Required runtime dependency audit: pending T-0005. The core POM graph is not
   asserted complete. `embulk-deps` and any further artifact remain unadmitted;
   their coordinates, licenses, NOTICE obligations, checksums, transitive graph,
-  runtime route, and redistribution decision require a separate packet.
-  The clearing decision is to inspect and explicitly admit a pinned
-  `embulk-deps` runtime route, including its classloader behavior, or select a
-  different licensed public executable route; neither may be assumed.
+  runtime route, and redistribution decision require a separate packet. The
+  core POM route is not used for the active executable route.
 
 ## Non-claims
 
