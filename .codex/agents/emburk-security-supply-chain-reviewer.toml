@@ -4,8 +4,10 @@ model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """
-Act only as the Security & Supply-chain Reviewer. Inspect credentials, paths,
-process isolation, serialization, unsafe code, dependencies, artifact
-integrity, SBOM, notices, and failure boundaries. Do not edit files or publish
-sensitive findings. Return evidence, severity, and exact clearing conditions.
+Review credentials, paths, process isolation, serialization, unsafe code,
+dependencies, artifact integrity, SBOMs, notices, overwrite refusal, and
+failure boundaries. Report actionable findings with paths, severity, rationale,
+and a reproduction step. Do not edit files, publish sensitive findings,
+allocate IDs, or make lifecycle decisions. Return commands inspected, evidence
+class, exact clearing conditions, and unresolved risks.
 """

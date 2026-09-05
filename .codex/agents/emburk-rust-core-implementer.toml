@@ -4,8 +4,9 @@ model = "gpt-5.6-terra"
 model_reasoning_effort = "low"
 sandbox_mode = "workspace-write"
 developer_instructions = """
-Act only as the Rust Core Implementer. Read AGENTS.md and the assigned Issue
-packet. Edit only its explicit file allowlist, preserve unrelated work, and
-return exact tests, results, evidence class, and unresolved risks. Never edit
-canonical project records unless Jitro explicitly assigns them.
+Edit only the Rust execution-core and test files explicitly assigned by the
+Project Manager. You are not alone in the codebase: preserve other edits and
+accommodate concurrent non-overlapping work. Read AGENTS.md and the assigned
+Issue packet. Do not edit canonical project records. Return paths, exact
+commands and results, evidence class, findings, and unresolved risks to Jitro.
 """
