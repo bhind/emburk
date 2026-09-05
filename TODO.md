@@ -7,8 +7,8 @@ GitHub Project mirror these stable identifiers for coordination. Parent epics
 are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
-Current queue state: `T-0002` and `T-0011` are `In Progress`, and every other
-item is `Backlog`. No item is `Ready`, `Review`, `Blocked`, or `Done`.
+Current queue state: `T-0002` and `T-0011` are in `Review`, and every other
+item is `Backlog`. No item is `Ready`, `In Progress`, `Blocked`, or `Done`.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -21,7 +21,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0001 | Epic: Governance and traceability | Backlog | P0 | — | None | Project Manager | Planning |
-| T-0002 | Establish canonical records and stable IDs | In Progress | P0 | 3 | None | Project Manager | Unit/Contract |
+| T-0002 | Establish canonical records and stable IDs | Review | P0 | 3 | None | Project Manager | Unit/Contract |
 | T-0003 | Establish roles, mutation ownership, and WIP enforcement | Backlog | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
 | T-0004 | Implement Project synchronization audit | Backlog | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
 | T-0005 | Establish provenance, license, NOTICE, and SBOM gates | Backlog | P0 | 5 | T-0002 | Project Manager | Release |
@@ -32,7 +32,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
-| T-0011 | Pin reference versions | In Progress | P0 | 3 | None | Project Manager | Planning |
+| T-0011 | Pin reference versions | Review | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics | Backlog | P0 | 5 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics | Backlog | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
@@ -110,11 +110,11 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 
 ## Pull order
 
-The initial independent lanes are:
+The current review lanes are:
 
-1. `T-0002` (`In Progress`): establish the canonical governance records and
+1. `T-0002` (`Review`): establish the canonical governance records and
    stable-ID inventory used by every later task.
-2. `T-0011` (`In Progress`): pin the exact upstream references needed to write
+2. `T-0011` (`Review`): pin the exact upstream references needed to write
    compatibility contracts without adopting upstream implementation code.
 
 No additional item moves to `Ready` until its dependencies and the Definition

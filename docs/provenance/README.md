@@ -6,4 +6,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 
 | Record | Status |
 | --- | --- |
-| [T-0011 Embulk reference inventory](T-0011-embulk-reference-inventory.md) | In Progress |
+| [T-0011 Embulk reference inventory](T-0011-embulk-reference-inventory.md) | Review |

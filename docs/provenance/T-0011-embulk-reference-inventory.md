@@ -43,8 +43,9 @@ can enter the compatibility matrix.
 - Behavioral observations: SPI 0.11 is separately versioned; plugin artifacts
   are packaged independently; lifecycle and resume behavior still require
   contracts and differential tests; JRuby is optional in the selected line.
-- Review state: implementation record updated 2026-09-05; independent Librarian
-  review and final integration remain pending.
+- Review state: independent Librarian review passed after corrections on
+  2026-09-05; Project Manager review and final integration remain pending in
+  [Draft PR #53](https://github.com/bhind/emburk/pull/53).
 
 This is Planning evidence. It does not establish compatibility, exactly-once
 delivery, performance advantage, production readiness, redistribution or legal
