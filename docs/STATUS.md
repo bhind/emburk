@@ -34,9 +34,9 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0021/S05 is the only serial active work item, in Review in PR #79.
-Combined active WIP is one of two; no item is `Blocked`. T-0012 and T-0013
-remain Backlog; all three parent contracts remain open.
+T-0013/S08 is prepared as the next serial test-only comparison after S05
+integration. Combined active WIP is zero of two until activation; no item is
+`Blocked`. T-0012, T-0013 and T-0021 are Backlog with parent contracts open.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -45,8 +45,8 @@ remain Backlog; all three parent contracts remain open.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013 | Backlog | S01–S07 integrated; remaining comparisons and recovery contracts |
-| T-0021/S05 | Review | Accept the private abort suffix in PR #79 under ADR-0010 |
+| T-0013 | Backlog | S01–S07 integrated; S08 position comparison prepared |
+| T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -255,5 +255,8 @@ unattempted suffix and closes all handles. Three new local cases verify complete
 typed traces/tokens/cleanup. Exact Demo passes 12 local tests, S04/S06 four
 existing live projections and their 13/31 raw controls. Workspace tests pass
 26 with four intentional ignores, plus formatting and strict Clippy. Evidence
-is Unit/Contract plus existing Differential regression only; final-head
-acceptance and integration remain pending.
+is Unit/Contract plus existing Differential regression only. Final-head exact
+Demo passed at `02673ba`; PR #79 integrated as `d36cf28`. T-0021 stays open and
+returns to Backlog. T-0013/S08 now prepares three selected live commit-position
+comparisons without changing runtime policy. Current 34 / Initial 8 SP remain
+unchanged; the 3 SP slice fits the current forecast.

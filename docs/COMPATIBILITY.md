@@ -130,7 +130,9 @@ private Unit/Contract candidate under ADR-0010 with no new Differential claim.
 Its primary and independent source acceptance pass at `f2d9755`: first/middle
 local execution retains prefix reports and aborts the uncommitted suffix, with
 existing S04/S06 live regressions unchanged. This adds no new first/middle
-Differential result or public verified plugin entry; integration is pending.
+Differential result or public verified plugin entry. Final-head acceptance
+passed at `02673ba`; PR #79 integrated as `d36cf28`. S08 prepares the separate
+three-case first/middle comparison gate; no new match is claimed before it passes.
 
 ## Adding an Entry
 

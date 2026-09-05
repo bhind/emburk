@@ -1,7 +1,7 @@
 # T-0021/S05 private commit abort suffix
 
 - Tracking issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: Review in PR #79; primary and independent source acceptance passed
+- State: Done (bounded slice only); PR #79 integrated as `d36cf28`
 - Priority: P1; parent T-0020
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP is refined 8 to 13; Initial remains 5.
@@ -134,7 +134,15 @@ Retained S04/S06 evidence: `${TMPDIR}/t0013-s04.qLpg8l` and
 is not represented as the complete combined output hash.
 
 Evidence is Unit/Contract for the new cases and existing Differential regression
-only. Final-head acceptance and PR integration remain required.
+only. Final-head exact Demo passed at
+`02673ba295fe095eb71bf6e27b6d5d6f16a1f282`: 12 local passes/two intentional
+ignores, then actual S04/S06 live gates with two cases each and 13/31 raw
+controls. Retained logs: `/private/tmp/t0021-s05-final-head.fe2mVZ`;
+S04/S06 evidence: `${TMPDIR}/t0013-s04.kqNcRk` and
+`${TMPDIR}/t0013-s06.Vr2ryv`. Final source hash and unchanged bridge hashes,
+diff boundary and Project audits passed. PR #79 integrated as
+`d36cf286795011a5389699864c7c156644a92dbf`. The bounded slice is complete;
+parent #18 stays open and returns to Backlog.
 
 ## Reference and provenance
 

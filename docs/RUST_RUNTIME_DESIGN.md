@@ -284,9 +284,11 @@ ADR-0010 now accepts only the selected private abort-suffix expansion for
 T-0021/S05. Actual successful reports precede the failure boundary; abort starts
 at the failed handle and includes unattempted handles. The separately packeted
 native candidate is implemented and independently accepted at `f2d9755` for
-the selected local cases, with unchanged S04/S06 regressions. Integration is
-pending; neither the observation nor this private candidate establishes a
-production recovery policy or first/middle Differential evidence.
+the selected local cases, with unchanged S04/S06 regressions. Final-head
+acceptance passed at `02673ba`; PR #79 integrated as `d36cf28`. Neither the
+observation nor this private candidate establishes a production recovery policy
+or first/middle Differential evidence. S08 prepares the separate three-case
+comparison of actual event order/reports after exact runtime-local error checks.
 
 The proposed failure fixture should throw inside input `run` before its own
 `finish` call. Calling this "before publication" would be unjustified: output
