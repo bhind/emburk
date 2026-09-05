@@ -25,4 +25,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0021/S05 private commit abort suffix](T-0021-commit-abort-suffix.md) | Done (bounded slice; PR #79, `d36cf28`) |
 | [T-0013/S08 selected commit-position differential](T-0013-commit-position-differential.md) | Done (bounded slice; PR #80, `de38a44`) |
 | [T-0012/S07 bounded Page value observation](T-0012-page-value-probe.md) | Done (bounded reference slice; PR #81, `203d7da`) |
-| [T-0012/S08 private record values](T-0012-private-record-values.md) | Review in PR #82; primary and independent source acceptance passed |
+| [T-0012/S08 private record values](T-0012-private-record-values.md) | Done (bounded slice; PR #82, `b428305`) |
+| [T-0012/S09 double-value observation](T-0012-double-value-probe.md) | Prepared; readiness review passed with parent clarification |
