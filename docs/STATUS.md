@@ -24,16 +24,16 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0004 and T-0021 occupy the two active mutation lanes. T-0012 is blocked on
-executing its pinned reference probe. No work item is currently `Ready` or
-`Review`.
+T-0004 is in review and T-0021 occupies the other active lane. T-0012 is
+blocked on executing its pinned reference probe. No work item is currently
+`Ready`.
 
 | Item | State | Purpose |
 |---|---|---|
 | T-0002 | Done | Established canonical records and stable IDs |
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
-| T-0004 | In Progress | Establish Project delivery operations and burndown inputs |
+| T-0004 | Review | Establish Project delivery operations and burndown inputs |
 | T-0012 | Blocked | Pinned reference probe cannot yet execute successfully |
 | T-0021 | In Progress | Workspace skeleton (S01, PR #58) and runtime design proposal (S02) |
 

@@ -170,6 +170,46 @@ def snapshot(output_dir: Path, today: dt.date) -> dict[str, Any]:
     return {"project": project.url, "snapshot": asdict(value), "output": str(output_dir)}
 
 
+def review_candidate(items: Iterable[dict[str, Any]], issue_urls: Iterable[str]) -> str:
+    urls = list(issue_urls)
+    if len(urls) != 1:
+        raise AuditError(f"review automation requires exactly one closing Issue; found {len(urls)}")
+    matches = [item for item in items if item.get("content", {}).get("url") == urls[0]]
+    if len(matches) != 1:
+        raise AuditError(f"review automation requires exactly one Project item; found {len(matches)}")
+    candidate = matches[0]
+    if candidate.get("content", {}).get("type") != "Issue":
+        raise AuditError("review automation target is not an Issue")
+    if candidate.get("status") != "In Progress":
+        raise AuditError(f"review automation requires In Progress; found {candidate.get('status')!r}")
+    if not candidate.get("id"):
+        raise AuditError("review automation target has no Project item ID")
+    return candidate["id"]
+
+
+def project_id(project: ProjectRef) -> str:
+    query = "query($login:String!,$number:Int!){user(login:$login){projectV2(number:$number){id}}}"
+    response = run_gh("api", "graphql", "-f", f"query={query}", "-F", f"login={project.owner}", "-F", f"number={project.number}")
+    return response["data"]["user"]["projectV2"]["id"]
+
+
+def move_linked_issues_to_review(pr_number: int) -> dict[str, Any]:
+    project = discover()
+    repository = run_gh("repo", "view", "--json", "nameWithOwner")
+    owner, name = repository["nameWithOwner"].split("/", 1)
+    query = """query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){closingIssuesReferences(first:50){nodes{url}}}}}"""
+    response = run_gh("api", "graphql", "-f", f"query={query}", "-F", f"owner={owner}", "-F", f"name={name}", "-F", f"number={pr_number}")
+    urls = [node["url"] for node in response["data"]["repository"]["pullRequest"]["closingIssuesReferences"]["nodes"]]
+    items = run_gh("project", "item-list", str(project.number), "--owner", project.owner, "--limit", "500", "--format", "json").get("items", [])
+    item_id = review_candidate(items, urls)
+    fields = run_gh("project", "field-list", str(project.number), "--owner", project.owner, "--limit", "100", "--format", "json")["fields"]
+    status = next(field for field in fields if field["name"] == "Status")
+    review = next(option for option in status["options"] if option["name"] == "Review")
+    resolved_project_id = project_id(project)
+    subprocess.run(["gh", "project", "item-edit", "--id", item_id, "--project-id", resolved_project_id, "--field-id", status["id"], "--single-select-option-id", review["id"]], check=True, capture_output=True, text=True)
+    return {"project": project.url, "pull_request": pr_number, "linked_issues": 1, "updated_items": 1}
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -177,9 +217,16 @@ def main(argv: list[str]) -> int:
     snapshot_parser = sub.add_parser("snapshot")
     snapshot_parser.add_argument("--output-dir", type=Path, required=True)
     snapshot_parser.add_argument("--date", type=dt.date.fromisoformat, default=dt.date.today())
+    review_parser = sub.add_parser("review")
+    review_parser.add_argument("--pr", type=int, required=True)
     args = parser.parse_args(argv)
     try:
-        result = audit_configuration() if args.command == "audit" else snapshot(args.output_dir, args.date)
+        if args.command == "audit":
+            result = audit_configuration()
+        elif args.command == "snapshot":
+            result = snapshot(args.output_dir, args.date)
+        else:
+            result = move_linked_issues_to_review(args.pr)
         print(json.dumps(result, sort_keys=True))
     except (AuditError, KeyError, ValueError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         print(f"project delivery failed: {exc}", file=sys.stderr)

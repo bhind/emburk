@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "17 0 * * *"
   workflow_dispatch:
+  pull_request_target:
+    types:
+      - ready_for_review
+      - review_requested
 
 concurrency:
   group: project-delivery-snapshot
@@ -12,6 +16,23 @@ concurrency:
 permissions: {}
 
 jobs:
+  review:
+    if: >-
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Move linked Issues to Review
+        run: python3 scripts/project_delivery.py review --pr "${{ github.event.pull_request.number }}"
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+
   snapshot:
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest

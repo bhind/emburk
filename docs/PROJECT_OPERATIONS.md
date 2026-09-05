@@ -95,12 +95,16 @@ print, persist, or place the credential in command arguments or artifacts.
 The snapshot workflow runs at 00:17 UTC and can also be dispatched manually
 from the default branch. It refuses non-default refs, and exposes the Project
 secret only to the audit and snapshot steps.
-It fails before writing if Project discovery or configuration audit fails. PR
-events are deliberately excluded from this secret-bearing workflow so proposed
-code cannot access the Project credential. Review transitions therefore remain
-with the enabled Project workflow and the Project Manager; do not add a
-secret-bearing `pull_request` checkout. The `project-metrics` branch must exist
-before the workflow is enabled; a missing branch fails safely.
+It fails before writing if Project discovery or configuration audit fails.
+Ready-for-review automation uses
+`pull_request_target`, checks out only the default branch without persisting
+credentials, accepts only numeric PR identifiers, and runs only for OWNER,
+MEMBER, or COLLABORATOR authors targeting the default branch. It updates only
+one closing-linked Issue whose current Status is In Progress; every ambiguous
+or conflicting case fails before mutation and requires Project Manager
+reconciliation. The
+`project-metrics` branch must exist before the snapshot workflow is enabled; a
+missing branch fails safely.
 
 ## Verification
 

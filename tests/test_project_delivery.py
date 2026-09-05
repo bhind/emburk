@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.project_delivery import AuditError, append_snapshot, csv_safe, ideal_remaining, make_snapshot, render_svg
+from scripts.project_delivery import AuditError, append_snapshot, csv_safe, ideal_remaining, make_snapshot, render_svg, review_candidate
 
 
 def item(number, status, points, iteration="i1", content_type="Issue"):
@@ -29,6 +29,19 @@ class ProjectDeliveryTest(unittest.TestCase):
     def test_csv_formula_prefix_is_neutralized(self):
         self.assertEqual(csv_safe("=HYPERLINK(1)"), "'=HYPERLINK(1)")
         self.assertEqual(csv_safe("2026-W36"), "2026-W36")
+
+    def test_review_accepts_one_in_progress_issue(self):
+        items = [{"id": "issue", "status": "In Progress", "content": {"type": "Issue", "url": "https://example/issues/1"}}]
+        self.assertEqual(review_candidate(items, ["https://example/issues/1"]), "issue")
+
+    def test_review_rejects_non_active_or_ambiguous_targets(self):
+        blocked = [{"id": "issue", "status": "Blocked", "content": {"type": "Issue", "url": "https://example/issues/1"}}]
+        with self.assertRaisesRegex(AuditError, "requires In Progress"):
+            review_candidate(blocked, ["https://example/issues/1"])
+        with self.assertRaisesRegex(AuditError, "exactly one closing Issue"):
+            review_candidate(blocked, ["https://example/issues/1", "https://example/issues/2"])
+        with self.assertRaisesRegex(AuditError, "exactly one Project item"):
+            review_candidate([], ["https://example/issues/1"])
 
     def test_append_is_idempotent_per_day_and_svg_is_rendered(self):
         value = make_snapshot([item(1, "In Progress", 5)], dt.date(2026, 9, 5))
