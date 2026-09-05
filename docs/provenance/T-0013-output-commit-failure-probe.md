@@ -1,7 +1,9 @@
 # T-0013/S05 output commit failure observation
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Review; PR #75, final-head acceptance and integration pending
+- State: Done (bounded Reference Observation / Integration); PR #75 integrated
+- Parent queue: Backlog for remaining comparisons/index/recovery contracts;
+  Issue #16 remains open
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0; raw 3 maps to 3 SP)
@@ -220,7 +222,10 @@ Independent reference root is
 `38acff4e916c0fbd18d193390b652f4c3e9d423242986c15b66a785721c714e8`;
 `traces.raw` SHA-256:
 `1b4048b0b32450e0b910fdc7bdeb1fc08776037cf8c1193299e6fa6b84f28114`.
-Final-head acceptance and integration remain pending.
+Final-head acceptance at `6508221c49449950096593f6cd21c0517d0dc7bd` passed the
+exact Demo and separate syntax/diff checks, with local evidence at
+`${TMPDIR}/t0013-output-commit-failure.sXmgK4/evidence`. PR #75 integrated as
+`2901c3134eba5b45da5a7c5bcebf1af0a4334705`; parent Issue #16 remains open.
 Evidence is Reference Observation / Integration only. Other commit positions,
 general output-error semantics, publication and rollback remain unverified.
 

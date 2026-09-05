@@ -108,16 +108,23 @@ fn event_name(event: &Event) -> String {
         Event::InputRan => "InputRan".into(),
         Event::InputFinished => "InputFinished".into(),
         Event::InputFailed => "InputFailed".into(),
-        Event::InputControlClosed(outcome) => format!("InputControlClosed:{}", outcome_name(outcome)),
+        Event::InputControlClosed(outcome) => {
+            format!("InputControlClosed:{}", outcome_name(outcome))
+        }
         Event::InputJobClosed(outcome) => format!("InputJobClosed:{}", outcome_name(outcome)),
         Event::OutputJobOpened => "OutputJobOpened".into(),
         Event::OutputControlOpened => "OutputControlOpened".into(),
         Event::OutputTaskOpened(index) => format!("OutputTaskOpened:{index}"),
         Event::OutputTaskFinished(index) => format!("OutputTaskFinished:{index}"),
         Event::OutputTaskCommitted(index) => format!("OutputTaskCommitted:{index}"),
+        Event::OutputTaskCommitFailed(index, failure) => {
+            format!("OutputTaskCommitFailed:{index}:{}", failure.0)
+        }
         Event::OutputTaskAborted(index) => format!("OutputTaskAborted:{index}"),
         Event::OutputTaskClosed(index) => format!("OutputTaskClosed:{index}"),
-        Event::OutputControlClosed(outcome) => format!("OutputControlClosed:{}", outcome_name(outcome)),
+        Event::OutputControlClosed(outcome) => {
+            format!("OutputControlClosed:{}", outcome_name(outcome))
+        }
         Event::OutputJobClosed(outcome) => format!("OutputJobClosed:{}", outcome_name(outcome)),
         Event::InputCleaned => "InputCleaned".into(),
         Event::OutputCleaned => "OutputCleaned".into(),
@@ -127,7 +134,8 @@ fn event_name(event: &Event) -> String {
 fn outcome_name(outcome: &ScopeOutcome) -> &'static str {
     match outcome {
         ScopeOutcome::Normal => "Normal",
-        ScopeOutcome::Failed => "Failed",
+        ScopeOutcome::Failed(CallbackFailure::Input(_)) => "Failed",
+        ScopeOutcome::Failed(CallbackFailure::Output(_)) => "FailedOutput",
     }
 }
 
@@ -143,7 +151,12 @@ fn compare_manifest(manifest: &str) -> Result<usize, String> {
             {
                 "selected-input-failure"
             }
-            Err(other) => return Err(format!("unexpected Rust result for {}: {other:?}", case.name)),
+            Err(other) => {
+                return Err(format!(
+                    "unexpected Rust result for {}: {other:?}",
+                    case.name
+                ));
+            }
         };
         if actual_result != case.expected_result {
             return Err(format!("result differs for {}", case.name));
@@ -171,11 +184,21 @@ fn compare_manifest(manifest: &str) -> Result<usize, String> {
         if case.fail_before_finish {
             let input_failed_controls = trace
                 .iter()
-                .filter(|event| matches!(event, Event::InputControlClosed(ScopeOutcome::Failed)))
+                .filter(|event| {
+                    matches!(
+                        event,
+                        Event::InputControlClosed(ScopeOutcome::Failed(CallbackFailure::Input(_)))
+                    )
+                })
                 .count();
             let output_failed_controls = trace
                 .iter()
-                .filter(|event| matches!(event, Event::OutputControlClosed(ScopeOutcome::Failed)))
+                .filter(|event| {
+                    matches!(
+                        event,
+                        Event::OutputControlClosed(ScopeOutcome::Failed(CallbackFailure::Input(_)))
+                    )
+                })
                 .count();
             if input_failed_controls != 1 || output_failed_controls != 1 {
                 return Err(format!("failed control outcomes differ for {}", case.name));
@@ -193,22 +216,48 @@ fn compare_manifest(manifest: &str) -> Result<usize, String> {
 
 fn valid_manifest() -> String {
     let normal_events = [
-        "InputJobOpened", "InputControlOpened", "OutputJobOpened", "OutputControlOpened",
-        "OutputTaskOpened:0", "InputRan", "OutputTaskFinished:0", "InputFinished",
-        "OutputTaskCommitted:0", "OutputTaskClosed:0", "OutputControlClosed:Normal",
-        "OutputJobClosed:Normal", "InputControlClosed:Normal", "InputJobClosed:Normal",
-        "InputCleaned", "OutputCleaned",
+        "InputJobOpened",
+        "InputControlOpened",
+        "OutputJobOpened",
+        "OutputControlOpened",
+        "OutputTaskOpened:0",
+        "InputRan",
+        "OutputTaskFinished:0",
+        "InputFinished",
+        "OutputTaskCommitted:0",
+        "OutputTaskClosed:0",
+        "OutputControlClosed:Normal",
+        "OutputJobClosed:Normal",
+        "InputControlClosed:Normal",
+        "InputJobClosed:Normal",
+        "InputCleaned",
+        "OutputCleaned",
     ];
     let failure_events = [
-        "InputJobOpened", "InputControlOpened", "OutputJobOpened", "OutputControlOpened",
-        "OutputTaskOpened:0", "InputRan", "InputFailed", "OutputTaskAborted:0",
-        "OutputTaskClosed:0", "OutputJobClosed:Failed", "InputJobClosed:Failed",
-        "InputCleaned", "OutputCleaned",
+        "InputJobOpened",
+        "InputControlOpened",
+        "OutputJobOpened",
+        "OutputControlOpened",
+        "OutputTaskOpened:0",
+        "InputRan",
+        "InputFailed",
+        "OutputTaskAborted:0",
+        "OutputTaskClosed:0",
+        "OutputJobClosed:Failed",
+        "InputJobClosed:Failed",
+        "InputCleaned",
+        "OutputCleaned",
     ];
     let mut rows = vec![HEADER.to_owned()];
-    rows.push(format!("CASE\tnormal\t1\t1\t1024\tnormal-input\tsuccess\t1\t1\t{}", normal_events.len()));
+    rows.push(format!(
+        "CASE\tnormal\t1\t1\t1024\tnormal-input\tsuccess\t1\t1\t{}",
+        normal_events.len()
+    ));
     rows.extend(normal_events.map(|event| format!("EVENT\t{event}")));
-    rows.push(format!("CASE\tfailure\t1\t1\t1024\tfail-before-finish\tselected-input-failure\t0\t0\t{}", failure_events.len()));
+    rows.push(format!(
+        "CASE\tfailure\t1\t1\t1024\tfail-before-finish\tselected-input-failure\t0\t0\t{}",
+        failure_events.len()
+    ));
     rows.extend(failure_events.map(|event| format!("EVENT\t{event}")));
     rows.join("\n") + "\n"
 }
@@ -227,22 +276,33 @@ fn differential_manifest_rejects_invalid_or_mutated_outcomes() {
         valid.replacen("\tsuccess\t1\t1\t", "\tsuccess\t0\t1\t", 1),
         valid.replacen("\tsuccess\t1\t1\t", "\tsuccess\t1\t0\t", 1),
         valid.replacen("OutputTaskOpened:0", "OutputTaskOpened:1", 1),
-        valid.replacen("InputRan\nEVENT\tOutputTaskFinished:0", "OutputTaskFinished:0\nEVENT\tInputRan", 1),
+        valid.replacen(
+            "InputRan\nEVENT\tOutputTaskFinished:0",
+            "OutputTaskFinished:0\nEVENT\tInputRan",
+            1,
+        ),
         valid.replacen("CASE\tnormal\t1\t1\t1024", "CASE\tnormal\t1\t0\t1024", 1),
         format!("{valid}CASE\tnormal\t1\t1\t1024\tnormal-input\tsuccess\t1\t1\t0\n"),
         valid.replacen("EVENT\tInputJobOpened", "EVENT", 1),
     ] {
-        assert!(compare_manifest(&bad).is_err(), "accepted bad manifest:\n{bad}");
+        assert!(
+            compare_manifest(&bad).is_err(),
+            "accepted bad manifest:\n{bad}"
+        );
     }
-    let truncated = valid.lines().take(valid.lines().count() - 1).collect::<Vec<_>>().join("\n");
+    let truncated = valid
+        .lines()
+        .take(valid.lines().count() - 1)
+        .collect::<Vec<_>>()
+        .join("\n");
     assert!(compare_manifest(&truncated).is_err());
 }
 
 #[test]
 #[ignore = "requires the external T-0013/S03 live oracle driver"]
 fn live_empty_lifecycle_differential() {
-    let path = std::env::var("T0013_S04_MANIFEST")
-        .expect("T0013_S04_MANIFEST must name driver output");
+    let path =
+        std::env::var("T0013_S04_MANIFEST").expect("T0013_S04_MANIFEST must name driver output");
     let manifest = std::fs::read_to_string(path).expect("read driver manifest");
     assert_eq!(compare_manifest(&manifest), Ok(2));
 }

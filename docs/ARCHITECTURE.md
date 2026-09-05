@@ -51,6 +51,13 @@ supplied Rust plan. Primary and independent acceptance pass at `98b6cac`;
 final-head acceptance passed and PR #74 integrated as `68d848c`. The test adapter
 is not a host API.
 
+ADR-0009 permits a private typed output-commit error and common input/output
+scope outcome, preserving actual reports on the observed last-index failure.
+T-0021/S04 implements this candidate; primary and independent Unit/Contract
+acceptance pass at `b8dbc77`, with integration pending. Its private
+fallible signature does not establish arbitrary-index recovery, publication or
+rollback semantics or authorize a public plugin boundary.
+
 T-0012 reference probes and S04's ignored live comparison are test-only tools
 outside the Emburk runtime. Their local executable retrieval and generated probe
 plugin do not create an Emburk Java host, admitted plugin, runtime dependency,

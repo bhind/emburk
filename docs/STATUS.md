@@ -33,8 +33,8 @@ Development state: `bootstrap`
 
 ## Delivery queue
 
-T-0013/S05 (`Review`, PR #75) is the only active work item. Combined WIP is one of
-two; no item is `Ready` or `Blocked`. T-0012 and T-0021 remain Backlog after
+T-0021/S04 (`Review`, PR #76) is the only active work item. Combined WIP is one of
+two; no item is `Ready` or `Blocked`. T-0012 and T-0013 remain Backlog after
 their accepted slices; their remaining contracts/dependencies are not complete.
 
 | Item | State | Purpose |
@@ -44,8 +44,8 @@ their accepted slices; their remaining contracts/dependencies are not complete.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013/S05 | Review | Selected output commit failure observation; PR #75 |
-| T-0021 | Backlog | S01–S03 integrated; remaining core contracts |
+| T-0013 | Backlog | S01–S05 integrated; remaining lifecycle comparison/recovery contracts |
+| T-0021/S04 | Review | Private last-commit failure and retained reports; PR #76 |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -201,5 +201,15 @@ S05 primary acceptance at `876e861` passed the normal/selected commit-failure
 Demo and 23 controls. Failure aborted only the failed handle, closed all, and
 fresh cleanup captures received input 1/output 7 reports in the observed 1/8
 plan. Independent Tester reproduced these results. This is Reference Observation
-/ Integration only; final-head acceptance and integration remain pending, with
-no Rust output-failure policy added.
+/ Integration only; final-head acceptance at `6508221` passed and PR #75
+integrated as `2901c31`, with no Rust output-failure policy added by that slice.
+
+ADR-0009 now permits T-0021/S04's private last-commit failure candidate with
+typed scope errors and retained reports. Primary and independent source
+acceptance passed at `b8dbc77`: seven local tests, two existing live projections,
+13 negative controls and workspace 21 passed/three intentionally ignored;
+format, explicit included-file Rust 2024 formatting and strict Clippy passed.
+PR integration is pending. Evidence is Unit/Contract plus existing regression,
+not a new output-failure Differential result; earlier/middle
+failure positions and general recovery remain outside its reference coverage.
+Current T-0021 SP is refined 5 to 8; Initial SP stays 5 and parent gates stay open.
