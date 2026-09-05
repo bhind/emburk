@@ -16,6 +16,9 @@ Development state: `bootstrap`
 - Thirteen selected private raw-scalar outcomes match the pinned Embulk
   executable in a live differential test. No full configuration, plugin,
   data-transfer, or performance claim has passed its evidence gate.
+- A private ordered logical schema preserves owned names, type tags, order and
+  duplicates. Its live comparison matches three selected schema outcomes;
+  values, nullability, lookup and physical encoding remain unimplemented.
 - The product strategy selects a compact Rust execution core, optional
   out-of-process compatibility hosts, explicit versioned compatibility, and a
   native File-to-File vertical slice as the first runtime milestone.
@@ -126,6 +129,11 @@ Tester reproduced it and S01/S02/S04 regressions; PR #68 integrated as `68559dc`
 This is Reference Observation /
 Integration only; no Rust schema, values or batches are added.
 
-S06 is implementing the private ordered schema permitted by ADR-0007 and a
-three-case live comparator. Its acceptance is pending; no schema support or
-physical encoding claim follows from the packet.
+S06 implements the private ordered schema permitted by ADR-0007 and a
+three-case live comparator. Primary acceptance at `c7c7872` passed all three
+live outcomes and negative controls; workspace tests passed 14 with two
+explicitly ignored live tests, plus format and strict Clippy. Independent
+Tester reproduced S06 and S04 live regression; integration remains pending.
+Its evidence is Unit/Contract plus
+Differential for the three selected ordered outcomes only; no public schema
+support or physical encoding claim follows.

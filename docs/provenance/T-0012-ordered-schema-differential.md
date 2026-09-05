@@ -2,7 +2,7 @@
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
 - Branch: `feat/t-0012-ordered-logical-schema`
-- State: In Progress; acceptance pending
+- State: In Progress; independent acceptance passed, integration pending
 - Owner: Rust Core Implementer; canonical records/integration: Project Manager
 - Dependencies: T-0011 and S05, integrated through PR #68 as
   `68559dc8b81d45c2b236db3d1e5266f70ab589a9`
@@ -26,7 +26,8 @@ Implementer owns exactly:
 Do not change S05's runner, Java probe or tests, the scalar resolver, Cargo
 manifests, production dependencies or public APIs. PM separately owns STATUS,
 TODO, ROADMAP, ARCHITECTURE, COMPATIBILITY, relevant ADRs, provenance/index and
-the dated log. Implementation and canonical records remain disjoint.
+the dated log; RUST_RUNTIME_DESIGN may be reconciled to accepted observations.
+Implementation and canonical records remain disjoint.
 
 Use a private LogicalSchema containing ordered LogicalColumns, each with owned
 UTF-8 name and logical type (Boolean, Signed64, Float64, Text, Timestamp, Json).
@@ -87,3 +88,46 @@ expansion for unknown semantic mappings, new dependencies/APIs/encodings,
 source translation, redistribution or material IP/security uncertainty. If the
 accepted oracle format cannot be consumed without changing S05, repacket rather
 than modifying its files silently.
+
+## Primary acceptance
+
+At source revision `c7c7872`, the primary agent ran the exact Demo by absolute
+path from `/private/tmp`: exit 0, three live schema comparisons in exactly one
+selected ignored Rust test (one passed, zero ignored). The new negative-control
+test also selected exactly one test. Offline workspace tests passed 14 with two
+intentional live-test ignores; format, strict workspace/all-target Clippy and
+diff checks exited 0.
+
+External evidence: `${TMPDIR}/t0012-s06.J9p9ak`. Its `live.tsv` has 12 lines:
+one version header, three CASE rows and eight ordered FIELD rows. SHA-256:
+`053c68f737661786f709e488a57ef9075092294fa6c0ca673a2ae5651293a66b`.
+Recorded actual raw evidence hashes are the S05 hashes; they are computed
+observations, not hardcoded outcome acceptance gates. The manifest retains the
+live oracle evidence directory before normalization.
+
+Review removed a draft outcome-hash gate and corrected an initially input-side
+mutation into an explicitly verified expected-only mutation. Driver negative
+controls re-fingerprint mutated phases so unknown-type and phase-mismatch tests
+exercise their intended rejection paths rather than merely checksum rejection.
+A positive synthetic test preserves changed actual output through TSV while
+leaving the test-owned input unchanged. Huge row counts reject before capacity
+allocation. None of these synthetic checks adds an upstream observation.
+
+Evidence: Unit/Contract internal storage plus Differential for the three selected
+ordered schema outcomes. Primary scalar live regression also passed 13 cases
+with exit 0 (`${TMPDIR}/t0012-s04.dNquvT`).
+
+Independent Tester reproduced the exact S06 Demo and S04 regression at full
+revision `c7c787202ce3c5321191773f94a2680617cba705`, each with final exit 0.
+Normal and `PYTHONOPTIMIZE=1` driver self-tests passed; format, strict Clippy,
+offline workspace tests (14 passed, 2 intentional live ignores) and diff checks
+passed. No implementation or acceptance finding remains open.
+
+Tester logs: `/private/tmp/emburk-t0012-s06-acceptance-20260906T011105/`.
+`s06-demo.log` SHA-256:
+`3dae1763ddd9195f3ce447bee56c7ac16283feb89cd85a4bfa61fc56229851d6`.
+Tester live evidence `${TMPDIR}/t0012-s06.dpJVxD` has the same TSV hash as primary
+acceptance. Its raw-record hash file SHA-256 is
+`9946b294746847657f31dca792953d09163d923f2fb9a3bb96f1c52bc5428476`.
+Platform: macOS 26.5.1 arm64, Bash 3.2.57, Python 3.14.6, Rust/Cargo 1.98.1,
+Temurin JDK 17.0.20. PR integration remains pending; parent T-0012 is not complete.

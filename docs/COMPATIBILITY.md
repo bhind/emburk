@@ -60,6 +60,14 @@ columns constructed and reached the run callback without changing their
 ordered fingerprints. This does not add Native or Verified schema support,
 name lookup, nullability, Page/value encoding, or a lifecycle contract.
 
+The private ordered logical schema is Partial/internal. Primary and independent
+[S06 acceptance](provenance/T-0012-ordered-schema-differential.md) compares the
+same three selected cases against actual S05 run-phase data and preserves
+the duplicate-name pair as two ordered positions. Internal tests also cover
+owned-name storage and malformed evidence. This is not a full schema API,
+validation policy, arbitrary-name compatibility, lookup, nullability, values,
+Page/Arrow encoding or lifecycle claim. Integration is pending.
+
 ## Adding an Entry
 
 Each entry must identify the Embulk version, exact plugin artifact, configuration fixture, expected evidence, source/provenance record, and known deviations. Claims enter this document only after review evidence exists.

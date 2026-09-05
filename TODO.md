@@ -154,3 +154,6 @@ live comparison of S05's three actual outcomes. ADR-0007 and its
 [packet](docs/provenance/T-0012-ordered-schema-differential.md) exclude lookup,
 nullability, values, Arrow, public APIs and plugin traits. No parent re-estimate
 or completion follows from activation.
+Primary and independent Tester acceptance passed at `c7c7872`: three live schema
+outcomes, S04 regression, strict checks and 14 offline tests with two intentional
+live ignores. Integration remains pending.
