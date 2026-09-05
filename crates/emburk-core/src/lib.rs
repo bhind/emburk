@@ -7,6 +7,13 @@
 )]
 mod scalar_resolution;
 
+// This is deliberately private until a later packet authorizes an API consumer.
+#[allow(
+    dead_code,
+    reason = "T-0012/S06 is an internal ordered schema without a public consumer"
+)]
+mod logical_schema;
+
 pub const DEVELOPMENT_STATUS: &str =
     "emburk: development environment ready (data transfer not implemented yet)";
 
