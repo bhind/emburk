@@ -8,8 +8,9 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0021` is `In Progress`; `T-0012` is `Blocked`; and every other item is
-`Backlog`. No item is `Ready` or `Review`.
+`T-0021` and `T-0012/S01` are `In Progress`; and every other item is
+`Backlog`. No item is `Ready`, `Review`, or `Blocked`. This is the two-item
+WIP limit.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -34,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics | Blocked | P0 | 5 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S01: presence reference probe) | In Progress | P0 | 5 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics | Backlog | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -113,7 +114,9 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 
 T-0021 has two bounded slices under one serial integration lane:
 
-- S01 (1 SP): physical workspace skeleton, candidate in PR #58.
+- S01 (1 SP): physical workspace skeleton, integrated through PR #58
+  (`5fe306a`) after independent acceptance at `cf56841`; structural
+  Unit/Contract evidence only.
 - S02 (1 SP): [runtime design proposal](docs/RUST_RUNTIME_DESIGN.md), integrated
   through PR #60 (`341f285`), Planning
   evidence only. Reviewable crate boundaries and contract worksheets do not
@@ -123,5 +126,8 @@ These estimates are within the parent's 5 SP, not additional points or accepted
 velocity. Parent completion retains its listed dependencies.
 
 T-0003 is complete through PR #62, and T-0004/S01 is complete through PR #63.
-T-0012 remains blocked with its exact clearing condition in Issue #15. T-0021
-is the only item occupying the combined `In Progress` plus `Review` WIP limit.
+T-0012/S01 uses the official self-contained executable through a local-only
+Maven-style input plugin, rather than assembling the core POM graph. It probes
+only presence/null/default behavior from the pinned reference and cannot
+complete the parent Differential gate. T-0021 and T-0012/S01 occupy the
+combined `In Progress` plus `Review` WIP limit of two.
