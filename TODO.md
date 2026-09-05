@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S02` is `Review`; `T-0012`, `T-0021` and all other unfinished items
+`T-0013/S03` is `Review`; `T-0012`, `T-0021` and all other unfinished items
 are `Backlog`. No item is `Blocked`. Combined WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01 integrated; S02 output observations) | Review | P0 | 8 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01/S02 integrated; S03 input failure) | Review | P0 | 13 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -179,4 +179,27 @@ excludes failure injection, Pages, delivery guarantees and Rust traits. Parent
 completion and additional parent points are not implied; combined WIP stays one.
 Primary acceptance at `5739052` passed the exact S02 Demo, including actual
 distinct input/output counts and 30 malformed-evidence controls. Independent
-Tester reproduced the complete Demo; integration remains pending.
+Tester reproduced the complete Demo; final-head acceptance at `55ed697` passed
+and PR #71 integrated as `d474b7b`.
+
+T-0013/S03 (3 SP within Current SP 13) observes one input-run exception before
+its own finish call plus a normal control. S03 retains S02 output behavior in a
+new original fixture with explicit capture-context IDs; S02 remains unchanged.
+See its [packet](docs/provenance/T-0013-input-failure-probe.md). Current parent
+SP changes from 8 to 13 because distinct input/output task contexts and strict
+failure-evidence validation were underrepresented initially. Initial SP remains
+8. No earned parent points or completion follows; retry/resume and the parent
+Differential gate remain open. Combined WIP stays one.
+S03 primary acceptance at `f35cb49` passed the exact normal/failure Demo and
+25 invalid-evidence controls, including same-capture duplicate sequence 1 and
+non-main capture checks. Independent Tester reproduced the full Demo;
+integration remains pending.
+
+Next pull candidate after S03 acceptance: T-0021/S03, a private empty-task
+coordinator with explicit input/output task plans and original fake plugins.
+A separate decision/packet must delimit the supported normal and input-run
+failure paths, cleanup context ownership, and unsupported callback failures.
+It must not infer default executor fan-out, create a public plugin API or claim
+data transfer. Local Unit/Contract acceptance precedes a separately scoped live
+callback comparison under T-0013; neither parent is completed by planning this
+candidate. No implementation files or second WIP lane are activated here.

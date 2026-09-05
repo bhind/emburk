@@ -143,6 +143,15 @@ task identity into one counter. The factor eight is a local observation, not a
 portable constant or an accepted scheduling algorithm. Mapping rules, executor
 options and concurrency need separate fixtures before implementation.
 
+S03's primary failure acceptance at `f35cb49` also records plugin
+loading again during cleanup and reset static probe counters. Do not design
+cleanup around a requirement that the original in-memory plugin instance or
+task handle survives. The probe now assigns explicit capture-context IDs so
+reload-like observations are distinguishable from duplicate transport records.
+Those IDs are instrumentation only, not a proposed resume/task identity format.
+The empty TaskSource fixture does not establish a general reconstruction or
+serialization contract.
+
 | Phase | Coordinator responsibility | Plugin/adapter responsibility | Trace evidence required |
 |---|---|---|---|
 | Resolve and validate | Select pinned factories, resolve configuration | Validate plugin options at the compatible stage | First error, defaults applied, side effects before failure |

@@ -80,7 +80,12 @@ for zero/one input tasks, respectively. The one-input run records output
 open/finish/commit/close pairs; no add, abort or resume marker occurred. This
 is not a default fan-out algorithm, durable commit, general callback-order
 guarantee or Native/Verified lifecycle claim. Independent acceptance passed;
-integration remains pending.
+PR #71 integrated as `d474b7b`. S03's primary input-run failure observation
+records the exact injected exception propagating, output abort/close and
+cleanup with fresh capture IDs and zero reports. Normal control exited 0;
+failure exited 1. This is Reference Observation / Integration only, not native
+failure handling, rollback, cleanup/retry guarantees or a Java loading contract.
+Independent acceptance passed; integration remains pending.
 
 ## Adding an Entry
 
