@@ -20,4 +20,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0013/S04 selected empty-lifecycle differential](T-0013-empty-lifecycle-differential.md) | Done (two selected Differential projections; PR #74) |
 | [T-0013/S05 output commit failure observation](T-0013-output-commit-failure-probe.md) | Done (Reference Observation / Integration; PR #75) |
 | [T-0021/S04 private last-commit failure](T-0021-last-commit-failure.md) | Done (Unit/Contract plus existing regression; PR #76) |
-| [T-0013/S06 selected output-commit differential](T-0013-output-commit-differential.md) | Ready (Planning only) |
+| [T-0013/S06 selected output-commit differential](T-0013-output-commit-differential.md) | In Progress (acceptance pending) |

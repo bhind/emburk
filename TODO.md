@@ -8,8 +8,8 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S06` is `Ready`; `T-0012`, `T-0021` and all other unfinished items
-are `Backlog`. No item is `Blocked`. Combined active WIP is zero of two.
+`T-0013/S06` is `In Progress`; `T-0012`, `T-0021` and all other unfinished items
+are `Backlog`. No item is `Blocked`. Combined active WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -35,7 +35,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S06: selected output-commit comparison) | Ready | P0 | 21 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S06: selected output-commit comparison) | In Progress | P0 | 21 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -250,7 +250,7 @@ workspace 21 passed/three intentional ignores, formatting and strict Clippy.
 Evidence is Unit/Contract plus existing regression; final-head acceptance passed
 at `d885ba2` and PR #76 integrated as `b5cfb87`. Parent #18 remains open.
 
-T-0013/S06 (3 SP within unchanged Current 21/Initial 8) is Ready under its
+T-0013/S06 (3 SP within unchanged Current 21/Initial 8) is In Progress under its
 [packet](docs/provenance/T-0013-output-commit-differential.md). Compare normal
 and selected last-output-commit execution to the unchanged S05 reference gate.
 Keep S04 unchanged; no production mutation or broader failure claim. Requeue

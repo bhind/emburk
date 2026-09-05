@@ -1,7 +1,7 @@
 # T-0013/S06 selected output-commit differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: Ready; implementation has not started
+- State: In Progress; runtime acceptance pending
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current SP remains 21; Initial SP remains 8.
