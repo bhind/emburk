@@ -79,8 +79,12 @@ S05 now observes selected output commit failure before expanding Rust output
 fallibility. This reference-only gate cannot establish partial publication,
 rollback, retry or resume behavior.
 S05 primary acceptance at `876e861` passes the two live fixtures and 23 controls;
-independent Tester reproduced these results, with integration pending. It distinguishes selected
+independent Tester reproduced these results. Final-head acceptance at `6508221`
+passed and PR #75 integrated as `2901c31`. It distinguishes selected
 output commit failure from input-run failure without completing parent gates.
+ADR-0009 now activates T-0021/S04's local private last-commit candidate while
+requiring both existing live projections as regression. A separate future
+T-0013 comparison must establish any new output-failure Differential evidence.
 
 ## Phase 1: Native File-to-File MVP
 
