@@ -2,6 +2,16 @@
 
 Compatibility is an evidence record, not a general promise.
 
+The implementation objective is strict reproduction of observable behavior for
+the pinned core and admitted plugins. Technical constraints, disproportionate
+effort, or unavoidable Java/Rust differences may justify an explicit exception
+only after recording a reproducer, alternatives, estimated effort, migration
+impact, and owner decision. Missing implementation is not an accepted deviation.
+Each approved exception must identify the affected pinned artifact and fixture
+and remain a known deviation marked `Partial`; that scope cannot be `Verified`.
+Unchanged subscopes may be verified only with explicitly delimited evidence.
+See the [Rust design proposal](RUST_RUNTIME_DESIGN.md) for pending contract gates.
+
 ## Baseline
 
 - Initial core behavior reference: Embulk `v0.11.5`, commit

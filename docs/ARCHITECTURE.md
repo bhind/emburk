@@ -4,6 +4,11 @@
 
 Emburk keeps the core compact. The core owns stable orchestration contracts; plugins own integration behavior and dependencies. Installation and dependency resolution are separate from job execution.
 
+The [Rust runtime design proposal](RUST_RUNTIME_DESIGN.md) details candidate
+crate dependencies, configuration/value worksheets, lifecycle responsibilities,
+and failure states for T-0021. Those API and scheduling choices remain proposed
+until T-0012/T-0013 reference evidence is available.
+
 ## Runtime Layers
 
 ### Rust Execution Core

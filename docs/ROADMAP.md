@@ -11,6 +11,11 @@ The roadmap is ordered by evidence gates. Dates are intentionally omitted until 
 
 Exit gate: the first implementation tasks have approved contracts and reproducible reference fixtures.
 
+T-0021/S02 supplies the [Rust design worksheet](RUST_RUNTIME_DESIGN.md) for
+configuration/value fixtures and lifecycle/failure traces. Its proposed
+structure does not satisfy this exit gate; T-0012 and T-0013 must resolve the
+reference-dependent questions before semantic APIs are accepted.
+
 ## Phase 1: Native File-to-File MVP
 
 - Build the compact execution core and MVP CLI.
