@@ -1,0 +1,77 @@
+name: Work item
+description: Track an implementation, evidence, research, review, or operations slice.
+title: "[T-0000] "
+labels:
+  - project:emburk
+  - work-item
+body:
+  - type: markdown
+    attributes:
+      value: Complete every section. Repository records remain authoritative.
+  - type: textarea
+    id: authority
+    attributes:
+      label: Authority
+      description: Canonical requirement, ADR, roadmap item, or user decision authorizing this work.
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Stable T-IDs or None.
+    validations:
+      required: true
+  - type: input
+    id: mutation_owner
+    attributes:
+      label: Mutation owner
+      description: The one role or agent permitted to change the listed artifacts.
+    validations:
+      required: true
+  - type: textarea
+    id: allowlist
+    attributes:
+      label: Allowlist and artifacts
+      description: Exact files, directories, generated artifacts, and external systems in scope.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence class and commands
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Legal and provenance
+      description: Consulted sources, copied/adapted material declaration, licenses, and required review.
+    validations:
+      required: true
+  - type: textarea
+    id: stop_rule
+    attributes:
+      label: Stop rule
+      description: Conditions that require stopping and escalating rather than expanding scope.
+    validations:
+      required: true
+  - type: textarea
+    id: non_claims
+    attributes:
+      label: Non-claims
+      description: Outcomes this work must not imply.
+    validations:
+      required: true
