@@ -45,7 +45,7 @@ remain Backlog; all three parent contracts remain open.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S01–S06 integrated; remaining configuration/schema/value contracts |
-| T-0013/S08 | In Progress | Compare three selected commit-position projections |
+| T-0013/S08 | Review | PR #80; three selected commit-position projections |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are

@@ -1,7 +1,7 @@
 # T-0013/S08 selected commit-position differential
 
 - Tracking issue: [T-0013, #16](https://github.com/bhind/emburk/issues/16)
-- State: In Progress; independent packet readiness review passed
+- State: Review in [PR #80](https://github.com/bhind/emburk/pull/80); primary and independent source acceptance passed
 - Priority: P0; parent T-0010
 - Slice estimate: 3 SP (implementation 1, uncertainty 1, verification 1,
   environment 0). Parent Current 34 / Initial 8 remain unchanged. S01–S07

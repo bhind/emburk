@@ -8,7 +8,7 @@ are intentionally unpointed; Story Points belong to independently acceptable
 tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
-`T-0013/S07` and `T-0021/S05` are integrated. T-0013/S08 is `In Progress`;
+`T-0013/S07` and `T-0021/S05` are integrated. T-0013/S08 is `Review` in PR #80;
 T-0012, T-0021 and all other unfinished items are `Backlog`. No item is
 `Blocked`. Combined active WIP is one of two.
 
@@ -36,7 +36,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S01–S06 integrated; remaining contracts queued) | Backlog | P0 | 8 | T-0011 | Rust Core Implementer | Differential (Embulk) |
-| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S08: commit-position comparison) | In Progress | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S08: commit-position comparison) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
@@ -301,7 +301,7 @@ Workspace 26 passed/four intentionally ignored and strict quality checks pass.
 Final-head exact Demo passed at `02673ba`; PR #79 integrated as `d36cf28`.
 Parent #18 stays open and returns to Backlog.
 
-T-0013/S08 (3 SP within unchanged Current 34 / Initial 8) is In Progress under its
+T-0013/S08 (3 SP within unchanged Current 34 / Initial 8) is Review in PR #80 under its
 [packet](docs/provenance/T-0013-commit-position-differential.md). Compare exactly
 normal/first/middle empty-fixture projections with actual private Rust execution,
 strict raw validation and negative controls. S04/S06/S07 sources remain unchanged;
