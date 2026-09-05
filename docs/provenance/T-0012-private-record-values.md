@@ -1,7 +1,7 @@
 # T-0012/S08 private record values and selected comparison
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Review in [PR #82](https://github.com/bhind/emburk/pull/82)
+- State: Done as a bounded slice; [PR #82](https://github.com/bhind/emburk/pull/82) integrated as `b428305`; parent remains open
 - Branch: `feat/t-0012-private-record-values`
 - Owner: Rust Core Implementer; canonical decisions/integration: PM
 - Priority: P0; parent T-0010
@@ -257,3 +257,20 @@ remain required; parent and delivery gates stay open.
 Environment remains macOS/Darwin arm64, Rust/Cargo 1.98.1, Python 3.14.6,
 Temurin 17 and Bash 3.2, using only the admitted Embulk 0.11.5 reference.
 No MSRV, alternate platform or Java-version compatibility claim follows.
+
+## Final-head acceptance and integration
+
+Final PR-head `332c721326cafa7951ff8da436c36916138457c3` passed the exact
+Demo with exit 0. Complete logs: `/private/tmp/t0012-s08-final-head.igAcXl`,
+stdout SHA-256 `b500373792e48f4cd3164b9b045e8564a566c89bcd1a76dda7dc2da9a4497af8`;
+stderr empty. S08/S06 evidence under the temporary root above:
+`t0012-s08.KTmsRV` and `t0012-s06.JZODUB`. Manifest hash matches primary and
+independent runs; all four source hashes are unchanged. Independent four-file
+source review found no unresolved correctness or packet-scope finding.
+
+Project delivery and governance audits passed (52 items, WIP 1/2), private
+visibility and main protection were verified, and exact-head guarded squash
+merge integrated PR #82 as `b428305d6f2441dc62ea04736b631cf16389f9fb`.
+The 5 SP slice is accepted; known S03–S08 slice estimates total 20 SP.
+Parent #15 remains open and returns to Backlog during preparation of S09.
+No full configuration/value contract or phase-delivery completion follows.

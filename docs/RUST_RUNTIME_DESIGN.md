@@ -329,9 +329,11 @@ private owned Null/Boolean/Signed64/Text records under ADR-0011. At frozen sourc
 `914ad2e`, primary and independent acceptance pass two selected getter-result comparisons,
 18 raw controls, six local storage/transport tests and the unchanged three-schema
 regression. Workspace 35 passed/six intentionally ignored, formatting and strict
-Clippy pass. Final PR-head acceptance and integration remain required.
+Clippy pass. Final-head Demo passed at `332c721`; PR #82 integrated as `b428305`.
 Schema coupling, physical encoding, public API and production transfer remain
-outside this slice; parent and phase delivery gates stay open.
+outside this slice; parent and phase delivery gates stay open. S09 prepares a
+separate reference-only double-value observation, with a capture-before-
+expectations gate and no Rust Float64 or equality-policy change.
 
 
 The proposed failure fixture should throw inside input `run` before its own
