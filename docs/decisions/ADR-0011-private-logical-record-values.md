@@ -2,6 +2,8 @@
 
 - Status: Accepted
 - Date: 2026-09-06
+- Follow-up: ADR-0012 extends only the value set with private Float64 bit
+  storage, integrated through PR #93; all other boundaries remain unchanged.
 
 ## Context
 
@@ -40,4 +42,3 @@ S07 getter-result projections may gain Differential evidence. Typed-null getter
 behavior, malformed external record validation, schema coupling, batching,
 transfer, resource permits and public exposure require later packets. Existing
 schema, scalar, lifecycle and S07 source remain unchanged.
-

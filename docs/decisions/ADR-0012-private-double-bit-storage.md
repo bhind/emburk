@@ -2,6 +2,8 @@
 
 - Status: Accepted
 - Date: 2026-09-06
+- Implementation: T-0012/S10 integrated through PR #93 as `742274f`, with
+  Unit/Contract and two selected Differential projections; no wider policy.
 
 ## Context
 

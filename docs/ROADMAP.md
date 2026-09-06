@@ -163,8 +163,10 @@ S10 implements the private bit-preserving representation permitted by ADR-0012.
 Frozen source `3df2a88` passed implementer and independent Tester acceptance:
 12 selected double/null cells, five bridge controls and unchanged S09/S08/S06
 regressions. Its private equality is storage identity, not numeric equality.
-Primary final acceptance and PR integration remain required. No public value,
-schema coupling, physical encoding, whole-domain or production claim follows.
+Primary and final-head acceptance passed; PR #93 integrated as `742274f`.
+The S10 slice is Done with Unit/Contract and the two selected Differential
+projections. No public value, schema coupling, physical encoding, whole-domain
+or production claim follows; parent and delivery gates remain open.
 
 
 
