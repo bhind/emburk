@@ -3,13 +3,14 @@ use crate::{
     csv_stream,
     logical_record::{LogicalRecord, LogicalValue},
     logical_schema::{LogicalColumn, LogicalSchema, LogicalType},
+    native_formats::{self, Codec, Encoder},
     publication,
     record_handoff::{RecordSink, RecordSource, SinkError, SourceError, handoff_owned_records},
     yaml_profile::{self, Node},
 };
 use std::{
     fs::{self, File},
-    io::{BufReader, BufWriter},
+    io::{BufRead, Write},
     path::{Path, PathBuf},
 };
 
@@ -23,6 +24,10 @@ struct Profile {
     output: PathBuf,
     skip: usize,
     schema: LogicalSchema,
+    json: bool,
+    decoder: Codec,
+    encoder: Codec,
+    projection: Vec<(usize, String)>,
 }
 pub fn run_config(path: &Path) -> Result<usize, String> {
     let p = compile(yaml_profile::load(path)?.compile_node()?)?;
@@ -70,41 +75,51 @@ fn require(m: &[(String, Node)], key: &str, value: &str) -> Result<(), String> {
 }
 fn compile(root: Node) -> Result<Profile, String> {
     let top = map(&root)?;
-    exact(top, &["in", "out", "exec"])?;
+    exact(top, &["in", "out", "exec", "filters"])?;
     let input = map(one(top, "in")?)?;
-    exact(input, &["type", "path_prefix", "parser"])?;
+    exact(input, &["type", "path_prefix", "parser", "decoders"])?;
     require(input, "type", "file")?;
     let parser = map(one(input, "parser")?)?;
-    exact(
-        parser,
-        &[
-            "type",
-            "charset",
-            "newline",
-            "delimiter",
-            "quote",
-            "escape",
-            "skip_header_lines",
-            "columns",
-        ],
-    )?;
-    for (k, v) in [
-        ("type", "csv"),
-        ("charset", "UTF-8"),
-        ("newline", "LF"),
-        ("delimiter", ","),
-        ("quote", "\""),
-        ("escape", "\""),
-    ] {
-        require(parser, k, v)?
-    }
-    let skips = values(parser, "skip_header_lines");
-    if skips.is_empty() {
-        return Err("required skip_header_lines".into());
+    let json = match scalar(one(parser, "type")?)? {
+        "csv" => false,
+        "json" => true,
+        _ => return Err("unsupported parser type".into()),
     };
-    let skip = scalar(skips.last().unwrap())?
-        .parse()
-        .map_err(|_| "invalid skip_header_lines")?;
+    let skip = if json {
+        exact(parser, &["type", "columns"])?;
+        0
+    } else {
+        exact(
+            parser,
+            &[
+                "type",
+                "charset",
+                "newline",
+                "delimiter",
+                "quote",
+                "escape",
+                "skip_header_lines",
+                "columns",
+            ],
+        )?;
+        for (k, v) in [
+            ("type", "csv"),
+            ("charset", "UTF-8"),
+            ("newline", "LF"),
+            ("delimiter", ","),
+            ("quote", "\""),
+            ("escape", "\""),
+        ] {
+            require(parser, k, v)?
+        }
+        let skips = values(parser, "skip_header_lines");
+        if skips.is_empty() {
+            return Err("required skip_header_lines".into());
+        };
+        scalar(skips.last().unwrap())?
+            .parse()
+            .map_err(|_| "invalid skip_header_lines")?
+    };
     let Node::Seq(cols) = one(parser, "columns")? else {
         return Err("columns must be sequence".into());
     };
@@ -125,7 +140,10 @@ fn compile(root: Node) -> Result<Profile, String> {
         });
     }
     let output = map(one(top, "out")?)?;
-    exact(output, &["type", "path_prefix", "file_ext", "formatter"])?;
+    exact(
+        output,
+        &["type", "path_prefix", "file_ext", "formatter", "encoders"],
+    )?;
     require(output, "type", "file")?;
     require(output, "file_ext", "csv")?;
     let formatter = map(one(output, "formatter")?)?;
@@ -158,6 +176,50 @@ fn compile(root: Node) -> Result<Profile, String> {
     exact(exec, &["max_threads", "min_output_tasks"])?;
     require(exec, "max_threads", "1")?;
     require(exec, "min_output_tasks", "1")?;
+    let mut projection: Vec<_> = columns
+        .iter()
+        .enumerate()
+        .map(|(index, column)| (index, column.name.clone()))
+        .collect();
+    if let Some(filters) = optional(top, "filters")? {
+        let Node::Seq(filters) = filters else {
+            return Err("filters must be sequence".into());
+        };
+        for filter in filters {
+            let filter = map(filter)?;
+            match scalar(one(filter, "type")?)? {
+                "rename" => {
+                    exact(filter, &["type", "columns"])?;
+                    let renames = map(one(filter, "columns")?)?;
+                    for (name, _) in renames {
+                        one(renames, name)?;
+                        if !projection.iter().any(|(_, current)| current == name) {
+                            return Err(format!("rename column not found: {name}"));
+                        }
+                    }
+                    for (_, name) in &mut projection {
+                        if let Some(new) = optional(renames, name)? {
+                            *name = scalar(new)?.to_owned();
+                        }
+                    }
+                }
+                "remove_columns" => {
+                    exact(filter, &["type", "remove"])?;
+                    let Node::Seq(remove) = one(filter, "remove")? else {
+                        return Err("remove must be sequence".into());
+                    };
+                    let names = remove.iter().map(scalar).collect::<Result<Vec<_>, _>>()?;
+                    for name in &names {
+                        if !projection.iter().any(|(_, current)| current == name) {
+                            return Err(format!("remove column not found: {name}"));
+                        }
+                    }
+                    projection.retain(|(_, name)| !names.contains(&name.as_str()));
+                }
+                _ => return Err("unsupported filter type".into()),
+            }
+        }
+    }
     Ok(Profile {
         input: PathBuf::from(scalar(one(input, "path_prefix")?)?),
         output: PathBuf::from(format!(
@@ -165,6 +227,10 @@ fn compile(root: Node) -> Result<Profile, String> {
             scalar(one(output, "path_prefix")?)?
         )),
         skip,
+        json,
+        decoder: codec(input, "decoders", false)?,
+        encoder: codec(output, "encoders", true)?,
+        projection,
         schema: LogicalSchema::new(
             columns
                 .iter()
@@ -181,6 +247,42 @@ fn compile(root: Node) -> Result<Profile, String> {
                 .collect(),
         ),
     })
+}
+fn optional<'a>(mapping: &'a [(String, Node)], key: &str) -> Result<Option<&'a Node>, String> {
+    match values(mapping, key).as_slice() {
+        [] => Ok(None),
+        [value] => Ok(Some(*value)),
+        _ => Err(format!("duplicate option {key}")),
+    }
+}
+fn codec(mapping: &[(String, Node)], key: &str, encoder: bool) -> Result<Codec, String> {
+    let Some(value) = optional(mapping, key)? else {
+        return Ok(Codec::Plain);
+    };
+    let Node::Seq(items) = value else {
+        return Err(format!("{key} must be sequence"));
+    };
+    let [item] = items.as_slice() else {
+        return Err("only one codec is supported".into());
+    };
+    let item = map(item)?;
+    exact(
+        item,
+        if encoder {
+            &["type", "level"]
+        } else {
+            &["type"]
+        },
+    )?;
+    let (codec, level) = match scalar(one(item, "type")?)? {
+        "gzip" => (Codec::Gzip, "6"),
+        "bzip2" => (Codec::Bzip2, "9"),
+        _ => return Err("unsupported codec type".into()),
+    };
+    if encoder {
+        require(item, "level", level)?;
+    }
+    Ok(codec)
 }
 fn execute(profile: Profile) -> Result<usize, String> {
     let parent = profile
@@ -215,33 +317,78 @@ fn execute(profile: Profile) -> Result<usize, String> {
     };
     let file = File::open(&input_path).map_err(|e| format!("cannot open input: {e}"))?;
     let mut source = Source {
-        input: BufReader::new(file),
+        input: native_formats::reader(file, profile.decoder),
         profile: &profile,
         skipped: 0,
     };
     publication::write_atomic(&profile.output, |output| {
+        let mut encoded = Encoder::new(output, profile.encoder);
         csv_stream::write_row(
-            output,
+            &mut encoded,
             &profile
-                .schema
-                .columns()
-                .map(|column| Some(column.name().to_owned()))
+                .projection
+                .iter()
+                .map(|(_, name)| Some(name.clone()))
                 .collect::<Vec<_>>(),
         )
         .map_err(|error| format!("CSV header failed: {error}"))?;
-        let mut sink = Sink { output };
-        handoff_owned_records(&mut source, &mut sink)
-            .map_err(|error| format!("CSV transfer failed: {error:?}"))
+        let mut sink = Sink {
+            output: &mut encoded,
+            projection: &profile.projection,
+        };
+        let count = handoff_owned_records(&mut source, &mut sink)
+            .map_err(|error| format!("record transfer failed: {error:?}"))?;
+        encoded
+            .finish()
+            .map_err(|error| format!("codec finalization failed: {error}"))?;
+        Ok(count)
     })
     .map_err(|error| error.to_string())
 }
 struct Source<'a> {
-    input: BufReader<File>,
+    input: Box<dyn BufRead>,
     profile: &'a Profile,
     skipped: usize,
 }
 impl RecordSource for Source<'_> {
     fn next_record(&mut self) -> Result<Option<LogicalRecord>, SourceError> {
+        if self.profile.json {
+            let Some(object) = native_formats::read_json(&mut self.input)
+                .map_err(|error| SourceError(error.to_string()))?
+            else {
+                return Ok(None);
+            };
+            let mut cells = Vec::new();
+            let mut selected_bytes = 0usize;
+            for column in self.profile.schema.columns() {
+                let value = &object[column.name()];
+                selected_bytes = selected_bytes
+                    .checked_add(value.as_str().map_or(8, str::len))
+                    .ok_or_else(|| SourceError("JSON selected record size overflow".into()))?;
+                if selected_bytes > 1024 * 1024 {
+                    return Err(SourceError(
+                        "JSON selected record exceeds 1048576 bytes".into(),
+                    ));
+                }
+                cells.push(if value.is_null() {
+                    LogicalValue::Null
+                } else if column.logical_type() == LogicalType::Signed64 {
+                    LogicalValue::Signed64(
+                        value
+                            .as_i64()
+                            .ok_or_else(|| SourceError("JSON field is not signed64".into()))?,
+                    )
+                } else {
+                    LogicalValue::Text(
+                        value
+                            .as_str()
+                            .ok_or_else(|| SourceError("JSON field is not string".into()))?
+                            .to_owned(),
+                    )
+                });
+            }
+            return Ok(Some(LogicalRecord::new(cells)));
+        }
         loop {
             let Some(row) =
                 csv_stream::read_record(&mut self.input).map_err(|e| SourceError(e.to_string()))?
@@ -278,14 +425,17 @@ impl RecordSource for Source<'_> {
         }
     }
 }
-struct Sink<'a> {
-    output: &'a mut BufWriter<File>,
+struct Sink<'a, W: Write> {
+    output: &'a mut W,
+    projection: &'a [(usize, String)],
 }
-impl RecordSink for Sink<'_> {
+impl<W: Write> RecordSink for Sink<'_, W> {
     fn accept(&mut self, r: LogicalRecord) -> Result<(), SinkError> {
-        let row = r
-            .cells()
-            .map(|v| match v {
+        let cells = r.cells().collect::<Vec<_>>();
+        let row = self
+            .projection
+            .iter()
+            .map(|(index, _)| match cells[*index] {
                 LogicalValue::Null => None,
                 LogicalValue::Signed64(v) => Some(v.to_string()),
                 LogicalValue::Text(v) => Some(v.clone()),

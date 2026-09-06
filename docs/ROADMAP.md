@@ -9,8 +9,9 @@ observations integrated through PR #115. T-0032/S01 integrated through PR #116
 after primary and independent eight-case comparison and 81 passing tests.
 This satisfies the bounded stages 2–4 consumer, not full configuration/plugin
 gates. Stage 5 integrated as T-0025/S01 through PR #117 after fault/interruption
-acceptance. Stage 6 reference-only preparation is T-0014/S02; native formats
-and stage 7 remain open.
+acceptance. Stage 6 reference-only preparation T-0014/S02 integrated through
+PR #118. T-0033/S01 implements the selected native pipeline formats; stage 7
+and broader parent gates remain open.
 
 ## Phase 0: Governance and Compatibility Contract
 
