@@ -25,7 +25,8 @@ through PR #105 (`67f0786`) after primary and independent final-head Demo at
 remains open, Current 55 / Initial 5 unchanged. S13 now occupies one of two WIP lanes.
 
 T-0012/S13 is In Progress for six selected syntax observations, 5 SP. Stage A raw
-review precedes Stage B validation. Parent Current 55 / Initial 5 is unchanged.
+review passed at `3c70500`; Stage B is authorized. Parent Current 55 / Initial 5
+is unchanged; no points are awarded yet.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;

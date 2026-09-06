@@ -1,7 +1,7 @@
 # T-0012/S13 selected configuration-syntax observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; Stage A capture authorized
+- State: In Progress; Stage A reviewed, Stage B validation authorized
 - Branch: `research/t-0012-s13-config-syntax`
 - Owner: Compatibility Host Implementer; PM owns records and acceptance
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -98,6 +98,70 @@ This is final Stage B acceptance, not Stage A. S12 remains unchanged and its
 wrapper verifies the preceding envelope gate. No Rust changes or redundant
 workspace suites are required. Primary and independent final-head Demo plus
 record reconciliation and PR integration are required for completion/points.
+
+## Stage A evidence and Stage B decision
+
+Primary and independent `--capture` both exited 0 at
+`3c705007673de22db1a94650471d6cb4ce9a300c`. PM verified the retained independent
+exit and compared exact input bytes, stderr bytes and all projected events.
+Six inputs, 60 events and outcomes agree; no diagnostic normalization is needed.
+Raw timestamps, paths and UUIDs remain retained, not semantic comparisons.
+
+| Case | Exit / events | Observed String or boundary |
+| --- | --- | --- |
+| control | 0 / 12 | `syntax-value` |
+| quoted | 0 / 12 | `syntax-value` |
+| duplicate-field | 0 / 12 | `second-value` |
+| malformed-flow | 1 / 0 | No callback; flow-sequence parsing diagnostic |
+| scalar-alias | 0 / 12 | `syntax-value` |
+| invalid-utf8 | 0 / 12 | `bad-\uFFFD-value`; source still contains byte `ff` |
+
+Each successful case has one unique context and sequence 1–12:
+transaction-entry, config-load-entry, config-value(the value above),
+control-entry, run-entry, finish-entry, finish-return, run-return,
+control-return, transaction-return, cleanup-entry, cleanup-return.
+All successful stderr files are empty. The malformed-flow stderr is 2725 bytes,
+SHA-256 `480dfb5bc6be8e8e567869545710d73db2ce87b80882b372e735021606e3c950`.
+Its selected diagnostic identifies a flow sequence at line 7/column 10 and
+the unexpected colon at line 8/column 4; stack details are pinned observations,
+not native errors or a claim about internal parser implementation.
+
+| Exact input bytes | SHA-256 |
+| --- | --- |
+| control | `b6529ab10a9be386b12e6e26c75344ee4903e85464df1863e4e638398e4bee14` |
+| quoted | `ad50b4ddf3864a4cebc2c88ca562e5fb3a94105f5d30bda41be9ab14c87ba2c5` |
+| duplicate-field | `7a8659ae16b67e5a909c906477f511d6aa319c79d8c9ec0aad9fa661d398f257` |
+| malformed-flow | `6f2b75feeb5f1df992e3f2472b7f1df53752fe4ee6bb3d9781cde2dfa3767cea` |
+| scalar-alias | `f76fb799c7228956d07f25d340bb5325176c060073cc88f726a253e1dba9c4bf` |
+| invalid-utf8 | `6856e72333e988149d1fe972c6c7790bf01893790bccaf86f7b496b0e9d1f056` |
+
+Frozen Java SHA-256 `5f29ac5bef4ffa52dead57f7bf13b6f40dfd444384bbb7d775f40998d39859b3`;
+Stage A runner `0561850fd53275a31231c6913fad55ffe977ffbba8a4600633acddbfd6fc11fe`;
+wrapper `3be9134aadf5f0b87fc9a1605fdf8bfd21d46e484a68c68c687db135f5ee8a88`.
+Primary outer stdout/stderr SHA-256:
+`8061b00cbce50bff60cb466c5982d0933dc27148aa3b39bac0afde6b8ea858af` /
+`677b102eba712e358838a62f226b5c0f64f5790f8ec0885bac39c32117fd4ce4`.
+Independent hashes:
+`e9ff63af1269851cb37eaf6f5ca516c0ad9e6c839ce6fab224ac74c5297cbe3c` /
+`d3ee6883523a248f359167829f86ce7c1e29b78785ec718bdee9e68d84f485f5`.
+Runtime pins matched. Raw evidence stays external/local-only. No full Demo,
+Stage B acceptance, points, or native policy follows from capture.
+
+PM authorizes Stage B only in the runner/wrapper, preserving Java semantics.
+Keep explicit capture-only; add default full plus explicit validate-only with
+no writes/runtime/network/full marker. Bind the exact inputs above, six unique
+invocations, five unique contexts, per-case values, fixed exits/stderr, historical
+three-source identities, before/after hashes, all files and integrity metadata.
+Preserve source `ff` distinctly from result UTF-8 `ef bf bd`. Hashes are integrity
+aids, not malicious-local-process attestation or security isolation.
+
+Adapt S12's 16 raw-copy controls and add three selected controls: duplicate
+result changed to first-value (event-vector), invalid source byte replaced with
+UTF-8 U+FFFD (input-vector), and alias replaced with its plain value
+(input-vector). Repair dependent case/integrity hashes for semantic mutations;
+the integrity control deliberately does not. Add positive validate-only, one
+symlink-path and two exact artifact-failure controls. Final Demo and independent
+reproduction are still required before verified merge and completion.
 
 ## Evidence class
 
