@@ -42,6 +42,7 @@ def one(n):
  s=text(n,4096); need('metadata-line',s.endswith('\n') and s.count('\n')==1); return s[:-1]
 def sha(n): return hashlib.sha256(data(n)).hexdigest()
 need('evidence-path',e.is_absolute() and e.is_dir() and not e.is_symlink() and e.resolve()==e and e != repo and repo not in e.parents)
+need('evidence-temp',any(pathlib.Path(p) in e.parents for p in ('/private/tmp','/private/var/folders')))
 # A resolved leaf is insufficient: a symlinked ancestor can substitute the
 # whole evidence tree after the caller's path check.
 for ancestor in (e,)+tuple(e.parents):
@@ -63,18 +64,18 @@ need('executable-pin',one('executable.sha256')=='e2f298db60c2fe1cc17c377edf7215c
 need('license-hash',sha('LICENSE-executable')=='cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30')
 need('notice-hash',sha('NOTICE-executable')=='27f0e45afdf10e406ee8bf478bfce38279e9087338a7981942a4a2762bcd5be8')
 need('jar-path',one('plugin-jar-path.txt')=='plugin-under-test.jar'); need('jar-hash',one('plugin-jar.sha256')==sha('plugin-under-test.jar'))
-case_bytes=data('coupling-cases.raw'); need('canonical-newline',case_bytes.endswith(b'\n') and b'\n\n' not in case_bytes)
-cases=case_bytes.decode().splitlines(); need('case-count',len(cases)==5); combined=[]; capture_ids=set()
+case_bytes=data('coupling-cases.raw'); need('canonical-newline',case_bytes.endswith(b'\n') and b'\r' not in case_bytes and b'\n\n' not in case_bytes)
+cases=case_bytes.decode().split('\n')[:-1]; need('case-count',len(cases)==5); combined=[]; capture_ids=set()
 for i,f in enumerate(fs):
  row=cases[i].split('|'); ex,n=counts[f]; need('case-grammar',len(row)==5 and row[:2]==['COUPLINGCASE',f]); need('case-exit',row[2]==str(ex)); need('case-count',row[3]==str(n))
- trace_bytes=data(f+'.trace.raw'); need('canonical-newline',trace_bytes.endswith(b'\n') and b'\n\n' not in trace_bytes)
- rows=trace_bytes.decode().splitlines(); need('event-count',len(rows)==n); ctx={}; norm=[]
+ trace_bytes=data(f+'.trace.raw'); need('canonical-newline',trace_bytes.endswith(b'\n') and b'\r' not in trace_bytes and b'\n\n' not in trace_bytes)
+ rows=trace_bytes.decode().split('\n')[:-1]; need('event-count',len(rows)==n); ctx={}; norm=[]
  for line in rows:
   a=line.split('|'); need('trace-grammar',len(a)>=5 and a[:2]==['COUPLINGTRACE',f])
   try: u=uuid.UUID(a[2])
   except ValueError: raise Bad('capture-id')
   need('capture-id',str(u)==a[2] and u.version==4); ctx.setdefault(a[2],len(ctx)+1); o=ctx[a[2]]; capture_ids.add(a[2])
-  need('sequence',a[3].isdigit() and int(a[3])==1+sum(x[0]==o for x in norm))
+  need('sequence',a[3]==str(1+sum(x[0]==o for x in norm)))
   vals=[]
   for x in a[5:]:
    if x=='-': vals.append(None); continue
@@ -84,10 +85,10 @@ for i,f in enumerate(fs):
  need('context-segments',len(ctx)==(2 if f in ('unset-text','wrong-setter') else 1) and (len(ctx)==1 or [x[0] for x in norm[-2:]]==[2,2]))
  need('expected-vector',hashlib.sha256(json.dumps(norm,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()==vectors[f])
  material=('\n'.join(rows)+'\n').encode(); need('case-digest',row[4]==hashlib.sha256(material).hexdigest()); need('process-exit',one(f+'.exit.txt')==str(ex))
- stdout=text(f+'.stdout.log').splitlines()
+ stdout=text(f+'.stdout.log').split('\n')
  raw=[x for x in stdout if x.startswith('COUPLINGTRACE|')]
  need('foreign-trace',raw==rows); text(f+'.stderr.log'); combined+=rows
-need('combined-order',text('coupling-traces.raw').splitlines()==combined)
+need('combined-order',text('coupling-traces.raw')=='\n'.join(combined)+'\n')
 need('capture-cross-fixture-uniqueness',len(capture_ids)==sum(2 if f in ('unset-text','wrong-setter') else 1 for f in fs))
 manifest={}
 for line in text('raw-evidence-hashes.txt',65536).splitlines():
