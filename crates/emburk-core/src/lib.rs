@@ -42,6 +42,7 @@ mod text_transfer;
 
 mod configured_csv;
 mod csv_stream;
+mod publication;
 mod yaml_profile;
 
 #[doc(hidden)]

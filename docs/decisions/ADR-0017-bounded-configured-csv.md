@@ -1,6 +1,6 @@
 # ADR-0017: Bounded configured CSV consumer
 
-- Status: Accepted for T-0032/S01 implementation; acceptance pending
+- Status: Accepted; T-0032/S01 integrated through PR #116
 - Date: 2026-09-06
 
 ## Context

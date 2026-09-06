@@ -1,6 +1,6 @@
 # T-0032/S01 configured native File/CSV consumer
 
-Issue: [#25](https://github.com/bhind/emburk/issues/25). State: In Progress.
+Issue: [#25](https://github.com/bhind/emburk/issues/25). State: Done through PR #116.
 Forecast: 8 SP. This slice advances stages 2–4, not the complete CSV parent.
 
 ## Authority
@@ -78,7 +78,29 @@ uses the actual built CLI and compares all eight cases. Retain raw results.
 
 ## Evidence class
 
-Selected Differential (Embulk) plus Unit/Contract. Acceptance/integration pending.
+Selected Differential (Embulk) plus Unit/Contract. Accepted 8 SP, integrated
+as 66c6125e5783dd43bb5b3f7ab91c38bd5facc44c. Parent remains open in Backlog.
+
+## Acceptance evidence
+
+Exact Demo passed in primary and independent runs at
+59a7cca60101efc17139bc838fe01e3cd070bb56, Rust/Cargo 1.98.1, macOS arm64,
+Java 17: 81 tests passed, eight pre-existing intentional ignores; all eight
+selected real reference/native exit, output inventory and byte comparisons
+matched. Fmt, strict locked Clippy and diff-check passed. Security review
+cleared after explicit non-optimizable driver guards; forced exit mismatch
+under PYTHONOPTIMIZE returned 1 and retained an incomplete manifest.
+
+Primary logs: /private/tmp/t0032-s01-primary.UdwrJB; stdout SHA256
+9447552b88e3df3c7a91daab93d95713e7be51f2e9622fdb850d1638df81ef97,
+stderr 4f7d9ee97817cb647d748c1f10363d9d710f45482ef7d6c8c9d868e2226f4f7c.
+Independent: /private/tmp/t0032-s01-final-independent.RSbCch; stdout SHA256
+c954bb1564566dc036df5a22baa909adb94b5fcf48df4f422f9db296d5b2809d,
+stderr f44c40b8aaecc876b84078b9fc38249b6efe5d8fc48f51dcd2d3da74359c51fb.
+Both exit 0; exit-file SHA256
+9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Independent manifest /private/tmp/emburk-t0032-differential-ikjarkh4/manifest.json
+SHA256 ffca7589f93691e410c858f6cdda6399b13a8652a80ac03f715bbe393a4f7c14.
 
 ## Stop rule
 

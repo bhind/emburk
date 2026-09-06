@@ -72,7 +72,7 @@ fn invalid_configurations_do_not_open_output() {
     assert!(!d.join("output/result000.00.csv").exists());
 }
 #[test]
-fn prefix_and_bad_csv_fail_before_or_with_explicit_partial_output() {
+fn prefix_and_bad_csv_fail_without_publishing_or_leaving_temporary_output() {
     let d = dir("prefix");
     write(&d, &config(""));
     fs::write(d.join("input.csv-a"), b"id,name\n1,a\n").unwrap();
@@ -88,7 +88,8 @@ fn prefix_and_bad_csv_fail_before_or_with_explicit_partial_output() {
         write(&d, &config(""));
         fs::write(d.join("input.csv"), bytes).unwrap();
         assert!(!run(&d).status.success());
-        assert!(d.join("output/result000.00.csv").exists());
+        assert!(!d.join("output/result000.00.csv").exists());
+        assert_eq!(fs::read_dir(d.join("output")).unwrap().count(), 0);
     }
 }
 #[cfg(unix)]
@@ -107,4 +108,64 @@ fn generated_file_is_owner_only() {
             & 0o777,
         0o600
     );
+}
+
+#[cfg(unix)]
+#[test]
+fn killed_transfer_never_exposes_partial_final_output() {
+    use std::{
+        io::Write,
+        thread,
+        time::{Duration, Instant},
+    };
+    let d = dir("interrupted");
+    write(&d, &config(""));
+    let mut input = fs::File::create(d.join("input.csv")).unwrap();
+    input.write_all(b"id,name\n").unwrap();
+    let block = b"1,abcdefghijklmnopqrstuvwxyz\n".repeat(4096);
+    for _ in 0..256 {
+        input.write_all(&block).unwrap();
+    }
+    drop(input);
+    let mut child = Command::new(env!("CARGO_BIN_EXE_emburk"))
+        .args(["run", "config.yml"])
+        .current_dir(&d)
+        .spawn()
+        .unwrap();
+    let start = Instant::now();
+    let mut saw_temporary = false;
+    while start.elapsed() < Duration::from_secs(5) {
+        if fs::read_dir(d.join("output")).unwrap().any(|entry| {
+            entry
+                .unwrap()
+                .file_name()
+                .to_string_lossy()
+                .starts_with(".emburk-output-")
+        }) {
+            saw_temporary = true;
+            break;
+        }
+        if child.try_wait().unwrap().is_some() {
+            break;
+        }
+        thread::sleep(Duration::from_millis(1));
+    }
+    // Always reap the child, including a failed synchronization attempt.
+    let _ = child.kill();
+    let status = child.wait().unwrap();
+    assert!(
+        saw_temporary,
+        "did not observe the staged output before timeout/exit"
+    );
+    assert!(!status.success());
+    assert!(!d.join("output/result000.00.csv").exists());
+    // SIGKILL cannot run cleanup. Only a private temporary can remain; recovery
+    // of that residue is deliberately not claimed by this publication slice.
+    assert!(fs::read_dir(d.join("output")).unwrap().all(|entry| {
+        entry
+            .unwrap()
+            .file_name()
+            .to_string_lossy()
+            .starts_with(".emburk-output-")
+    }));
 }

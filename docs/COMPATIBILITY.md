@@ -4,14 +4,17 @@ Compatibility is an evidence record, not a general promise.
 
 T-0022/S01's isolated parser experiment is not production adoption or YAML
 compatibility. Ordered syntax observations are evaluated before configuration
-policy is selected; the production workspace remains unaffected.
+policy is selected; production adoption was separately admitted by ADR-0017.
 PR #114 accepted that experiment. T-0014/S01 admits the four version-pinned
 bundled File/CSV modules only for local observation; no Native/Verified plugin
 claim or redistribution approval follows.
 T-0014/S01 is now accepted through PR #115 as reference-only evidence.
-ADR-0017 admits a bounded configured CSV implementation (T-0032/S01); its
-Native/Verified claims remain pending acceptance. General CSV and configuration
-behavior outside the selected matrix remains unfinished, not an accepted exception.
+T-0032/S01 integrated through PR #116: eight explicitly configured single-file
+long/string CSV projections match real Embulk outputs and exits in primary and
+independent runs. This is a private native consumer, not a verified generic
+plugin. General CSV and configuration behavior outside that selected matrix
+remains unfinished, not an accepted exception. T-0025/S01 now develops native
+no-clobber publication safety; its failure policy is not observed Embulk parity.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate

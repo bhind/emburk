@@ -37,6 +37,7 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0022 parser candidate assessment](T-0022-parser-candidates.md) | Proposed refinement; no dependency admission |
 | [T-0022/S01 parser experiment](T-0022-parser-experiment.md) | Done, PR #114; isolated experiment only |
 | [T-0014/S01 File/CSV oracle](T-0014-file-csv-oracle.md) | Done, PR #115; eight reference observations |
-| [T-0032/S01 configured CSV](T-0032-configured-csv.md) | In Progress; selected native consumer, acceptance pending |
+| [T-0032/S01 configured CSV](T-0032-configured-csv.md) | Done through PR #116; eight selected comparisons and 81 tests |
+| [T-0025/S01 safe publication](T-0025-safe-publication.md) | In Progress; native single-output publication, acceptance pending |
 | [T-0031/S01 experimental file transfer](T-0031-file-to-file.md) | Done, PR #110; native-only record consumer |
 | [T-0031/S02 experimental stdout/null](T-0031-output-targets.md) | Done, PR #112; unchanged core transfer |
