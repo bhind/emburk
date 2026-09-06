@@ -2,7 +2,7 @@
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
 - State: In Progress; Stage A reviewed, Stage B authorized
-- Branch: `research/t-0012-double-value-capture`
+- Branch: `research/t-0012-double-value-recovery`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
 - Estimate: 5 SP (implementation 2, uncertainty 1, verification 1, environment 1;
@@ -178,6 +178,14 @@ These pre-acceptance corrections remain in the same three-file source allowlist;
 no new runtime or native behavior is authorized. The owner requested a temporary
 pause and then resumed with a low-effort implementer. The source handoff preserves
 the interrupted implementation and does not change acceptance requirements.
+
+On the next environment resumption, the previous temporary worktree and retained
+temporary evidence directories were no longer available. Committed sources and
+review records survived at `a247de0` and were restored into a new isolated
+worktree on the recovery branch above. Historical observations remain recorded,
+but their old temporary paths are not currently available evidence. Acceptance
+requires fresh complete executions and newly retained logs at the corrected
+source revision. No lost uncommitted correction is assumed to have survived.
 
 After PM freezes the exact observed outcome matrix, validate complete ordered
 events and all per-cell values, not counts alone. Canonical case membership,
