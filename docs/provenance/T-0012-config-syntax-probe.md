@@ -1,7 +1,7 @@
 # T-0012/S13 selected configuration-syntax observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; Stage A reviewed, Stage B validation authorized
+- State: Review; PR #107, final-head acceptance pending
 - Branch: `research/t-0012-s13-config-syntax`
 - Owner: Compatibility Host Implementer; PM owns records and acceptance
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -163,8 +163,6 @@ the integrity control deliberately does not. Add positive validate-only, one
 symlink-path and two exact artifact-failure controls. Final Demo and independent
 reproduction are still required before verified merge and completion.
 
-## Evidence class
-
 ## Stage B implementation evidence
 
 Source freeze `d95f2a9a39f921458c9b7af0b434113908bd1f66` passed the fresh
@@ -184,7 +182,7 @@ was retracted after checking that the mutation receives complete event lines.
 Final-head exact Demo and independent reproduction remain required. No points
 are awarded by this implementation evidence.
 
-## Evidence classification
+## Evidence class
 
 Reference Observation / Integration for the selected runtime fixtures;
 Unit/Contract for validator controls. No native Differential claim follows.
