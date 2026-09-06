@@ -26,18 +26,24 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
 
     @Override
     public ConfigDiff transaction(ConfigSource config, Control control) {
-        Schema schema = schema();
         trace("transaction-entry", "1");
-        traceSchema("transaction", schema);
         try {
+            Schema schema = recordSchemaConstruction();
+            traceSchema("transaction", schema);
             trace("control-run-entry", "1");
-            control.run(Exec.newTaskSource(), schema, 1);
-            trace("control-run-return", "1");
+            try {
+                control.run(Exec.newTaskSource(), schema, 1);
+                trace("control-run-return", "1");
+            } catch (RuntimeException failure) {
+                traceException("control-run-exception", failure, "1");
+                throw failure;
+            }
+            ConfigDiff result = Exec.newConfigDiff();
             trace("transaction-return", "1");
             terminal("success", null);
-            return Exec.newConfigDiff();
+            return result;
         } catch (RuntimeException failure) {
-            traceException("transaction-exception", failure);
+            traceException("transaction-exception", failure, "1");
             terminal("exception", failure);
             throw failure;
         }
@@ -46,36 +52,63 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
     @Override
     public ConfigDiff resume(TaskSource taskSource, Schema schema, int taskCount, Control control) {
         trace("resume-entry", Integer.toString(taskCount));
-        trace("resume-return", Integer.toString(taskCount));
-        return Exec.newConfigDiff();
+        try {
+            ConfigDiff result = Exec.newConfigDiff();
+            trace("resume-return", Integer.toString(taskCount));
+            return result;
+        } catch (RuntimeException failure) {
+            traceException("resume-exception", failure, Integer.toString(taskCount));
+            throw failure;
+        }
     }
 
     @Override
     public void cleanup(TaskSource taskSource, Schema schema, int taskCount, List<TaskReport> reports) {
         trace("cleanup-entry", Integer.toString(taskCount), Integer.toString(reports.size()));
-        trace("cleanup-return", Integer.toString(taskCount), Integer.toString(reports.size()));
+        try {
+            trace("cleanup-return", Integer.toString(taskCount), Integer.toString(reports.size()));
+        } catch (RuntimeException failure) {
+            traceException("cleanup-exception", failure, Integer.toString(taskCount), Integer.toString(reports.size()));
+            throw failure;
+        }
     }
 
     @Override
     public TaskReport run(TaskSource taskSource, Schema schema, int taskIndex, PageOutput output) {
-        trace("run-entry", Integer.toString(taskIndex), Integer.toString(schema.getColumnCount()));
+        String task = Integer.toString(taskIndex);
+        String columnCount = Integer.toString(schema.getColumnCount());
+        trace("run-entry", task, columnCount);
         traceSchema("run", schema);
-        RecordingOutput collector = new RecordingOutput(schema);
+        RecordingOutput collector;
         PageBuilder builder = null;
         try {
+            trace("collector-construct-entry");
+            try {
+                collector = new RecordingOutput(schema);
+                trace("collector-construct-return");
+            } catch (RuntimeException failure) {
+                traceException("collector-construct-exception", failure);
+                throw failure;
+            }
             trace("builder-construct-entry");
-            builder = new PageBuilder(Exec.getBufferAllocator(), schema, collector);
-            trace("builder-construct-return");
+            try {
+                builder = new PageBuilder(Exec.getBufferAllocator(), schema, collector);
+                trace("builder-construct-return");
+            } catch (RuntimeException failure) {
+                traceException("builder-construct-exception", failure);
+                throw failure;
+            }
             final PageBuilder activeBuilder = builder;
             writeFixture(activeBuilder, schema.getColumn(0));
             recordOperation("builder-finish", () -> activeBuilder.finish());
             recordOperation("builder-close", () -> activeBuilder.close());
             builder = null;
             recordOperation("runtime-output-finish", () -> output.finish());
+            TaskReport result = Exec.newTaskReport();
             trace("run-return", Integer.toString(taskIndex));
-            return Exec.newTaskReport();
+            return result;
         } catch (RuntimeException failure) {
-            traceException("run-exception", failure);
+            traceException("run-exception", failure, task, columnCount);
             throw failure;
         } finally {
             if (builder != null) {
@@ -88,12 +121,26 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
     @Override
     public ConfigDiff guess(ConfigSource config) {
         trace("guess-entry");
-        trace("guess-return");
-        return Exec.newConfigDiff();
+        try {
+            ConfigDiff result = Exec.newConfigDiff();
+            trace("guess-return");
+            return result;
+        } catch (RuntimeException failure) {
+            traceException("guess-exception", failure);
+            throw failure;
+        }
     }
 
-    private static Schema schema() {
-        return Schema.builder().add("number", Types.DOUBLE).build();
+    private static Schema recordSchemaConstruction() {
+        trace("schema-construct-entry");
+        try {
+            Schema result = Schema.builder().add("number", Types.DOUBLE).build();
+            trace("schema-construct-return");
+            return result;
+        } catch (RuntimeException failure) {
+            traceException("schema-construct-exception", failure);
+            throw failure;
+        }
     }
 
     private static void traceSchema(String phase, Schema schema) {
@@ -154,8 +201,13 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
         RecordingOutput(Schema schema) {
             this.schema = schema;
             trace("reader-construct-entry");
-            reader = new PageReader(schema);
-            trace("reader-construct-return");
+            try {
+                reader = new PageReader(schema);
+                trace("reader-construct-return");
+            } catch (RuntimeException failure) {
+                traceException("reader-construct-exception", failure);
+                throw failure;
+            }
         }
 
         @Override
@@ -167,8 +219,14 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
                 int pageRow = 0;
                 while (true) {
                     trace("reader-next-record-entry", Integer.toString(pageIndex), Integer.toString(pageRow));
-                    boolean available = reader.nextRecord();
-                    trace("reader-next-record-return", Integer.toString(pageIndex), Integer.toString(pageRow), Boolean.toString(available));
+                    boolean available;
+                    try {
+                        available = reader.nextRecord();
+                        trace("reader-next-record-return", Integer.toString(pageIndex), Integer.toString(pageRow), Boolean.toString(available));
+                    } catch (RuntimeException failure) {
+                        traceException("reader-next-record-exception", failure, Integer.toString(pageIndex), Integer.toString(pageRow));
+                        throw failure;
+                    }
                     if (!available) {
                         break;
                     }
@@ -187,15 +245,26 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
             Column column = schema.getColumn(0);
             String[] position = {Integer.toString(page), Integer.toString(pageRow), Integer.toString(totalRow), "0"};
             trace("reader-is-null-entry", position);
-            boolean isNull = reader.isNull(column);
-            trace("reader-is-null-return", position[0], position[1], position[2], position[3], Boolean.toString(isNull));
+            boolean isNull;
+            try {
+                isNull = reader.isNull(column);
+                trace("reader-is-null-return", position[0], position[1], position[2], position[3], Boolean.toString(isNull));
+            } catch (RuntimeException failure) {
+                traceException("reader-is-null-exception", failure, position);
+                throw failure;
+            }
             if (isNull) {
                 trace("cell-null", position);
                 return;
             }
             trace("reader-get-double-entry", position);
-            double value = reader.getDouble(column);
-            trace("reader-get-double-return", position[0], position[1], position[2], position[3], hex(Double.doubleToRawLongBits(value)));
+            try {
+                double value = reader.getDouble(column);
+                trace("reader-get-double-return", position[0], position[1], position[2], position[3], hex(Double.doubleToRawLongBits(value)));
+            } catch (RuntimeException failure) {
+                traceException("reader-get-double-exception", failure, position);
+                throw failure;
+            }
         }
 
         @Override
@@ -218,16 +287,21 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
                 }
                 trace("collector-close-return", Integer.toString(pageOrdinal), Integer.toString(totalRows));
             } catch (RuntimeException failure) {
-                traceException("reader-close-exception", failure);
-                traceException("collector-close-exception", failure);
+                traceException("collector-close-exception", failure, Integer.toString(pageOrdinal), Integer.toString(totalRows));
                 throw failure;
             }
         }
     }
 
-    private static String hex(long value) { return String.format("%016x", value); }
+    private static String hex(long value) {
+        return String.format("%016x", value);
+    }
+
     @FunctionalInterface
-    private interface Operation { void run(); }
+    private interface Operation {
+        void run();
+    }
+
     private static void recordOperation(String name, Operation operation) {
         recordOperation(name, new String[0], operation);
     }
@@ -241,11 +315,17 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
             throw failure;
         }
     }
+
     private static synchronized void terminal(String outcome, RuntimeException failure) {
-        if (terminalEmitted) { return; }
+        if (terminalEmitted) {
+            return;
+        }
         terminalEmitted = true;
-        if (failure == null) { trace("terminal", outcome, null, null); }
-        else { trace("terminal", outcome, failure.getClass().getName(), failure.getMessage()); }
+        if (failure == null) {
+            trace("terminal", outcome, null, null);
+        } else {
+            trace("terminal", outcome, failure.getClass().getName(), failure.getMessage());
+        }
     }
     private static void traceException(String event, RuntimeException failure, String... prefix) {
         String[] values = new String[prefix.length + 2];
@@ -256,15 +336,33 @@ public final class T0012DoubleValueInputPlugin implements InputPlugin {
     }
     private static synchronized void trace(String event, String... values) {
         StringBuilder row = new StringBuilder("DOUBLETRACE|").append(FIXTURE).append('|').append(CAPTURE).append('|').append(++sequence).append('|').append(event);
-        for (String value : values) { row.append('|').append(encode(value)); }
+        for (String value : values) {
+            row.append('|').append(encode(value));
+        }
         System.out.println(row);
-        if (System.out.checkError()) { throw new EvidenceWriteError("unable to write double observation evidence"); }
+        if (System.out.checkError()) {
+            throw new EvidenceWriteError("unable to write double observation evidence");
+        }
     }
-    private static String encode(String value) { return value == null ? "-" : Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8)); }
+
+    private static String encode(String value) {
+        if (value == null) {
+            return "-";
+        }
+        return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
+    }
+
     private static String requiredEnvironment(String name) {
         String value = System.getenv(name);
-        if (value == null || value.isEmpty()) { throw new IllegalStateException("missing environment: " + name); }
+        if (value == null || value.isEmpty()) {
+            throw new IllegalStateException("missing environment: " + name);
+        }
         return value;
     }
-    private static final class EvidenceWriteError extends Error { EvidenceWriteError(String message) { super(message); } }
+
+    private static final class EvidenceWriteError extends Error {
+        EvidenceWriteError(String message) {
+            super(message);
+        }
+    }
 }
