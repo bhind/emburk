@@ -1,8 +1,8 @@
 # T-0012/S09 bounded double-value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Blocked before source creation; awaiting explicit owner approval for reference-probe execution
-- Branch: `research/t-0012-double-value-probe`
+- State: In Progress; execution approval received, Stage A capture
+- Branch: `research/t-0012-double-value-capture`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
 - Estimate: 5 SP (implementation 2, uncertainty 1, verification 1, environment 1;
@@ -188,3 +188,9 @@ that executable with the original local test plugin. External executable code
 runs locally; the checksum establishes identity, not a security guarantee.
 No new dependency/artifact admission, paid service or redistribution is proposed.
 Owner: repository owner; PM resumes the existing packet only after approval.
+
+The owner subsequently instructed continuation after the explicit explanation
+of creating the probe, checksum-pinned JAR retrieval and local external-code
+execution. This clears the execution checkpoint for the existing scoped packet.
+The earlier denial remains historical evidence. Work resumes from merged PR #83
+on the continuation branch above; the published planning branch is preserved.
