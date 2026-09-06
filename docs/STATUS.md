@@ -43,7 +43,8 @@ T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary
 reproduction and complete raw review authorize Stage B strict validation.
-The slice is `Review` in PR #91; combined active WIP is one of two. T-0012, T-0013 and
+The slice integrated through PR #91 as `34757c8`. S10's private double-storage
+decision passed readiness review; no implementation is active. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -52,7 +53,7 @@ T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S09 | Review | Two selected double observations; final PR-head gate pending |
+| T-0012/S10 | Ready | Accepted private double-storage decision; implementation next |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
@@ -332,3 +333,9 @@ Selected finite/subnormal/signed-zero/null/infinity/NaN bits are preserved in
 these observations. Evidence is Reference Observation / Integration plus
 validator Unit/Contract, not a native Float64 or numeric equality decision.
 PR #91 is in Review; final-head acceptance and integration remain required.
+
+S09 final-head Demo passed at `59f1b2e`; PR #91 integrated as `34757c8`.
+Its selected reference observations are accepted; parent T-0012 remains open.
+S10 is Ready under accepted ADR-0012 and its reviewed packet, separating
+bitwise storage identity from numeric equality. No Rust Float64 implementation
+or schema/public/production policy is claimed by the planning record.

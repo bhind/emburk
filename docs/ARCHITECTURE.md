@@ -132,6 +132,13 @@ these observations. Evidence is Reference Observation / Integration plus
 validator Unit/Contract, not a native Float64 or numeric equality decision.
 PR #91 is in Review; final-head acceptance and integration remain required.
 
+S09 final-head Demo passed at `59f1b2e`; PR #91 integrated as `34757c8`.
+Its selected reference observations are accepted; parent T-0012 remains open.
+S10 is Ready under accepted ADR-0012 and its reviewed packet, separating
+bitwise storage identity from numeric equality. No Rust Float64 implementation
+or schema/public/production policy is claimed by the planning record.
+
+
 
 
 T-0012 reference probes and S04's ignored live comparison are test-only tools

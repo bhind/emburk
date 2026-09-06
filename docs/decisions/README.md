@@ -15,3 +15,4 @@ Architecture Decision Records capture durable decisions that affect product cont
 | [ADR-0009](ADR-0009-private-last-commit-failure.md) | Private last-commit failure with retained reports | Accepted |
 | [ADR-0010](ADR-0010-private-commit-abort-suffix.md) | Private commit failure aborts the uncommitted suffix | Accepted; supersedes ADR-0009's last-index-only fixture boundary |
 | [ADR-0011](ADR-0011-private-logical-record-values.md) | Private values-only records before schema coupling | Accepted |
+| [ADR-0012](ADR-0012-private-double-bit-storage.md) | Private double bit storage without numeric equality policy | Accepted |
