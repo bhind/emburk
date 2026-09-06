@@ -1,7 +1,7 @@
 # T-0021/S06 private synchronous owned-record handoff
 
 - Issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: Review; source acceptance passed, final PR-head gate and integration pending
+- State: Done; final acceptance passed and PR #96 integrated as `56ef9e9`
 - Priority: P1; owner Rust Core Implementer; PM owns records and integration
 - Estimate: 2 SP (implementation 1, verification 1), within Current 13 / Initial 5
 - Prior accepted S01–S05: 11 SP. No parent completion or new points yet.
@@ -70,6 +70,18 @@ Existing S08/S10 storage tests must remain unchanged and pass in the workspace.
 Unit/Contract only. Readiness is Planning, not runtime evidence.
 
 ## Source review and acceptance
+
+Final acceptance: exact Demo at PR head `8cb13ff` passed with exit 0,
+five named handoff passes and 46 workspace passes/seven intentional live ignores,
+format, strict Clippy and diff check. Complete logs:
+`/private/tmp/t0021-s06-pr-head.wIz6Iv`; stdout SHA-256
+`aead2a95367c2331c2f5151e6b93351adba5b07322f92d4aa92ae58d3ac0478a`;
+stderr SHA-256
+`8155d84bc729b7c8ae06883b51b04f9e7d378269a85d1eb850fb251b4c9b41cf`.
+PR #96 integrated as `56ef9e9058c3751b5afdf797200e870109535f40`.
+S06's 2 SP are accepted; S01–S06 total 13 SP. Parent #18 remains open and
+returns to Backlog. The following chronology retains earlier pending gates;
+final acceptance and integration now satisfy them. All non-claims remain.
 
 Frozen source `8fe820bceadf62db89a5b7850abe1b9c9192be1f` follows initial
 implementation `f3b0e9f`. Review removed unused sibling visibility and made

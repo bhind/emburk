@@ -45,8 +45,8 @@ captured 114/93 events with exact selected double bits preserved; primary
 reproduction and complete raw review authorize Stage B strict validation.
 The slice integrated through PR #91 as `34757c8`. S10's private double-storage
 decision passed readiness review and integrated through PR #92. S10 is now
-Done through PR #93. T-0021/S06 now starts after PR #95 integrated its reviewed
-packet; combined active WIP is one of two. T-0012, T-0013 and
+Done through PR #93. T-0021/S06 is Done through PR #96 after primary,
+independent and final-head acceptance; combined active WIP is zero of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -57,7 +57,7 @@ T-0021 parent contracts remain open.
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012 | Backlog | S10 integrated; remaining configuration/value contracts |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
-| T-0021/S06 | Review | Private synchronous owned-record handoff |
+| T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
 All other stable tasks in `TODO.md` remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
@@ -352,5 +352,6 @@ ADR-0013. Frozen source `8fe820b` passes primary and independent exact Demo:
 five handoff tests, 46 workspace passes/seven intentionally ignored live tests,
 format and strict Clippy. It moves records directly, preserves selected bits and
 typed errors, and stops callbacks on the first failure. Final PR-head acceptance
-and integration remain required. Evidence is Unit/Contract only, not a public
+passed at `8cb13ff`; PR #96 integrated as `56ef9e9`. S06 is Done.
+Evidence is Unit/Contract only, not a public
 API, schema/lifecycle policy, resource guarantee or Embulk compatibility claim.

@@ -2,6 +2,8 @@
 
 - Status: Accepted; independent packet readiness review passed
 - Date: 2026-09-06
+- Implementation: T-0021/S06 integrated through PR #96 as `56ef9e9`;
+  five local handoff tests establish Unit/Contract evidence only.
 
 ## Context
 

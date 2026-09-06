@@ -148,7 +148,8 @@ ADR-0013. Frozen source `8fe820b` passes primary and independent exact Demo:
 five handoff tests, 46 workspace passes/seven intentionally ignored live tests,
 format and strict Clippy. It moves records directly, preserves selected bits and
 typed errors, and stops callbacks on the first failure. Final PR-head acceptance
-and integration remain required. Evidence is Unit/Contract only, not a public
+passed at `8cb13ff`; PR #96 integrated as `56ef9e9`. S06 is Done.
+Evidence is Unit/Contract only, not a public
 API, schema/lifecycle policy, resource guarantee or Embulk compatibility claim.
 
 
