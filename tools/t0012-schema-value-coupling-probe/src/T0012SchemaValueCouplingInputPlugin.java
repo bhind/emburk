@@ -138,7 +138,8 @@ public final class T0012SchemaValueCouplingInputPlugin implements InputPlugin {
 
     private static void traceSchema(String phase, Schema schema) {
         trace("schema-fingerprint", phase, Integer.toString(schema.getColumnCount()));
-        for (Column column : schema.getColumns()) {
+        for (int index = 0; index < schema.getColumnCount(); index++) {
+            Column column = schema.getColumn(index);
             trace("schema-column", phase, Integer.toString(column.getIndex()),
                     column.getName(), column.getType().getName());
         }
@@ -161,7 +162,8 @@ public final class T0012SchemaValueCouplingInputPlugin implements InputPlugin {
             return;
         }
         if ("explicit-null".equals(FIXTURE)) {
-            for (Column column : schema.getColumns()) {
+            for (int columnIndex = 0; columnIndex < schema.getColumnCount(); columnIndex++) {
+                Column column = schema.getColumn(columnIndex);
                 String index = Integer.toString(column.getIndex());
                 trace("input-cell", "0", index, "null", null);
                 operation("builder-set-null", new String[] {"0", index}, () -> builder.setNull(column));
@@ -264,7 +266,8 @@ public final class T0012SchemaValueCouplingInputPlugin implements InputPlugin {
         }
 
         private void readRow(int page, int pageRow, int totalRow) {
-            for (Column column : schema.getColumns()) {
+            for (int columnIndex = 0; columnIndex < schema.getColumnCount(); columnIndex++) {
+                Column column = schema.getColumn(columnIndex);
                 String[] position = {Integer.toString(page), Integer.toString(pageRow),
                         Integer.toString(totalRow), Integer.toString(column.getIndex())};
                 trace("reader-is-null-entry", position);

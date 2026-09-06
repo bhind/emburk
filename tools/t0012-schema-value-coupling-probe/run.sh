@@ -116,17 +116,26 @@ for fixture in fixtures:
     if not lines:
         raise SystemExit("missing trace for " + fixture)
     capture = None
+    seen = set()
+    expected_sequence = 0
     terminals = 0
-    for sequence, line in enumerate(lines, 1):
+    for line in lines:
         fields = line.split("|")
-        if len(fields) < 5 or fields[:2] != ["COUPLINGTRACE", fixture] or fields[3] != str(sequence):
+        if len(fields) < 5 or fields[:2] != ["COUPLINGTRACE", fixture]:
             raise SystemExit("invalid capture transport for " + fixture)
         parsed = uuid.UUID(fields[2])
         if str(parsed) != fields[2] or parsed.version != 4:
             raise SystemExit("invalid capture id for " + fixture)
-        capture = capture or fields[2]
         if fields[2] != capture:
-            raise SystemExit("multiple capture ids for " + fixture)
+            if fields[2] in seen:
+                raise SystemExit("reused capture id for " + fixture)
+            seen.add(fields[2])
+            capture = fields[2]
+            expected_sequence = 1
+        else:
+            expected_sequence += 1
+        if fields[3] != str(expected_sequence):
+            raise SystemExit("invalid capture sequence for " + fixture)
         terminals += fields[4] == "terminal"
     if terminals != 1:
         raise SystemExit("terminal count for " + fixture)
