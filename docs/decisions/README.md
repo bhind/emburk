@@ -20,3 +20,8 @@ Architecture Decision Records capture durable decisions that affect product cont
 | [ADR-0014](ADR-0014-private-positional-logical-batch.md) | Private positional logical batch admission before physical encoding | Accepted |
 | [ADR-0015](ADR-0015-experimental-text-file-transfer.md) | Experimental text File-to-File consumer | Accepted for T-0031/S01 only |
 | [ADR-0016](ADR-0016-experimental-stream-output-targets.md) | Experimental stdout/null adapters | Accepted for T-0031/S02 only |
+| [ADR-0017](ADR-0017-bounded-configured-csv.md) | Bounded configured CSV consumer | Accepted through PR #116 |
+| [ADR-0018](ADR-0018-single-output-publication.md) | Single-output no-clobber publication | Accepted through PR #117 |
+| [ADR-0019](ADR-0019-bounded-native-formats.md) | Bounded native formats and projections | Accepted through PR #119 |
+| [ADR-0020](ADR-0020-bounded-format-workers.md) | Bounded ordered formatting workers | Accepted through PR #120 |
+| [ADR-0021](ADR-0021-validated-native-spool-resume.md) | Validated native spool resume | Accepted for implementation; acceptance pending |

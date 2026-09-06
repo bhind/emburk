@@ -2,7 +2,7 @@
 
 Last updated: 2026-09-06
 
-Development state: `bootstrap`
+Development state: `experimental native pipeline`
 
 ## Implemented facts
 
@@ -54,7 +54,9 @@ unchanged eight-case CSV comparison. T-0014/S02 is Done through PR #118:
 nine tests and matching independent five-case format/filter observations.
 T-0033/S01 is Done through PR #119 (95b5592): 97 tests and thirteen selected
 comparisons passed independently at 39c97d8. T-0024/S01 now starts stage 7 with
-bounded ordered formatting/cancellation; checkpoint/resume remains unfinished.
+bounded ordered formatting/cancellation, now integrated through PR #120
+(24b99fa) after 106 passes and thirteen independent comparisons at 4970e46.
+T-0025/S02 implements validated native resume; acceptance remains unfinished.
 The owner-authorized
 [seven-stage sequence](IMPLEMENTATION_SEQUENCE.md) remains uncompleted work.
 
@@ -83,7 +85,7 @@ strict controls and unchanged S12 regression. T-0031/S01 is Done through PR #110
 (`c5fb13f`) for the explicitly requested experimental native File-to-File path.
 T-0031/S02 is Done through PR #112 (`2ec236e`) for experimental stdout/null
 consumers: 71 tests passed, eight existing intentional ignores, primary and
-independent acceptance at `c5df504`. T-0024/S01 now occupies one WIP lane; the full
+independent acceptance at `c5df504`. T-0025/S02 now occupies one WIP lane; the full
 file/plugin parent stays open. Core transfer semantics remain unchanged.
 
 | Item | State | Purpose |
@@ -101,8 +103,8 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
 T-0025/S01 is Done through PR #117. T-0014/S02 is Done through PR #118.
-T-0033/S01 is Done through PR #119. T-0024/S01 uses one lane for bounded
-formatting workers and cancellation on its dedicated branch.
+T-0033/S01 is Done through PR #119. T-0024/S01 is Done through PR #120.
+T-0025/S02 uses one lane for validated native resume on its dedicated branch.
 Other unfinished stable tasks remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
 is the coordination mirror. Its 52 items, lifecycle states, initial estimates,
@@ -150,7 +152,7 @@ In particular, the repository does not yet demonstrate:
 
 - Embulk-compatible configuration, schema, value, lifecycle, or resume
   behavior;
-- bounded parallel ETL or File-to-File transfer;
+- general parallel ETL beyond the selected single-file ordered formatter;
 - successful loading of any unchanged Java or Ruby plugin;
 - exactly-once behavior for any source/output combination;
 - a performance, security-isolation, production-readiness, or ecosystem

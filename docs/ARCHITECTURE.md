@@ -16,7 +16,8 @@ streaming codecs and ordered schema projections inside the configured consumer.
 Dependencies remain private and codec finalization precedes publication.
 T-0033/S01 integrated through PR #119, not a public plugin API. ADR-0020 now
 defines bounded scoped formatting workers, a single ordered writer, and a
-borrowed cancellation flag. T-0024/S01 implementation/acceptance is in progress.
+borrowed cancellation flag. T-0024/S01 integrated through PR #120. T-0025/S02
+develops private validated spool recovery; no generic resume API is accepted.
 
 ADR-0016 extends only CLI composition with stdout locking and std::io::sink
 adapters. Both use the same core transfer entry point; no new public core or

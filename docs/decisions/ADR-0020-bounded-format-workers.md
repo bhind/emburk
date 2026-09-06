@@ -1,6 +1,6 @@
 # ADR-0020: Bounded ordered format workers
 
-- Status: Accepted for T-0024/S01 implementation; acceptance pending
+- Status: Accepted and integrated through PR #120 (T-0024/S01)
 - Date: 2026-09-06
 
 Use at most eight scoped native format workers with admission window twice the

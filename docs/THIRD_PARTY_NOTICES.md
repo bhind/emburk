@@ -5,6 +5,13 @@ or SBOM. Cargo.lock and provenance packets identify selected dependencies.
 Release packaging must reconcile all distributed code, licenses and notices.
 No Embulk implementation source is copied into this project.
 
+T-0025/S02 uses sha2 0.11.0 (MIT/Apache-2.0) as an unmodified dependency for
+private checkpoint content hashes. Exact transitive versions/checksums are
+locked; [the packet](provenance/T-0025-validated-resume.md) records archive
+admission and the offline cache. Hashes detect content changes; they do not
+authenticate state against a malicious same-UID writer. Full release notice
+bundling, security review and patent/FTO remain unreviewed.
+
 ## libbz2-rs-sys 0.2.5
 
 The unmodified dependency is used through bzip2 0.6.1. The following license
