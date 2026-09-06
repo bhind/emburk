@@ -1,6 +1,6 @@
 # T-0036/S02 bounded native guessing
 
-Issue #29. In Progress; forecast 5 SP. S01 accepted 3 SP through PR #123
+Issue #29. Done through PR #124; accepted 5 SP. S01 accepted 3 SP through PR #123
 (cdb0fdc), after primary/independent three tests and ten reviewed projections at
 1d577dd. Parent Current becomes 8, Initial remains 5. S03/T-0037 acceptance
 remains separate; this packet does not complete full guessing compatibility.
@@ -56,6 +56,19 @@ no-clobber output and executing generated supported configurations. Final
 cross-runtime guess/transfer/resume comparisons belong to T-0037/S01.
 
 ## Evidence class, stop rule and non-claims
+
+Integrated as 54d2cc1abd8b849063859e9f57eaf0ea6b6a4bc9 after exact primary and
+independent Demo at 421500e5b46ff38a00bc8186956acb0d70d71e62: 125 tests passed,
+eight existing intentional ignores. Primary /private/tmp/t0036-s02-primary.Zjyjsw
+stdout SHA256 c2ededb2c3d50599c3318d78d1e6b89375d882c28ef51eb6fbb84e34c05585cd;
+stderr 79aa25dbb413f70aaa50cea73145107fdbe4f336e4a5d03f92f6eac204e8b910.
+Independent /private/tmp/t0036-s02-independent.ARslvI stdout SHA256
+e31c833095e60be3b8fb6388b049f0d6c2a9a20a781488e1b1b72bbb746e8064;
+stderr b2470955a79f16e6a9f67d2cf07186878f26a99f64f1d60f63c9bba27cc156a5.
+Both exits 0; independent revision/status unchanged. Review found explicit
+CSV schema was overlaid after unwanted inference; fixed and regression-tested
+before the accepted revision. Parent #29 remains Backlog, accepted total 8 SP,
+Current8/Initial5, broader guessing unaccepted.
 
 Unit/Contract and native Integration. Stop on unbounded read, seed loss,
 unsafe write, dependency/provenance gap or mismatch hidden as a normalization.
