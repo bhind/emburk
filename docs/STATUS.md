@@ -74,9 +74,7 @@ without double-counting pull requests.
 T-0004 was integrated through PR #63 as `fce883c`. Issue #11 closed and its
 Project item moved to Done. The first `project-metrics` snapshot was committed
 as `7bd0807`: W36 had 2 remaining Issues / 10 Story Points and 1 completed
-Issue / 5 Story Points after integration. The Action is installed and active;
-scheduled and ready-for-review executions still require the repository owner
-to add the `PROJECTS_TOKEN` secret, so no hosted-run success is claimed.
+Issue / 5 Story Points after integration. The Action is installed and active.
 
 T-0004/S02 repaired the delivery workflow event and credential gates through
 PR #85 as `5d4a0f7`. Default-branch dispatch run `34003581110` completed
@@ -85,15 +83,14 @@ jobs skipped because `PROJECTS_TOKEN` remains absent. Issue #84 is closed and
 Done. This proves safe no-credential behavior; it does not prove credentialed
 Project mutation or daily snapshot publication.
 
-T-0004/S03 is active in Issue #87 to align the workflow with the registered
-Actions Secret name `EMBURK_PROJECT_TOKEN`. The secret name exists by live
-metadata read-back; its value was not read or logged. Credentialed Project
-mutation and snapshot publication remain pending hosted verification.
-The first credentialed run `34004267606` passed the credential gate, Project
-audit, and metrics-branch checkout, then failed while the CLI materialized the
-Project item list. Issue #87 was reopened; the repair replaces that snapshot-
-only dependency with a minimal paginated Project GraphQL query. No token-scope
-deficiency is claimed.
+T-0004/S03 aligned the workflow with the registered Actions Secret
+`EMBURK_PROJECT_TOKEN` through PR #88, then replaced the failing CLI item
+materialization with a minimal paginated Project GraphQL query through PR #89
+as `a75b529`. Hosted run `34004702599` passed the credential gate, Project
+audit, snapshot generation, and metrics commit/push. Metrics commit `72e87af`
+updates the W36 CSV, JSON, and SVG artifacts. Issue #87 is closed and Done.
+No credential value was read or logged; its scope and rotation policy were not
+independently validated.
 
 ## Evidence and non-claims
 
