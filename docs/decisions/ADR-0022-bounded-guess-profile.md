@@ -1,6 +1,6 @@
 # ADR-0022: Bounded native guess profile
 
-Status: Accepted for T-0036/S02 implementation; final acceptance pending.
+Status: Accepted and integrated through PR #124 (T-0036/S02).
 Date: 2026-09-06.
 
 Guess completes missing seed fields and preserves explicit choices. The initial

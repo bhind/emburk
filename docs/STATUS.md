@@ -65,8 +65,9 @@ explicit bounded native profile; broader parent compatibility gates remain open.
 ## Delivery queue
 
 T-0036/S01 is Done through PR #123: three harness tests and ten reviewed actual
-guess projections passed independently at 1d577dd. T-0036/S02 is In Progress
-for bounded native guessing; T-0037 integrated acceptance follows. JSON schema
+guess projections passed independently at 1d577dd. T-0036/S02 is Done through
+PR #124, after 125 tests passed independently at 421500e. T-0037/S01 integrated
+guess/transfer/native-recovery acceptance is In Progress. JSON schema
 inference and general charset/delimiter behavior remain explicit open gaps.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of

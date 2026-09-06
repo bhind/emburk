@@ -119,7 +119,7 @@ Ordinary `run` does not checkpoint. The earlier `transfer-lines`
 commands remain experimental and do not inherit the configured publication
 contract.
 
-## Bounded guess (acceptance pending)
+## Bounded guess
 
 `emburk guess seed.yml -o config.yml` fills missing input parser/decoder fields
 while retaining the output and execution configuration. Without `-o`, the
