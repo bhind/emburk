@@ -89,6 +89,11 @@ T-0004/S03 is active in Issue #87 to align the workflow with the registered
 Actions Secret name `EMBURK_PROJECT_TOKEN`. The secret name exists by live
 metadata read-back; its value was not read or logged. Credentialed Project
 mutation and snapshot publication remain pending hosted verification.
+The first credentialed run `34004267606` passed the credential gate, Project
+audit, and metrics-branch checkout, then failed while the CLI materialized the
+Project item list. Issue #87 was reopened; the repair replaces that snapshot-
+only dependency with a minimal paginated Project GraphQL query. No token-scope
+deficiency is claimed.
 
 ## Evidence and non-claims
 

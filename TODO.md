@@ -134,6 +134,9 @@ slice did not register a credential or change Project schema.
 T-0004/S03 is active in Issue #87 to align the workflow with the registered
 Actions Secret name `EMBURK_PROJECT_TOKEN`, followed by credentialed hosted
 snapshot verification. No token value may be read, logged, or persisted.
+Run `34004267606` proved credential discovery and Project audit, but failed at
+the CLI item-list materialization step; #87 remains active for a minimal
+paginated GraphQL snapshot query and another hosted dispatch.
 T-0012/S01 used the official self-contained executable through a local-only
 Maven-style input plugin, rather than assembling the core POM graph. It
 integrated through PR #61 as `e2532e2` after recording nine
