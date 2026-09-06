@@ -18,6 +18,7 @@ cargo test --manifest-path "$root/Cargo.toml" -p emburk-core \
 printf '%s\n' "$rust_status" > "$evidence/rust-controls.exit.txt"
 [[ "$rust_status" == 0 ]]
 for test_name in \
+  comparison_rejects_missing_and_extra_actual_cells \
   expected_only_mutation_fails_without_changing_supplied_values \
   manifest_rejects_transport_and_value_errors \
   null_is_distinct_and_record_order_is_preserved \
@@ -27,7 +28,7 @@ do
   grep -Fqx "test logical_record::double_tests::$test_name ... ok" \
     "$evidence/rust-controls.stdout.log"
 done
-grep -Eq '^test result: ok\. 5 passed; 0 failed; 1 ignored;' \
+grep -Eq '^test result: ok\. 6 passed; 0 failed; 1 ignored;' \
   "$evidence/rust-controls.stdout.log"
 
 driver_status=0

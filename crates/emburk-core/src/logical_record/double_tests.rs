@@ -121,14 +121,15 @@ fn parse_manifest(manifest: &str) -> Result<Vec<ParsedCase>, String> {
 fn compare(cases: &[ParsedCase]) -> Result<(), String> {
     for (name, supplied, reference) in cases {
         let matches = supplied.records().zip(reference).all(|(record, expected)| {
-            record.cells().zip(expected).all(|(actual, wanted)| {
-                matches!((actual, wanted), (LogicalValue::Null, ReferenceValue::Null))
-                    || matches!(
-                        (actual, wanted),
-                        (LogicalValue::Float64(value), ReferenceValue::Double(bits))
-                            if value.bits() == *bits && value.to_float().to_bits() == *bits
-                    )
-            })
+            record.cells().len() == expected.len()
+                && record.cells().zip(expected).all(|(actual, wanted)| {
+                    matches!((actual, wanted), (LogicalValue::Null, ReferenceValue::Null))
+                        || matches!(
+                            (actual, wanted),
+                            (LogicalValue::Float64(value), ReferenceValue::Double(bits))
+                                if value.bits() == *bits && value.to_float().to_bits() == *bits
+                        )
+                })
         });
         if !matches || supplied.records().len() != reference.len() {
             return Err(format!(
@@ -206,15 +207,51 @@ fn structural_identity_is_bitwise_not_numeric_equality() {
 
 #[test]
 fn null_is_distinct_and_record_order_is_preserved() {
-    let records = LogicalRecords::new(vec![LogicalRecord::new(vec![
-        LogicalValue::Float64(Float64Bits::from_float(-0.0)),
-        LogicalValue::Null,
-        LogicalValue::Float64(Float64Bits::from_float(f64::INFINITY)),
-    ])]);
-    let values: Vec<_> = records.records().next().unwrap().cells().cloned().collect();
-    assert!(matches!(values[0], LogicalValue::Float64(_)));
-    assert_eq!(values[1], LogicalValue::Null);
-    assert!(matches!(values[2], LogicalValue::Float64(_)));
+    let records = LogicalRecords::new(vec![
+        LogicalRecord::new(vec![
+            LogicalValue::Float64(Float64Bits::from_float(-0.0)),
+            LogicalValue::Null,
+        ]),
+        LogicalRecord::new(vec![LogicalValue::Float64(Float64Bits::from_float(
+            f64::INFINITY,
+        ))]),
+    ]);
+    let values: Vec<Vec<_>> = records
+        .records()
+        .map(|record| record.cells().cloned().collect())
+        .collect();
+    assert_eq!(values.len(), 2);
+    assert_eq!(
+        values[0][0],
+        LogicalValue::Float64(Float64Bits(0x8000_0000_0000_0000))
+    );
+    assert_eq!(values[0][1], LogicalValue::Null);
+    assert_eq!(
+        values[1][0],
+        LogicalValue::Float64(Float64Bits(0x7ff0_0000_0000_0000))
+    );
+}
+
+#[test]
+fn comparison_rejects_missing_and_extra_actual_cells() {
+    let reference = vec![vec![ReferenceValue::Double(0)]];
+    for actual in [
+        Vec::new(),
+        vec![
+            LogicalValue::Float64(Float64Bits(0)),
+            LogicalValue::Float64(Float64Bits(1)),
+        ],
+    ] {
+        let cases = vec![(
+            "shape".to_owned(),
+            LogicalRecords::new(vec![LogicalRecord::new(actual)]),
+            reference.clone(),
+        )];
+        assert_eq!(
+            compare(&cases),
+            Err("reference differs from private double storage for shape".into())
+        );
+    }
 }
 
 #[test]
