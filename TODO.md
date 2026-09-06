@@ -127,9 +127,10 @@ These estimates are within the parent's 5 SP, not additional points or accepted
 velocity. Parent completion retains its listed dependencies.
 
 T-0003 is complete through PR #62, and T-0004/S01 is complete through PR #63.
-T-0004/S02 is active in Issue #84 to gate review and snapshot jobs by event and
-to skip safely when `PROJECTS_TOKEN` is absent. It does not register a
-credential or change Project schema.
+T-0004/S02 completed through PR #85 and hosted run `34003581110`: the
+zero-permission credential gate passed and review/snapshot mutation jobs safely
+skipped while `PROJECTS_TOKEN` was absent. Issue #84 is closed and Done. The
+slice did not register a credential or change Project schema.
 T-0012/S01 used the official self-contained executable through a local-only
 Maven-style input plugin, rather than assembling the core POM graph. It
 integrated through PR #61 as `e2532e2` after recording nine

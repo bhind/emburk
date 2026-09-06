@@ -78,11 +78,12 @@ Issue / 5 Story Points after integration. The Action is installed and active;
 scheduled and ready-for-review executions still require the repository owner
 to add the `PROJECTS_TOKEN` secret, so no hosted-run success is claimed.
 
-T-0004/S02 is active to repair the delivery workflow event and credential
-gates after PR events incorrectly reached the snapshot job and an absent
-`PROJECTS_TOKEN` produced failed runs. Issue #84 is the coordination item.
-No hosted success or credential registration is claimed before integration and
-default-branch dispatch evidence.
+T-0004/S02 repaired the delivery workflow event and credential gates through
+PR #85 as `5d4a0f7`. Default-branch dispatch run `34003581110` completed
+successfully with the zero-permission credential gate passing and both mutation
+jobs skipped because `PROJECTS_TOKEN` remains absent. Issue #84 is closed and
+Done. This proves safe no-credential behavior; it does not prove credentialed
+Project mutation or daily snapshot publication.
 
 ## Evidence and non-claims
 
