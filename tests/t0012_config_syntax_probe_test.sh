@@ -39,6 +39,9 @@ def repair(directory):
         lines=[]
         for line in path.read_text().splitlines():
             _, recorded = line.split('  ',1); target=directory / Path(recorded).name
+            if not target.exists():
+                lines.append(line)
+                continue
             lines.append(hashlib.sha256(target.read_bytes()).hexdigest() + '  ' + recorded)
         path.write_text('\n'.join(lines)+'\n')
     hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(directory.iterdir()) if p.is_file() and p.name not in {'integrity.json','capture.exit'}}
