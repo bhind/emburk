@@ -2,6 +2,11 @@
 
 Compatibility is an evidence record, not a general promise.
 
+T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
+is under acceptance: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed
+preservation. Unseeded headerless charset detection and TSV remain unsupported
+gaps; JSON schema is not inferred. General guess parity is not accepted.
+
 T-0022/S01's isolated parser experiment is not production adoption or YAML
 compatibility. Ordered syntax observations are evaluated before configuration
 policy is selected; production adoption was separately admitted by ADR-0017.

@@ -25,3 +25,4 @@ Architecture Decision Records capture durable decisions that affect product cont
 | [ADR-0019](ADR-0019-bounded-native-formats.md) | Bounded native formats and projections | Accepted through PR #119 |
 | [ADR-0020](ADR-0020-bounded-format-workers.md) | Bounded ordered formatting workers | Accepted through PR #120 |
 | [ADR-0021](ADR-0021-validated-native-spool-resume.md) | Validated native spool resume | Accepted through PR #121 |
+| [ADR-0022](ADR-0022-bounded-guess-profile.md) | Bounded seed-preserving guess profile | Accepted for implementation |

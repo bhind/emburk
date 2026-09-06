@@ -119,6 +119,22 @@ Ordinary `run` does not checkpoint. The earlier `transfer-lines`
 commands remain experimental and do not inherit the configured publication
 contract.
 
+## Bounded guess (acceptance pending)
+
+`emburk guess seed.yml -o config.yml` fills missing input parser/decoder fields
+while retaining the output and execution configuration. Without `-o`, the
+result goes to stdout. Output uses JSON syntax, which is valid YAML; an existing
+destination is never overwritten. Provide a file input type/path_prefix and
+the desired output settings in the seed.
+
+The initial whole-file profile rejects raw inputs over 1 MiB or decoded inputs
+over 32 KiB. It supports selected UTF-8/LF/comma CSV and JSON object inputs,
+with one gzip/bzip2 layer. JSON guessing preserves explicit columns but does
+not invent them; supply parser.columns to execute the current CSV output.
+Headerless numeric CSV needs an explicit parser.charset of UTF-8. TSV, general
+charset/type inference and large-input sampling remain unsupported. Explicit
+parser fields other than charset/columns are rejected, not silently replaced.
+
 ## Evidence boundary
 
 Eight selected CSV cases and five JSON/codec/filter cases are compared with

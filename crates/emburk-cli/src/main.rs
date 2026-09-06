@@ -3,7 +3,7 @@
 use std::{
     env,
     fs::{self, File, OpenOptions},
-    io::{self, BufReader},
+    io::{self, BufReader, Write},
     path::Path,
     sync::{
         Arc,
@@ -24,12 +24,25 @@ fn main() {
         )
     {
         println!(
-            "Usage: emburk run CONFIG [--state STATE_DIR]\n       emburk resume CONFIG STATE_DIR\n       emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
+            "Usage: emburk guess SEED [-o CONFIG]\n       emburk run CONFIG [--state STATE_DIR]\n       emburk resume CONFIG STATE_DIR\n       emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
         );
         return;
     }
     let cancelled = Arc::new(AtomicBool::new(false));
     let (command, result) = match arguments.as_slice() {
+        [_, command, seed] if command == "guess" => (
+            "guess",
+            emburk_core::guess_config(Path::new(seed)).and_then(|bytes| {
+                io::stdout()
+                    .lock()
+                    .write_all(&bytes)
+                    .map_err(|e| e.to_string())
+            }),
+        ),
+        [_, command, seed, flag, output] if command == "guess" && flag == "-o" => (
+            "guess",
+            emburk_core::guess_config_to_file(Path::new(seed), Path::new(output)),
+        ),
         #[cfg(unix)]
         [_, command, config, flag, directory] if command == "run" && flag == "--state" => (
             "run",
