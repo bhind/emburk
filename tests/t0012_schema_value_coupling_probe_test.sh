@@ -14,6 +14,7 @@ evidence=$(sed -n 's/^T0012_COUPLING_FULL_RUN=passed|evidence=//p' "$attempt/std
 [[ -d "$evidence" && $(grep -c '^COUPLINGCASE|' "$evidence/coupling-cases.raw") == 5 ]]
 
 control=$(mktemp -d "${TMPDIR:-/private/tmp}/t0012-coupling-negative.XXXXXX")
+control=$(cd -- "$control" && pwd -P)
 cp -R "$evidence" "$control/evidence"
 printf '%s\n' 0 > "$control/evidence/matching.exit.txt"
 printf '%s\n' 1 > "$control/evidence/explicit-null.exit.txt"
