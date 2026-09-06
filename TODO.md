@@ -10,8 +10,8 @@ tasks. Dependencies name predecessor T-IDs and do not imply completion.
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
 `T-0013/S08`, `T-0012/S08` and `T-0021/S05` are integrated. T-0012/S09 is
 integrated through PR #91 following fresh reference-probe acceptance runs.
-T-0012/S10 is `Ready`; T-0013, T-0021 and all other unfinished items are `Backlog`.
-Combined active implementation WIP is zero of two before S10 activation.
+T-0012/S10 is `In Progress`; T-0013, T-0021 and all other unfinished items are `Backlog`.
+Combined active implementation WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -36,7 +36,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S09 integrated; S10 ready) | Ready | P0 | 34 | T-0011 | Rust Core Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S09 integrated; S10 private double values) | In Progress | P0 | 34 | T-0011 | Rust Core Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 

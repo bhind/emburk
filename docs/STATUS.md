@@ -44,7 +44,8 @@ T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary
 reproduction and complete raw review authorize Stage B strict validation.
 The slice integrated through PR #91 as `34757c8`. S10's private double-storage
-decision passed readiness review; no implementation is active. T-0012, T-0013 and
+decision passed readiness review and integrated through PR #92. S10 is now
+In Progress with one source owner and combined active WIP one of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -53,7 +54,7 @@ T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S10 | Ready | Accepted private double-storage decision; implementation next |
+| T-0012/S10 | In Progress | Private double bit storage and two selected comparisons |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 

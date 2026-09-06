@@ -1,8 +1,8 @@
 # T-0012/S10 private double-value storage and selected comparison
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Ready; independent readiness review passed, implementation not started
-- Branch: `feat/t-0012-private-double-values` (implementation, not yet created)
+- State: In Progress; implementing the accepted private storage/comparison slice
+- Branch: `feat/t-0012-private-double-values`
 - Owner: Rust Core Implementer; PM owns decisions, records and integration
 - Priority: P0; parent task T-0012; parent epic T-0010
 - Estimate: 5 SP (implementation 2, uncertainty 1, verification 1, environment 1)
@@ -21,6 +21,8 @@ acceptance at `3f18966` and exact final-head acceptance at `59f1b2e`. S08 is
 integrated through PR #82. ADR-0012 is accepted after independent readiness
 review found the four-path scope, actual storage comparison and non-claims
 coherent. No runtime evidence follows from readiness.
+The decision and packet integrated through PR #92 as `74ac118`; implementation
+now uses a fresh dedicated worktree from that accepted revision.
 One active Project item and one serial source owner; preserve user worktrees.
 
 ## Branch and allowlist
