@@ -169,6 +169,43 @@ Implementer capture trace SHA-256, finite-null / nonfinite:
 
 ### Remaining acceptance gates
 
+Corrected source `3f18966bb07d22dab54d8b0ad06b2c2186daa110` passes the exact
+Demo under both the implementer and primary agent. Primary fresh outer logs:
+`/private/tmp/t0012-s09-primary-demo.rVGwnG` (`exit.txt` is 0; stderr is empty).
+Its stdout SHA-256 is
+`66ce8de9489989a3c99ded54eb9929089c8444fcf7278af54d784b44b67790cf`.
+Fresh raw evidence is under
+`/private/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-double-value-probe/run.lbI1sY/evidence`.
+Both fixture exits are 0, with 114/93 ordered events. All 45 diagnostic-specific
+raw controls and two artifact controls pass; primary additionally checked all
+45 retained negative stdout/stderr/exit triplets. S08's two value comparisons
+and S06's three schema comparisons pass unchanged.
+
+The corrected gate confines canonical evidence paths outside the repository,
+rejects ancestor/member links, binds a fixed-name copied generated JAR to its
+digest, validates mandatory provenance and exact historical source identity,
+and additionally matches live source hashes on fresh runs. Validate-only remains
+distinct from fresh artifact admission. Normal retrieval allows 120 seconds;
+the unavailable-runtime control has its own short timeout. No external source
+implementation or dependency was added.
+
+Corrected plugin / runner / wrapper source SHA-256:
+
+- `183070a032c4d9654f4eee69f028cb94ba90d248bceb0b33e86f7105069209dd`
+- `9583086246cf68263a395a73bbbe20ee043b38ebeda7cea2d8ef94e77c9fb16b`
+- `71fa8314ea01c0f97cbfb326627fd8e51012f0539e9dfa15052f3c5cc2da2f4c`
+
+Implementer fresh exact Demo logs are
+`/private/tmp/t0012-s09-recovery-demo.qOHhXy` (exit 0). Its earlier sandbox
+retrieval failure is retained separately at
+`/private/tmp/t0012-s09-recovery-demo.5O6kZB` (outer exit 1, retrieval 56 before
+the corrupt-artifact injection). It is not acceptance evidence. Quality checks
+pass: Bash syntax, diff, workspace formatting, 35 Rust tests / six intentional
+live-test ignores, strict all-target Clippy and 19 Project Python tests. The
+environment remains Temurin 17.0.20, Cargo 1.98.1 and Python 3.14.6 on macOS.
+Independent Tester and security review, final PR-head Demo and integration
+remain required before acceptance.
+
 The first Stage B source revision `7ec550b` passed the selected live fixtures,
 40 raw rejection controls and existing S08/S06 comparisons in the retained
 implementer run. It is not accepted: primary and separate read-only Tester
