@@ -187,6 +187,11 @@ The bounded observation slice is Done; parent contracts remain open.
 These diagnostic observations do not select native defaults or validation.
 A separate reviewed decision must precede schema-bound record implementation.
 
+T-0023/S01 is Review in PR #101 at frozen source `9f842509`: seven local tests
+exercise a private positional logical batch for selected schema/value categories.
+Final-head and independent acceptance remain pending. Timestamp/JSON values,
+nullability, external validation, physical encoding and all File-to-File claims remain outside.
+
 
 
 

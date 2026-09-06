@@ -1,7 +1,7 @@
 //! Private, ordered logical schema storage with no physical encoding policy.
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum LogicalType {
+pub(super) enum LogicalType {
     Boolean,
     Signed64,
     Float64,
@@ -11,31 +11,39 @@ enum LogicalType {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct LogicalColumn {
+pub(super) struct LogicalColumn {
     name: String,
     logical_type: LogicalType,
 }
 
 impl LogicalColumn {
-    fn new(name: impl Into<String>, logical_type: LogicalType) -> Self {
+    pub(super) fn new(name: impl Into<String>, logical_type: LogicalType) -> Self {
         Self {
             name: name.into(),
             logical_type,
         }
     }
+
+    pub(super) fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub(super) fn logical_type(&self) -> LogicalType {
+        self.logical_type
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct LogicalSchema {
+pub(super) struct LogicalSchema {
     columns: Vec<LogicalColumn>,
 }
 
 impl LogicalSchema {
-    fn new(columns: Vec<LogicalColumn>) -> Self {
+    pub(super) fn new(columns: Vec<LogicalColumn>) -> Self {
         Self { columns }
     }
 
-    fn columns(&self) -> impl ExactSizeIterator<Item = &LogicalColumn> {
+    pub(super) fn columns(&self) -> impl ExactSizeIterator<Item = &LogicalColumn> {
         self.columns.iter()
     }
 }

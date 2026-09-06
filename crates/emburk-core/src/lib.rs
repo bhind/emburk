@@ -21,6 +21,14 @@ mod logical_schema;
 )]
 mod logical_record;
 
+// This is deliberately private: it validates only the selected internal
+// schema/value categories before any physical batch representation exists.
+#[allow(
+    dead_code,
+    reason = "T-0023/S01 is a private positional admission boundary without a consumer"
+)]
+mod logical_batch;
+
 // This remains a private ownership experiment, not a plugin or lifecycle API.
 #[allow(
     dead_code,
