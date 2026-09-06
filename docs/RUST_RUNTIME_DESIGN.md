@@ -372,11 +372,11 @@ The bounded observation slice is Done; parent contracts remain open.
 These diagnostic observations do not select native defaults or validation.
 A separate reviewed decision must precede schema-bound record implementation.
 
-T-0023/S01 is In Progress under accepted ADR-0014. It permits a private owned logical
-batch admission boundary before any physical representation: validate supported
-schema categories, all row widths, then row-major non-null value categories. A
-later batch consumer must separately decide ownership, resources, lifecycle and
-physical encoding; handoff is unchanged.
+T-0023/S01 is Review in PR #101 at frozen source `9f842509`. It implements a
+private owned logical batch admission boundary before any physical representation:
+validate supported schema categories, all row widths, then row-major non-null
+value categories. A later batch consumer must separately decide ownership,
+resources, lifecycle and physical encoding; handoff is unchanged.
 
 
 

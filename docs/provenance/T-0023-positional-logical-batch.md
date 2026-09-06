@@ -1,7 +1,7 @@
 # T-0023/S01 private positional logical batch admission
 
 - Issue: [T-0023, #20](https://github.com/bhind/emburk/issues/20)
-- State: In Progress; owner-approved ADR-0014, implementation acceptance pending
+- State: Review; frozen implementation acceptance pending in PR #101
 - Branch: `feat/t-0023-s01-schema-bound-record`
 - Owner: Rust Core Implementer; Project Manager owns decision, records, and integration
 - Priority: P1; estimate 5 SP within unchanged parent Current/Initial 8 SP
@@ -30,9 +30,9 @@ external diagnostics.
 
 ## Branch and allowlist
 
-Branch reservation: `feat/t-0023-s01-schema-bound-record`.
+Branch: `feat/t-0023-s01-schema-bound-record`.
 
-One Rust Core Implementer would own exactly:
+One Rust Core Implementer owns exactly:
 
 - `crates/emburk-core/src/logical_schema.rs` for sibling-private type/accessor support only;
 - `crates/emburk-core/src/logical_batch.rs` for original batch admission and local tests;
@@ -43,6 +43,14 @@ dependencies, CLI, public exports, reference probes, S11 automation, or
 canonical records. The Project Manager owns ADR-0014, this packet/index, and
 all status, roadmap, compatibility, architecture, runtime-design and log
 records. Testers/reviewers are read-only.
+
+Frozen source is `9f842509761677b9f56291a8682e56f5bca15a05`:
+
+| Source | SHA-256 |
+| --- | --- |
+| `crates/emburk-core/src/lib.rs` | `61dd14e8f8f65a3669ce3152f15353ec85891b96fd3a7f7038bb7e4940c7c9f1` |
+| `crates/emburk-core/src/logical_schema.rs` | `cde5913afeafb75998c98222b8fafe22e4e9ca9985992e1b76ad46c488229cc0` |
+| `crates/emburk-core/src/logical_batch.rs` | `178171f559dc122712cc493387710e6bb69530b15bbe29c3760e7c3550ceba7a` |
 
 ## Artifacts
 
@@ -66,6 +74,17 @@ This is a private invariant, not an Embulk validation, nullability, coercion,
 or error-timing contract. Preserve positional order, duplicate names, owned
 text and actual Float64 bits. Provide only private read-only access;
 `record_handoff` remains unchanged.
+
+## Frozen implementation under review
+
+The frozen source adds the private batch module and narrowly scoped
+sibling-private schema access. Seven focused local tests cover accepted
+matching, explicit-null and duplicate-name composition; empty-schema cases;
+unsupported Timestamp/Json precedence; widths; and row-major type mismatch
+precedence. Implementer checks report format, focused tests, strict Clippy and
+diff checks passing. This is source-review evidence only: the exact Demo at the
+final PR #101 head, a separate Tester reproduction, record reconciliation and
+integration remain required.
 
 ## Acceptance criteria
 

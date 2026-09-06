@@ -2,7 +2,8 @@
 
 - Status: Accepted; owner approved the bounded internal design after reviewing differences
 - Date: 2026-09-06
-- Proposed implementation: T-0023/S01; no implementation has been accepted.
+- Implementation: T-0023/S01 source is frozen under Review in PR #101 at
+  `9f842509`; no implementation has been accepted or integrated.
 
 ## Context
 
@@ -56,3 +57,7 @@ A later private batch consumer or physical representation needs its own packet
 and decision. No external code, artifact, dependency, or source observation is
 adopted; existing provenance and unreviewed license, redistribution, patent,
 standards, and FTO boundaries remain unchanged.
+
+The frozen S01 source implements only this private decision and has seven local
+tests. Final-head Demo, independent Tester reproduction and integration remain
+open; no compatibility or completion evidence follows from source freeze.
