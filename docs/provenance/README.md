@@ -35,3 +35,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S12 config-envelope observation](T-0012-config-envelope-probe.md) | Done (PR #105, `67f0786`; reference evidence only) |
 | [T-0012/S13 config-syntax observation](T-0012-config-syntax-probe.md) | Done (PR #107; final-head acceptance passed) |
 | [T-0022 parser candidate assessment](T-0022-parser-candidates.md) | Proposed refinement; no dependency admission |
+| [T-0031/S01 experimental file transfer](T-0031-file-to-file.md) | Review, PR #110; native-only record consumer |

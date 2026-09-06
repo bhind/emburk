@@ -18,3 +18,4 @@ Architecture Decision Records capture durable decisions that affect product cont
 | [ADR-0012](ADR-0012-private-double-bit-storage.md) | Private double bit storage without numeric equality policy | Accepted |
 | [ADR-0013](ADR-0013-private-owned-record-handoff.md) | Private owned-record handoff before plugin APIs | Accepted |
 | [ADR-0014](ADR-0014-private-positional-logical-batch.md) | Private positional logical batch admission before physical encoding | Accepted |
+| [ADR-0015](ADR-0015-experimental-text-file-transfer.md) | Experimental text File-to-File consumer | Accepted for T-0031/S01 only |

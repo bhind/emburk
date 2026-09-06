@@ -1,7 +1,13 @@
 # Architecture
 
 Status: target architecture unless explicitly identified as implemented below.
-The current runtime remains the two-crate bootstrap, not a working loader.
+The runtime uses two crates. T-0031/S01 adds an experimental text File-to-File
+consumer, not an Embulk-compatible configuration/plugin loader.
+
+ADR-0015 permits CLI-owned regular-file opening and exclusive output creation,
+with a doc-hidden unstable std-I/O core function adapting line payloads to
+private Text records through the existing synchronous handoff. No record or
+plugin types become public, and the empty lifecycle coordinator stays separate.
 
 ## Principles
 

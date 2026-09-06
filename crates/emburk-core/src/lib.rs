@@ -36,6 +36,13 @@ mod logical_batch;
 )]
 mod record_handoff;
 
+// This is an unstable std-I/O bridge for the experimental CLI command, not a
+// plugin API or a general record-transfer interface.
+mod text_transfer;
+
+#[doc(hidden)]
+pub use text_transfer::transfer_lines;
+
 // This is deliberately private: it is a bounded fake-fixture coordinator, not
 // a public plugin API or a production lifecycle contract.
 #[allow(
@@ -45,14 +52,15 @@ mod record_handoff;
 mod empty_lifecycle;
 
 pub const DEVELOPMENT_STATUS: &str =
-    "emburk: development environment ready (data transfer not implemented yet)";
+    "emburk: experimental text transfer available (full ETL not implemented)";
 
 #[cfg(test)]
 mod tests {
     use super::DEVELOPMENT_STATUS;
 
     #[test]
-    fn development_status_does_not_claim_a_working_loader() {
-        assert!(DEVELOPMENT_STATUS.contains("data transfer not implemented yet"));
+    fn development_status_describes_the_available_experimental_transfer() {
+        assert!(DEVELOPMENT_STATUS.contains("experimental text transfer available"));
+        assert!(DEVELOPMENT_STATUS.contains("full ETL not implemented"));
     }
 }

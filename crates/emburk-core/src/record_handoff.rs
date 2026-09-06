@@ -3,26 +3,29 @@
 use crate::logical_record::LogicalRecord;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct SourceError(String);
+pub(crate) struct SourceError(pub(crate) String);
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct SinkError(String);
+pub(crate) struct SinkError(pub(crate) String);
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-enum HandoffError {
+pub(crate) enum HandoffError {
     Source(SourceError),
     Sink(SinkError),
 }
 
-trait RecordSource {
+pub(crate) trait RecordSource {
     fn next_record(&mut self) -> Result<Option<LogicalRecord>, SourceError>;
 }
 
-trait RecordSink {
+pub(crate) trait RecordSink {
     fn accept(&mut self, record: LogicalRecord) -> Result<(), SinkError>;
 }
 
-fn handoff_owned_records<S, K>(source: &mut S, sink: &mut K) -> Result<usize, HandoffError>
+pub(crate) fn handoff_owned_records<S, K>(
+    source: &mut S,
+    sink: &mut K,
+) -> Result<usize, HandoffError>
 where
     S: RecordSource,
     K: RecordSink,

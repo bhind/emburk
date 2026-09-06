@@ -10,8 +10,10 @@ Development state: `bootstrap`
   verifying the development environment. T-0021/S01 establishes a virtual
   workspace with an inward-only `emburk-cli -> emburk-core` dependency while
   retaining the explicit not-yet-a-loader smoke test.
-- The binary does not load Embulk configuration, transfer records, execute
-  plugins, or implement transaction and resume behavior.
+- T-0031/S01 implements an experimental `transfer-lines INPUT OUTPUT` path:
+  real files, private Text records and the existing synchronous owned handoff.
+  Final acceptance and integration are pending. It does not load Embulk
+  configuration, execute plugins, or implement transactions and resume.
 - No native, Java-hosted, or JRuby-hosted plugin is implemented or verified.
 - Thirteen selected private raw-scalar outcomes match the pinned Embulk
   executable in a live differential test. No full configuration, plugin,
@@ -62,7 +64,8 @@ passed seven cases/36 events, strict controls and unchanged S01/S02 regressions.
 No native configuration behavior is added. T-0012, T-0013 and T-0021 parent
 contracts remain open. S13 is Done through PR #107 (`441040f`) after primary
 and independent final-head Demo at `65a2fb3`: six syntax cases/60 events,
-strict controls and unchanged S12 regression. No WIP lane remains occupied.
+strict controls and unchanged S12 regression. T-0031/S01 occupies one WIP lane
+for the explicitly requested experimental native File-to-File path.
 
 | Item | State | Purpose |
 |---|---|---|
