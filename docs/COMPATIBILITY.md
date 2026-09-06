@@ -225,11 +225,12 @@ evidence limited to matching, explicit-null and duplicate-name S11 projections.
 Primary and independent final-head evidence passed at `ca9af0a`; this does not
 broaden the supported product compatibility surface.
 
-T-0012/S12 is Review in PR #105 for seven selected configuration-envelope observations.
+T-0012/S12 is Done through PR #105 (`67f0786`) for seven selected configuration-envelope observations.
 It does not repeat S01/S02 scalar fixtures or establish native YAML, nested
 configuration, unknown-key, default, or external-error policy. Primary and
 independent Stage A agree on three successful 12-event traces and four
-no-callback failures; the strict validator is frozen and final acceptance remains pending.
+no-callback failures. Primary and independent final-head acceptance passed at
+`9df0d5c`; this remains reference evidence, not native Differential compatibility.
 
 
 
