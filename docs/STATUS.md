@@ -56,7 +56,7 @@ unchanged regressions. It adds no runtime behavior. T-0012/S12 is Done through
 PR #105 (`67f0786`): primary and independent final-head Demo at `9df0d5c`
 passed seven cases/36 events, strict controls and unchanged S01/S02 regressions.
 No native configuration behavior is added. T-0012, T-0013 and T-0021 parent
-contracts remain open; WIP is zero of two.
+contracts remain open; S13 occupies one of two WIP lanes.
 
 | Item | State | Purpose |
 |---|---|---|
@@ -68,6 +68,7 @@ contracts remain open; WIP is zero of two.
 | T-0023/S01 | Done | Private positional batch admission; PR #101 integrated |
 | T-0023/S02 | Done | Selected three-case LogicalBatch differential bridge; PR #103 integrated |
 | T-0012/S12 | Done | Seven-case reference observation and validator; PR #105 integrated |
+| T-0012/S13 | Review | PR #107; strict controls pass at `d95f2a9`; final-head Demo pending |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
