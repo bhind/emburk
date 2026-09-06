@@ -211,7 +211,8 @@ independently reproduced and fully reviewed by PM. Matching/null/duplicate-name
 cases read selected values; fresh unset text fails at addRecord and string-to-long
 misuse fails at the setter. Stage B automation passes at `b556ce0`: five exact vectors, 39 repaired-copy
 controls and two artifact controls. Primary and separate reproduction pass;
-final PR-head acceptance and integration remain required.
+final-head Demo passed at `da7e50f`; PR #99 integrated as `413f837`.
+The bounded observation slice is Done; parent contracts remain open.
 These diagnostic observations do not select native defaults or validation.
 A separate reviewed decision must precede schema-bound record implementation.
 
