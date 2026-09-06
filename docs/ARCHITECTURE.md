@@ -39,6 +39,13 @@ private, dependency-free raw-scalar resolver inside `emburk-core`; it is neither
 a YAML loader nor a stable public API. Creating crate directories does not make
 their eventual Rust API stable.
 
+ADR-0017 narrowly admits the pinned YAML event adapter and configured CSV
+consumer after T-0022/S01 and T-0014/S01 evidence. The new private modules are
+yaml_profile (raw events to bounded plan), csv_stream (one owned typed CSV row
+at a time), and configured_csv (file composition and handoff). CLI depends on
+the core's unstable doc-hidden path entry point. No external parser types cross
+this boundary; generic plugin APIs and later publication/resume remain deferred.
+
 ADR-0007 permits a private ordered logical schema before any physical encoding
 or public exposure. S06 implements it as an owned ordered vector in the core,
 with no name lookup or deduplication. Its three-case live comparison passed

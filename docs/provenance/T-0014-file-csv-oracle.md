@@ -1,6 +1,6 @@
 # T-0014/S01 bundled File/CSV reference observation
 
-Issue: [#17](https://github.com/bhind/emburk/issues/17). State: In Progress.
+Issue: [#17](https://github.com/bhind/emburk/issues/17). State: Done (S01 only).
 Slice forecast: 5 SP. No full differential-harness acceptance is claimed.
 
 ## Authority
@@ -121,3 +121,27 @@ accessed 2026-09-06) are explicit reference inputs, not output normalization.
 Final primary/independent acceptance will use these single-task fixtures, with
 duplicate skip_header_lines set first to 2 then 1 to observe an actual winner
 in output data, rather than only a warning for an unskipped invalid header.
+
+## Final acceptance
+
+PR #115 integrated as c3304fcd310fa2cf2345077a6219560069852a92 after primary
+and independent exact Demo at a031fb8e96109e10bbf86202675fdc866faee3db.
+Eleven harness tests and 71 workspace tests passed; eight existing ignores.
+All eight reference jobs exited 0 without timeout. Primary and independent
+input/config/exit/output-name/byte-hash projections matched exactly. S01 accepts
+5 SP; the full T-0014 parent remains open.
+
+Primary logs /private/tmp/t0014-s01-primary.W7h20K: stdout SHA-256
+db502e32fdc2b8605d189fbcf127bf6d0ad3619fba99365973772b4b4781ec00,
+stderr d9dc929a6407a302e040864991ba337ef7b4cc78794bb67c1cf01a3a9a87a60d;
+run evidence /private/tmp/emburk-t0014-run-mcsx4zsf.
+Independent logs /private/tmp/t0014-s01-final-independent.hZt0Zt: stdout
+6df9b1d985a00bf77e218e60bb88830ab7baecfd36a0361e32a380374cf8e2ce,
+stderr c125b7f4fed94f4566d14ad663972552fa6f422752cf01eff9380edccec57a00;
+run evidence /private/tmp/emburk-t0014-run-7mxsr4iq. Numeric Demo exit 0 retained.
+
+Final single-task outcomes: normal 23-byte result000.00.csv; quoted multiline
+Unicode 50 bytes; empty and malformed-long header-only 8 bytes; blank/null
+34 bytes; missing input no outputs; duplicate 2 then 1 retains data (20 bytes);
+sentinel remains 18 bytes beside the 19-byte generated output. No native or
+general configuration/CSV claim follows from this reference-only evidence.

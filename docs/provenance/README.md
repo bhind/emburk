@@ -36,6 +36,7 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S13 config-syntax observation](T-0012-config-syntax-probe.md) | Done (PR #107; final-head acceptance passed) |
 | [T-0022 parser candidate assessment](T-0022-parser-candidates.md) | Proposed refinement; no dependency admission |
 | [T-0022/S01 parser experiment](T-0022-parser-experiment.md) | Done, PR #114; isolated experiment only |
-| [T-0014/S01 File/CSV oracle](T-0014-file-csv-oracle.md) | In Progress; bundled reference observation only |
+| [T-0014/S01 File/CSV oracle](T-0014-file-csv-oracle.md) | Done, PR #115; eight reference observations |
+| [T-0032/S01 configured CSV](T-0032-configured-csv.md) | In Progress; selected native consumer, acceptance pending |
 | [T-0031/S01 experimental file transfer](T-0031-file-to-file.md) | Done, PR #110; native-only record consumer |
 | [T-0031/S02 experimental stdout/null](T-0031-output-targets.md) | Done, PR #112; unchanged core transfer |
