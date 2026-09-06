@@ -30,3 +30,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S10 private double values](T-0012-private-double-values.md) | Done (bounded private slice; PR #93, `742274f`) |
 | [T-0012/S11 schema/value coupling](T-0012-schema-value-coupling-probe.md) | Done; PR #99 integrated after full final-head acceptance |
 | [T-0021/S06 owned-record handoff](T-0021-owned-record-handoff.md) | Done (bounded private slice; PR #96, `56ef9e9`) |
+| [T-0023/S01 positional logical batch](T-0023-positional-logical-batch.md) | Ready (owner-approved planning packet; Unit/Contract target) |

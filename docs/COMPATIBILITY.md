@@ -216,6 +216,10 @@ The bounded observation slice is Done; parent contracts remain open.
 These diagnostic observations do not select native defaults or validation.
 A separate reviewed decision must precede schema-bound record implementation.
 
+T-0023/S01 is In Progress under accepted ADR-0014. Its intended evidence is
+Unit/Contract for an internal positional batch invariant only; it adds no
+native Differential or supported Embulk schema/value claim.
+
 
 
 
