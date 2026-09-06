@@ -40,8 +40,10 @@ Development state: `bootstrap`
 ## Delivery queue
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
-T-0012/S09 after the reference-execution explanation. Stage A capture is
-`In Progress`; combined active WIP is one of two. T-0012, T-0013 and
+T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
+captured 114/93 events with exact selected double bits preserved; primary
+reproduction and complete raw review authorize Stage B strict validation.
+The slice remains `In Progress`; combined active WIP is one of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |

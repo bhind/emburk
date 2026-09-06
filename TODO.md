@@ -355,3 +355,9 @@ S09 is prepared under its [packet](docs/provenance/T-0012-double-value-probe.md)
 5 SP within unchanged Current 34 / Initial 5 for finite/null and nonfinite
 double-value reference observations. PM reviews complete raw capture before
 semantic assertions or any later Rust Float64 representation/equality decision.
+
+S09 Stage A at `7e46379` passed the exact capture Demo and primary reproduction.
+PM reviewed all 114/93 events: both fixtures exit 0; finite bounds, subnormals,
+signed zero, null, infinities and selected NaN bits remain distinguishable.
+Stage B exact vectors and repaired-copy controls are authorized in the packet.
+No full acceptance, native Float64 policy or parent completion follows yet.

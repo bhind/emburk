@@ -1,7 +1,7 @@
 # T-0012/S09 bounded double-value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; execution approval received, Stage A capture
+- State: In Progress; Stage A reviewed, Stage B authorized
 - Branch: `research/t-0012-double-value-capture`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
@@ -123,6 +123,51 @@ before PM reviews capture and records the decision in this packet.
 | Which Rust representation/equality is justified? | Accepted reference gate followed by a later explicit decision | No Float64 enum variant or Eq-policy change in S09 |
 
 ## Stage B and acceptance
+
+### PM observation decision (2026-09-06)
+
+Corrected Stage A source is frozen at
+`7e463798ebcf007ea12e18d77382362979c3878e`. Earlier draft captures are retained,
+but were not accepted as complete transport evidence. PM reviewed all 207
+ordered decoded events and both complete runtime logs from
+`/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-double-value-probe/run.95aMuf/evidence`.
+The exact Stage A Demo also passed independently in the primary agent's run:
+`/private/tmp/t0012-s09-primary-capture.Edu3ve` (complete outer logs, exit 0),
+with raw evidence in the same temporary probe root at `run.g9vBiJ/evidence`.
+All ordered events and payloads match between these captures except fresh UUIDs.
+
+| Fixture | Exit | Events | Pages / rows | Exact supplied and getter bits, in order |
+| --- | --- | --- | --- | --- |
+| finite-null | 0 | 114 | 1 / 7 | `7fefffffffffffff`, `ffefffffffffffff`, `0000000000000001`, `8000000000000001`, `0000000000000000`, `8000000000000000`, explicit null |
+| nonfinite | 0 | 93 | 1 / 5 | `7ff0000000000000`, `fff0000000000000`, `7ff8000000000000`, `7ff8000000000042`, `fff8000000000042` |
+
+Both schemas are exactly `number:double`, index 0. Every non-null getter follows
+an `isNull=false`; the explicit null follows `isNull=true` with no getter.
+Each fixture exhausts its reader with a final `nextRecord=false`. The observed
+finish/close nesting is builder finish -> collector add/read -> collector finish
+-> builder finish return, then builder close -> collector close -> reader close
+and corresponding returns. Runtime output finish, run/control/transaction
+returns, one successful terminal marker, then cleanup entry/return with 1 task
+and 1 report complete the trace. No resume, guess or semantic exception occurs.
+
+PM authorizes Stage B exact vectors and repaired-copy rejection controls for
+these selected facts only. Selected signed zeros and NaN signs/payloads survive
+this reference round trip; this is not a whole-domain numeric equality rule,
+portable Page batching guarantee or native Float64 decision. Keep all Rust and
+accepted S07/S08 sources unchanged. Independent final acceptance remains open.
+
+Frozen source SHA-256 (plugin / runner / wrapper):
+
+- `183070a032c4d9654f4eee69f028cb94ba90d248bceb0b33e86f7105069209dd`
+- `8c6d37428582fc7fbc0de8d13d06de41d8b0d755910fbeb74b76391ec30b6ab0`
+- `641563db5c69e62ec8a0e1dd4b556fcead03a276248347d0a5d941f63a97b9dd`
+
+Implementer capture trace SHA-256, finite-null / nonfinite:
+
+- `61b2a16754fa5f551ef406e96cd8b6e8e33b4d55ebbf9c442cc473bd47238d26`
+- `9c2c56aa00cd98fe1ffbfd770e60a8e28b86b4278e30e2788df58efc8568fd67`
+
+### Remaining acceptance gates
 
 After PM freezes the exact observed outcome matrix, validate complete ordered
 events and all per-cell values, not counts alone. Canonical case membership,
