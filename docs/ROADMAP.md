@@ -210,6 +210,10 @@ independent final-head acceptance at `9df0d5c`.
 
 ## Phase 1: Native File-to-File MVP
 
+T-0022's [parser assessment](provenance/T-0022-parser-candidates.md) separates
+candidate experiments, dependency admission and actual CLI/runtime consumption.
+None of these gates is satisfied by documentation or YAML conformance alone.
+
 T-0012/S13 is Done through PR #107 (`441040f`) for six syntax observations to
 inform configuration-loader constraints. Primary and independent final-head Demo
 passed at `65a2fb3`. It does not adopt a parser or native policy or complete this gate.

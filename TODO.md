@@ -28,6 +28,11 @@ T-0012/S13 is Done through PR #107 (`441040f`) after primary and independent
 final-head Demo at `65a2fb3`, accepting 5 SP. Known S03–S13 acceptance totals
 45 SP. Parent #15 remains open in Backlog, Current 55 / Initial 5 unchanged.
 
+T-0022/S01 is reserved for an isolated parser-candidate experiment (forecast
+5 SP, not committed or accepted). The [assessment](docs/provenance/T-0022-parser-candidates.md)
+defines decision gates; artifact admission and an execution packet are required
+before Ready. T-0022 remains Backlog; parent Initial 8 is unchanged.
+
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
 T-0030–T-0037 and T-0060–T-0067 are `Native Plugins`; T-0040–T-0045 are
