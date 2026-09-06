@@ -379,10 +379,10 @@ validate supported schema categories, all row widths, then row-major non-null
 value categories. A later batch consumer must separately decide ownership,
 resources, lifecycle and physical encoding; handoff is unchanged.
 
-T-0023/S02 is Review in PR #103 at frozen source `e0a44ad` only to compare
+T-0023/S02 is Done through PR #103 (`5d72866`) only to compare
 selected existing batch contents with accepted reference observations. It does
 not choose a consumer, ownership transfer, memory/resource policy, lifecycle,
-or physical encoding; final acceptance is pending.
+or physical encoding; primary and independent final-head acceptance passed.
 
 
 
