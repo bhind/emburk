@@ -28,5 +28,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S08 private record values](T-0012-private-record-values.md) | Done (bounded slice; PR #82, `b428305`) |
 | [T-0012/S09 double-value observation](T-0012-double-value-probe.md) | Done (bounded reference slice; PR #91, `34757c8`) |
 | [T-0012/S10 private double values](T-0012-private-double-values.md) | Done (bounded private slice; PR #93, `742274f`) |
-| [T-0012/S11 schema/value coupling](T-0012-schema-value-coupling-probe.md) | Ready; independent readiness review passed |
+| [T-0012/S11 schema/value coupling](T-0012-schema-value-coupling-probe.md) | In Progress; Stage B authorized after full primary raw review |
 | [T-0021/S06 owned-record handoff](T-0021-owned-record-handoff.md) | Done (bounded private slice; PR #96, `56ef9e9`) |

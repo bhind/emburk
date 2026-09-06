@@ -177,12 +177,14 @@ passed at `8cb13ff`; PR #96 integrated as `56ef9e9`. S06 is Done.
 Evidence is Unit/Contract only, not a public
 API, schema/lifecycle policy, resource guarantee or Embulk compatibility claim.
 
-T-0012/S11 is the next decision-producing candidate: five isolated schema/value
-coupling observations using the admitted Page APIs. Independent readiness
-review passed; the slice is Ready, with no runtime evidence yet.
-Stage A captures before expectations; diagnostic unset/mismatched-setter results
-do not select native defaults or validation. A separate reviewed decision must
-precede any schema-bound record implementation.
+T-0012/S11 Stage A at `a95e350` captured five outcomes and 289 events,
+independently reproduced and fully reviewed by PM. Matching/null/duplicate-name
+cases read selected values; fresh unset text fails at addRecord and string-to-long
+misuse fails at the setter. Stage B automation passes at `b556ce0`: five exact vectors, 39 repaired-copy
+controls and two artifact controls. Primary and separate reproduction pass;
+final PR-head acceptance and integration remain required.
+These diagnostic observations do not select native defaults or validation.
+A separate reviewed decision must precede schema-bound record implementation.
 
 
 
