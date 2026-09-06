@@ -1,8 +1,8 @@
 # T-0012/S10 private double-value storage and selected comparison
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Ready; independent readiness review passed, implementation not started
-- Branch: `feat/t-0012-private-double-values` (implementation, not yet created)
+- State: Review; source acceptance passed, final PR-head gate and integration pending
+- Branch: `feat/t-0012-private-double-values`
 - Owner: Rust Core Implementer; PM owns decisions, records and integration
 - Priority: P0; parent task T-0012; parent epic T-0010
 - Estimate: 5 SP (implementation 2, uncertainty 1, verification 1, environment 1)
@@ -21,6 +21,8 @@ acceptance at `3f18966` and exact final-head acceptance at `59f1b2e`. S08 is
 integrated through PR #82. ADR-0012 is accepted after independent readiness
 review found the four-path scope, actual storage comparison and non-claims
 coherent. No runtime evidence follows from readiness.
+The decision and packet integrated through PR #92 as `74ac118`; implementation
+now uses a fresh dedicated worktree from that accepted revision.
 One active Project item and one serial source owner; preserve user worktrees.
 
 ## Branch and allowlist
@@ -115,3 +117,51 @@ legal, redistribution and production supply-chain limits remain unreviewed.
 Return to PM before changing fixtures, equality meaning, schema/public scope,
 allowlist, APIs/artifacts/dependencies or source-reuse boundaries, or on material
 security/IP uncertainty. Routine retrieval/test failures are fixed in scope.
+
+## Source review and verification
+
+Frozen source: `3df2a888bf37d9871769a291436df4bcabe56cb6`, following
+implementation `0aca08c`. Only the four authorized source paths changed.
+Review corrected the independent expected-value representation, manifest size
+caps, exact negative diagnostics, missing/extra cell rejection and exact ordered
+bit/null assertions. Expected values are raw reference bits, never passed through
+the candidate storage constructor. The local wrapper requires all six named
+passing tests and one intentionally ignored live test.
+
+The implementer ran the exact Demo successfully at the frozen source, retaining
+complete stdout/stderr/exit in `/private/tmp/t0012-s10-demo.yptvkV`.
+Independent Tester reproduction passed at the same source, retaining complete
+logs in `/private/tmp/t0012-s10-independent.sSUB2B`; stdout SHA-256 is
+`98997be62b80183a0116efd2dadd805e2e1e397f30dfbd22b410ce697a257019` and
+stderr is empty. Both compared 12 selected double/null cells, rejected five
+bridge mutations, reran all 45 S09 raw and two artifact controls, and passed
+the unchanged S08/S06 regressions.
+
+Independent quality logs: `/private/tmp/t0012-s10-quality.YjVnNB`.
+Format, workspace tests (41 passed, seven intentionally ignored live tests),
+strict all-target Clippy, Bash syntax, external-cache Python compilation and
+diff checks passed. Implementer quality logs are separately retained in
+`/private/tmp/t0012-s10-quality.RAzbKw`, including 19 Project Python tests.
+Environment: macOS ARM64, Temurin 17.0.20, Rust/Cargo 1.98.1, Python 3.14.6,
+Bash 3.2.57. These are test harness results, not runtime isolation evidence.
+
+Source SHA-256 in allowlist order:
+
+- `logical_record.rs`: `3ac865360e2a89fba0c15a8f4d8e72da08ebd869eb6f66b5a61b23fe1d19fbe3`
+- `double_tests.rs`: `c099422d00b3c2d4757aa0b54bd250d47b6bd431e26903453f860add4741af19`
+- driver: `f19e71fc15ce54de9a84a54d84411c48911bd8cfc72b3fec13470856cbc9a34d`
+- wrapper: `eb7b4ef68ccf404ecef3c93a63e121e045e810ec4e525cfeea01e4f9dc607aa2`
+
+The earlier successful Demo at `0aca08c` is superseded and retained at
+`/private/tmp/t0012-s10-demo.AnDoic`; it is not corrected-source acceptance.
+Temporary evidence is local and must be reproduced if removed. Final PR-head
+acceptance and integration are still required before slice completion.
+
+Primary exact Demo at the same frozen source passed with exit 0, retaining
+complete logs at `/private/tmp/t0012-s10-primary.zigMIH`; stdout SHA-256 is
+`7d49dacd73891711ddda7ce205b978e11cb36fa386c9741808c1abe98b4a9b8e`
+and stderr is empty. Primary inspection confirmed independent reference bits,
+exact record/cell shape checks and unchanged prior storage tests. Primary
+format, workspace tests (41 passed/seven ignored), strict Clippy and diff checks
+also passed. Evidence is Unit/Contract plus Differential for the two selected
+projections only, pending integration; the parent remains open.
