@@ -3,7 +3,7 @@ use std::{
     fs::{self, File, OpenOptions},
     io::{self, BufWriter, Write},
     path::{Path, PathBuf},
-    sync::atomic::{AtomicU64, Ordering},
+    sync::atomic::{AtomicBool, AtomicU64, Ordering},
 };
 
 static NEXT: AtomicU64 = AtomicU64::new(0);
@@ -62,9 +62,16 @@ impl std::fmt::Display for PublicationError {
 
 pub(crate) fn write_atomic<T>(
     target: &Path,
+    cancel: &AtomicBool,
     write: impl FnOnce(&mut BufWriter<File>) -> Result<T, String>,
 ) -> Result<T, PublicationError> {
-    write_with(target, write, |_| Ok(()))
+    write_with(target, write, |phase| {
+        if matches!(phase, Phase::Write | Phase::Link) && cancel.load(Ordering::Acquire) {
+            Err(io::Error::other("cancelled"))
+        } else {
+            Ok(())
+        }
+    })
 }
 
 // The hook is private and is supplied with faults only by unit tests. It runs
@@ -328,13 +335,33 @@ mod tests {
     fn successful_publication_has_one_owner_only_file_and_preserves_value() {
         use std::os::unix::fs::PermissionsExt;
         let target = target();
-        assert_eq!(write_atomic(&target, content).unwrap(), 1);
+        assert_eq!(
+            write_atomic(&target, &AtomicBool::new(false), content).unwrap(),
+            1
+        );
         assert_eq!(fs::read(&target).unwrap(), b"complete\n");
         assert_eq!(
             fs::metadata(&target).unwrap().permissions().mode() & 0o777,
             0o600
         );
         assert_eq!(fs::read_dir(target.parent().unwrap()).unwrap().count(), 1);
+    }
+    #[test]
+    fn cancellation_after_writing_is_checked_again_before_link() {
+        let target = target();
+        let cancel = AtomicBool::new(false);
+        let error = write_atomic(&target, &cancel, |output| {
+            content(output)?;
+            cancel.store(true, Ordering::Release);
+            Ok(())
+        })
+        .unwrap_err();
+        assert_eq!(
+            (error.state, error.phase, error.cleanup),
+            (State::NotPublished, Phase::Link, Cleanup::Removed)
+        );
+        assert!(!target.exists());
+        assert_eq!(fs::read_dir(target.parent().unwrap()).unwrap().count(), 0);
     }
     #[test]
     fn existing_regular_and_symlink_destinations_are_never_replaced() {
@@ -348,7 +375,7 @@ mod tests {
             } else {
                 fs::write(&target, b"old").unwrap();
             }
-            let error = write_atomic(&target, content).unwrap_err();
+            let error = write_atomic(&target, &AtomicBool::new(false), content).unwrap_err();
             assert_eq!(
                 (error.state, error.phase, error.cleanup),
                 (State::NotPublished, Phase::Link, Cleanup::Removed)

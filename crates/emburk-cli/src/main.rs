@@ -5,6 +5,10 @@ use std::{
     fs::{self, File, OpenOptions},
     io::{self, BufReader},
     path::Path,
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
 };
 
 fn main() {
@@ -20,15 +24,21 @@ fn main() {
         )
     {
         println!(
-            "Usage: emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
+            "Usage: emburk run CONFIG\n       emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
         );
         return;
     }
+    let cancelled = Arc::new(AtomicBool::new(false));
     let (command, result) = match arguments.as_slice() {
-        [_, command, config] if command == "run" => (
-            "run",
-            emburk_core::run_config(Path::new(config)).map(|_| ()),
-        ),
+        [_, command, config] if command == "run" => {
+            let signal_flag = Arc::clone(&cancelled);
+            let result = ctrlc::set_handler(move || signal_flag.store(true, Ordering::Release))
+                .map_err(|error| format!("cannot install SIGINT handler: {error}"))
+                .and_then(|()| {
+                    emburk_core::run_config_with_cancel(Path::new(config), &cancelled).map(|_| ())
+                });
+            ("run", result)
+        }
         [_, command, input, output] if command == "transfer-lines" => (
             "transfer-lines",
             transfer(Path::new(input), Path::new(output)),
@@ -46,7 +56,11 @@ fn main() {
     };
     if let Err(error) = result {
         eprintln!("emburk: {command} failed: {error}");
-        std::process::exit(1);
+        std::process::exit(if cancelled.load(Ordering::Acquire) {
+            130
+        } else {
+            1
+        });
     }
 }
 

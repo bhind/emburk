@@ -1,17 +1,18 @@
 //! Private single-file configured CSV execution profile.
 use crate::{
-    csv_stream,
+    bounded_parallel, csv_stream,
     logical_record::{LogicalRecord, LogicalValue},
     logical_schema::{LogicalColumn, LogicalSchema, LogicalType},
     native_formats::{self, Codec, Encoder},
     publication,
-    record_handoff::{RecordSink, RecordSource, SinkError, SourceError, handoff_owned_records},
+    record_handoff::{RecordSource, SourceError},
     yaml_profile::{self, Node},
 };
 use std::{
     fs::{self, File},
     io::{BufRead, Write},
     path::{Path, PathBuf},
+    sync::atomic::{AtomicBool, Ordering},
 };
 
 #[derive(Clone)]
@@ -28,10 +29,14 @@ struct Profile {
     decoder: Codec,
     encoder: Codec,
     projection: Vec<(usize, String)>,
+    workers: usize,
 }
 pub fn run_config(path: &Path) -> Result<usize, String> {
+    run_config_with_cancel(path, &AtomicBool::new(false))
+}
+pub fn run_config_with_cancel(path: &Path, cancel: &AtomicBool) -> Result<usize, String> {
     let p = compile(yaml_profile::load(path)?.compile_node()?)?;
-    execute(p)
+    execute(p, cancel)
 }
 fn scalar(n: &Node) -> Result<&str, String> {
     match n {
@@ -174,7 +179,12 @@ fn compile(root: Node) -> Result<Profile, String> {
     }
     let exec = map(one(top, "exec")?)?;
     exact(exec, &["max_threads", "min_output_tasks"])?;
-    require(exec, "max_threads", "1")?;
+    let workers = scalar(one(exec, "max_threads")?)?
+        .parse::<usize>()
+        .map_err(|_| "invalid max_threads")?;
+    if !(1..=8).contains(&workers) {
+        return Err("max_threads must be 1 through 8".into());
+    }
     require(exec, "min_output_tasks", "1")?;
     let mut projection: Vec<_> = columns
         .iter()
@@ -231,6 +241,7 @@ fn compile(root: Node) -> Result<Profile, String> {
         decoder: codec(input, "decoders", false)?,
         encoder: codec(output, "encoders", true)?,
         projection,
+        workers,
         schema: LogicalSchema::new(
             columns
                 .iter()
@@ -284,7 +295,10 @@ fn codec(mapping: &[(String, Node)], key: &str, encoder: bool) -> Result<Codec, 
     }
     Ok(codec)
 }
-fn execute(profile: Profile) -> Result<usize, String> {
+fn execute(profile: Profile, cancel: &AtomicBool) -> Result<usize, String> {
+    if cancel.load(Ordering::Acquire) {
+        return Err("cancelled".into());
+    }
     let parent = profile
         .input
         .parent()
@@ -321,7 +335,7 @@ fn execute(profile: Profile) -> Result<usize, String> {
         profile: &profile,
         skipped: 0,
     };
-    publication::write_atomic(&profile.output, |output| {
+    publication::write_atomic(&profile.output, cancel, |output| {
         let mut encoded = Encoder::new(output, profile.encoder);
         csv_stream::write_row(
             &mut encoded,
@@ -332,12 +346,16 @@ fn execute(profile: Profile) -> Result<usize, String> {
                 .collect::<Vec<_>>(),
         )
         .map_err(|error| format!("CSV header failed: {error}"))?;
-        let mut sink = Sink {
-            output: &mut encoded,
-            projection: &profile.projection,
-        };
-        let count = handoff_owned_records(&mut source, &mut sink)
-            .map_err(|error| format!("record transfer failed: {error:?}"))?;
+        let count = bounded_parallel::run(
+            profile.workers,
+            cancel,
+            || source.next_record().map_err(|error| error.0),
+            |record| format_record(record, &profile.projection),
+            |bytes| encoded.write_all(&bytes).map_err(|error| error.to_string()),
+        )?;
+        if cancel.load(Ordering::Acquire) {
+            return Err("cancelled".into());
+        }
         encoded
             .finish()
             .map_err(|error| format!("codec finalization failed: {error}"))?;
@@ -425,23 +443,18 @@ impl RecordSource for Source<'_> {
         }
     }
 }
-struct Sink<'a, W: Write> {
-    output: &'a mut W,
-    projection: &'a [(usize, String)],
-}
-impl<W: Write> RecordSink for Sink<'_, W> {
-    fn accept(&mut self, r: LogicalRecord) -> Result<(), SinkError> {
-        let cells = r.cells().collect::<Vec<_>>();
-        let row = self
-            .projection
-            .iter()
-            .map(|(index, _)| match cells[*index] {
-                LogicalValue::Null => None,
-                LogicalValue::Signed64(v) => Some(v.to_string()),
-                LogicalValue::Text(v) => Some(v.clone()),
-                _ => None,
-            })
-            .collect::<Vec<_>>();
-        csv_stream::write_row(&mut self.output, &row).map_err(|e| SinkError(e.to_string()))
-    }
+fn format_record(r: LogicalRecord, projection: &[(usize, String)]) -> Result<Vec<u8>, String> {
+    let cells = r.cells().collect::<Vec<_>>();
+    let row = projection
+        .iter()
+        .map(|(index, _)| match cells[*index] {
+            LogicalValue::Null => None,
+            LogicalValue::Signed64(v) => Some(v.to_string()),
+            LogicalValue::Text(v) => Some(v.clone()),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    let mut output = Vec::new();
+    csv_stream::write_row(&mut output, &row).map_err(|e| e.to_string())?;
+    Ok(output)
 }

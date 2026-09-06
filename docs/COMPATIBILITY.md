@@ -16,7 +16,10 @@ plugin. General CSV and configuration behavior outside that selected matrix
 remains unfinished, not an accepted exception. T-0025/S01 integrated native
 no-clobber publication safety through PR #117; its failure policy is not
 observed Embulk parity. T-0014/S02 (#118) supplies five selected real JSON,
-gzip/bzip2 and filter-order observations; T-0033/S01 native acceptance is pending.
+gzip/bzip2 and filter-order observations. T-0033/S01 (#119) matches those five
+selected projections with native execution; codec bytes are compared only
+after decoding. T-0024/S01 develops native bounded workers/cancellation, not
+Embulk scheduler or performance parity.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate

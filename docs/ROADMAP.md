@@ -10,7 +10,8 @@ after primary and independent eight-case comparison and 81 passing tests.
 This satisfies the bounded stages 2–4 consumer, not full configuration/plugin
 gates. Stage 5 integrated as T-0025/S01 through PR #117 after fault/interruption
 acceptance. Stage 6 reference-only preparation T-0014/S02 integrated through
-PR #118. T-0033/S01 implements the selected native pipeline formats; stage 7
+PR #118. T-0033/S01 integrated stage 6 through PR #119. Stage 7 starts with
+T-0024/S01 bounded ordered formatting/cancellation; validated checkpoint/resume
 and broader parent gates remain open.
 
 ## Phase 0: Governance and Compatibility Contract
