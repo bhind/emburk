@@ -36,4 +36,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S13 config-syntax observation](T-0012-config-syntax-probe.md) | Done (PR #107; final-head acceptance passed) |
 | [T-0022 parser candidate assessment](T-0022-parser-candidates.md) | Proposed refinement; no dependency admission |
 | [T-0031/S01 experimental file transfer](T-0031-file-to-file.md) | Done, PR #110; native-only record consumer |
-| [T-0031/S02 experimental stdout/null](T-0031-output-targets.md) | In Progress; unchanged core transfer |
+| [T-0031/S02 experimental stdout/null](T-0031-output-targets.md) | Review, PR #112; unchanged core transfer |

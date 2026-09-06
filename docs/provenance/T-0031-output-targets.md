@@ -1,6 +1,6 @@
 # T-0031/S02 experimental stdout and null targets
 
-Issue: [#24](https://github.com/bhind/emburk/issues/24). State: In Progress.
+Issue: [#24](https://github.com/bhind/emburk/issues/24). State: Review, PR #112.
 Branch: `feat/t-0031-s02-output-targets`. Owner: Rust Core Implementer.
 Slice estimate: 3 SP (implementation 1, verification 1, uncertainty 1).
 Parent Current forecast 8 / Initial 5; accepted S01 5 SP is not re-awarded.
