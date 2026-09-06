@@ -40,6 +40,7 @@ mod record_handoff;
 // plugin API or a general record-transfer interface.
 mod text_transfer;
 
+mod bounded_parallel;
 mod configured_csv;
 mod csv_stream;
 mod native_formats;
@@ -48,6 +49,8 @@ mod yaml_profile;
 
 #[doc(hidden)]
 pub use configured_csv::run_config;
+#[doc(hidden)]
+pub use configured_csv::run_config_with_cancel;
 #[doc(hidden)]
 pub use text_transfer::transfer_lines;
 

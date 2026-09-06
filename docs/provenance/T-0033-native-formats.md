@@ -1,6 +1,6 @@
 # T-0033/S01 bounded native formats and filters
 
-Issue: [#26](https://github.com/bhind/emburk/issues/26). State: In Progress.
+Issue: [#26](https://github.com/bhind/emburk/issues/26). State: Done through PR #119.
 Forecast: 8 SP. One independently acceptable stage-6 configured-pipeline slice;
 JSON, codec and filter parent tasks remain open outside the selected profile.
 
@@ -100,6 +100,25 @@ Set the pinned local EMBURK_REFERENCE_JAR and Java17 JAVA_HOME. Retain final-hea
 primary/independent evidence and negative controls; no points before integration.
 
 ## Evidence class, stop rule and non-claims
+
+Accepted 8 SP through merge 95b5592cfb9c344fd44203501d89edcb3d942e4c.
+Primary and independent exact Demo passed at
+39c97d86165d1a23e5a7d929d229942c358de351: 97 tests passed, eight existing
+intentional ignores; all eight CSV and five format/filter comparisons matched.
+Fmt/strict locked Clippy/diff-check passed. Negative forced exit mismatch under
+PYTHONOPTIMIZE returned 1 with incomplete retained evidence. No concrete defect
+found in read-only review. macOS arm64, Rust/Cargo 1.98.1, Java17.
+
+Primary /private/tmp/t0033-s01-primary.CzzNmN stdout SHA256
+4167421e21da60d60ab15d3448d94f972f9da42d4ba418e3b4c6d4b7621f5870;
+stderr 080f5b01bf72db11c7b74c2b6ae1e147e7e8d9872edbf8120c7c1fcb714b393d.
+Independent /private/tmp/emburk-t0033-acceptance.72IInY stdout SHA256
+ef2b624e5938d6fdc7ba91ff77fb6873d3212fe166b777f2fa51e57e329a0bc9;
+stderr 19f60937c3b8d111a50f0a9b51719b6958cdeb6b9c936209dc875ba78bce379b.
+Both exit 0; exit-file SHA256
+9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Parent #26 remains Backlog; Current 8 / Initial 5 unchanged. No points awarded
+to broader codec/filter parents by implication.
 
 Selected Differential plus Unit/Contract and local Integration. Stop on new
 unreviewed dependency, codec finalization/cleanup failure, unexplained reference

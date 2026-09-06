@@ -43,9 +43,11 @@ ignores and eight CSV comparisons. Parent #22 remains open in Backlog;
 Initial/Current 8 unchanged. T-0014/S02 is Done through PR #118 (ecf9cc4),
 accepting 3 SP after independent five-case agreement and nine tests at dad393c3.
 Parent #17 remains Backlog, S01/S02 total 8 SP, Initial/Current 8 unchanged.
-T-0033/S01 is In Progress, forecast 8 SP for bounded JSON/codecs/filters.
-Parent #26 Current changes 5 to 8 for this broader configured consumer;
-Initial 5 remains unchanged. Full T-0033/T-0034/T-0035 parents remain unaccepted.
+T-0033/S01 is Done through PR #119 (95b5592), accepting 8 SP after independent
+97-test/thirteen-comparison Demo at 39c97d8. Parent #26 remains Backlog,
+Current 8 / Initial 5 unchanged. Full T-0033/T-0034/T-0035 parents remain
+unaccepted. T-0024/S01 is In Progress (forecast 5 SP) for bounded formatting
+and cancellation; parent Current/Initial 8 unchanged, resume follows separately.
 
 T-0031/S01 is Done through PR #110 (`c5fb13f`), accepting 5 SP, for a native UTF-8 line-record
 File-to-File command under ADR-0015. It consumes T-0021/S06 without claiming
@@ -91,7 +93,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0021 | Define workspace boundaries and core traits (S01–S06 integrated; remaining contracts queued) | Backlog | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI (S01 Done) | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches (S01/S02 Done; remaining contracts queued) | Backlog | P1 | 21 | T-0012, T-0021 | Compatibility Host Implementer | Differential (Embulk) |
-| T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
+| T-0024 | Implement bounded scheduling, backpressure, and cancellation (S01 active) | In Progress | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0025 | Implement atomic transaction and resume state (publication S01 Done) | Backlog | P1 | 8 | T-0013, T-0024 | Rust Core Implementer | Unit/Contract |
 | T-0026 | Implement structured errors and observability | Backlog | P1 | 5 | T-0021 | Rust Core Implementer | Unit/Contract |
 
@@ -102,7 +104,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02 Done; remaining contracts queued) | Backlog | P1 | 8 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0032 | Implement the CSV parser and formatter (configured S01 integrated) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
-| T-0033 | Implement the JSON parser (bounded formats S01 active) | In Progress | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
+| T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
 | T-0036 | Implement format guessing | Backlog | P1 | 5 | T-0032, T-0033, T-0034 | Plugin Implementer | Differential (Embulk) |

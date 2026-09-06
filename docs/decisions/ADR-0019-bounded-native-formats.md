@@ -1,6 +1,6 @@
 # ADR-0019: Bounded native formats in the configured pipeline
 
-- Status: Accepted for T-0033/S01 implementation; acceptance pending
+- Status: Accepted; T-0033/S01 integrated through PR #119
 - Date: 2026-09-06
 
 Extend the existing private configured pipeline rather than expose a premature

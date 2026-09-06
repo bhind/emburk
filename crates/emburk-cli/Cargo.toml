@@ -10,3 +10,4 @@ path = "src/main.rs"
 
 [dependencies]
 emburk-core = { path = "../emburk-core" }
+ctrlc = "=3.5.2"
