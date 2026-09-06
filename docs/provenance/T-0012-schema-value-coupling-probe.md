@@ -1,7 +1,7 @@
 # T-0012/S11 bounded schema/value coupling observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress, Stage B authorized after primary raw capture review
+- State: Done; PR #99 integrated as `413f837` after final-head acceptance
 - Branch: `research/t-0012-schema-value-coupling`
 - Owner: Compatibility Host Implementer; PM owns records and adoption decisions
 - Priority: P0; estimate 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -231,7 +231,14 @@ controls and unchanged S10/S08/S06 wrappers, all exit 0. Workspace tests
 The interrupted initial chained logging attempt is excluded; completed individual
 reruns supply the reproduction evidence. Reviewers previously authored intermediate
 source, so this is separate reproduction, not a blind-review claim.
-Final PR-head acceptance and integration remain required.
+Final exact four-wrapper Demo passed at PR head
+`da7e50fa6c6e80c2c6c8f448d35c6ffddc29e584`, exit 0, logs
+`/private/tmp/t0012-s11-pr-head.kcluXM`; stdout SHA-256
+`c5e2667cf554ffaf88764aaa99efd41e6e6650d1471fcea21b96e021fdac4a57`,
+stderr empty. PR #99 integrated as
+`413f837f2ee5eff72494415002e557e0e2c1d8db`. S11 is Done (5 SP); known
+S03–S11 acceptance totals 35 SP. Parent #15 remains open/Backlog,
+Current 55 / Initial 5 unchanged. Both Project audits passed (54 items).
 
 Source SHA-256:
 

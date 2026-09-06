@@ -12,8 +12,8 @@ Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
 integrated through PR #91 following fresh reference-probe acceptance runs.
 T-0012/S10 is integrated through PR #93; T-0012, T-0013, T-0021 and all other
 unfinished items are `Backlog`. T-0021/S06 is integrated through PR #96.
-T-0012/S11 Stage B is now In Progress after reviewed capture and explicit owner approval.
-Combined active implementation WIP is one of two.
+T-0012/S11 is Done through PR #99 after final-head acceptance.
+Combined active implementation WIP is zero of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -38,7 +38,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S11 Stage B strict observation validation) | In Progress | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
+| T-0012 | Specify configuration, schema, and value semantics (S11 observation automation integrated) | Backlog | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -401,7 +401,7 @@ accepted, bringing S01–S06 to 13 SP. Parent Current 13 / Initial 5 are histori
 forecasts, not proof of completion: remaining work requires refinement before
 another slice is activated. Parent #18 remains open and returns to Backlog.
 
-Next candidate T-0012/S11 observes five bounded schema/value coupling cases
+T-0012/S11 observes five bounded schema/value coupling cases
 under its [packet](docs/provenance/T-0012-schema-value-coupling-probe.md).
 Independent readiness review passed. Estimate 5 SP; Current refines 34 to
 55, Initial remains 5: known accepted S03–S10 total 30 SP plus this slice and
@@ -410,5 +410,7 @@ awarded by planning. Stage A raw capture must precede PM-reviewed expectations;
 unset/mismatched-setter observations cannot automatically become Rust policy.
 Stage A at `a95e350` has now passed primary reproduction and full raw review:
 289 events across five cases. Stage B automation passes primary and separate reproduction at `b556ce0`,
-including 39 repaired-copy and two artifact controls. Final PR-head acceptance
-and integration remain required; no slice points are awarded yet.
+including 39 repaired-copy and two artifact controls. Final-head Demo passed
+at `da7e50f`; PR #99 integrated as `413f837`. S11 is Done, accepting 5 SP;
+known S03–S11 total 35 SP. Parent Current 55 / Initial 5 remain unchanged.
+Parent #15 remains open and returns to Backlog; remaining work requires refinement.

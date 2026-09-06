@@ -46,8 +46,8 @@ reproduction and complete raw review authorize Stage B strict validation.
 The slice integrated through PR #91 as `34757c8`. S10's private double-storage
 decision passed readiness review and integrated through PR #92. S10 is now
 Done through PR #93. T-0021/S06 is Done through PR #96 after primary,
-independent and final-head acceptance. T-0012/S11 Stage B is now active after
-PR #98 readiness integration; combined active WIP is one of two. T-0012, T-0013 and
+independent and final-head acceptance. T-0012/S11 is Done through PR #99 after final-head acceptance;
+combined active WIP is zero of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -56,7 +56,7 @@ T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S11 | In Progress | Stage B strict validation after reviewed raw capture |
+| T-0012/S11 | Done | Automated strict observation validation; PR #99 integrated |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
@@ -362,6 +362,7 @@ independently reproduced and fully reviewed by PM. Matching/null/duplicate-name
 cases read selected values; fresh unset text fails at addRecord and string-to-long
 misuse fails at the setter. Stage B automation passes at `b556ce0`: five exact vectors, 39 repaired-copy
 controls and two artifact controls. Primary and separate reproduction pass;
-final PR-head acceptance and integration remain required.
+final-head Demo passed at `da7e50f`; PR #99 integrated as `413f837`.
+The bounded observation slice is Done; parent contracts remain open.
 These diagnostic observations do not select native defaults or validation.
 A separate reviewed decision must precede schema-bound record implementation.
