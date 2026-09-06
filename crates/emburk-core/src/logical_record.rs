@@ -8,7 +8,7 @@ impl Float64Bits {
         Self(value.to_bits())
     }
 
-    pub(super) fn to_float(self) -> f64 {
+    fn to_float(self) -> f64 {
         f64::from_bits(self.0)
     }
 

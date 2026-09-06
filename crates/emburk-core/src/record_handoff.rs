@@ -189,24 +189,37 @@ mod tests {
     #[test]
     fn preserves_all_selected_stored_values_and_owned_text() {
         let mut original_text = String::from("owned 🦀\n");
-        let expected = LogicalRecord::new(vec![
+        let expected_bits = [
+            0x7fef_ffff_ffff_ffff,
+            0xffef_ffff_ffff_ffff,
+            0x0000_0000_0000_0001,
+            0x8000_0000_0000_0001,
+            0x0000_0000_0000_0000,
+            0x8000_0000_0000_0000,
+            0x7ff0_0000_0000_0000,
+            0xfff0_0000_0000_0000,
+            0x7ff8_0000_0000_0000,
+            0x7ff8_0000_0000_0042,
+            0xfff8_0000_0000_0042,
+        ];
+        let mut cells = vec![
             LogicalValue::Null,
             LogicalValue::Boolean(false),
+            LogicalValue::Boolean(true),
             LogicalValue::Signed64(i64::MIN),
             LogicalValue::Signed64(i64::MAX),
             LogicalValue::Text(original_text.clone()),
-            LogicalValue::Float64(Float64Bits::from_float(0.0)),
-            LogicalValue::Float64(Float64Bits::from_float(-0.0)),
-            LogicalValue::Float64(Float64Bits::from_float(f64::INFINITY)),
-            LogicalValue::Float64(Float64Bits::from_float(f64::from_bits(
-                0xfff8_0000_0000_0042,
-            ))),
-        ]);
-        let input = LogicalRecord::new(expected.cells().cloned().collect());
+            LogicalValue::Text(String::new()),
+        ];
+        cells.extend(
+            expected_bits
+                .map(|bits| LogicalValue::Float64(Float64Bits::from_float(f64::from_bits(bits)))),
+        );
+        let input = LogicalRecord::new(cells);
         original_text.push_str("changed after construction");
         let (result, records, events) = run(vec![Ok(input)], None);
         assert_eq!(result, Ok(1));
-        assert_eq!(records, vec![expected]);
+        assert_eq!(records.len(), 1);
         assert_eq!(
             events,
             vec![
@@ -219,20 +232,21 @@ mod tests {
             ]
         );
         let values: Vec<_> = records[0].cells().collect();
-        assert_eq!(
-            values[5],
-            &LogicalValue::Float64(Float64Bits::from_float(0.0))
-        );
-        assert_eq!(
-            values[6],
-            &LogicalValue::Float64(Float64Bits::from_float(-0.0))
-        );
-        assert_eq!(
-            values[8],
-            &LogicalValue::Float64(Float64Bits::from_float(f64::from_bits(
-                0xfff8_0000_0000_0042
-            )))
-        );
+        assert_eq!(values[0], &LogicalValue::Null);
+        assert_eq!(values[1], &LogicalValue::Boolean(false));
+        assert_eq!(values[2], &LogicalValue::Boolean(true));
+        assert_eq!(values[3], &LogicalValue::Signed64(i64::MIN));
+        assert_eq!(values[4], &LogicalValue::Signed64(i64::MAX));
+        assert_eq!(values[5], &LogicalValue::Text("owned 🦀\n".into()));
+        assert_eq!(values[6], &LogicalValue::Text(String::new()));
+        let actual_bits: Vec<_> = values[7..]
+            .iter()
+            .map(|value| match value {
+                LogicalValue::Float64(value) => value.bits(),
+                other => panic!("expected Float64, got {other:?}"),
+            })
+            .collect();
+        assert_eq!(actual_bits, expected_bits);
     }
 
     #[test]
