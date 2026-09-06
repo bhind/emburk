@@ -252,4 +252,10 @@ must be established per combination before labeling its delivery semantics.
 
 ## Trust Boundaries
 
+ADR-0018 defines a private same-directory publication primitive for configured
+output: owned temporary file, file sync, no-clobber hard link, directory sync,
+owned-temp cleanup and cleanup sync. Visibility, durability and cleanup states
+are separate. T-0025/S01 implementation/acceptance is in progress; no generic
+transaction or resume contract is implied.
+
 The Rust core, native built-ins, external native processes, JVM host, JRuby host, and user plugins are distinct trust boundaries. Protocol input, resume state, plugin output, and artifact metadata must be validated at each boundary.

@@ -3,12 +3,13 @@ use crate::{
     csv_stream,
     logical_record::{LogicalRecord, LogicalValue},
     logical_schema::{LogicalColumn, LogicalSchema, LogicalType},
+    publication,
     record_handoff::{RecordSink, RecordSource, SinkError, SourceError, handoff_owned_records},
     yaml_profile::{self, Node},
 };
 use std::{
-    fs::{self, File, OpenOptions},
-    io::{BufReader, BufWriter, Write},
+    fs::{self, File},
+    io::{BufReader, BufWriter},
     path::{Path, PathBuf},
 };
 
@@ -213,51 +214,26 @@ fn execute(profile: Profile) -> Result<usize, String> {
         return Ok(0);
     };
     let file = File::open(&input_path).map_err(|e| format!("cannot open input: {e}"))?;
-    let mut options = OpenOptions::new();
-    options.write(true).create_new(true);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::OpenOptionsExt;
-        options.mode(0o600);
-    }
-    let output = options
-        .open(&profile.output)
-        .map_err(|e| format!("cannot create output exclusively: {e}"))?;
     let mut source = Source {
         input: BufReader::new(file),
         profile: &profile,
         skipped: 0,
     };
-    let mut sink = Sink {
-        output: BufWriter::new(output),
-    };
-    csv_stream::write_row(
-        &mut sink.output,
-        &profile
-            .schema
-            .columns()
-            .map(|column| Some(column.name().to_owned()))
-            .collect::<Vec<_>>(),
-    )
-    .map_err(|error| {
-        format!(
-            "output header failed: {error}; output may be partially written at {}",
-            profile.output.display()
+    publication::write_atomic(&profile.output, |output| {
+        csv_stream::write_row(
+            output,
+            &profile
+                .schema
+                .columns()
+                .map(|column| Some(column.name().to_owned()))
+                .collect::<Vec<_>>(),
         )
-    })?;
-    let n = handoff_owned_records(&mut source, &mut sink).map_err(|e| {
-        format!(
-            "CSV transfer failed: {e:?}; output may be partially written at {}",
-            profile.output.display()
-        )
-    })?;
-    sink.output.flush().map_err(|e| {
-        format!(
-            "output flush failed: {e}; output may be partially written at {}",
-            profile.output.display()
-        )
-    })?;
-    Ok(n)
+        .map_err(|error| format!("CSV header failed: {error}"))?;
+        let mut sink = Sink { output };
+        handoff_owned_records(&mut source, &mut sink)
+            .map_err(|error| format!("CSV transfer failed: {error:?}"))
+    })
+    .map_err(|error| error.to_string())
 }
 struct Source<'a> {
     input: BufReader<File>,
@@ -302,10 +278,10 @@ impl RecordSource for Source<'_> {
         }
     }
 }
-struct Sink {
-    output: BufWriter<File>,
+struct Sink<'a> {
+    output: &'a mut BufWriter<File>,
 }
-impl RecordSink for Sink {
+impl RecordSink for Sink<'_> {
     fn accept(&mut self, r: LogicalRecord) -> Result<(), SinkError> {
         let row = r
             .cells()
