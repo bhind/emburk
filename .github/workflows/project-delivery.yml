@@ -16,9 +16,33 @@ concurrency:
 permissions: {}
 
 jobs:
+  credential_gate:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: Check Project credential
+        id: check
+        shell: bash
+        env:
+          PROJECTS_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        run: |
+          if [[ -n "$PROJECTS_TOKEN" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "## Project delivery automation skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "PROJECTS_TOKEN is not configured. No Project data was read or changed." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   review:
+    needs: credential_gate
     if: >-
+      github.event_name == 'pull_request_target' &&
+      needs.credential_gate.outputs.configured == 'true' &&
       github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
     permissions:
@@ -34,7 +58,11 @@ jobs:
           GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
 
   snapshot:
-    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: credential_gate
+    if: >-
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
+      needs.credential_gate.outputs.configured == 'true' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     permissions:
       contents: write

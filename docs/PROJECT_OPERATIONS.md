@@ -93,16 +93,22 @@ and store the daily history on a dedicated `project-metrics` branch. Never
 print, persist, or place the credential in command arguments or artifacts.
 
 The snapshot workflow runs at 00:17 UTC and can also be dispatched manually
-from the default branch. It refuses non-default refs, and exposes the Project
-secret only to the audit and snapshot steps.
-It fails before writing if Project discovery or configuration audit fails.
+from the default branch. It refuses non-default refs. A zero-permission gate
+checks whether the Project credential is configured without printing it. When
+the secret is absent, the workflow succeeds with a non-sensitive job summary
+and skips all Project reads and mutations. When present, the secret is exposed
+only to the gate and the audit, snapshot, or review step that requires it. The
+snapshot path accepts only schedule and manual-dispatch events; pull request
+events cannot invoke it. It fails before writing if Project discovery or
+configuration audit fails.
 Ready-for-review automation uses
 `pull_request_target`, checks out only the default branch without persisting
 credentials, accepts only numeric PR identifiers, and runs only for OWNER,
-MEMBER, or COLLABORATOR authors targeting the default branch. It updates only
-one closing-linked Issue whose current Status is In Progress; every ambiguous
-or conflicting case fails before mutation and requires Project Manager
-reconciliation. The
+MEMBER, or COLLABORATOR authors targeting the default branch from a branch in
+the same repository. Fork pull requests never receive the Project mutation
+credential. It updates only one closing-linked Issue whose current Status is In
+Progress; every ambiguous or conflicting case fails before mutation and
+requires Project Manager reconciliation. The
 `project-metrics` branch must exist before the snapshot workflow is enabled; a
 missing branch fails safely.
 

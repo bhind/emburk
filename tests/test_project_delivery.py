@@ -12,6 +12,19 @@ def item(number, status, points, iteration="i1", content_type="Issue"):
 
 
 class ProjectDeliveryTest(unittest.TestCase):
+    def test_workflow_separates_events_and_requires_credential_gate(self):
+        workflow = (Path(__file__).parents[1] / ".github/workflows/project-delivery.yml").read_text(encoding="utf-8")
+        self.assertIn("github.event_name == 'pull_request_target'", workflow)
+        self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", workflow)
+        self.assertIn("github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'", workflow)
+        self.assertEqual(workflow.count("needs: credential_gate"), 2)
+        self.assertEqual(workflow.count("needs.credential_gate.outputs.configured == 'true'"), 2)
+        self.assertNotIn("snapshot:\n    if: github.ref", workflow)
+        review = workflow.split("\n  review:\n", 1)[1].split("\n  snapshot:\n", 1)[0]
+        snapshot = workflow.split("\n  snapshot:\n", 1)[1]
+        self.assertNotIn("github.event_name == 'schedule'", review)
+        self.assertNotIn("github.event_name == 'pull_request_target'", snapshot)
+
     def test_snapshot_counts_remaining_completion_and_status(self):
         value = make_snapshot([item(1, "In Progress", 5), item(2, "Blocked", 3), item(3, "Done", 2), item(4, "Review", 5, content_type="PullRequest")], dt.date(2026, 9, 5))
         self.assertEqual((value.total_issues, value.remaining_issues, value.remaining_points), (3, 2, 8))
