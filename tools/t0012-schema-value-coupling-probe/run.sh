@@ -41,7 +41,11 @@ def text(n,cap=8388608): return data(n,cap).decode()
 def one(n):
  s=text(n,4096); need('metadata-line',s.endswith('\n') and s.count('\n')==1); return s[:-1]
 def sha(n): return hashlib.sha256(data(n)).hexdigest()
-need('evidence-path',e.is_absolute() and e.is_dir() and not e.is_symlink() and e.resolve()==e and repo not in e.parents)
+need('evidence-path',e.is_absolute() and e.is_dir() and not e.is_symlink() and e.resolve()==e and e != repo and repo not in e.parents)
+# A resolved leaf is insufficient: a symlinked ancestor can substitute the
+# whole evidence tree after the caller's path check.
+for ancestor in (e,)+tuple(e.parents):
+ need('evidence-ancestor',not ancestor.is_symlink())
 need('stage',one('stage.txt')==('full' if level in ('live','strict') else one('stage.txt')))
 rev=one('source-revision.txt'); need('source-revision',re.fullmatch('[0-9a-f]{40}',rev)!=None)
 for label,path in paths.items():
@@ -49,19 +53,27 @@ for label,path in paths.items():
  try: blob=subprocess.run(['git','-C',str(repo),'show',rev+':'+path],check=True,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL).stdout
  except subprocess.CalledProcessError: raise Bad('source-revision')
  need('source-hash',one(label+'-source.sha256')==hashlib.sha256(blob).hexdigest())
+need('fixture-source-hash',one('plugin-source.sha256')=='3458f499a93ad307c75395950c8ee1e3478c5eaeba706a645909124e53a305e3')
+need('executable-url',one('executable-url.txt')=='https://github.com/embulk/embulk/releases/download/v0.11.5/embulk-0.11.5.jar')
+need('license-locators',one('executable-license-notice-locators.txt')=='META-INF/LICENSE|META-INF/NOTICE')
+need('plugin-coordinate',one('plugin-coordinate.txt')=='source=maven|group=org.embulk.t0012|name=t0012_coupling|version=0.0.1|artifact=embulk-input-t0012_coupling|local-only')
+for n in ('executable-manifest.txt','java-version.txt','javac-version.txt','jar-version.txt','python-version.txt','bash-version.txt','os-version.txt'):
+ need('runtime-metadata',bool(text(n,65536).strip()))
 need('executable-pin',one('executable.sha256')=='e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47')
 need('license-hash',sha('LICENSE-executable')=='cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30')
 need('notice-hash',sha('NOTICE-executable')=='27f0e45afdf10e406ee8bf478bfce38279e9087338a7981942a4a2762bcd5be8')
 need('jar-path',one('plugin-jar-path.txt')=='plugin-under-test.jar'); need('jar-hash',one('plugin-jar.sha256')==sha('plugin-under-test.jar'))
-cases=text('coupling-cases.raw').splitlines(); need('case-count',len(cases)==5); combined=[]
+case_bytes=data('coupling-cases.raw'); need('canonical-newline',case_bytes.endswith(b'\n') and b'\n\n' not in case_bytes)
+cases=case_bytes.decode().splitlines(); need('case-count',len(cases)==5); combined=[]; capture_ids=set()
 for i,f in enumerate(fs):
  row=cases[i].split('|'); ex,n=counts[f]; need('case-grammar',len(row)==5 and row[:2]==['COUPLINGCASE',f]); need('case-exit',row[2]==str(ex)); need('case-count',row[3]==str(n))
- rows=text(f+'.trace.raw').splitlines(); need('event-count',len(rows)==n); ctx={}; norm=[]
+ trace_bytes=data(f+'.trace.raw'); need('canonical-newline',trace_bytes.endswith(b'\n') and b'\n\n' not in trace_bytes)
+ rows=trace_bytes.decode().splitlines(); need('event-count',len(rows)==n); ctx={}; norm=[]
  for line in rows:
   a=line.split('|'); need('trace-grammar',len(a)>=5 and a[:2]==['COUPLINGTRACE',f])
   try: u=uuid.UUID(a[2])
   except ValueError: raise Bad('capture-id')
-  need('capture-id',str(u)==a[2] and u.version==4); ctx.setdefault(a[2],len(ctx)+1); o=ctx[a[2]]
+  need('capture-id',str(u)==a[2] and u.version==4); ctx.setdefault(a[2],len(ctx)+1); o=ctx[a[2]]; capture_ids.add(a[2])
   need('sequence',a[3].isdigit() and int(a[3])==1+sum(x[0]==o for x in norm))
   vals=[]
   for x in a[5:]:
@@ -72,14 +84,28 @@ for i,f in enumerate(fs):
  need('context-segments',len(ctx)==(2 if f in ('unset-text','wrong-setter') else 1) and (len(ctx)==1 or [x[0] for x in norm[-2:]]==[2,2]))
  need('expected-vector',hashlib.sha256(json.dumps(norm,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()==vectors[f])
  material=('\n'.join(rows)+'\n').encode(); need('case-digest',row[4]==hashlib.sha256(material).hexdigest()); need('process-exit',one(f+'.exit.txt')==str(ex))
- raw=[x for x in text(f+'.stdout.log').splitlines() if x.startswith('COUPLINGTRACE|'+f+'|')]; need('raw-log',raw==rows); text(f+'.stderr.log'); combined+=rows
+ stdout=text(f+'.stdout.log').splitlines()
+ raw=[x for x in stdout if x.startswith('COUPLINGTRACE|')]
+ need('foreign-trace',raw==rows); text(f+'.stderr.log'); combined+=rows
 need('combined-order',text('coupling-traces.raw').splitlines()==combined)
+need('capture-cross-fixture-uniqueness',len(capture_ids)==sum(2 if f in ('unset-text','wrong-setter') else 1 for f in fs))
 manifest={}
 for line in text('raw-evidence-hashes.txt',65536).splitlines():
  a=line.split('='); need('hash-manifest-grammar',len(a)==2 and a[0] not in manifest and re.fullmatch('[0-9a-f]{64}',a[1])); manifest[a[0]]=a[1]
 names=['coupling-cases.raw','coupling-traces.raw']+[f+'.'+s for f in fs for s in ('stdout.log','stderr.log','trace.raw','exit.txt')]
 need('hash-manifest-count',set(names)==set(manifest))
+need('hash-manifest-order',list(manifest)==sorted(names))
 for n in names: need('raw-hash',manifest[n]==sha(n))
+# The complete integrity manifest covers every metadata and raw artifact.  Its
+# detached digest avoids a self-referential hash while still binding the list.
+integrity={}
+for line in text('integrity-manifest.txt',262144).splitlines():
+ a=line.split('=',1); need('integrity-grammar',len(a)==2 and a[0] not in integrity and re.fullmatch('[0-9a-f]{64}',a[1])); integrity[a[0]]=a[1]
+actual={p.name for p in e.iterdir() if p.is_file() and p.name not in ('integrity-manifest.txt','integrity-manifest.sha256')}
+need('integrity-count',set(integrity)==actual)
+need('integrity-order',list(integrity)==sorted(actual))
+for n,h in integrity.items(): need('integrity-hash',h==sha(n))
+need('integrity-seal',one('integrity-manifest.sha256')==hashlib.sha256(data('integrity-manifest.txt')).hexdigest())
 PY
 }
 
@@ -227,7 +253,17 @@ for file in coupling-cases.raw coupling-traces.raw \
   duplicate-name.stdout.log duplicate-name.stderr.log duplicate-name.trace.raw duplicate-name.exit.txt
 do
   shasum -a 256 "$evidence/$file" | awk -v name="$file" '{print name "=" $1}'
-done > "$evidence/raw-evidence-hashes.txt"
+done | LC_ALL=C sort > "$evidence/raw-evidence-hashes.txt"
+
+# Cover raw records and all provenance/runtime metadata without self-hashing.
+# Keep the detached manifest digest separate so validation can detect edits to
+# the manifest itself as well as edits to its members.
+find "$evidence" -maxdepth 1 -type f ! -name integrity-manifest.txt ! -name integrity-manifest.sha256 -print | LC_ALL=C sort | while IFS= read -r file
+do
+  name=${file##*/}
+  shasum -a 256 "$file" | awk -v name="$name" '{print name "=" $1}'
+done > "$evidence/integrity-manifest.txt"
+shasum -a 256 "$evidence/integrity-manifest.txt" | awk '{print $1}' > "$evidence/integrity-manifest.sha256"
 
 cat "$evidence/coupling-cases.raw"
 if [[ "$mode" == capture ]]; then
