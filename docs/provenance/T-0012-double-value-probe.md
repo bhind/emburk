@@ -1,7 +1,7 @@
 # T-0012/S09 bounded double-value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; Stage A reviewed, Stage B authorized
+- State: Review; PR #91, final PR-head acceptance pending
 - Branch: `research/t-0012-double-value-recovery`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
@@ -203,8 +203,19 @@ the corrupt-artifact injection). It is not acceptance evidence. Quality checks
 pass: Bash syntax, diff, workspace formatting, 35 Rust tests / six intentional
 live-test ignores, strict all-target Clippy and 19 Project Python tests. The
 environment remains Temurin 17.0.20, Cargo 1.98.1 and Python 3.14.6 on macOS.
-Independent Tester and security review, final PR-head Demo and integration
-remain required before acceptance.
+Independent Tester reproduced the exact Demo at the same source revision:
+`/private/tmp/t0012-s09-independent.LuK8Lk`, exit 0, empty stderr; stdout SHA-256
+`b7d724ea1b5d84f10722f4ac8c57b9af2544735a95eae2bd97e400b9d88fd4f5`.
+Fresh independent evidence is in the same probe root at `run.tcOfGi/evidence`.
+Independent quality/source review passed with no concrete blocker. The separate
+security/supply-chain static review found no blocker within the explicitly
+approved trusted developer-harness scope. Ambient curl/Java/PATH settings are
+not isolated; the harness must not be presented as a security boundary. Durable
+private evidence retention remains unimplemented: all fresh evidence is currently
+inspectable, and cleanup requires fresh review/reproduction before relying on
+it again. These limitations do not establish production isolation, attestation,
+SBOM, redistribution or patent/FTO clearance. Final PR-head Demo and integration
+of PR #91 are required before acceptance. Parent Issue #15 stays open.
 
 The first Stage B source revision `7ec550b` passed the selected live fixtures,
 40 raw rejection controls and existing S08/S06 comparisons in the retained

@@ -9,7 +9,7 @@ tasks. Dependencies name predecessor T-IDs and do not imply completion.
 
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
 `T-0013/S08`, `T-0012/S08` and `T-0021/S05` are integrated. T-0012/S09 is
-`In Progress` following owner approval for reference-probe execution.
+`Review` in PR #91 following fresh reference-probe acceptance runs.
 T-0013, T-0021 and all other unfinished items are `Backlog`.
 Combined active WIP is one of two.
 
@@ -36,7 +36,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S09: double-value reference observation) | In Progress | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S09: double-value reference observation) | Review | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -369,3 +369,9 @@ PM reviewed all 114/93 events: both fixtures exit 0; finite bounds, subnormals,
 signed zero, null, infinities and selected NaN bits remain distinguishable.
 Stage B exact vectors and repaired-copy controls are authorized in the packet.
 No full acceptance, native Float64 policy or parent completion follows yet.
+
+S09 corrected source acceptance at `3f18966` passes primary and independent
+Tester: two reference fixtures, 45 raw controls, two artifact controls, unchanged
+S08/S06 regressions and strict quality checks. PR #91 is Review; final-head Demo
+and integration remain required. Parent #15 stays open; no native Float64 or
+whole-domain equality decision follows from this bounded reference slice.
