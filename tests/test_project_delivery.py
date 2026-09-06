@@ -3,8 +3,9 @@ import datetime as dt
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from scripts.project_delivery import AuditError, append_snapshot, csv_safe, ideal_remaining, make_snapshot, render_svg, review_candidate
+from scripts.project_delivery import AuditError, ProjectRef, append_snapshot, csv_safe, ideal_remaining, make_snapshot, normalize_snapshot_item, render_svg, review_candidate, snapshot_items
 
 
 def item(number, status, points, iteration="i1", content_type="Issue"):
@@ -12,6 +13,49 @@ def item(number, status, points, iteration="i1", content_type="Issue"):
 
 
 class ProjectDeliveryTest(unittest.TestCase):
+    def test_snapshot_item_normalizes_only_delivery_fields(self):
+        node = {"type": "ISSUE", "fieldValues": {"nodes": [
+            {"name": "In Progress", "field": {"name": "Status"}},
+            {"number": 3, "field": {"name": "Story Points"}},
+            {"iterationId": "i1", "title": "2026-W36", "startDate": "2026-08-31", "duration": 7, "field": {"name": "Iteration"}},
+            {"name": "P1", "field": {"name": "Priority"}},
+        ]}}
+        expected = item(1, "In Progress", 3)
+        del expected["content"]["number"]
+        self.assertEqual(normalize_snapshot_item(node), expected)
+
+    @patch("scripts.project_delivery.run_gh")
+    def test_snapshot_items_follows_graphql_pagination(self, run_gh_mock):
+        def page(node_type, has_next, cursor):
+            return {"data": {"user": {"projectV2": {"items": {
+                "nodes": [{"type": node_type, "fieldValues": {"nodes": []}}],
+                "pageInfo": {"hasNextPage": has_next, "endCursor": cursor},
+            }}}}}
+
+        run_gh_mock.side_effect = [page("ISSUE", True, "next"), page("PULL_REQUEST", False, None)]
+        project = ProjectRef("bhind", 2, "Emburk Delivery", "https://example/project")
+        self.assertEqual([entry["content"]["type"] for entry in snapshot_items(project)], ["Issue", "PullRequest"])
+        self.assertEqual(run_gh_mock.call_count, 2)
+        self.assertIn("cursor=next", run_gh_mock.call_args.args)
+
+    @patch("scripts.project_delivery.run_gh")
+    def test_snapshot_items_fails_closed_without_pagination_cursor(self, run_gh_mock):
+        run_gh_mock.return_value = {"data": {"user": {"projectV2": {"items": {
+            "nodes": [], "pageInfo": {"hasNextPage": True, "endCursor": None},
+        }}}}}
+        with self.assertRaisesRegex(AuditError, "no end cursor"):
+            snapshot_items(ProjectRef("bhind", 2, "Emburk Delivery", "https://example/project"))
+
+    @patch("scripts.project_delivery.run_gh")
+    def test_snapshot_items_fails_closed_on_repeated_cursor(self, run_gh_mock):
+        repeated = {"data": {"user": {"projectV2": {"items": {
+            "nodes": [], "pageInfo": {"hasNextPage": True, "endCursor": "same"},
+        }}}}}
+        run_gh_mock.side_effect = [repeated, repeated]
+        with self.assertRaisesRegex(AuditError, "repeated an end cursor"):
+            snapshot_items(ProjectRef("bhind", 2, "Emburk Delivery", "https://example/project"))
+        self.assertEqual(run_gh_mock.call_count, 2)
+
     def test_workflow_separates_events_and_requires_credential_gate(self):
         workflow = (Path(__file__).parents[1] / ".github/workflows/project-delivery.yml").read_text(encoding="utf-8")
         self.assertIn("github.event_name == 'pull_request_target'", workflow)

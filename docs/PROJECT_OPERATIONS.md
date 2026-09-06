@@ -72,6 +72,10 @@ the committed baseline. Completed count and points are recorded alongside a
 daily Status distribution. Pull requests are excluded from totals so linked
 Issue and PR cards are not counted twice.
 
+Snapshot collection uses a paginated Project GraphQL query limited to item
+type, Status, Story Points, and Iteration. It does not request repository or
+Issue content and does not depend on GitHub CLI's richer item materialization.
+
 ## Automation boundary
 
 Enabled built-in workflows cover item-added defaults, closed items, merged pull
