@@ -19,7 +19,10 @@ after primary and independent final-head acceptance at `ca9af0a`, accepting
 5 SP (10 SP across S01/S02). Parent Current is 21; Initial remains 8.
 The estimate now covers accepted S01, S02 verification, and remaining physical,
 timestamp and JSON uncertainty that does not fit 8 SP. It is a forecast, not
-completion evidence. Parent #20 remains open in Backlog; WIP is zero of two.
+completion evidence. Parent #20 remains open in Backlog. T-0012/S12 is Ready
+for seven selected configuration-envelope observations, 5 SP; Stage A capture
+is authorized, with raw review required before Stage B validation. Parent
+Current 55 / Initial 5 is unchanged. No points are awarded for preparation.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -44,7 +47,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S11 observation automation integrated) | Backlog | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
+| T-0012 | Specify configuration, schema, and value semantics (S12 config-envelope capture Ready) | Ready | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
