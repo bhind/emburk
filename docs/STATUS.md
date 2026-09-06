@@ -12,7 +12,8 @@ Development state: `bootstrap`
   retaining the explicit not-yet-a-loader smoke test.
 - T-0031/S01 implements an experimental `transfer-lines INPUT OUTPUT` path:
   real files, private Text records and the existing synchronous owned handoff.
-  Final acceptance and integration are pending. It does not load Embulk
+  PR #110 integrated after primary and independent acceptance (68 passing tests,
+  eight existing intentional ignores). It does not load Embulk
   configuration, execute plugins, or implement transactions and resume.
 - No native, Java-hosted, or JRuby-hosted plugin is implemented or verified.
 - Thirteen selected private raw-scalar outcomes match the pinned Embulk
@@ -64,8 +65,9 @@ passed seven cases/36 events, strict controls and unchanged S01/S02 regressions.
 No native configuration behavior is added. T-0012, T-0013 and T-0021 parent
 contracts remain open. S13 is Done through PR #107 (`441040f`) after primary
 and independent final-head Demo at `65a2fb3`: six syntax cases/60 events,
-strict controls and unchanged S12 regression. T-0031/S01 occupies one WIP lane
-for the explicitly requested experimental native File-to-File path.
+strict controls and unchanged S12 regression. T-0031/S01 is Done through PR #110
+(`c5fb13f`) for the explicitly requested experimental native File-to-File path.
+No WIP lane remains occupied; the full file/plugin parent stays open.
 
 | Item | State | Purpose |
 |---|---|---|
