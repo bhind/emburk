@@ -359,7 +359,8 @@ API, schema/lifecycle policy, resource guarantee or Embulk compatibility claim.
 
 T-0012/S11 is the next decision-producing candidate: five isolated schema/value
 coupling observations using the admitted Page APIs. Independent readiness
-review passed; the slice is Ready, with no runtime evidence yet.
+review passed and PR #98 integrated the packet. Stage A is In Progress, with
+no runtime evidence yet.
 Stage A captures before expectations; diagnostic unset/mismatched-setter results
 do not select native defaults or validation. A separate reviewed decision must
 precede any schema-bound record implementation.

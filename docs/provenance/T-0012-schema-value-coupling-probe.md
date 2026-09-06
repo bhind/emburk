@@ -1,7 +1,7 @@
 # T-0012/S11 bounded schema/value coupling observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress, Stage A only; approved packet integrated through PR #98 as `b98d044`
+- State: In Progress, Stage B authorized after primary raw capture review
 - Branch: `research/t-0012-schema-value-coupling`
 - Owner: Compatibility Host Implementer; PM owns records and adoption decisions
 - Priority: P0; estimate 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -81,6 +81,63 @@ Freeze source before capture. No full-success or validate-success marker may
 be emitted by capture-only mode. Stage A is not slice acceptance.
 
 ## Stage B: strict evidence gates
+
+### Stage A reviewed observations (2026-09-06)
+
+Frozen capture source: `a95e3507dd91bdf005b09e4ebfb5582c4ed21164`.
+Implementer exact capture command exited 0 with complete outer logs at
+`/private/tmp/t0012-s11-stage-a.iaeqSO`; raw evidence:
+`/private/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-schema-value-coupling/run.vHxMGd/evidence`.
+Primary independently reproduced the command (exit 0), retaining complete logs
+at `/private/tmp/t0012-s11-primary-stage-a.GWcWHc` and raw evidence at
+`/private/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-schema-value-coupling/run.FfEXas/evidence`.
+Primary read all 289 decoded events and compared both physical-order streams
+with only UUIDs replaced by ordinal context identities: all five matched.
+
+| Fixture | Process exit / events | Actual operation and outcome | Policy limit |
+|---|---|---|---|
+| matching | 0 / 78 | One four-cell row read as true, 37, raw double `8000000000000000`, `A\|B`; all null flags false | Selected matching assignments only |
+| explicit-null | 0 / 74 | One row; four true null flags; no typed getter invoked | Explicit null, not unset/default equivalence |
+| unset-text | 1 / 46 | `builder-add-record` throws `java.lang.NullPointerException`; no collector add/read, no run success | Fresh unset text only, not a general width/default rule |
+| wrong-setter | 1 / 31 | `builder-set-string` on long column throws `java.lang.IllegalStateException`; addRecord never called | One setter/type misuse only |
+| duplicate-name | 0 / 60 | One row; distinct positions read long 37 and string `right`, both non-null | Position-specific selected observation, not name lookup |
+
+Exact observed NPE message: `Cannot invoke "String.length()" because "value" is null`.
+Exact IllegalStateException message: `Setting a STRING value to a LONG column: number, long`.
+These diagnostics are tied to the observed executable/JVM environment, not a
+portable/public Rust diagnostic contract. Normal cases have one page/row in this
+capture, exact finish/close/reader exhaustion and one task/one cleanup report.
+Both error cases close the test-local collector/reader at zero pages/rows,
+propagate the same exception through run/control/transaction, emit an exception
+terminal and have cleanup task 1/report 0. Do not generalize Page counts.
+
+Normal cases use one UUID context with contiguous sequence including cleanup.
+Error cases have the primary context ending at terminal, then a distinct UUID
+context containing only cleanup-entry/cleanup-return with sequence 1/2. Stage B
+must preserve and validate these exact physical segments; reject reused, extra,
+interleaved or reordered contexts. This is an observed trace shape, not proof
+of class-loader/process/ownership mechanics. No internal runtime was inspected.
+
+The initial capture at `7bd305a` failed its single-context transport assumption:
+outer logs `/private/tmp/t0012-s11-stage-a.9Vc2k3`, exit 1; raw evidence
+`/private/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-schema-value-coupling/run.ts0jwr/evidence`.
+It remains retained, not acceptance. Non-amended correction `a95e350` preserves
+observed contexts and uses only previously admitted positional schema APIs.
+
+Primary stdout SHA-256:
+`83767caad542703e5b82c9dd281c883bab6170167bdf621746d75052481b83f0`.
+Primary stderr SHA-256:
+`5ff3a462e0bad90363979ae1e680321e1b9bfa61e0adaa45734f0d4d66f0d306`;
+retained diagnostics are executable ZIP-prefix warnings and Java deprecation
+notes. LICENSE/NOTICE hashes match the admitted values in both runs.
+Java source SHA-256 `3458f499a93ad307c75395950c8ee1e3478c5eaeba706a645909124e53a305e3`;
+capture runner `598ae1c811c5bd14b8356849cef5fb65fd1f7f5bcc008be353c9c88434e071d7`;
+unavailable Stage B wrapper `f7e051f8f1f9cff08ad27b45bd7bd6d0fc1055ae24a83a4e0c6e4a9648e14cd3`.
+Temporary evidence must be reproduced if removed.
+
+PM authorizes only Stage B strict validation/control implementation from these
+reviewed full vectors. Java fixture semantics remain frozen. No native policy,
+full acceptance, Differential result or parent completion follows from Stage A.
 
 After PM records actual expectations, implement strict full and validate-only
 modes. Full runs fresh captures and artifact controls; validate-only checks
