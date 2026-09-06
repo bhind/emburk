@@ -112,7 +112,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
-| T-0036 | Implement format guessing | Backlog | P1 | 5 | T-0032, T-0033, T-0034 | Plugin Implementer | Differential (Embulk) |
+| T-0036 | Implement format guessing (S01 reference observations active, forecast 3 SP) | In Progress | P1 | 5 | T-0032, T-0033, T-0034 | Plugin Implementer | Differential (Embulk) |
 | T-0037 | Pass File-to-File differential and resume acceptance | Backlog | P0 | 5 | T-0014, T-0025, T-0031–T-0036 | Tester | Differential (Embulk) |
 
 ## T-0040 — Java compatibility host
