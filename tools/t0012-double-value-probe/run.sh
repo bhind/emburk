@@ -36,12 +36,13 @@ if [[ -L "$temporary_root" || ! -f "$source_file" || ! -f "$wrapper_file" ]]; th
 fi
 
 validate_evidence() {
-  PYTHONDONTWRITEBYTECODE=1 python3 - "$1" "$source_file" "$script_dir/run.sh" "$wrapper_file" "$2" <<'PY'
+  PYTHONDONTWRITEBYTECODE=1 python3 - "$1" "$source_file" "$script_dir/run.sh" "$wrapper_file" "$2" "$root" <<'PY'
 import base64
 import binascii
 import hashlib
 import pathlib
 import re
+import subprocess
 import sys
 import uuid
 
@@ -49,7 +50,10 @@ evidence = pathlib.Path(sys.argv[1])
 sources = [pathlib.Path(value) for value in sys.argv[2:5]]
 fixtures = ("finite-null", "nonfinite")
 validation_level = sys.argv[5]
+repository = pathlib.Path(sys.argv[6]).resolve()
 strict = validation_level == "strict"
+live = validation_level == "live"
+strict = strict or live
 hex16 = re.compile(r"[0-9a-f]{16}")
 hex64 = re.compile(r"[0-9a-f]{64}")
 
@@ -95,6 +99,32 @@ def bounded_text(path, cap):
 
 def digest(path, cap):
     return hashlib.sha256(bounded_bytes(path, cap)).hexdigest()
+
+def is_within(path, parent):
+    return path == parent or parent in path.parents
+
+def validate_external_directory(path):
+    need("evidence-path", path.is_absolute() and path.is_dir() and not path.is_symlink())
+    resolved = path.resolve(strict=True)
+    need("evidence-path", resolved == path)
+    need("evidence-path", not is_within(resolved, repository))
+    allowed = tuple(pathlib.Path(value) for value in (
+        "/tmp", "/private/tmp", "/var/folders", "/private/var/folders"
+    ))
+    need("evidence-path", any(is_within(resolved, root) for root in allowed))
+    current = resolved
+    while current != current.parent:
+        need("evidence-path", not current.is_symlink())
+        current = current.parent
+
+def git_bytes(*arguments):
+    return subprocess.run(
+        ["git", "-C", str(repository), *arguments],
+        check=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+    ).stdout
+
+def git_output(*arguments):
+    return git_bytes(*arguments).decode("utf-8")
 
 # entry arity, return arity. Exceptions always repeat entry fields plus class/message.
 operations = {
@@ -340,8 +370,13 @@ def vector_label(fixture, expected, actual):
 
 try:
     parser_self_check()
+    validate_external_directory(evidence)
     required = (
-        "executable.sha256",
+        "executable-url.txt", "executable.sha256", "executable-manifest.txt",
+        "LICENSE-executable", "NOTICE-executable",
+        "executable-license-notice-locators.txt", "java-version.txt",
+        "os-family.txt", "source-revision.txt", "plugin-source-path.txt",
+        "runner-source-path.txt", "wrapper-source-path.txt",
         "double-cases.raw", "double-traces.raw", "raw-evidence-hashes.txt",
         "finite-null.raw.log", "nonfinite.raw.log", "finite-null.trace.raw",
         "nonfinite.trace.raw", "plugin-source.sha256", "runner-source.sha256",
@@ -352,14 +387,43 @@ try:
         need("missing-artifact", evidence.joinpath(name).is_file())
     executable_hash = bounded_text(evidence.joinpath("executable.sha256"), 1024).strip()
     need("executable-pin", executable_hash == "e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47")
-    for name, source in zip(("plugin-source.sha256", "runner-source.sha256", "wrapper-source.sha256"), sources):
-        recorded = bounded_text(evidence.joinpath(name), 1024).strip()
-        need("source-hash", recorded == digest(source, 1024 * 1024))
+    expected_url = "https://github.com/embulk/embulk/releases/download/v0.11.5/embulk-0.11.5.jar\n"
+    need("provenance-url", bounded_text(evidence.joinpath("executable-url.txt"), 4096) == expected_url)
+    need("provenance-manifest", bool(bounded_text(evidence.joinpath("executable-manifest.txt"), 1024 * 1024).strip()))
+    need("provenance-license", digest(evidence.joinpath("LICENSE-executable"), 1024 * 1024) == "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30")
+    need("provenance-notice", digest(evidence.joinpath("NOTICE-executable"), 1024 * 1024) == "27f0e45afdf10e406ee8bf478bfce38279e9087338a7981942a4a2762bcd5be8")
+    need("provenance-locators", bounded_text(evidence.joinpath("executable-license-notice-locators.txt"), 4096) == "META-INF/LICENSE|META-INF/NOTICE\n")
+    need("provenance-java", bool(bounded_text(evidence.joinpath("java-version.txt"), 65536).strip()))
+    need("provenance-os", bool(bounded_text(evidence.joinpath("os-family.txt"), 1024).strip()))
+    revision = bounded_text(evidence.joinpath("source-revision.txt"), 1024).strip()
+    need("source-revision", re.fullmatch(r"[0-9a-f]{40}", revision) is not None)
+    try:
+        canonical_revision = git_output("rev-parse", revision + "^{commit}").strip()
+    except subprocess.SubprocessError as error:
+        raise Bad("source-revision") from error
+    need("source-revision", canonical_revision == revision)
+    source_names = (
+        "tools/t0012-double-value-probe/src/T0012DoubleValueInputPlugin.java",
+        "tools/t0012-double-value-probe/run.sh",
+        "tests/t0012_double_value_probe_test.sh",
+    )
+    for label, name, source in zip(("plugin", "runner", "wrapper"), source_names, sources):
+        recorded_path = bounded_text(evidence.joinpath(label + "-source-path.txt"), 4096)
+        need("source-path", recorded_path == name + "\n")
+        recorded = bounded_text(evidence.joinpath(label + "-source.sha256"), 1024).strip()
+        try:
+            historical = hashlib.sha256(git_bytes("show", revision + ":" + name)).hexdigest()
+        except subprocess.SubprocessError as error:
+            raise Bad("source-hash") from error
+        need("source-hash", recorded == historical)
+        if live:
+            need("source-hash", recorded == digest(source, 1024 * 1024))
     jar_hash = bounded_text(evidence.joinpath("plugin-jar.sha256"), 1024).strip()
     need("jar-hash", hex64.fullmatch(jar_hash) is not None)
-    artifact = pathlib.Path(bounded_text(evidence.joinpath("plugin-jar-path.txt"), 4096).strip())
-    need("jar-path", artifact.is_absolute() and artifact.is_file() and not artifact.is_symlink())
-    need("jar-path", evidence.parent in artifact.parents)
+    artifact_name = bounded_text(evidence.joinpath("plugin-jar-path.txt"), 4096)
+    need("jar-path", artifact_name == "plugin-under-test.jar\n")
+    artifact = evidence.joinpath(artifact_name.strip())
+    need("jar-path", artifact.parent == evidence and artifact.is_file() and not artifact.is_symlink())
     need("jar-size", artifact.stat().st_size <= 4 * 1024 * 1024)
     need("jar-hash", hashlib.sha256(artifact.read_bytes()).hexdigest() == jar_hash)
     recorded_stage = bounded_text(evidence.joinpath("stage.txt"), 1024)
@@ -424,7 +488,7 @@ try:
     for name, value in hashes.items():
         cap = 8 * 1024 * 1024 if name.endswith(".raw.log") else 2 * 1024 * 1024
         need("hash-manifest-value", digest(evidence.joinpath(name), cap) == value)
-except (Bad, OSError, UnicodeError, ValueError) as error:
+except (Bad, OSError, UnicodeError, ValueError, subprocess.SubprocessError) as error:
     label = error.args[0] if error.args else "unclassified"
     print("T0012_DOUBLE_VALIDATION_ERROR|" + label, file=sys.stderr)
     raise SystemExit(4)
@@ -441,6 +505,7 @@ if [[ "$mode" == validate ]]; then
   exit 0
 fi
 
+temporary_root=$resolved_root
 mkdir -p -- "$temporary_root"
 run_dir=$(mktemp -d "$temporary_root/run.XXXXXX")
 evidence="$run_dir/evidence"
@@ -456,7 +521,13 @@ expected=e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47
 if [[ ${T0012_DOUBLE_NEGATIVE:-} == unavailable-runtime ]]; then
   url=https://127.0.0.1:1/t0012-unavailable.jar
 fi
-if ! curl --connect-timeout 2 --max-time 5 --fail --location --proto '=https' --tlsv1.2 --silent --show-error --output "$executable" "$url"; then
+connect_timeout=15
+maximum_time=120
+if [[ ${T0012_DOUBLE_NEGATIVE:-} == unavailable-runtime ]]; then
+  connect_timeout=2
+  maximum_time=5
+fi
+if ! curl --connect-timeout "$connect_timeout" --max-time "$maximum_time" --fail --location --proto '=https' --tlsv1.2 --silent --show-error --output "$executable" "$url"; then
   printf 'unable to retrieve pinned executable: %s\n' "$url" >&2
   exit 56
 fi
@@ -479,10 +550,15 @@ printf '%s\n' 'META-INF/LICENSE|META-INF/NOTICE' > "$evidence/executable-license
 java -XshowSettings:properties -version > "$evidence/java-version.txt" 2>&1
 uname -s > "$evidence/os-family.txt"
 git -C "$root" rev-parse HEAD > "$evidence/source-revision.txt"
-for item in "plugin:$source_file" "runner:$script_dir/run.sh" "wrapper:$wrapper_file"; do
+for item in \
+  "plugin:tools/t0012-double-value-probe/src/T0012DoubleValueInputPlugin.java" \
+  "runner:tools/t0012-double-value-probe/run.sh" \
+  "wrapper:tests/t0012_double_value_probe_test.sh"
+do
   label=${item%%:*}
-  path=${item#*:}
-  printf '%s\n' "$path" > "$evidence/$label-source-path.txt"
+  relative_path=${item#*:}
+  path="$root/$relative_path"
+  printf '%s\n' "$relative_path" > "$evidence/$label-source-path.txt"
   shasum -a 256 "$path" | awk '{print $1}' > "$evidence/$label-source.sha256"
 done
 printf '%s\n' "$mode" > "$evidence/stage.txt"
@@ -492,7 +568,8 @@ printf '%s\n' 'Manifest-Version: 1.0' 'Embulk-Plugin-Main-Class: T0012DoubleValu
 jar_file="$repository/embulk-input-t0012_double-0.0.1.jar"
 jar cfm "$jar_file" "$plugin/MANIFEST.MF" -C "$plugin/classes" .
 shasum -a 256 "$jar_file" | awk '{print $1}' > "$evidence/plugin-jar.sha256"
-printf '%s\n' "$jar_file" > "$evidence/plugin-jar-path.txt"
+cp "$jar_file" "$evidence/plugin-under-test.jar"
+printf '%s\n' 'plugin-under-test.jar' > "$evidence/plugin-jar-path.txt"
 printf '%s\n' '<project><modelVersion>4.0.0</modelVersion><groupId>org.embulk.t0012</groupId><artifactId>embulk-input-t0012_double</artifactId><version>0.0.1</version></project>' > "$repository/embulk-input-t0012_double-0.0.1.pom"
 printf '%s\n' 'source=maven|group=org.embulk.t0012|name=t0012_double|version=0.0.1|artifact=embulk-input-t0012_double|local-only' > "$evidence/plugin-coordinate.txt"
 
@@ -516,7 +593,9 @@ done > "$evidence/raw-evidence-hashes.txt"
 
 validation_level=transport
 if [[ "$mode" == full ]]; then
-  validation_level=strict
+  validation_level=live
+elif [[ "$mode" == capture ]]; then
+  validation_level=live
 fi
 validate_evidence "$evidence" "$validation_level"
 cat "$evidence/double-cases.raw"
