@@ -1,10 +1,10 @@
 //! Private owned logical record values with no schema or physical encoding policy.
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-struct Float64Bits(u64);
+pub(super) struct Float64Bits(u64);
 
 impl Float64Bits {
-    fn from_float(value: f64) -> Self {
+    pub(super) fn from_float(value: f64) -> Self {
         Self(value.to_bits())
     }
 
@@ -12,13 +12,13 @@ impl Float64Bits {
         f64::from_bits(self.0)
     }
 
-    fn bits(self) -> u64 {
+    pub(super) fn bits(self) -> u64 {
         self.0
     }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-enum LogicalValue {
+pub(super) enum LogicalValue {
     Null,
     Boolean(bool),
     Signed64(i64),
@@ -27,16 +27,16 @@ enum LogicalValue {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct LogicalRecord {
+pub(super) struct LogicalRecord {
     cells: Vec<LogicalValue>,
 }
 
 impl LogicalRecord {
-    fn new(cells: Vec<LogicalValue>) -> Self {
+    pub(super) fn new(cells: Vec<LogicalValue>) -> Self {
         Self { cells }
     }
 
-    fn cells(&self) -> impl ExactSizeIterator<Item = &LogicalValue> {
+    pub(super) fn cells(&self) -> impl ExactSizeIterator<Item = &LogicalValue> {
         self.cells.iter()
     }
 }

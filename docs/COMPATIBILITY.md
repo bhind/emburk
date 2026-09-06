@@ -197,10 +197,13 @@ The S10 slice is Done with Unit/Contract and the two selected Differential
 projections. No public value, schema coupling, physical encoding, whole-domain
 or production claim follows; parent and delivery gates remain open.
 
-T-0021/S06 is Ready under accepted ADR-0013 after independent packet review:
-private synchronous owned-record handoff to original local fakes. There is
-no public API, schema validation, lifecycle policy, runtime resource guarantee
-or new compatibility claim follows from this planning step.
+T-0021/S06 implements the private synchronous owned-record handoff permitted by
+ADR-0013. Frozen source `8fe820b` passes primary and independent exact Demo:
+five handoff tests, 46 workspace passes/seven intentionally ignored live tests,
+format and strict Clippy. It moves records directly, preserves selected bits and
+typed errors, and stops callbacks on the first failure. Final PR-head acceptance
+and integration remain required. Evidence is Unit/Contract only, not a public
+API, schema/lifecycle policy, resource guarantee or Embulk compatibility claim.
 
 
 

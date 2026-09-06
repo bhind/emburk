@@ -1,7 +1,7 @@
 # T-0021/S06 private synchronous owned-record handoff
 
 - Issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: Ready; independent packet review passed, planning PR integration pending
+- State: Review; source acceptance passed, final PR-head gate and integration pending
 - Priority: P1; owner Rust Core Implementer; PM owns records and integration
 - Estimate: 2 SP (implementation 1, verification 1), within Current 13 / Initial 5
 - Prior accepted S01–S05: 11 SP. No parent completion or new points yet.
@@ -68,6 +68,42 @@ Existing S08/S10 storage tests must remain unchanged and pass in the workspace.
 ## Evidence class
 
 Unit/Contract only. Readiness is Planning, not runtime evidence.
+
+## Source review and acceptance
+
+Frozen source `8fe820bceadf62db89a5b7850abe1b9c9192be1f` follows initial
+implementation `f3b0e9f`. Review removed unused sibling visibility and made
+the selected-value test verify all eleven S10 double bit patterns against raw
+expected integers at the sink, plus null, both booleans, integer bounds and
+owned/empty text. Both first/later source and sink failures use complete ordered
+traces and typed original payload assertions. Primary inspection confirms one
+direct ownership move, no queue/clone, and no lifecycle/schema additions.
+
+The exact Demo passed with exit 0 for implementer, primary and independent
+Tester at the frozen source. Complete stdout/stderr/exit are retained at:
+
+- implementer: `/private/tmp/t0021-s06-demo.CSu34r`;
+- primary: `/private/tmp/t0021-s06-primary.9Ludl9`;
+- independent: `/private/tmp/t0021-s06-independent.4m3s3N`.
+
+Each ran five named handoff tests, 46 workspace passes/seven intentional live
+ignores, format, strict all-target Clippy and diff check. No live Differential
+test is claimed by this local Demo. Independent stdout SHA-256:
+`7d5bf1fed893a82aa0c46237445d9456fc2304c3ac6eb1662c5cedc0201f4ba8`;
+stderr (normal Cargo progress) SHA-256:
+`738f634ac47effc5b59c390d61aa96f3b9f77f05ebde075cad0da64f0156c1be`.
+Environment: macOS ARM64, Rust/Cargo 1.98.1. Local temporary logs must be
+reproduced if removed; their paths are not a durable published artifact store.
+
+Source SHA-256:
+
+- lib: `5213b2c72a317725f9eb52a108664838bee347db9bcd798f55a48f0e031f8f8c`;
+- logical record: `9398928aa5862a2b370729571b2b86ad0e6b388f43768a746eab7f46c12c3f3e`;
+- handoff: `6c8a9994455e110dffd5183cadfcee754ac4733a77d0f6e26e935facc45eb4fd`.
+
+Only the three authorized source paths changed. PM-owned documentation was
+separately unstaged during source acceptance and was not reverted by agents.
+Final-head Demo, record reconciliation and integration remain required.
 
 ## Stop rule
 
