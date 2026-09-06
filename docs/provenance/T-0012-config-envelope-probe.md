@@ -1,7 +1,7 @@
 # T-0012/S12 selected configuration-envelope observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; Stage A reviewed, Stage B validation authorized
+- State: Review in PR #105; final-head acceptance pending
 - Branch: `research/t-0012-s12-config-envelope`
 - Owner: Compatibility Host Implementer; Project Manager owns records
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -190,6 +190,22 @@ so failures prove semantic checks rather than only a stale checksum. Add
 positive validate-only, symlink-path rejection, and corrupt/unavailable-runtime
 controls. Unrelated retrieval failures cannot pass a corruption control.
 Run the final Demo at a reviewed head before integration and points.
+
+## Frozen implementation review
+
+PR #105 freezes source at `afd7fb8d12e96ccf7d977e156f25fbb693cc63d5`.
+Java retains the Stage A hash above; runner SHA-256 is
+`1cd82d6d4c46627142791f140716fb4007ae011c759635e8d6e5e4139e93090b`;
+wrapper is `fae6ae6345189e9c2bd53fdee8beb3a27fbea52ba878238ced64f179fd1e2f2f`.
+The primary full wrapper at preceding `3ae96f9` passed seven observations,
+positive validate-only, 16 raw-copy controls (15 repair dependent hashes; the
+integrity control intentionally does not), one symlink-path control and two
+artifact controls. Outer stdout SHA-256:
+`491385ec41c1864218bf8ba001c6505c93580cad899c1ff8a3b0e7e215d5be71`;
+stderr is empty; numeric exit 0. The frozen follow-up changes only the final
+control-count wording, not behavior. Read-only source review found no concrete
+blocker; Bash syntax and diff checks passed. Final-head exact Demo and separate
+Tester reproduction remain required. No points or completion follow yet.
 
 ## Evidence class
 
