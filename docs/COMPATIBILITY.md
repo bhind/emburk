@@ -235,6 +235,9 @@ no-callback failures. Primary and independent final-head acceptance passed at
 
 
 
+The [parser candidate assessment](provenance/T-0022-parser-candidates.md) is
+Planning only; no native YAML parser or coercion policy has been admitted.
+
 ## Adding an Entry
 
 T-0012/S13 is Done through PR #107 (`441040f`) for six syntax observations. No YAML, duplicate-key, alias,

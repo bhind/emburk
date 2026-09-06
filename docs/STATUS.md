@@ -37,6 +37,10 @@ Development state: `bootstrap`
   traceable upstream observation, and separate license and patent-risk
   review.
 
+Parser-selection research now has a [candidate assessment](provenance/T-0022-parser-candidates.md).
+It adds no dependency or runtime behavior; T-0022 remains Backlog pending
+artifact admission and a bounded experimental packet.
+
 ## Delivery queue
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
