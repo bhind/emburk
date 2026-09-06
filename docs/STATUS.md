@@ -56,7 +56,7 @@ unchanged regressions. It adds no runtime behavior. T-0012/S12 is Done through
 PR #105 (`67f0786`): primary and independent final-head Demo at `9df0d5c`
 passed seven cases/36 events, strict controls and unchanged S01/S02 regressions.
 No native configuration behavior is added. T-0012, T-0013 and T-0021 parent
-contracts remain open; WIP is zero of two.
+contracts remain open; S13 occupies one of two WIP lanes.
 
 | Item | State | Purpose |
 |---|---|---|

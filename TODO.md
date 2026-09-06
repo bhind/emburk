@@ -22,7 +22,7 @@ timestamp and JSON uncertainty that does not fit 8 SP. It is a forecast, not
 completion evidence. Parent #20 remains open in Backlog. T-0012/S12 is Done
 through PR #105 (`67f0786`) after primary and independent final-head Demo at
 `9df0d5c`, accepting 5 SP. Known S03–S12 acceptance totals 40 SP. Parent #15
-remains open in Backlog, Current 55 / Initial 5 unchanged; WIP is zero of two.
+remains open, Current 55 / Initial 5 unchanged. S13 now occupies one of two WIP lanes.
 
 T-0012/S13 is In Progress for six selected syntax observations, 5 SP. Stage A raw
 review precedes Stage B validation. Parent Current 55 / Initial 5 is unchanged.
