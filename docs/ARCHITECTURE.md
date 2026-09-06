@@ -11,6 +11,10 @@ plugin types become public, and the empty lifecycle coordinator stays separate.
 
 ## Principles
 
+ADR-0022 admits a bounded private guess adapter using existing dependencies.
+It preserves explicit schema/charset, emits JSON syntax accepted by the YAML
+adapter and does not infer JSON columns. S02 final acceptance is pending.
+
 ADR-0019 admits the selected native_formats adapter for bounded JSON framing,
 streaming codecs and ordered schema projections inside the configured consumer.
 Dependencies remain private and codec finalization precedes publication.

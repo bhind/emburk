@@ -91,7 +91,12 @@ fn compile(root: Node) -> Result<Profile, String> {
         _ => return Err("unsupported parser type".into()),
     };
     let skip = if json {
-        exact(parser, &["type", "columns"])?;
+        exact(parser, &["type", "columns", "charset", "newline"])?;
+        for (key, value) in [("charset", "UTF-8"), ("newline", "LF")] {
+            if !values(parser, key).is_empty() {
+                require(parser, key, value)?;
+            }
+        }
         0
     } else {
         exact(
@@ -105,8 +110,20 @@ fn compile(root: Node) -> Result<Profile, String> {
                 "escape",
                 "skip_header_lines",
                 "columns",
+                "trim_if_not_quoted",
+                "allow_extra_columns",
+                "allow_optional_columns",
             ],
         )?;
+        for key in [
+            "trim_if_not_quoted",
+            "allow_extra_columns",
+            "allow_optional_columns",
+        ] {
+            if !values(parser, key).is_empty() {
+                require(parser, key, "false")?;
+            }
+        }
         for (k, v) in [
             ("type", "csv"),
             ("charset", "UTF-8"),

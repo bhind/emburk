@@ -1,6 +1,6 @@
 # T-0036/S01 guess reference observations
 
-Issue: [#29](https://github.com/bhind/emburk/issues/29). In Progress; forecast 3 SP.
+Issue: [#29](https://github.com/bhind/emburk/issues/29). Done via PR #123; accepted 3 SP.
 Owner authorized observation, bounded native guess, then integrated acceptance.
 The prior seven-stage slice is integrated through PR #122. Broader parser,
 codec and recovery parent contracts remain open; prerequisites here are only
@@ -84,6 +84,15 @@ evidence: /var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/emburk-t0036-guess-pn
 No native dependency, code or interpretation is admitted by this reference slice.
 
 ## Evidence class, stop rule and non-claims
+
+Primary and independent exact Demo passed at 1d577dddb2209240fa96c1457fb2f3c669fbe30a.
+Three harness tests and ten pinned guess projections matched. Primary retained
+root: /var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/emburk-t0036-guess-0525q9a5.
+Independent /private/tmp/t0036-s01-independent.MjSxrL stdout SHA256
+52807f02e310b614a169fbf2453775da9cb2812a948f31621035f254d1ec8439;
+stderr 69796c8069b47be836df270a88b29823ad41a084acbab76d06c1d4ae5f567053;
+exit 0, SHA256 9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Independent revision/status unchanged. Merge cdb0fdcbcbe8c6ef13dcd2a13d6b1fb0327860c5.
 
 Reference-only observation. Stop native implementation on missing reference
 runtime, unreviewed dependency admission, unsafe writes or unexplained behavior.

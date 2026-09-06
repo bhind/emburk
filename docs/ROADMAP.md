@@ -18,6 +18,10 @@ including format guessing, general plugin profiles and Embulk resume parity.
 
 ## Phase 0: Governance and Compatibility Contract
 
+The next owner-authorized chain is T-0036/S01 reference guessing (integrated
+through #123), T-0036/S02 bounded native guessing, then T-0037/S01 combined
+guess/transfer/recovery acceptance. It does not complete broader parent gates.
+
 - Establish canonical project records, roles, workflow, provenance, and release-compliance gates.
 - Pin the Embulk core and selected plugin references.
 - Specify configuration, schema, value, lifecycle, transaction, cleanup, and resume behavior.

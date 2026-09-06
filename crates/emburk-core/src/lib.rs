@@ -49,6 +49,9 @@ mod text_transfer;
 
 mod bounded_parallel;
 mod configured_csv;
+mod guess;
+#[doc(hidden)]
+pub use guess::{guess_config, guess_config_to_file};
 mod csv_stream;
 mod native_formats;
 mod publication;
