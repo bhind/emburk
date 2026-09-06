@@ -17,9 +17,8 @@ Development state: `bootstrap`
   executable in a live differential test. No full configuration, plugin,
   data-transfer, or performance claim has passed its evidence gate.
 - A private ordered logical schema preserves owned names, type tags, order and
-  duplicates. Frozen T-0023/S01 source adds limited private positional batch
-  admission for selected Boolean, Signed64, Float64 and Text values; final
-  acceptance remains pending. Timestamp/JSON, nullability, lookup and physical
+  duplicates. T-0023/S01 adds integrated private positional batch admission
+  for selected Boolean, Signed64, Float64 and Text values under ADR-0014. Timestamp/JSON, nullability, lookup and physical
   encoding remain unimplemented.
 - Private owned Null/Boolean/Signed64/Text records preserve row/cell order and
   distinguish null from false, zero and empty text. Primary acceptance matches
@@ -48,8 +47,9 @@ The slice integrated through PR #91 as `34757c8`. S10's private double-storage
 decision passed readiness review and integrated through PR #92. S10 is now
 Done through PR #93. T-0021/S06 is Done through PR #96 after primary,
 independent and final-head acceptance. T-0012/S11 is Done through PR #99 after final-head acceptance.
-T-0023/S01 is Review in PR #101 at frozen source `9f842509`; seven local tests
-pass but final-head and independent acceptance are pending. Combined active WIP is one of two. T-0012, T-0013 and
+T-0023/S01 is Done through PR #101 (`d0eebf8`), after primary and independent
+final-head Demo at `196d648`: 53 workspace passes, seven intentional ignores,
+seven batch tests and unchanged regressions. Combined active WIP is zero of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -59,7 +59,7 @@ T-0021 parent contracts remain open.
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012/S11 | Done | Automated strict observation validation; PR #99 integrated |
-| T-0023/S01 | Review | Frozen private positional batch admission; final acceptance pending |
+| T-0023/S01 | Done | Private positional batch admission; PR #101 integrated |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 

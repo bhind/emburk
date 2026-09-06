@@ -1,7 +1,7 @@
 # T-0023/S01 private positional logical batch admission
 
 - Issue: [T-0023, #20](https://github.com/bhind/emburk/issues/20)
-- State: Review; frozen implementation acceptance pending in PR #101
+- State: Done; PR #101 integrated as `d0eebf8` after final-head acceptance
 - Branch: `feat/t-0023-s01-schema-bound-record`
 - Owner: Rust Core Implementer; Project Manager owns decision, records, and integration
 - Priority: P1; estimate 5 SP within unchanged parent Current/Initial 8 SP
@@ -84,7 +84,29 @@ unsupported Timestamp/Json precedence; widths; and row-major type mismatch
 precedence. Implementer checks report format, focused tests, strict Clippy and
 diff checks passing. This is source-review evidence only: the exact Demo at the
 final PR #101 head, a separate Tester reproduction, record reconciliation and
-integration remain required.
+integration were subsequently satisfied as recorded below.
+
+## Final acceptance and integration
+
+Primary and independent Tester ran the exact Demo at final PR head
+`196d648d078ce6ca6a424232747b1d4f476fed6a`, both exit 0. Workspace: 53 passed,
+seven intentionally ignored live tests, including seven batch tests; format,
+strict Clippy and unchanged S11/S10/S08/S06 passed. Primary reviewed all source
+and corrected full-cell and global validation-priority assertions before freeze.
+Independent review found no concrete blockers. Source hashes above match.
+
+Primary logs: `/private/tmp/t0023-s01-primary.cXq4b4`; stdout SHA-256
+`5aec3679f15a4ef687a9a1d5bea09beaf21943bb602d3745a9a86945ca89b556`;
+stderr `b665742cabe4cac1b5ffbbe7e5ddb5e52c85df5ca5b0aa4f540776be66a02d2b`.
+Tester logs: `/private/tmp/t0023-s01-tester.jHdx8i`; stdout SHA-256
+`6f69e41bf849bd52ed9794f021d3a2497a8ac82691b4ed4845410a8f3a473b20`;
+stderr `8ed196c31a377459fda8495314f5838e16253f53e21885f70994299a456e4f93`.
+Environment: Darwin arm64, Rust/Cargo 1.98.1, Temurin 17.0.20, Python 3.14.6.
+Temporary evidence must be reproduced if removed.
+
+PR #101 integrated as `d0eebf886d78ab593649c0b2d6c6a59b6843b005`.
+S01 accepts 5 SP, Unit/Contract only; parent #20 remains open/Backlog,
+Current 8 / Initial 8 unchanged. No successor is activated by this closeout.
 
 ## Acceptance criteria
 
