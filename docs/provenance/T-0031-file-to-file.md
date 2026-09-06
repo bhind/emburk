@@ -1,6 +1,6 @@
 # T-0031/S01 experimental line-record File-to-File
 
-Issue: [#24](https://github.com/bhind/emburk/issues/24). State: Review, PR #110.
+Issue: [#24](https://github.com/bhind/emburk/issues/24). Slice: Done, PR #110.
 Branch: `feat/t-0031-file-to-file`. Slice: 5 SP; parent remains incomplete.
 
 ## Authority
@@ -52,6 +52,25 @@ CLI integration tests execute the actual built binary and compare real files.
 Primary and independent reviewed-head execution required before merge.
 
 ## Evidence class
+
+Final primary and independent acceptance passed at
+`0edc76906bbdd854027a1c52ca481b5c254976a9`, both with retained numeric exit 0:
+68 tests passed (61 core, seven actual-binary file integration), eight existing
+external-reference tests intentionally ignored; format and strict Clippy passed.
+Rust/Cargo 1.98.1, macOS arm64. Root inspected independent logs and exit digest.
+Primary stdout/stderr SHA-256:
+`6f5b4ae8d721e60057c63a02c2f9a6426c0956005b0d71c34e2445881eb976ed` /
+`eaecf570b6a4563c6726dbb9e6e4dd0b15dd9eafa998e5493cda4066c615ed7d`.
+Independent stdout/stderr SHA-256:
+`2199327d249fcfb25b24430c030a543a98ba6d9cd0b2419027ffe935a4d7ce0a` /
+`c163d0f30a4224a373b1ca0e7f07af214802a2370e68671b755e36f1376c68ad`.
+Security review's output-permission finding was fixed with Unix creation mode
+0600 and an actual-binary umask-000 regression; reviewer confirmed resolution.
+Non-Unix ACL behavior is documented, not claimed owner-only. A separate manual
+four-record Unicode/blank-line transfer passed byte comparison and mode 0600.
+PR #110 integrated as `c5fb13ff13a593f08072609dc94c9a1bff0d163d` with a matching
+head guard. S01 accepts 5 SP; parent #24 remains open in Backlog for broader
+configuration/stdout/null/plugin contracts. No full MVP completion follows.
 
 Unit/Contract and local file Integration, not Differential (Embulk).
 

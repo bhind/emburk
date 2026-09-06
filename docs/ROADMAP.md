@@ -211,7 +211,7 @@ independent final-head acceptance at `9df0d5c`.
 ## Phase 1: Native File-to-File MVP
 
 T-0031/S01 provides the first experimental native text-record transfer path,
-pending final acceptance. This does not satisfy this phase's CSV/JSON, configuration,
+accepted through PR #110. This does not satisfy this phase's CSV/JSON, configuration,
 parallelism, recovery or Embulk differential exit gate.
 
 T-0022's [parser assessment](provenance/T-0022-parser-candidates.md) separates
