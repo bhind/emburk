@@ -186,7 +186,7 @@ try:
             check(stderr.startswith('unable to retrieve pinned executable: https://github.com/embulk/embulk/releases/download/v0.11.5/unavailable-s12.jar')
                   and (negative / 'download.exit').read_text() != '0\n', 'retrieval boundary')
     (outer / 'exit.txt').write_text('0\n')
-    print(f'T0012/S12: seven reference envelopes validated; 16 repaired controls, one path control, two artifact controls passed|evidence={outer}')
+    print(f'T0012/S12: seven reference envelopes validated; 16 raw-copy controls, one path control, two artifact controls passed|evidence={outer}')
 except (OSError, ValueError) as failure:
     (outer / 'exit.txt').write_text('1\n')
     print(f'T0012_S12_TEST_ERROR={failure}', file=sys.stderr)
