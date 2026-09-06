@@ -2,6 +2,10 @@
 
 Compatibility is an evidence record, not a general promise.
 
+T-0022/S01's isolated parser experiment is not production adoption or YAML
+compatibility. Ordered syntax observations are evaluated before configuration
+policy is selected; the production workspace remains unaffected.
+
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate
 effort, or unavoidable Java/Rust differences may justify an explicit exception
