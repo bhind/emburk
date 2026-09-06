@@ -1,7 +1,7 @@
 # T-0012/S09 bounded double-value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Review; PR #91, final PR-head acceptance pending
+- State: Done (bounded slice); integrated through PR #91
 - Branch: `research/t-0012-double-value-recovery`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
@@ -215,7 +215,16 @@ private evidence retention remains unimplemented: all fresh evidence is currentl
 inspectable, and cleanup requires fresh review/reproduction before relying on
 it again. These limitations do not establish production isolation, attestation,
 SBOM, redistribution or patent/FTO clearance. Final PR-head Demo and integration
-of PR #91 are required before acceptance. Parent Issue #15 stays open.
+of PR #91 were required before acceptance. Parent Issue #15 stays open.
+
+Final-head Demo passed at `59f1b2ed82918015edbd49fd741920e625ed24a3`, exit 0,
+with complete logs at `/private/tmp/t0012-s09-pr-head.2HbaEt` (empty stderr).
+Stdout SHA-256:
+`61c008eb1503646fbadccb9ce8910bff73f08e4c2f8344986f71cb6dfec590e5`.
+PR #91 integrated as `34757c8283d850ba8810cd74ee58971e2faeaca8`.
+This accepts only S09's bounded reference/validator slice. Its 5 SP bring known
+accepted S03–S09 slice estimates to 25 SP, without parent completion or a native
+floating-point policy. The next S10 packet proposes that separate decision.
 
 The first Stage B source revision `7ec550b` passed the selected live fixtures,
 40 raw rejection controls and existing S08/S06 comparisons in the retained
