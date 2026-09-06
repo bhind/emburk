@@ -1,6 +1,6 @@
 # T-0037/S01 guess/transfer/native-resume acceptance
 
-Issue #30. In Progress; forecast 5 SP. Depends on independently accepted
+Issue #30. Done through PR #125; accepted 5 SP. Depends on independently accepted
 T-0036/S01 (#123), S02 (#124, 54d2cc1), configured format/publication/worker/
 resume slices (#116–#121). Broader parent tasks are not presumed complete.
 
@@ -46,6 +46,29 @@ Requires pinned reference JAR/Java17, installed Ruby/Psych and offline Cargo
 cache where necessary. Reference packet S01 records exact artifacts/licenses.
 
 ## Evidence class, stop rule and non-claims
+
+Integrated as 030df6e69d9811432a446bb869480ae35f0ea16f after primary and independent
+exact Demo at ec69eb6c0195b51892a29f77b312963b393b609e: 125 tests passed, eight
+existing intentional ignores, thirteen prior actual comparisons, seven guessed
+scalar trees, one empty rejection, six actual generated-config transfers and
+four native SIGINT/resume/repeat-resume final-data matches. Two explicit gaps
+are not counted as matches. Both pipeline summaries are complete.
+
+Primary /private/tmp/t0037-s01-primary.aC7fgD stdout SHA256
+dc8f86cf708412bbf61dc63fe21ebea20561f55626aae1eb07ea2950a0864657;
+stderr 04d1d80d075fdb49378b715a2fcd4950b193309247ab02bee3494ca75c1c59b6.
+Independent /private/tmp/t0037-s01-independent.38skRo stdout SHA256
+84daddb7d18050a8b15f26ff35915bbcd0b35d1a1a0586e416e709d3c52399ed;
+stderr 4caa4ef089f627a794c790ffad0dd21200fb4bfe12d46a3ae8c3084b06902ec3.
+Both exits 0, exit-file SHA256
+9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Independent revision/status unchanged. Pipeline roots are
+/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/emburk-t0037-pipeline-u0p7h4wj
+and /var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/emburk-t0037-pipeline-kb0nwca8.
+The native binary SHA256 is
+62c43b703c88470666a7b47943456ce566ee8cfb11450426bcecaad18354740b.
+No remaining concrete review findings. Parent #30 remains open in Backlog;
+Current/Initial5 unchanged, no full parent completion implied.
 
 Pre-acceptance controls: forced configuration mismatch under PYTHONOPTIMIZE
 returned 1 with incomplete summary in

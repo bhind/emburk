@@ -6,7 +6,7 @@
 
 Emburk is an independent, Rust-native bulk data loader inspired by Embulk. It is intended to give existing Embulk users a practical migration path while developing a smaller, safer, and more observable execution engine.
 
-Emburk has an experimental native File-to-File pipeline with a bounded configuration profile, CSV and JSON input, CSV output, gzip/bzip2 codecs, column filters, ordered parallel formatting, cooperative cancellation, and validated local resume. Selected results are compared against pinned Embulk artifacts. General plugin compatibility and production readiness remain under development.
+Emburk has an experimental native File-to-File pipeline with bounded format guessing and configuration profiles, CSV and JSON input, CSV output, gzip/bzip2 codecs, column filters, ordered parallel formatting, cooperative cancellation, and validated local resume. Selected results are compared against pinned Embulk artifacts. General plugin compatibility and production readiness remain under development.
 
 ## Why Emburk
 

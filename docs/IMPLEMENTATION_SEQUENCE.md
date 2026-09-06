@@ -19,8 +19,10 @@ comparisons in both primary and independent runs.
 | 7 | T-0024/S01 and T-0025/S02, PR #120/#121: bounded workers, SIGINT and validated native resume |
 
 Use the [native pipeline guide](NATIVE_PIPELINE.md) for executable configuration
-and recovery commands. Format guessing, general plugin support, Java/JRuby
-hosts and full Embulk resume semantics remain separate backlog work.
+and recovery commands. A later three-step bounded guess chain integrated through
+PR #123/#124/#125: reference observation, native implementation and combined
+acceptance. General guessing/plugin support, Java/JRuby hosts and full Embulk
+resume semantics remain separate backlog work.
 
 | Stage | Canonical task | Exit evidence |
 | --- | --- | --- |
