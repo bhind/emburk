@@ -5,9 +5,9 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 root=$(cd -- "$script_dir/../.." && pwd)
 source_file="$script_dir/src/T0012SchemaValueCouplingInputPlugin.java"
 wrapper_file="$root/tests/t0012_schema_value_coupling_probe_test.sh"
-mode=${T0012_COUPLING_MODE:-capture}
-if [[ "$mode" != capture ]]; then
-  printf '%s\n' 'T-0012/S11 Stage B is not authorized; capture mode only' >&2
+mode=${T0012_COUPLING_MODE:-full}
+if [[ "$mode" != capture && "$mode" != full && "$mode" != validate ]]; then
+  printf '%s\n' 'T0012_COUPLING_MODE must be capture, full, or validate' >&2
   exit 2
 fi
 
@@ -23,6 +23,73 @@ case "$resolved_root/" in
 esac
 [[ ! -L "$temporary_root" && -f "$source_file" && -f "$wrapper_file" ]] || exit 2
 temporary_root=$resolved_root
+
+validate_evidence() {
+PYTHONDONTWRITEBYTECODE=1 python3 - "$1" "$2" "$root" <<'PY'
+import base64,hashlib,json,pathlib,re,subprocess,sys,uuid
+e=pathlib.Path(sys.argv[1]); level=sys.argv[2]; repo=pathlib.Path(sys.argv[3]).resolve()
+fs=('matching','explicit-null','unset-text','wrong-setter','duplicate-name')
+counts={'matching':(0,78),'explicit-null':(0,74),'unset-text':(1,46),'wrong-setter':(1,31),'duplicate-name':(0,60)}
+vectors={'matching':'db8a49da05d479051bc36b14c5a409679d09866cf9b46fb1b686aa1068e3e7de','explicit-null':'0d24d2b54aaf18ea9dbaada67e8d16d24c6e6711346cff7162979eb7e25cbeec','unset-text':'e72894c14d5558e0b56132e9506e498507568b396e130e7fd2d728d17ce7d1d1','wrong-setter':'8cbf19bd93e6c3b69f1dc1da7275bdf3b9e60790906b4400cb6d70ae064df081','duplicate-name':'90128852fbb049c8ad82d0d788e4be85cbfac3a995f7016c770bc67685d3210e'}
+paths={'plugin':'tools/t0012-schema-value-coupling-probe/src/T0012SchemaValueCouplingInputPlugin.java','runner':'tools/t0012-schema-value-coupling-probe/run.sh','wrapper':'tests/t0012_schema_value_coupling_probe_test.sh'}
+class Bad(Exception):pass
+def need(x,c):
+ if not c: raise Bad(x)
+def data(n,cap=8388608):
+ p=e/n; need('artifact-path',p.parent==e and not p.is_symlink()); need('missing-artifact',p.is_file()); need('artifact-size',p.stat().st_size<=cap); return p.read_bytes()
+def text(n,cap=8388608): return data(n,cap).decode()
+def one(n):
+ s=text(n,4096); need('metadata-line',s.endswith('\n') and s.count('\n')==1); return s[:-1]
+def sha(n): return hashlib.sha256(data(n)).hexdigest()
+need('evidence-path',e.is_absolute() and e.is_dir() and not e.is_symlink() and e.resolve()==e and repo not in e.parents)
+need('stage',one('stage.txt')==('full' if level in ('live','strict') else one('stage.txt')))
+rev=one('source-revision.txt'); need('source-revision',re.fullmatch('[0-9a-f]{40}',rev)!=None)
+for label,path in paths.items():
+ need('source-path',one(label+'-source-path.txt')==path)
+ try: blob=subprocess.run(['git','-C',str(repo),'show',rev+':'+path],check=True,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL).stdout
+ except subprocess.CalledProcessError: raise Bad('source-revision')
+ need('source-hash',one(label+'-source.sha256')==hashlib.sha256(blob).hexdigest())
+need('executable-pin',one('executable.sha256')=='e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47')
+need('license-hash',sha('LICENSE-executable')=='cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30')
+need('notice-hash',sha('NOTICE-executable')=='27f0e45afdf10e406ee8bf478bfce38279e9087338a7981942a4a2762bcd5be8')
+need('jar-path',one('plugin-jar-path.txt')=='plugin-under-test.jar'); need('jar-hash',one('plugin-jar.sha256')==sha('plugin-under-test.jar'))
+cases=text('coupling-cases.raw').splitlines(); need('case-count',len(cases)==5); combined=[]
+for i,f in enumerate(fs):
+ row=cases[i].split('|'); ex,n=counts[f]; need('case-grammar',len(row)==5 and row[:2]==['COUPLINGCASE',f]); need('case-exit',row[2]==str(ex)); need('case-count',row[3]==str(n))
+ rows=text(f+'.trace.raw').splitlines(); need('event-count',len(rows)==n); ctx={}; norm=[]
+ for line in rows:
+  a=line.split('|'); need('trace-grammar',len(a)>=5 and a[:2]==['COUPLINGTRACE',f])
+  try: u=uuid.UUID(a[2])
+  except ValueError: raise Bad('capture-id')
+  need('capture-id',str(u)==a[2] and u.version==4); ctx.setdefault(a[2],len(ctx)+1); o=ctx[a[2]]
+  need('sequence',a[3].isdigit() and int(a[3])==1+sum(x[0]==o for x in norm))
+  vals=[]
+  for x in a[5:]:
+   if x=='-': vals.append(None); continue
+   try: raw=base64.b64decode(x,validate=True); need('canonical-base64',base64.b64encode(raw).decode()==x); vals.append(raw.decode())
+   except Exception: raise Bad('payload')
+  norm.append([o,int(a[3]),a[4],vals])
+ need('context-segments',len(ctx)==(2 if f in ('unset-text','wrong-setter') else 1) and (len(ctx)==1 or [x[0] for x in norm[-2:]]==[2,2]))
+ need('expected-vector',hashlib.sha256(json.dumps(norm,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()==vectors[f])
+ material=('\n'.join(rows)+'\n').encode(); need('case-digest',row[4]==hashlib.sha256(material).hexdigest()); need('process-exit',one(f+'.exit.txt')==str(ex))
+ raw=[x for x in text(f+'.stdout.log').splitlines() if x.startswith('COUPLINGTRACE|'+f+'|')]; need('raw-log',raw==rows); text(f+'.stderr.log'); combined+=rows
+need('combined-order',text('coupling-traces.raw').splitlines()==combined)
+manifest={}
+for line in text('raw-evidence-hashes.txt',65536).splitlines():
+ a=line.split('='); need('hash-manifest-grammar',len(a)==2 and a[0] not in manifest and re.fullmatch('[0-9a-f]{64}',a[1])); manifest[a[0]]=a[1]
+names=['coupling-cases.raw','coupling-traces.raw']+[f+'.'+s for f in fs for s in ('stdout.log','stderr.log','trace.raw','exit.txt')]
+need('hash-manifest-count',set(names)==set(manifest))
+for n in names: need('raw-hash',manifest[n]==sha(n))
+PY
+}
+
+if [[ "$mode" == validate ]]; then
+  evidence=${T0012_COUPLING_EVIDENCE_DIR:-}
+  if [[ -z "$evidence" ]] || ! diagnostic=$(validate_evidence "$evidence" strict 2>&1); then
+    printf 'T0012_COUPLING_VALIDATION_ERROR|%s\n' "${diagnostic:-missing-evidence}" >&2; exit 4
+  fi
+  printf 'T0012_COUPLING_VALIDATE_ONLY=passed|evidence=%s\n' "$evidence"; exit 0
+fi
 mkdir -p -- "$temporary_root"
 run_dir=$(mktemp -d "$temporary_root/run.XXXXXX")
 evidence="$run_dir/evidence"
@@ -67,7 +134,7 @@ do
   printf '%s\n' "$relative" > "$evidence/$label-source-path.txt"
   shasum -a 256 "$root/$relative" | awk '{print $1}' > "$evidence/$label-source.sha256"
 done
-printf '%s\n' capture > "$evidence/stage.txt"
+printf '%s\n' "$mode" > "$evidence/stage.txt"
 
 javac -cp "$executable" -d "$plugin/classes" "$source_file"
 printf '%s\n' \
@@ -152,4 +219,10 @@ do
 done > "$evidence/raw-evidence-hashes.txt"
 
 cat "$evidence/coupling-cases.raw"
-printf 'T0012_COUPLING_CAPTURE_ONLY=collected|evidence=%s\n' "$evidence"
+if [[ "$mode" == capture ]]; then
+  printf 'T0012_COUPLING_CAPTURE_ONLY=collected|evidence=%s\n' "$evidence"
+elif ! diagnostic=$(validate_evidence "$evidence" live 2>&1); then
+  printf 'T0012_COUPLING_VALIDATION_ERROR|%s\n' "$diagnostic" >&2; exit 4
+else
+  printf 'T0012_COUPLING_FULL_RUN=passed|evidence=%s\n' "$evidence"
+fi
