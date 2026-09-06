@@ -11,7 +11,8 @@ Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
 `T-0013/S08`, `T-0012/S08` and `T-0021/S05` are integrated. T-0012/S09 is
 integrated through PR #91 following fresh reference-probe acceptance runs.
 T-0012/S10 is integrated through PR #93; T-0012, T-0013, T-0021 and all other
-unfinished items are `Backlog`. Combined active implementation WIP is zero of two.
+unfinished items are `Backlog`, except T-0021/S06, now `In Progress` following
+PR #95 readiness integration. Combined active implementation WIP is one of two.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -45,7 +46,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
-| T-0021 | Define workspace boundaries and core traits (S01–S05 integrated; remaining contracts queued) | Backlog | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
+| T-0021 | Define workspace boundaries and core traits (S06 private owned-record handoff) | In Progress | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches | Backlog | P1 | 8 | T-0012, T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |

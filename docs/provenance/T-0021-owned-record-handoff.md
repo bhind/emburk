@@ -1,7 +1,7 @@
 # T-0021/S06 private synchronous owned-record handoff
 
 - Issue: [T-0021, #18](https://github.com/bhind/emburk/issues/18)
-- State: Ready; independent packet review passed, planning PR integration pending
+- State: In Progress; accepted packet integrated through PR #95 as `0dc3263`
 - Priority: P1; owner Rust Core Implementer; PM owns records and integration
 - Estimate: 2 SP (implementation 1, verification 1), within Current 13 / Initial 5
 - Prior accepted S01–S05: 11 SP. No parent completion or new points yet.
