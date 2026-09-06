@@ -37,6 +37,10 @@ T-0031/S01 is Done through PR #110 (`c5fb13f`), accepting 5 SP, for a native UTF
 File-to-File command under ADR-0015. It consumes T-0021/S06 without claiming
 the parent's YAML, schema-aware plugin, transaction or full MVP contracts.
 
+T-0031/S02 is in Review in PR #112 for experimental stdout/null targets, forecast 3 SP.
+Parent Current 8 / Initial 5 covers accepted S01 and S02; remaining broader
+plugin/configuration scope is not accepted by this forecast.
+
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
 T-0030–T-0037 and T-0060–T-0067 are `Native Plugins`; T-0040–T-0045 are
@@ -81,7 +85,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
-| T-0031 | Implement file/config inputs and file/stdout/null outputs (S01 Done; remaining contracts queued) | Backlog | P1 | 5 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
+| T-0031 | Implement file/config inputs and file/stdout/null outputs (S02 stdout/null in Review) | Review | P1 | 8 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0032 | Implement the CSV parser and formatter | Backlog | P1 | 8 | T-0023 | Plugin Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser | Backlog | P1 | 5 | T-0023 | Plugin Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |

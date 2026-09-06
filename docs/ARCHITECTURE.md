@@ -11,6 +11,10 @@ plugin types become public, and the empty lifecycle coordinator stays separate.
 
 ## Principles
 
+ADR-0016 extends only CLI composition with stdout locking and std::io::sink
+adapters. Both use the same core transfer entry point; no new public core or
+plugin API is introduced. Stdout data and stderr summaries remain separate.
+
 Emburk keeps the core compact. The core owns stable orchestration contracts; plugins own integration behavior and dependencies. Installation and dependency resolution are separate from job execution.
 
 The [Rust runtime design proposal](RUST_RUNTIME_DESIGN.md) details candidate

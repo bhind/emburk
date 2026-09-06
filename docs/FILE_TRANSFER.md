@@ -29,3 +29,22 @@ concurrently; hostile filesystem races are outside this experimental contract.
 
 Success reports a record count and exits 0. Invalid command arguments exit 2;
 transfer failures exit 1. The full File-to-File MVP roadmap gate remains open.
+
+## Stdout and null targets
+
+T-0031/S02 adds two experimental commands using the same line rules:
+
+```sh
+cargo run -p emburk-cli -- transfer-lines-stdout input.txt
+cargo run -p emburk-cli -- transfer-lines-null input.txt
+```
+
+The stdout command writes only normalized record bytes to stdout; counts and
+diagnostics go to stderr. The null command fully reads and validates input but
+discards records, writes no stdout data, and reports the count on stderr.
+Neither creates an output file. The existing file command retains its stdout
+completion message and exclusive file creation behavior.
+
+A downstream closed pipe is an error (exit 1), not successful completion.
+Already-emitted bytes cannot be recalled. These commands are not Embulk stdout
+or null plugins, schema validation, transaction, resume or performance features.

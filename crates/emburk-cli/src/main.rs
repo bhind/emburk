@@ -3,7 +3,7 @@
 use std::{
     env,
     fs::{self, File, OpenOptions},
-    io::BufReader,
+    io::{self, BufReader},
     path::Path,
 };
 
@@ -19,27 +19,43 @@ fn main() {
             Some("--help" | "-h")
         )
     {
-        println!("Usage: emburk transfer-lines INPUT OUTPUT");
+        println!(
+            "Usage: emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
+        );
         return;
     }
-    if arguments.len() != 4 || arguments[1] != "transfer-lines" {
-        eprintln!("Usage: emburk transfer-lines INPUT OUTPUT");
-        std::process::exit(2);
-    }
-    let input = Path::new(&arguments[2]);
-    let output = Path::new(&arguments[3]);
-    if let Err(error) = transfer(input, output) {
-        eprintln!("emburk: transfer-lines failed: {error}");
+    let (command, result) = match arguments.as_slice() {
+        [_, command, input, output] if command == "transfer-lines" => (
+            "transfer-lines",
+            transfer(Path::new(input), Path::new(output)),
+        ),
+        [_, command, input] if command == "transfer-lines-stdout" => {
+            ("transfer-lines-stdout", transfer_stdout(Path::new(input)))
+        }
+        [_, command, input] if command == "transfer-lines-null" => {
+            ("transfer-lines-null", transfer_null(Path::new(input)))
+        }
+        _ => {
+            eprintln!("Usage: emburk transfer-lines INPUT OUTPUT");
+            std::process::exit(2);
+        }
+    };
+    if let Err(error) = result {
+        eprintln!("emburk: {command} failed: {error}");
         std::process::exit(1);
     }
 }
 
-fn transfer(input: &Path, output: &Path) -> Result<(), String> {
+fn open_input(input: &Path) -> Result<File, String> {
     let metadata = fs::metadata(input).map_err(|error| format!("cannot inspect input: {error}"))?;
     if !metadata.is_file() {
         return Err("input must be a regular file".into());
     }
-    let input_file = File::open(input).map_err(|error| format!("cannot open input: {error}"))?;
+    File::open(input).map_err(|error| format!("cannot open input: {error}"))
+}
+
+fn transfer(input: &Path, output: &Path) -> Result<(), String> {
+    let input_file = open_input(input)?;
     let mut options = OpenOptions::new();
     options.write(true).create_new(true);
     #[cfg(unix)]
@@ -60,4 +76,21 @@ fn transfer(input: &Path, output: &Path) -> Result<(), String> {
             output.display()
         )),
     }
+}
+
+fn transfer_stdout(input: &Path) -> Result<(), String> {
+    let input_file = open_input(input)?;
+    let stdout = io::stdout();
+    let count = emburk_core::transfer_lines(BufReader::new(input_file), stdout.lock())
+        .map_err(|error| format!("{error}"))?;
+    eprintln!("emburk: transfer-lines-stdout completed: {count} records");
+    Ok(())
+}
+
+fn transfer_null(input: &Path) -> Result<(), String> {
+    let input_file = open_input(input)?;
+    let count = emburk_core::transfer_lines(BufReader::new(input_file), io::sink())
+        .map_err(|error| format!("{error}"))?;
+    eprintln!("emburk: transfer-lines-null completed: {count} records");
+    Ok(())
 }
