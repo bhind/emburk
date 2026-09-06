@@ -149,6 +149,14 @@ Schema coupling, physical encoding, public API and production transfer remain
 outside this slice; parent and phase delivery gates stay open. S09 prepares a
 separate reference-only double-value observation, with a capture-before-
 expectations gate and no Rust Float64 or equality-policy change.
+S09 primary and independent source acceptance pass at `3f18966`: two selected
+reference double fixtures (114/93 events), 45 diagnostic-specific raw controls,
+two artifact controls, unchanged S08/S06 regressions and strict quality checks.
+Selected finite/subnormal/signed-zero/null/infinity/NaN bits are preserved in
+these observations. Evidence is Reference Observation / Integration plus
+validator Unit/Contract, not a native Float64 or numeric equality decision.
+PR #91 is in Review; final-head acceptance and integration remain required.
+
 
 
 ## Phase 1: Native File-to-File MVP

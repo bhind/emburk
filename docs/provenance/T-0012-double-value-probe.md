@@ -1,8 +1,8 @@
 # T-0012/S09 bounded double-value observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Blocked before source creation; awaiting explicit owner approval for reference-probe execution
-- Branch: `research/t-0012-double-value-probe`
+- State: Review; PR #91, final PR-head acceptance pending
+- Branch: `research/t-0012-double-value-recovery`
 - Owner: Compatibility Host Implementer; decisions, records and integration: PM
 - Priority: P0; parent task T-0012; parent epic T-0010
 - Estimate: 5 SP (implementation 2, uncertainty 1, verification 1, environment 1;
@@ -124,6 +124,117 @@ before PM reviews capture and records the decision in this packet.
 
 ## Stage B and acceptance
 
+### PM observation decision (2026-09-06)
+
+Corrected Stage A source is frozen at
+`7e463798ebcf007ea12e18d77382362979c3878e`. Earlier draft captures are retained,
+but were not accepted as complete transport evidence. PM reviewed all 207
+ordered decoded events and both complete runtime logs from
+`/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-double-value-probe/run.95aMuf/evidence`.
+The exact Stage A Demo also passed independently in the primary agent's run:
+`/private/tmp/t0012-s09-primary-capture.Edu3ve` (complete outer logs, exit 0),
+with raw evidence in the same temporary probe root at `run.g9vBiJ/evidence`.
+All ordered events and payloads match between these captures except fresh UUIDs.
+
+| Fixture | Exit | Events | Pages / rows | Exact supplied and getter bits, in order |
+| --- | --- | --- | --- | --- |
+| finite-null | 0 | 114 | 1 / 7 | `7fefffffffffffff`, `ffefffffffffffff`, `0000000000000001`, `8000000000000001`, `0000000000000000`, `8000000000000000`, explicit null |
+| nonfinite | 0 | 93 | 1 / 5 | `7ff0000000000000`, `fff0000000000000`, `7ff8000000000000`, `7ff8000000000042`, `fff8000000000042` |
+
+Both schemas are exactly `number:double`, index 0. Every non-null getter follows
+an `isNull=false`; the explicit null follows `isNull=true` with no getter.
+Each fixture exhausts its reader with a final `nextRecord=false`. The observed
+finish/close nesting is builder finish -> collector add/read -> collector finish
+-> builder finish return, then builder close -> collector close -> reader close
+and corresponding returns. Runtime output finish, run/control/transaction
+returns, one successful terminal marker, then cleanup entry/return with 1 task
+and 1 report complete the trace. No resume, guess or semantic exception occurs.
+
+PM authorizes Stage B exact vectors and repaired-copy rejection controls for
+these selected facts only. Selected signed zeros and NaN signs/payloads survive
+this reference round trip; this is not a whole-domain numeric equality rule,
+portable Page batching guarantee or native Float64 decision. Keep all Rust and
+accepted S07/S08 sources unchanged. Independent final acceptance remains open.
+
+Frozen source SHA-256 (plugin / runner / wrapper):
+
+- `183070a032c4d9654f4eee69f028cb94ba90d248bceb0b33e86f7105069209dd`
+- `8c6d37428582fc7fbc0de8d13d06de41d8b0d755910fbeb74b76391ec30b6ab0`
+- `641563db5c69e62ec8a0e1dd4b556fcead03a276248347d0a5d941f63a97b9dd`
+
+Implementer capture trace SHA-256, finite-null / nonfinite:
+
+- `61b2a16754fa5f551ef406e96cd8b6e8e33b4d55ebbf9c442cc473bd47238d26`
+- `9c2c56aa00cd98fe1ffbfd770e60a8e28b86b4278e30e2788df58efc8568fd67`
+
+### Remaining acceptance gates
+
+Corrected source `3f18966bb07d22dab54d8b0ad06b2c2186daa110` passes the exact
+Demo under both the implementer and primary agent. Primary fresh outer logs:
+`/private/tmp/t0012-s09-primary-demo.rVGwnG` (`exit.txt` is 0; stderr is empty).
+Its stdout SHA-256 is
+`66ce8de9489989a3c99ded54eb9929089c8444fcf7278af54d784b44b67790cf`.
+Fresh raw evidence is under
+`/private/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-double-value-probe/run.lbI1sY/evidence`.
+Both fixture exits are 0, with 114/93 ordered events. All 45 diagnostic-specific
+raw controls and two artifact controls pass; primary additionally checked all
+45 retained negative stdout/stderr/exit triplets. S08's two value comparisons
+and S06's three schema comparisons pass unchanged.
+
+The corrected gate confines canonical evidence paths outside the repository,
+rejects ancestor/member links, binds a fixed-name copied generated JAR to its
+digest, validates mandatory provenance and exact historical source identity,
+and additionally matches live source hashes on fresh runs. Validate-only remains
+distinct from fresh artifact admission. Normal retrieval allows 120 seconds;
+the unavailable-runtime control has its own short timeout. No external source
+implementation or dependency was added.
+
+Corrected plugin / runner / wrapper source SHA-256:
+
+- `183070a032c4d9654f4eee69f028cb94ba90d248bceb0b33e86f7105069209dd`
+- `9583086246cf68263a395a73bbbe20ee043b38ebeda7cea2d8ef94e77c9fb16b`
+- `71fa8314ea01c0f97cbfb326627fd8e51012f0539e9dfa15052f3c5cc2da2f4c`
+
+Implementer fresh exact Demo logs are
+`/private/tmp/t0012-s09-recovery-demo.qOHhXy` (exit 0). Its earlier sandbox
+retrieval failure is retained separately at
+`/private/tmp/t0012-s09-recovery-demo.5O6kZB` (outer exit 1, retrieval 56 before
+the corrupt-artifact injection). It is not acceptance evidence. Quality checks
+pass: Bash syntax, diff, workspace formatting, 35 Rust tests / six intentional
+live-test ignores, strict all-target Clippy and 19 Project Python tests. The
+environment remains Temurin 17.0.20, Cargo 1.98.1 and Python 3.14.6 on macOS.
+Independent Tester reproduced the exact Demo at the same source revision:
+`/private/tmp/t0012-s09-independent.LuK8Lk`, exit 0, empty stderr; stdout SHA-256
+`b7d724ea1b5d84f10722f4ac8c57b9af2544735a95eae2bd97e400b9d88fd4f5`.
+Fresh independent evidence is in the same probe root at `run.tcOfGi/evidence`.
+Independent quality/source review passed with no concrete blocker. The separate
+security/supply-chain static review found no blocker within the explicitly
+approved trusted developer-harness scope. Ambient curl/Java/PATH settings are
+not isolated; the harness must not be presented as a security boundary. Durable
+private evidence retention remains unimplemented: all fresh evidence is currently
+inspectable, and cleanup requires fresh review/reproduction before relying on
+it again. These limitations do not establish production isolation, attestation,
+SBOM, redistribution or patent/FTO clearance. Final PR-head Demo and integration
+of PR #91 are required before acceptance. Parent Issue #15 stays open.
+
+The first Stage B source revision `7ec550b` passed the selected live fixtures,
+40 raw rejection controls and existing S08/S06 comparisons in the retained
+implementer run. It is not accepted: primary and separate read-only Tester
+review require per-negative stdout/stderr/exit retention, resolved evidence and
+generated-JAR path confinement, and mandatory provenance metadata validation.
+These pre-acceptance corrections remain in the same three-file source allowlist;
+no new runtime or native behavior is authorized. The owner requested a temporary
+pause and then resumed with a low-effort implementer. The source handoff preserves
+the interrupted implementation and does not change acceptance requirements.
+
+On the next environment resumption, the previous temporary worktree and retained
+temporary evidence directories were no longer available. Committed sources and
+review records survived at `a247de0` and were restored into a new isolated
+worktree on the recovery branch above. Historical observations remain recorded,
+but their old temporary paths are not currently available evidence. Acceptance
+requires fresh complete executions and newly retained logs at the corrected
+source revision. No lost uncommitted correction is assumed to have survived.
+
 After PM freezes the exact observed outcome matrix, validate complete ordered
 events and all per-cell values, not counts alone. Canonical case membership,
 capture/sequence, caps before allocation, raw-log extraction, trace copies,
@@ -188,3 +299,9 @@ that executable with the original local test plugin. External executable code
 runs locally; the checksum establishes identity, not a security guarantee.
 No new dependency/artifact admission, paid service or redistribution is proposed.
 Owner: repository owner; PM resumes the existing packet only after approval.
+
+The owner subsequently instructed continuation after the explicit explanation
+of creating the probe, checksum-pinned JAR retrieval and local external-code
+execution. This clears the execution checkpoint for the existing scoped packet.
+The earlier denial remains historical evidence. Work resumes from merged PR #83
+on the continuation branch above; the published planning branch is preserved.
