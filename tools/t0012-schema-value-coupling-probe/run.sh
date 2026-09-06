@@ -86,6 +86,8 @@ PY
 if [[ "$mode" == validate ]]; then
   evidence=${T0012_COUPLING_EVIDENCE_DIR:-}
   if [[ -z "$evidence" ]] || ! diagnostic=$(validate_evidence "$evidence" strict 2>&1); then
+    diagnostic=${diagnostic##*$'\n'}
+    diagnostic=${diagnostic##*: }
     printf 'T0012_COUPLING_VALIDATION_ERROR|%s\n' "${diagnostic:-missing-evidence}" >&2; exit 4
   fi
   printf 'T0012_COUPLING_VALIDATE_ONLY=passed|evidence=%s\n' "$evidence"; exit 0
@@ -222,6 +224,8 @@ cat "$evidence/coupling-cases.raw"
 if [[ "$mode" == capture ]]; then
   printf 'T0012_COUPLING_CAPTURE_ONLY=collected|evidence=%s\n' "$evidence"
 elif ! diagnostic=$(validate_evidence "$evidence" live 2>&1); then
+  diagnostic=${diagnostic##*$'\n'}
+  diagnostic=${diagnostic##*: }
   printf 'T0012_COUPLING_VALIDATION_ERROR|%s\n' "$diagnostic" >&2; exit 4
 else
   printf 'T0012_COUPLING_FULL_RUN=passed|evidence=%s\n' "$evidence"
