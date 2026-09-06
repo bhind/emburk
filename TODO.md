@@ -31,8 +31,10 @@ final-head Demo at `65a2fb3`, accepting 5 SP. Known S03–S13 acceptance totals
 T-0022/S01 is Done through PR #114 (8b48051), accepting 5 SP after primary and
 independent acceptance at 964b4b5: six experiment and 71 workspace passes,
 eight existing ignores and actual-binary checks. Parent Initial 8 is unchanged.
-T-0014/S01 now observes bundled File/CSV behavior (forecast 5 SP) before
-configured CSV semantics; production parser adoption remains pending.
+T-0014/S01 is Done through PR #115 (c3304fc), accepting 5 SP after primary and
+independent Demo at a031fb8. Eleven harness tests and 71 workspace tests passed;
+eight single-task reference projections matched. T-0032/S01 is In Progress
+(forecast 8 SP) for the configured native CSV consumer under ADR-0017.
 
 T-0031/S01 is Done through PR #110 (`c5fb13f`), accepting 5 SP, for a native UTF-8 line-record
 File-to-File command under ADR-0015. It consumes T-0021/S06 without claiming
@@ -68,7 +70,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S13 Done; remaining contracts queued) | Backlog | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
-| T-0014 | Scaffold the differential harness (S01 File/CSV observation active) | In Progress | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0014 | Scaffold the differential harness (S01 Done) | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
 
@@ -88,7 +90,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02 Done; remaining contracts queued) | Backlog | P1 | 8 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0032 | Implement the CSV parser and formatter | Backlog | P1 | 8 | T-0023 | Plugin Implementer | Differential (Embulk) |
+| T-0032 | Implement the CSV parser and formatter (configured S01 active) | In Progress | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser | Backlog | P1 | 5 | T-0023 | Plugin Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |

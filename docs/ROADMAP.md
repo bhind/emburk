@@ -4,9 +4,10 @@ The roadmap is ordered by evidence gates. Dates are intentionally omitted until 
 
 The owner-authorized [seven-stage execution sequence](IMPLEMENTATION_SEQUENCE.md)
 connects these gates to actual transfer work. T-0022/S01's isolated parser
-experiment integrated through PR #114. T-0014/S01 now captures the bundled
-File/CSV reference before configured native semantics; configuration and pipeline
-gates remain open. This early reference work is a dependency of stages 2–4.
+experiment integrated through PR #114. T-0014/S01's eight bundled File/CSV
+observations integrated through PR #115. T-0032/S01 now implements the bounded
+configured consumer; configuration and pipeline gates remain open until its
+selected native differential evidence passes. This connects stages 2–4.
 
 ## Phase 0: Governance and Compatibility Contract
 

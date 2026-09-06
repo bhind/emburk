@@ -43,8 +43,10 @@ Development state: `bootstrap`
 Parser-selection research now has a [candidate assessment](provenance/T-0022-parser-candidates.md).
 T-0022/S01 is Done through PR #114 after primary and independent acceptance
 of six experiment tests, 71 workspace tests and actual-binary checks.
-The production workspace and CLI remain unchanged. The active packet is
-[T-0014/S01](provenance/T-0014-file-csv-oracle.md); the owner-authorized
+T-0014/S01 is Done through PR #115 after eleven harness tests, 71 workspace
+tests and matching independent eight-case reference projections. The active
+implementation packet is [T-0032/S01](provenance/T-0032-configured-csv.md);
+its production consumer is not yet accepted. The owner-authorized
 [seven-stage sequence](IMPLEMENTATION_SEQUENCE.md) remains uncompleted work.
 
 ## Delivery queue
@@ -72,7 +74,7 @@ strict controls and unchanged S12 regression. T-0031/S01 is Done through PR #110
 (`c5fb13f`) for the explicitly requested experimental native File-to-File path.
 T-0031/S02 is Done through PR #112 (`2ec236e`) for experimental stdout/null
 consumers: 71 tests passed, eight existing intentional ignores, primary and
-independent acceptance at `c5df504`. T-0014/S01 now occupies one WIP lane; the full
+independent acceptance at `c5df504`. T-0032/S01 now occupies one WIP lane; the full
 file/plugin parent stays open. Core transfer semantics remain unchanged.
 
 | Item | State | Purpose |
@@ -89,7 +91,7 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
-T-0014/S01 is In Progress for bundled File/CSV reference observation; other unfinished stable tasks remain `Backlog`. Parent epics are
+T-0032/S01 is In Progress for configured native CSV; other unfinished stable tasks remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
 is the coordination mirror. Its 52 items, lifecycle states, initial estimates,
 roles, dependencies, workstreams, evidence classes, and views were reconciled

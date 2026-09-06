@@ -7,7 +7,7 @@ experimental line file/stdout/null consumers remain available throughout.
 | Stage | Canonical task | Exit evidence |
 | --- | --- | --- |
 | 1. Parser | T-0022/S01 | Pinned dependency/license inventory and original syntax experiment; retained mismatches against S13 |
-| 2. Configured transfer | T-0022/S02 | Configuration selects real source and sink; invalid configuration fails before output creation; prior commands still pass |
+| 2. Configured transfer | T-0032/S01 (consumes T-0022/S01) | Configuration selects real source and sink; invalid configuration fails before output creation; prior commands still pass |
 | 3. CSV/schema | T-0032 | Quoted/multiline/empty/type cases through actual file transfer and logical schema; bounded record handling |
 | 4. Reference comparison | T-0014, T-0037 | Same selected fixtures run through pinned Embulk/plugin artifacts and native path; exact outputs/errors reviewed; no guessed normalization |
 | 5. Failure/publication | T-0025 | Explicit unpublished/committed output state; injected read/write/flush/publish/interruption cases; old destination never damaged |

@@ -25,6 +25,10 @@ fn main() {
         return;
     }
     let (command, result) = match arguments.as_slice() {
+        [_, command, config] if command == "run" => (
+            "run",
+            emburk_core::run_config(Path::new(config)).map(|_| ()),
+        ),
         [_, command, input, output] if command == "transfer-lines" => (
             "transfer-lines",
             transfer(Path::new(input), Path::new(output)),
@@ -36,7 +40,7 @@ fn main() {
             ("transfer-lines-null", transfer_null(Path::new(input)))
         }
         _ => {
-            eprintln!("Usage: emburk transfer-lines INPUT OUTPUT");
+            eprintln!("Usage: emburk run CONFIG\n       emburk transfer-lines INPUT OUTPUT");
             std::process::exit(2);
         }
     };

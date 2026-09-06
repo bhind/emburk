@@ -8,6 +8,10 @@ policy is selected; the production workspace remains unaffected.
 PR #114 accepted that experiment. T-0014/S01 admits the four version-pinned
 bundled File/CSV modules only for local observation; no Native/Verified plugin
 claim or redistribution approval follows.
+T-0014/S01 is now accepted through PR #115 as reference-only evidence.
+ADR-0017 admits a bounded configured CSV implementation (T-0032/S01); its
+Native/Verified claims remain pending acceptance. General CSV and configuration
+behavior outside the selected matrix remains unfinished, not an accepted exception.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate

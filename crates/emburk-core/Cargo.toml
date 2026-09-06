@@ -3,3 +3,6 @@ name = "emburk-core"
 version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
+
+[dependencies]
+saphyr-parser = { version = "=0.0.11", default-features = false }
