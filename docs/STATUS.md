@@ -45,7 +45,7 @@ captured 114/93 events with exact selected double bits preserved; primary
 reproduction and complete raw review authorize Stage B strict validation.
 The slice integrated through PR #91 as `34757c8`. S10's private double-storage
 decision passed readiness review and integrated through PR #92. S10 is now
-In Progress with one source owner and combined active WIP one of two. T-0012, T-0013 and
+in Review after source acceptance, with combined active WIP one of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -54,7 +54,7 @@ T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S10 | In Progress | Private double bit storage and two selected comparisons |
+| T-0012/S10 | Review | Private double bit storage and two selected comparisons |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
@@ -337,6 +337,9 @@ PR #91 is in Review; final-head acceptance and integration remain required.
 
 S09 final-head Demo passed at `59f1b2e`; PR #91 integrated as `34757c8`.
 Its selected reference observations are accepted; parent T-0012 remains open.
-S10 is Ready under accepted ADR-0012 and its reviewed packet, separating
-bitwise storage identity from numeric equality. No Rust Float64 implementation
-or schema/public/production policy is claimed by the planning record.
+S10 implements the private bit-preserving representation permitted by ADR-0012.
+Frozen source `3df2a88` passed implementer and independent Tester acceptance:
+12 selected double/null cells, five bridge controls and unchanged S09/S08/S06
+regressions. Its private equality is storage identity, not numeric equality.
+Primary final acceptance and PR integration remain required. No public value,
+schema coupling, physical encoding, whole-domain or production claim follows.
