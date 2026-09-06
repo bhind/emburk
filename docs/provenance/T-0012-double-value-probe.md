@@ -169,6 +169,16 @@ Implementer capture trace SHA-256, finite-null / nonfinite:
 
 ### Remaining acceptance gates
 
+The first Stage B source revision `7ec550b` passed the selected live fixtures,
+40 raw rejection controls and existing S08/S06 comparisons in the retained
+implementer run. It is not accepted: primary and separate read-only Tester
+review require per-negative stdout/stderr/exit retention, resolved evidence and
+generated-JAR path confinement, and mandatory provenance metadata validation.
+These pre-acceptance corrections remain in the same three-file source allowlist;
+no new runtime or native behavior is authorized. The owner requested a temporary
+pause and then resumed with a low-effort implementer. The source handoff preserves
+the interrupted implementation and does not change acceptance requirements.
+
 After PM freezes the exact observed outcome matrix, validate complete ordered
 events and all per-cell values, not counts alone. Canonical case membership,
 capture/sequence, caps before allocation, raw-log extraction, trace copies,
