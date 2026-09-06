@@ -64,6 +64,11 @@ explicit bounded native profile; broader parent compatibility gates remain open.
 
 ## Delivery queue
 
+T-0036/S01 is In Progress for actual guess observations, followed by bounded
+native guessing and T-0037 integrated acceptance under owner authorization.
+The first eight probes expose JSON-without-columns and charset/delimiter gaps;
+native guessing is not yet implemented or accepted.
+
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary
