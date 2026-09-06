@@ -1,6 +1,6 @@
 # T-0031/S02 experimental stdout and null targets
 
-Issue: [#24](https://github.com/bhind/emburk/issues/24). State: Review, PR #112.
+Issue: [#24](https://github.com/bhind/emburk/issues/24). Slice: Done, PR #112.
 Branch: `feat/t-0031-s02-output-targets`. Owner: Rust Core Implementer.
 Slice estimate: 3 SP (implementation 1, verification 1, uncertainty 1).
 Parent Current forecast 8 / Initial 5; accepted S01 5 SP is not re-awarded.
@@ -48,6 +48,23 @@ pipe (Unix). Preserve all S01 file/permissions tests. No global stdout redirecti
 `cargo test --workspace && cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings`
 
 ## Evidence class
+
+Primary and independent final Demo passed at
+`c5df504d52a987db98035d1958f19804fd26c61d` with retained numeric exit 0:
+71 tests passed (61 core, 10 CLI integration), eight existing intentional
+external-reference ignores; format and strict Clippy passed. Core unchanged.
+Primary stdout/stderr SHA-256:
+`91b908b9ddbe6b1d66dcc0be3b462235340e09b5d1988a21b17ebe68262a89ba` /
+`c91f226098ab5e6f70bf39fd2aa60dee5d4180d6f918c20ae98941e21cda7422`.
+Independent stdout/stderr SHA-256:
+`58654631eba9ae1ca79eec8db6396ed1b8ec6846b63f60fe78dee406c6d982cb` /
+`486c8b2e6b0c62248a09ab6cb29f8a959b6dc0a34f8ab952303b54bc66e8d301`.
+Root verified independent retained exit and hashes. Rust/Cargo 1.98.1, macOS
+arm64. The closed-reader test uses a UnixStream-backed stdout descriptor,
+not a portability claim for all pipe implementations. PR #112 integrated as
+`2ec236e89b48a1ae15c5a952e3830fa12ceee074` with matching-head guard.
+S02 accepts 3 SP; S01/S02 total 8 SP. Parent #24 stays open in Backlog,
+Current 8 / Initial 5, with broader configuration/plugin semantics outstanding.
 
 Unit/Contract plus local process/file Integration. Independent final-head Demo
 and guarded PR integration required before slice Done. No points before acceptance.

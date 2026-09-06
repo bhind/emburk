@@ -243,7 +243,7 @@ It is not an Embulk compatibility entry: strict UTF-8, LF normalization, a 1 MiB
 physical-line limit, exclusive output and possible partial files are native
 experimental policies. See [usage and limitations](FILE_TRANSFER.md).
 
-T-0031/S02's stdout/null targets use the existing native experimental Text rules.
+T-0031/S02's stdout/null targets, accepted in PR #112, use the existing native experimental Text rules.
 They do not establish compatibility with any Embulk output plugin.
 
 ## Adding an Entry

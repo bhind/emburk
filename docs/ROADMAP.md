@@ -210,8 +210,8 @@ independent final-head acceptance at `9df0d5c`.
 
 ## Phase 1: Native File-to-File MVP
 
-T-0031/S02 extends experimental Text output to stdout and null, pending final
-acceptance. This does not satisfy the generic plugin/configuration gate.
+T-0031/S02 extends experimental Text output to stdout and null, accepted through
+PR #112. This does not satisfy the generic plugin/configuration gate.
 
 T-0031/S01 provides the first experimental native text-record transfer path,
 accepted through PR #110. This does not satisfy this phase's CSV/JSON, configuration,
