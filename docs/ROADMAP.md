@@ -192,6 +192,12 @@ exercise a private positional logical batch for selected schema/value categories
 Primary and independent final-head acceptance passed. Timestamp/JSON values,
 nullability, external validation, physical encoding and all File-to-File claims remain outside.
 
+T-0023/S02 is Review in PR #103 at frozen source `e0a44ad` for a test-only
+selected Differential bridge over three accepted S11 normal outcomes. Final-head
+and independent acceptance remain pending. It introduces no runtime/public
+surface; its evidence cannot settle timestamp/JSON, nullability, physical
+encoding, lifecycle, or File-to-File delivery gates.
+
 
 
 
