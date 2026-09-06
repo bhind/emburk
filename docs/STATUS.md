@@ -85,6 +85,11 @@ jobs skipped because `PROJECTS_TOKEN` remains absent. Issue #84 is closed and
 Done. This proves safe no-credential behavior; it does not prove credentialed
 Project mutation or daily snapshot publication.
 
+T-0004/S03 is active in Issue #87 to align the workflow with the registered
+Actions Secret name `EMBURK_PROJECT_TOKEN`. The secret name exists by live
+metadata read-back; its value was not read or logged. Credentialed Project
+mutation and snapshot publication remain pending hosted verification.
+
 ## Evidence and non-claims
 
 Current evidence includes repository checks, private scalar Unit/Contract tests,

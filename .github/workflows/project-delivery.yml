@@ -26,14 +26,14 @@ jobs:
         id: check
         shell: bash
         env:
-          PROJECTS_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          EMBURK_PROJECT_TOKEN: ${{ secrets.EMBURK_PROJECT_TOKEN }}
         run: |
-          if [[ -n "$PROJECTS_TOKEN" ]]; then
+          if [[ -n "$EMBURK_PROJECT_TOKEN" ]]; then
             echo "configured=true" >> "$GITHUB_OUTPUT"
           else
             echo "configured=false" >> "$GITHUB_OUTPUT"
             echo "## Project delivery automation skipped" >> "$GITHUB_STEP_SUMMARY"
-            echo "PROJECTS_TOKEN is not configured. No Project data was read or changed." >> "$GITHUB_STEP_SUMMARY"
+            echo "EMBURK_PROJECT_TOKEN is not configured. No Project data was read or changed." >> "$GITHUB_STEP_SUMMARY"
           fi
 
   review:
@@ -55,7 +55,7 @@ jobs:
       - name: Move linked Issues to Review
         run: python3 scripts/project_delivery.py review --pr "${{ github.event.pull_request.number }}"
         env:
-          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          GH_TOKEN: ${{ secrets.EMBURK_PROJECT_TOKEN }}
 
   snapshot:
     needs: credential_gate
@@ -73,13 +73,13 @@ jobs:
       - name: Verify Project configuration
         run: python3 scripts/project_delivery.py audit
         env:
-          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          GH_TOKEN: ${{ secrets.EMBURK_PROJECT_TOKEN }}
       - name: Check out metrics history
         run: git worktree add -B project-metrics "$RUNNER_TEMP/project-metrics" origin/project-metrics
       - name: Update daily snapshot
         run: python3 scripts/project_delivery.py snapshot --output-dir "$RUNNER_TEMP/project-metrics/data/project-delivery"
         env:
-          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          GH_TOKEN: ${{ secrets.EMBURK_PROJECT_TOKEN }}
       - name: Commit metrics history
         run: |
           cd "$RUNNER_TEMP/project-metrics"
