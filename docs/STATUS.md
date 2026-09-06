@@ -50,8 +50,9 @@ T-0032/S01 consumer is Done through PR #116 (66c6125), after 81 passing tests,
 eight existing ignores and eight independently matching selected real file
 projections at 59a7cca. T-0025/S01 is Done through PR #117 (aac0003): 87 passes,
 eight existing ignores, actual interruption and operation-failure tests, and
-unchanged eight-case CSV comparison. T-0014/S02 now captures selected stage-6
-format/filter observations; native formats and stage 7 remain unfinished.
+unchanged eight-case CSV comparison. T-0014/S02 is Done through PR #118:
+nine tests and matching independent five-case format/filter observations.
+T-0033/S01 now implements bounded native formats; stage 7 remains unfinished.
 The owner-authorized
 [seven-stage sequence](IMPLEMENTATION_SEQUENCE.md) remains uncompleted work.
 
@@ -80,7 +81,7 @@ strict controls and unchanged S12 regression. T-0031/S01 is Done through PR #110
 (`c5fb13f`) for the explicitly requested experimental native File-to-File path.
 T-0031/S02 is Done through PR #112 (`2ec236e`) for experimental stdout/null
 consumers: 71 tests passed, eight existing intentional ignores, primary and
-independent acceptance at `c5df504`. T-0014/S02 now occupies one WIP lane; the full
+independent acceptance at `c5df504`. T-0033/S01 now occupies one WIP lane; the full
 file/plugin parent stays open. Core transfer semantics remain unchanged.
 
 | Item | State | Purpose |
@@ -97,9 +98,8 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
-T-0025/S01 is Done through PR #117. T-0014/S02 uses
-one lane for bundled format/filter reference observations
-on research/t-0014-formats-oracle; its packet and evidence are disjoint.
+T-0025/S01 is Done through PR #117. T-0014/S02 is Done through PR #118.
+T-0033/S01 uses one lane for native JSON/codecs/filters on its dedicated branch.
 Other unfinished stable tasks remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
 is the coordination mirror. Its 52 items, lifecycle states, initial estimates,

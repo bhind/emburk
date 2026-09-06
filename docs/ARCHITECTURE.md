@@ -11,6 +11,11 @@ plugin types become public, and the empty lifecycle coordinator stays separate.
 
 ## Principles
 
+ADR-0019 admits the selected native_formats adapter for bounded JSON framing,
+streaming codecs and ordered schema projections inside the configured consumer.
+Dependencies remain private and codec finalization precedes publication.
+T-0033/S01 implementation/acceptance is in progress, not a public plugin API.
+
 ADR-0016 extends only CLI composition with stdout locking and std::io::sink
 adapters. Both use the same core transfer entry point; no new public core or
 plugin API is introduced. Stdout data and stderr summaries remain separate.

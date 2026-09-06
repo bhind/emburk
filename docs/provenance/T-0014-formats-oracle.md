@@ -1,6 +1,6 @@
 # T-0014/S02 bundled format and filter observations
 
-Issue: [#17](https://github.com/bhind/emburk/issues/17). State: In Progress.
+Issue: [#17](https://github.com/bhind/emburk/issues/17). State: Done through PR #118.
 Forecast: 3 SP. Reference-only preparation for stage 6.
 
 ## Authority and dependencies
@@ -92,6 +92,25 @@ names, decoded/plain content); raw compressed bytes may differ and stay retained
 Set EMBURK_REFERENCE_JAR and JAVA_HOME to the pinned local artifact and Java17.
 
 ## Evidence class, stop rule and non-claims
+
+Accepted 3 SP through ecf9cc47c964fc678de98992afc13335b9521ea0 after primary
+and independent exact Demo at dad393c3aaf154b447ab38e97c18ec2ab5988a60.
+Nine harness tests passed. All five actual input/config/exit/output-name and
+plain/decoded-content projections matched between runs; no timeouts. JSON,
+gzip, bzip2 and rename-then-remove exit 0; reverse filter order exits 1 without
+output. Compressed bytes are retained, not normalized into bitstream parity.
+
+Primary /private/tmp/t0014-s02-primary.ermKcq stdout SHA256
+f5147a0066bc816327cdbd73bb88736e6b456e352900f68ef42bbf19ac3c8879;
+stderr b35463792dff49415b3025f515a855650b957e546842ecbbcd8a81a9573f833a.
+Independent /private/tmp/emburk-t0014-s02-acceptance.XjNBHt stdout SHA256
+231c8726eb81e213307a47e0c720c8a52adc4b128c93af25a036d72e1fb8bd63;
+stderr 212d7f3f8085850412f7dd751ef30309fa2a5c6cfc44fe45b2db05bc1c185736.
+Both numeric exit 0, exit-file SHA256
+9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Raw runs: /private/tmp/emburk-t0014-s02-run-tm_jxcje and
+/private/tmp/emburk-t0014-s02-run-kj60p8_o. Parent #17 remains open in Backlog;
+S01/S02 accept 8 SP total, not full harness completion.
 
 Reference-only observation plus Unit/Contract harness controls. Stop on artifact
 mismatch, unsafe filesystem writes, unexplained timeout or source/IP issue.
