@@ -15,6 +15,11 @@ Standing owner authority permits bounded reference instrumentation and accepted
 PR integration. One source owner; independent read-only Tester and Librarian.
 At most one active item for this serial lane; preserve all user worktrees.
 
+After an editing-policy gate rejected capture-only to full/validate expansion,
+the owner explicitly approved that expansion, including default behavior changes,
+and requested automation on 2026-09-06. This authorizes the scoped Stage B
+implementation below; it does not waive evidence, review or provenance gates.
+
 ## Dependencies
 
 T-0011 pins and S05/S07/S09 public-interface provenance are integrated.
@@ -135,12 +140,31 @@ capture runner `598ae1c811c5bd14b8356849cef5fb65fd1f7f5bcc008be353c9c88434e071d7
 unavailable Stage B wrapper `f7e051f8f1f9cff08ad27b45bd7bd6d0fc1055ae24a83a4e0c6e4a9648e14cd3`.
 Temporary evidence must be reproduced if removed.
 
+Stage B vector representation is UTF-8 JSON with compact separators and
+unescaped Unicode, no trailing newline: ordered rows contain first-occurrence
+UUID ordinal (starting at 1), integer sequence, event name and decoded payload
+array (null token becomes JSON null). No event or payload is omitted. PM
+independently recomputed these hashes from its retained Stage A capture:
+
+| Fixture | Normalized vector SHA-256 |
+|---|---|
+| matching | `db8a49da05d479051bc36b14c5a409679d09866cf9b46fb1b686aa1068e3e7de` |
+| explicit-null | `0d24d2b54aaf18ea9dbaada67e8d16d24c6e6711346cff7162979eb7e25cbeec` |
+| unset-text | `e72894c14d5558e0b56132e9506e498507568b396e130e7fd2d728d17ce7d1d1` |
+| wrong-setter | `8cbf19bd93e6c3b69f1dc1da7275bdf3b9e60790906b4400cb6d70ae064df081` |
+| duplicate-name | `90128852fbb049c8ad82d0d788e4be85cbfac3a995f7016c770bc67685d3210e` |
+
+Canonical raw spelling, UUID uniqueness, exact physical segments and provenance
+must be checked separately; normalization cannot excuse invalid raw transport.
+
 PM authorizes only Stage B strict validation/control implementation from these
 reviewed full vectors. Java fixture semantics remain frozen. No native policy,
 full acceptance, Differential result or parent completion follows from Stage A.
 
 After PM records actual expectations, implement strict full and validate-only
-modes. Full runs fresh captures and artifact controls; validate-only checks
+modes. The default full runner captures and strictly validates fresh outcomes;
+the acceptance wrapper additionally runs artifact and repaired-evidence controls.
+Validate-only checks
 existing evidence and cannot admit a runtime or emit a live/full marker.
 Bind metadata to the historical source revision and exact source paths/hashes,
 fresh capture IDs, fixture matrix, physical event order, schema/cell positions,
@@ -176,6 +200,53 @@ This is the final Stage B acceptance command, not Stage A authorization.
 
 Reference Observation / Integration plus validator Unit/Contract only.
 No native Differential comparison is added by this slice.
+
+## Stage B source acceptance
+
+Frozen source: `b556ce01bb311b96a260a2a656bb4b18056b36e2`.
+The user-approved default is `full`; explicit `capture` remains observation-only,
+and `validate` checks existing evidence without executing the reference runtime.
+The wrapper automates five exact outcome vectors, a positive validate-only
+check, 39 distinct structured rejection controls and corrupt/unavailable runtime
+controls (expected exits 3/56). Each malformed copy must change its target and
+produce exactly one specified diagnostic with exit 4 and empty stdout.
+
+Primary exact four-wrapper Demo passed with exit 0. Complete logs:
+`/private/tmp/t0012-s11-primary-demo.Tod1kD`; stdout SHA-256
+`d0d6d90bfdbf22ea5bd86e6e27193a080d0b956b960d7105e287ce1b81cee184`;
+stderr is empty. Fresh S11 evidence:
+`/private/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0012-schema-value-coupling/run.quDR3j/evidence`.
+Primary separately verified all 39 distinct retained stdout/stderr/exit triplets.
+Existing S10 (12 cells/five bridge controls plus full S09), S08 (two projections/
+18 controls), and S06 (three schemas) passed unchanged.
+
+Primary quality logs: `/private/tmp/t0012-s11-primary-quality.Sl0MZJ`, exit 0:
+workspace format, 46 Rust passes/seven intentional live ignores, strict
+all-target Clippy, Bash syntax and diff check. Java compilation occurs in each
+fresh capture. Read-only final-delta review found no additional blocker.
+Separate read-only reproduction passed at the same frozen revision:
+`/private/tmp/t0012-s11-tester.TXT3jc`, five traces/39 controls/two artifact
+controls and unchanged S10/S08/S06 wrappers, all exit 0. Workspace tests
+(46 passed/seven ignored), format, strict Clippy, syntax and diff checks passed.
+The interrupted initial chained logging attempt is excluded; completed individual
+reruns supply the reproduction evidence. Reviewers previously authored intermediate
+source, so this is separate reproduction, not a blind-review claim.
+Final PR-head acceptance and integration remain required.
+
+Source SHA-256:
+
+- Java: `3458f499a93ad307c75395950c8ee1e3478c5eaeba706a645909124e53a305e3` (unchanged from Stage A);
+- runner: `442a51465f7d8ee878e08c5e49f899479a14ac6f82d48a85771b1a9a4ce5e8fa`;
+- wrapper: `bab01b3190c924403ccebad79399cf882e978572e70ac83fc4a37b7ae1722d21`.
+
+Intermediate revisions `7657195`, `1d7da8e` and `9c1ca21` did not satisfy the
+complete acceptance matrix. The initial generic control grid was replaced,
+not counted as passing coverage. Intermediate live results (including
+`/private/tmp/t0012-s11-stage-b.b4bbEm`) remain retained and superseded.
+Final controls preserve historical revision-to-source-blob checks and separately
+test canonical paths/transport, provenance, contexts and semantic alterations.
+Hash manifests detect accidental or tested changes; they are not signatures or
+proof against a malicious local process rewriting the entire evidence set.
 
 ## Provenance and admission
 
