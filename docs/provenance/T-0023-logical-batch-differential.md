@@ -1,7 +1,7 @@
 # T-0023/S02 selected logical-batch differential bridge
 
 - Issue: [T-0023, #20](https://github.com/bhind/emburk/issues/20)
-- State: Review; frozen implementation acceptance pending
+- State: Done through PR #103 (`5d728663f6557cf3dc4c8e949b331e8d581ea26c`)
 - Branch: `test/t-0023-s02-logical-batch-differential`
 - Owner: Compatibility Host Implementer; Project Manager owns records and integration
 - Priority: P1; estimate 5 SP (implementation 2, uncertainty 0, verification 2,
@@ -98,8 +98,36 @@ and strict Clippy. The root source-check outer log is
 `ff8808dc1e50d72bbefcdf4c144cb5b9f6cb11df67ba61a50a8cc3c8429339fc`, with
 empty stderr. A first S11 retrieval attempt at
 `/private/var/folders/mh/pwg8ncpd23g7bp63xgnh461r0000gn/T/t0023-s02.HBx2dA`
-exited 56 and is retained as non-acceptance evidence. Final PR-head Demo and
-separate Tester reproduction remain required; source freeze is not completion.
+exited 56 and is retained as non-acceptance evidence. Source freeze was not
+completion; final acceptance and integration are recorded below.
+
+## Final acceptance and integration
+
+The exact Demo passed at final head
+`ca9af0a44e3e88d7d3213c02d6236726cd4ba282` in primary and separate Tester
+runs, each with numeric exit 0. Source hashes above remained unchanged.
+The primary verified the retained Tester exit and hashes before guarded merge.
+
+| Run | stdout SHA-256 | stderr SHA-256 |
+| --- | --- | --- |
+| Primary | `57e076bd5995077d8c35539d00021305a52ac5822939d141f0cf2bd0ac56cbe0` | `08d99bafb4ec7bbceda7cdd956a7e3c3989fc9e1e31bf35e7bcd7cb23cd0ed58` |
+| Tester | `d6005bd0df5740c563f8e02157ee3d5d88f9268913944e719b0f41700d3a4470` | `b1dfe9aa1373ed80184a05c2cbd41149ac1882ebd2e89742ee5143a1206d9977` |
+
+Both runs pass the three selected projections/ten cells, four offline bridge
+tests, one exact live test, positive validate-only, four repaired raw controls,
+two projector contradictions, three path/output controls, workspace 57 passed
+and eight intentional ignores, format, strict Clippy, and unchanged S10/S08/S06
+comparisons. Environment: macOS arm64, Rust/Cargo 1.98.1, Temurin 17.0.20,
+Python 3.14.6, Bash 3.2.57. Logs and generated artifacts remain local-only.
+An initial Tester sandbox retrieval failure and subsequent runs whose numeric
+exit was lost by orchestration are retained as non-acceptance. The final
+Tester run explicitly retained exit 0 and the tool reported exit 0; no success
+was inferred from markers alone. Future long-running commands must preserve
+the nested shell session ID and retain the numeric exit before returning.
+
+PR #103 integrated as `5d728663f6557cf3dc4c8e949b331e8d581ea26c`.
+S02 accepts 5 SP (S01/S02 total 10); parent #20 remains open with Current 21 /
+Initial 8. All non-claims below remain unchanged.
 
 ## Evidence class
 

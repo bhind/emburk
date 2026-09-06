@@ -49,9 +49,10 @@ Done through PR #93. T-0021/S06 is Done through PR #96 after primary,
 independent and final-head acceptance. T-0012/S11 is Done through PR #99 after final-head acceptance.
 T-0023/S01 is Done through PR #101 (`d0eebf8`), after primary and independent
 final-head Demo at `196d648`: 53 workspace passes, seven intentional ignores,
-seven batch tests and unchanged regressions. T-0023/S02 is Review in PR #103 at
-frozen source `e0a44ad`; final-head and independent evidence are pending, and it
-adds no new runtime behavior. Combined active WIP is one of two. T-0012, T-0013 and
+seven batch tests and unchanged regressions. T-0023/S02 is Done through PR #103
+(`5d72866`) after primary and independent Demo at `ca9af0a`: three selected
+projections/ten cells, 57 workspace passes/eight intentional ignores, and
+unchanged regressions. It adds no runtime behavior. WIP is zero of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -62,7 +63,7 @@ T-0021 parent contracts remain open.
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
 | T-0012/S11 | Done | Automated strict observation validation; PR #99 integrated |
 | T-0023/S01 | Done | Private positional batch admission; PR #101 integrated |
-| T-0023/S02 | Review | Frozen selected three-case LogicalBatch differential bridge |
+| T-0023/S02 | Done | Selected three-case LogicalBatch differential bridge; PR #103 integrated |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 

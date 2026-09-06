@@ -167,10 +167,10 @@ private owned logical batch with positional admission over selected Boolean,
 Signed64, Float64 and Text categories; primary and independent final-head acceptance passed. No
 Arrow/Page, lifecycle, public API or transfer boundary exists.
 
-T-0023/S02 is Review in PR #103 at frozen source `e0a44ad` to test the existing
-private boundary against three selected S11 outcomes. Its test-only bridge does
+T-0023/S02 is Done through PR #103 (`5d72866`) after primary and independent
+final-head comparison against three selected S11 outcomes. Its test-only bridge does
 not make `LogicalBatch` a consumer, physical batch, public contract or transfer
-boundary; final acceptance remains pending.
+boundary.
 
 
 
