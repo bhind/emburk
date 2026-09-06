@@ -21,6 +21,13 @@ mod logical_schema;
 )]
 mod logical_record;
 
+// This remains a private ownership experiment, not a plugin or lifecycle API.
+#[allow(
+    dead_code,
+    reason = "T-0021/S06 is an internal synchronous owned-record handoff seam"
+)]
+mod record_handoff;
+
 // This is deliberately private: it is a bounded fake-fixture coordinator, not
 // a public plugin API or a production lifecycle contract.
 #[allow(
