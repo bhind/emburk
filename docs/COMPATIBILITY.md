@@ -238,6 +238,11 @@ no-callback failures. Primary and independent final-head acceptance passed at
 The [parser candidate assessment](provenance/T-0022-parser-candidates.md) is
 Planning only; no native YAML parser or coercion policy has been admitted.
 
+T-0031/S01 adds an experimental native text transfer, pending final acceptance.
+It is not an Embulk compatibility entry: strict UTF-8, LF normalization, a 1 MiB
+physical-line limit, exclusive output and possible partial files are native
+experimental policies. See [usage and limitations](FILE_TRANSFER.md).
+
 ## Adding an Entry
 
 T-0012/S13 is Done through PR #107 (`441040f`) for six syntax observations. No YAML, duplicate-key, alias,
