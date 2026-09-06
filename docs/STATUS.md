@@ -67,7 +67,8 @@ contracts remain open. S13 is Done through PR #107 (`441040f`) after primary
 and independent final-head Demo at `65a2fb3`: six syntax cases/60 events,
 strict controls and unchanged S12 regression. T-0031/S01 is Done through PR #110
 (`c5fb13f`) for the explicitly requested experimental native File-to-File path.
-No WIP lane remains occupied; the full file/plugin parent stays open.
+T-0031/S02 occupies one WIP lane for experimental stdout/null consumers; the
+full file/plugin parent stays open. Core transfer semantics remain unchanged.
 
 | Item | State | Purpose |
 |---|---|---|

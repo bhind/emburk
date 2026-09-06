@@ -2,7 +2,7 @@ use std::{
     ffi::OsStr,
     fs,
     path::{Path, PathBuf},
-    process::Command,
+    process::{Command, Stdio},
     sync::atomic::{AtomicUsize, Ordering},
 };
 
@@ -65,6 +65,112 @@ fn retains_development_status_and_exposes_help_and_argument_errors() {
     assert_eq!(invalid.status.code(), Some(2));
     let extra_help = run(&directory, &[OsStr::new("--help"), OsStr::new("extra")]);
     assert_eq!(extra_help.status.code(), Some(2));
+    let missing_stdout_input = run(&directory, &[OsStr::new("transfer-lines-stdout")]);
+    assert_eq!(missing_stdout_input.status.code(), Some(2));
+    let extra_null = run(
+        &directory,
+        &[
+            OsStr::new("transfer-lines-null"),
+            OsStr::new("input"),
+            OsStr::new("extra"),
+        ],
+    );
+    assert_eq!(extra_null.status.code(), Some(2));
+}
+
+#[test]
+fn stdout_and_null_targets_stream_or_validate_without_creating_files() {
+    let directory = directory("stream-targets");
+    let input = directory.join("input.txt");
+    fs::write(&input, "hello\r\n🦀\n\nfinal").unwrap();
+    let stdout = run(
+        &directory,
+        &[OsStr::new("transfer-lines-stdout"), input.as_os_str()],
+    );
+    assert!(stdout.status.success());
+    assert_eq!(stdout.stdout, "hello\n🦀\n\nfinal\n".as_bytes());
+    assert!(String::from_utf8_lossy(&stdout.stderr).contains("4 records"));
+    let null = run(
+        &directory,
+        &[OsStr::new("transfer-lines-null"), input.as_os_str()],
+    );
+    assert!(null.status.success());
+    assert!(null.stdout.is_empty());
+    assert!(String::from_utf8_lossy(&null.stderr).contains("4 records"));
+    let empty = directory.join("empty.txt");
+    fs::write(&empty, []).unwrap();
+    for command in ["transfer-lines-stdout", "transfer-lines-null"] {
+        let result = run(&directory, &[OsStr::new(command), empty.as_os_str()]);
+        assert!(result.status.success());
+        assert!(result.stdout.is_empty());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("0 records"));
+    }
+    assert_eq!(fs::read_dir(&directory).unwrap().count(), 2);
+}
+
+#[test]
+fn stream_targets_reject_bad_inputs_without_success_summaries() {
+    let directory = directory("stream-errors");
+    let missing = directory.join("missing.txt");
+    for command in ["transfer-lines-stdout", "transfer-lines-null"] {
+        let result = run(&directory, &[OsStr::new(command), missing.as_os_str()]);
+        assert_eq!(result.status.code(), Some(1));
+        assert!(!String::from_utf8_lossy(&result.stderr).contains("completed"));
+    }
+    let invalid = directory.join("invalid.txt");
+    fs::write(&invalid, [0xff, b'\n']).unwrap();
+    for command in ["transfer-lines-stdout", "transfer-lines-null"] {
+        let invalid_result = run(&directory, &[OsStr::new(command), invalid.as_os_str()]);
+        assert_eq!(invalid_result.status.code(), Some(1));
+        assert!(invalid_result.stdout.is_empty());
+        assert!(!String::from_utf8_lossy(&invalid_result.stderr).contains("completed"));
+    }
+    let oversized = directory.join("oversized.txt");
+    fs::write(&oversized, vec![b'x'; 1024 * 1024 + 1]).unwrap();
+    for command in ["transfer-lines-stdout", "transfer-lines-null"] {
+        assert_eq!(
+            run(&directory, &[OsStr::new(command), oversized.as_os_str()])
+                .status
+                .code(),
+            Some(1)
+        );
+    }
+    let input_directory = directory.join("input-directory");
+    fs::create_dir(&input_directory).unwrap();
+    for command in ["transfer-lines-stdout", "transfer-lines-null"] {
+        assert_eq!(
+            run(
+                &directory,
+                &[OsStr::new(command), input_directory.as_os_str()]
+            )
+            .status
+            .code(),
+            Some(1)
+        );
+    }
+    assert_eq!(fs::read_dir(&directory).unwrap().count(), 3);
+}
+
+#[cfg(unix)]
+#[test]
+fn closed_stdout_pipe_exits_one_without_a_success_summary() {
+    use std::{os::fd::OwnedFd, os::unix::net::UnixStream};
+    let directory = directory("broken-pipe");
+    let input = directory.join("input.txt");
+    fs::write(&input, b"line\n").unwrap();
+    let (writer, reader) = UnixStream::pair().unwrap();
+    drop(reader);
+    let stdout: OwnedFd = writer.into();
+    let output = Command::new(env!("CARGO_BIN_EXE_emburk"))
+        .arg("transfer-lines-stdout")
+        .arg(input)
+        .current_dir(&directory)
+        .stdout(Stdio::from(stdout))
+        .stderr(Stdio::piped())
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(1));
+    assert!(!String::from_utf8_lossy(&output.stderr).contains("completed"));
 }
 
 #[test]
