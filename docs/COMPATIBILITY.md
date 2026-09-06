@@ -206,6 +206,13 @@ passed at `8cb13ff`; PR #96 integrated as `56ef9e9`. S06 is Done.
 Evidence is Unit/Contract only, not a public
 API, schema/lifecycle policy, resource guarantee or Embulk compatibility claim.
 
+T-0012/S11 is the next decision-producing candidate: five isolated schema/value
+coupling observations using the admitted Page APIs. Independent readiness
+review passed; the slice is Ready, with no runtime evidence yet.
+Stage A captures before expectations; diagnostic unset/mismatched-setter results
+do not select native defaults or validation. A separate reviewed decision must
+precede any schema-bound record implementation.
+
 
 
 
