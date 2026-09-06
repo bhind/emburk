@@ -1,7 +1,7 @@
 # T-0024/S01 bounded formatting and cancellation
 
-Issue: [#21](https://github.com/bhind/emburk/issues/21). State: In Progress.
-Forecast: 5 SP. First independently acceptable part of stage 7; resume follows.
+Issue: [#21](https://github.com/bhind/emburk/issues/21). State: Done via PR #120.
+Accepted: 5 SP. First independently acceptable part of stage 7; resume follows.
 
 ## Authority and dependencies
 
@@ -85,6 +85,20 @@ Pinned local EMBURK_REFERENCE_JAR and Java17 JAVA_HOME are required. Retain
 final-head primary/independent command logs, hashes and numeric exits.
 
 ## Evidence class, stop rule and non-claims
+
+Integrated as 24b99fab7763f4417e20422ec8a1e239d1b4069f after primary and
+independent exact Demo at 4970e46a5cae9891743e78a07ef9cd418f0559ba: 106 passes,
+eight existing intentional ignores, eight CSV and five format/filter matches.
+Primary logs: /private/tmp/t0024-s01-primary.R6aQam; stdout SHA256
+ea7dc931f9605d9686297a8b1171e50dd4a60a25ad2382f0d045e482d14b7dec,
+stderr 8bedbdde19abc64b5c6efd222d3ecb7c25da1984681604a334b9ee63e5a3b002.
+Independent logs: /private/tmp/t0024-s01-independent.IZVa9s; stdout SHA256
+323ca5ca237d94366e97fdd81c6717915be364383471f13af85b99595ea3fdba,
+stderr 5a4892be096f2141486beb3202ac6341bb695d22524a7e9d7c86215717fbe982.
+Both exits 0; exit-file SHA256
+9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Independent pre/post revision and tracked status were unchanged. Project audits
+passed with one active item before integration. Parent remains open in Backlog.
 
 Unit/Contract and local Integration, selected differential regressions only.
 Stop on unbounded admission, ordering mismatch, deadlock, unjoined worker,

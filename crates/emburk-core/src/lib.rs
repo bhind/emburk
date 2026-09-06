@@ -1,5 +1,12 @@
 #![forbid(unsafe_code)]
 
+#[cfg(unix)]
+mod checkpoint;
+
+#[cfg(unix)]
+#[doc(hidden)]
+pub use configured_csv::run_config_resumable;
+
 // This is deliberately private until a later packet authorizes an API consumer.
 #[allow(
     dead_code,

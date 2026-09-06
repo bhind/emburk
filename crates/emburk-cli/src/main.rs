@@ -24,12 +24,22 @@ fn main() {
         )
     {
         println!(
-            "Usage: emburk run CONFIG\n       emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
+            "Usage: emburk run CONFIG [--state STATE_DIR]\n       emburk resume CONFIG STATE_DIR\n       emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
         );
         return;
     }
     let cancelled = Arc::new(AtomicBool::new(false));
     let (command, result) = match arguments.as_slice() {
+        #[cfg(unix)]
+        [_, command, config, flag, directory] if command == "run" && flag == "--state" => (
+            "run",
+            stateful(Path::new(config), Path::new(directory), &cancelled, false),
+        ),
+        #[cfg(unix)]
+        [_, command, config, directory] if command == "resume" => (
+            "resume",
+            stateful(Path::new(config), Path::new(directory), &cancelled, true),
+        ),
         [_, command, config] if command == "run" => {
             let signal_flag = Arc::clone(&cancelled);
             let result = ctrlc::set_handler(move || signal_flag.store(true, Ordering::Release))
@@ -62,6 +72,18 @@ fn main() {
             1
         });
     }
+}
+
+#[cfg(unix)]
+fn stateful(
+    config: &Path,
+    directory: &Path,
+    cancelled: &Arc<AtomicBool>,
+    resume: bool,
+) -> Result<(), String> {
+    let flag = Arc::clone(cancelled);
+    ctrlc::set_handler(move || flag.store(true, Ordering::Release)).map_err(|e| e.to_string())?;
+    emburk_core::run_config_resumable(config, directory, cancelled, resume).map(|_| ())
 }
 
 fn open_input(input: &Path) -> Result<File, String> {

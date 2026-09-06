@@ -299,6 +299,12 @@ fn execute(profile: Profile, cancel: &AtomicBool) -> Result<usize, String> {
     if cancel.load(Ordering::Acquire) {
         return Err("cancelled".into());
     }
+    let Some(input_path) = select_input(&profile)? else {
+        return Ok(0);
+    };
+    execute_input(profile, cancel, input_path)
+}
+fn select_input(profile: &Profile) -> Result<Option<PathBuf>, String> {
     let parent = profile
         .input
         .parent()
@@ -326,9 +332,13 @@ fn execute(profile: Profile, cancel: &AtomicBool) -> Result<usize, String> {
             }
         }
     }
-    let Some(input_path) = matches.pop() else {
-        return Ok(0);
-    };
+    Ok(matches.pop())
+}
+fn execute_input(
+    profile: Profile,
+    cancel: &AtomicBool,
+    input_path: PathBuf,
+) -> Result<usize, String> {
     let file = File::open(&input_path).map_err(|e| format!("cannot open input: {e}"))?;
     let mut source = Source {
         input: native_formats::reader(file, profile.decoder),
@@ -363,6 +373,167 @@ fn execute(profile: Profile, cancel: &AtomicBool) -> Result<usize, String> {
     })
     .map_err(|error| error.to_string())
 }
+#[cfg(unix)]
+pub fn run_config_resumable(
+    config: &Path,
+    directory: &Path,
+    cancel: &AtomicBool,
+    resume: bool,
+) -> Result<usize, String> {
+    use crate::checkpoint::{self, State};
+    use serde_json::{Value, json};
+    use std::io::{Read, Seek, SeekFrom};
+    let cancelled = || {
+        if cancel.load(Ordering::Acquire) {
+            Err("cancelled".to_owned())
+        } else {
+            Ok(())
+        }
+    };
+    cancelled()?;
+    let raw = yaml_profile::load(config)?;
+    let config_hash = checkpoint::hash(&raw.bytes);
+    let profile = compile(raw.compile_node()?)?;
+    let input = select_input(&profile)?.ok_or("stateful run requires one matched input")?;
+    let input_identity = checkpoint::identity(&input)?;
+    let input = fs::canonicalize(input).map_err(|e| e.to_string())?;
+    let parent = profile
+        .output
+        .parent()
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
+    let output = fs::canonicalize(parent).map_err(|e| e.to_string())?.join(
+        profile
+            .output
+            .file_name()
+            .ok_or("missing output filename")?,
+    );
+    let context = json!({"profile":"configured-spool-v1", "config_sha256":config_hash,"input_path":input.to_str().ok_or("stateful input path must be UTF-8")?,"input":input_identity,"output":output.to_str().ok_or("stateful output path must be UTF-8")?});
+    let revalidate = || -> Result<(), String> {
+        cancelled()?;
+        if checkpoint::hash(&yaml_profile::load(config)?.bytes) != config_hash
+            || checkpoint::identity(&input)? != input_identity
+            || select_input(&profile)?
+                .map(fs::canonicalize)
+                .transpose()
+                .map_err(|e| e.to_string())?
+                != Some(input.clone())
+        {
+            return Err("configuration or input changed".into());
+        }
+        Ok(())
+    };
+    if !resume && fs::symlink_metadata(&output).is_ok() {
+        return Err("output already exists".into());
+    }
+    let mut state = State::open(directory, context, resume)?;
+    let mut source = Source {
+        input: native_formats::reader(
+            File::open(&input).map_err(|e| e.to_string())?,
+            profile.decoder,
+        ),
+        profile: &profile,
+        skipped: 0,
+    };
+    let mut header = Vec::new();
+    csv_stream::write_row(
+        &mut header,
+        &profile
+            .projection
+            .iter()
+            .map(|(_, name)| Some(name.clone()))
+            .collect::<Vec<_>>(),
+    )
+    .map_err(|e| e.to_string())?;
+    let mut already_published = false;
+    if resume {
+        state.compare(&header)?;
+        for _ in 0..state.records() {
+            cancelled()?;
+            let record = source
+                .next_record()
+                .map_err(|e| e.0)?
+                .ok_or("input ended before checkpoint")?;
+            state.compare(&format_record(record, &profile.projection)?)?;
+        }
+        if state.phase() != "Writing" && source.next_record().map_err(|e| e.0)?.is_some() {
+            return Err("completed spool omits input records".into());
+        }
+        match fs::symlink_metadata(&output) {
+            Ok(_) => {
+                if !matches!(state.phase(), "Publishing" | "Published")
+                    || checkpoint::identity(&output)? != state.latest["prepared"]
+                {
+                    return Err("existing output conflicts with prepared identity".into());
+                }
+                already_published = true;
+            }
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound && state.phase() != "Published" => {}
+            Err(e) => return Err(format!("cannot recover published output: {e}")),
+        }
+        revalidate()?;
+        state.finish_validation()?;
+    } else {
+        state.append(&header, false)?;
+        state.save("Writing", Value::Null)?;
+    }
+    if already_published {
+        File::open(&output)
+            .and_then(|f| f.sync_all())
+            .map_err(|e| e.to_string())?;
+        File::open(output.parent().unwrap())
+            .and_then(|f| f.sync_all())
+            .map_err(|e| e.to_string())?;
+        if state.phase() != "Published" {
+            let prepared = state.latest["prepared"].clone();
+            state.save("Published", prepared)?;
+        }
+        return usize::try_from(state.records()).map_err(|e| e.to_string());
+    }
+    if state.phase() == "Writing" {
+        bounded_parallel::run(
+            profile.workers,
+            cancel,
+            || source.next_record().map_err(|e| e.0),
+            |record| format_record(record, &profile.projection),
+            |bytes| state.append(&bytes, true),
+        )?;
+        state.save("Ready", Value::Null)?;
+    }
+    revalidate()?;
+    state
+        .spool
+        .seek(SeekFrom::Start(0))
+        .map_err(|e| e.to_string())?;
+    let mut spool = state.spool.try_clone().map_err(|e| e.to_string())?;
+    publication::write_prepared(
+        &output,
+        cancel,
+        |output| {
+            let mut encoder = Encoder::new(output, profile.encoder);
+            let mut bytes = [0; 65536];
+            loop {
+                cancelled()?;
+                let n = spool.read(&mut bytes).map_err(|e| e.to_string())?;
+                if n == 0 {
+                    break;
+                }
+                encoder.write_all(&bytes[..n]).map_err(|e| e.to_string())?;
+            }
+            encoder.finish().map_err(|e| e.to_string())?;
+            Ok(())
+        },
+        |temporary, _| {
+            revalidate()?;
+            state.save("Publishing", checkpoint::identity(temporary)?)
+        },
+    )
+    .map_err(|e| e.to_string())?;
+    let prepared = state.latest["prepared"].clone();
+    state.save("Published", prepared)?;
+    usize::try_from(state.records()).map_err(|e| e.to_string())
+}
+
 struct Source<'a> {
     input: Box<dyn BufRead>,
     profile: &'a Profile,

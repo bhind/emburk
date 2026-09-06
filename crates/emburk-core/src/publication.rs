@@ -14,6 +14,7 @@ pub(crate) enum Phase {
     Write,
     Flush,
     FileSync,
+    PreparePublication,
     Link,
     TargetDirectorySync,
     TemporaryRemove,
@@ -65,7 +66,16 @@ pub(crate) fn write_atomic<T>(
     cancel: &AtomicBool,
     write: impl FnOnce(&mut BufWriter<File>) -> Result<T, String>,
 ) -> Result<T, PublicationError> {
-    write_with(target, write, |phase| {
+    write_prepared(target, cancel, write, |_, _| Ok(()))
+}
+
+pub(crate) fn write_prepared<T>(
+    target: &Path,
+    cancel: &AtomicBool,
+    write: impl FnOnce(&mut BufWriter<File>) -> Result<T, String>,
+    prepared: impl FnOnce(&Path, &Path) -> Result<(), String>,
+) -> Result<T, PublicationError> {
+    write_with_prepared(target, write, prepared, |phase| {
         if matches!(phase, Phase::Write | Phase::Link) && cancel.load(Ordering::Acquire) {
             Err(io::Error::other("cancelled"))
         } else {
@@ -76,9 +86,18 @@ pub(crate) fn write_atomic<T>(
 
 // The hook is private and is supplied with faults only by unit tests. It runs
 // immediately before the corresponding real operation, never from environment.
+#[cfg(test)]
 fn write_with<T>(
     target: &Path,
     write: impl FnOnce(&mut BufWriter<File>) -> Result<T, String>,
+    before: impl FnMut(Phase) -> io::Result<()>,
+) -> Result<T, PublicationError> {
+    write_with_prepared(target, write, |_, _| Ok(()), before)
+}
+fn write_with_prepared<T>(
+    target: &Path,
+    write: impl FnOnce(&mut BufWriter<File>) -> Result<T, String>,
+    prepared: impl FnOnce(&Path, &Path) -> Result<(), String>,
     mut before: impl FnMut(Phase) -> io::Result<()>,
 ) -> Result<T, PublicationError> {
     let failure = |phase, state, cleanup, temporary, message| PublicationError {
@@ -146,6 +165,9 @@ fn write_with<T>(
         before(Phase::FileSync)
             .and_then(|()| output.get_ref().sync_all())
             .map_err(|e| (Phase::FileSync, e.to_string()))?;
+        before(Phase::PreparePublication)
+            .map_err(|e| (Phase::PreparePublication, e.to_string()))?;
+        prepared(&temporary, target).map_err(|e| (Phase::PreparePublication, e))?;
         before(Phase::Link)
             .and_then(|()| fs::hard_link(&temporary, target))
             .map_err(|e| (Phase::Link, e.to_string()))?;
@@ -393,5 +415,35 @@ mod tests {
                 if is_link { 2 } else { 1 }
             );
         }
+    }
+
+    #[test]
+    fn prepared_hook_runs_after_sync_before_link_and_can_prevent_publication() {
+        let target = target();
+        let cancel = AtomicBool::new(false);
+        let error = write_prepared(&target, &cancel, content, |temporary, final_path| {
+            assert_eq!(fs::read(temporary).unwrap(), b"complete\n");
+            assert!(!final_path.exists());
+            Err("prepared failure".into())
+        })
+        .unwrap_err();
+        assert_eq!(error.phase, Phase::PreparePublication);
+        assert_eq!(error.state, State::NotPublished);
+        assert!(!target.exists());
+        assert_eq!(fs::read_dir(target.parent().unwrap()).unwrap().count(), 0);
+    }
+
+    #[test]
+    fn prepared_hook_cancellation_prevents_link() {
+        let target = target();
+        let cancel = AtomicBool::new(false);
+        let error = write_prepared(&target, &cancel, content, |_, _| {
+            cancel.store(true, Ordering::Release);
+            Ok(())
+        })
+        .unwrap_err();
+        assert_eq!(error.phase, Phase::Link);
+        assert_eq!(error.state, State::NotPublished);
+        assert!(!target.exists());
     }
 }

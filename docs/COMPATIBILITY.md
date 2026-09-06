@@ -18,8 +18,9 @@ no-clobber publication safety through PR #117; its failure policy is not
 observed Embulk parity. T-0014/S02 (#118) supplies five selected real JSON,
 gzip/bzip2 and filter-order observations. T-0033/S01 (#119) matches those five
 selected projections with native execution; codec bytes are compared only
-after decoding. T-0024/S01 develops native bounded workers/cancellation, not
-Embulk scheduler or performance parity.
+after decoding. T-0024/S01 (#120) accepts native bounded workers/cancellation,
+not Embulk scheduler or performance parity. T-0025/S02 develops validated native
+resume; its checkpoint format is not an Embulk resume-file compatibility claim.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate
