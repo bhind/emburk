@@ -86,7 +86,7 @@ configuring built-in workflows, so those UI settings require direct read-back.
 
 The daily snapshot requires repository automation plus a user-Project
 credential. `GITHUB_TOKEN` cannot access a user Project. Use a repository
-secret named `PROJECTS_TOKEN` containing
+secret named `EMBURK_PROJECT_TOKEN` containing
 a fine-grained credential limited to this repository and Projects access, give
 the workflow only `contents: write`,
 and store the daily history on a dedicated `project-metrics` branch. Never

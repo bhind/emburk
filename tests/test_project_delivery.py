@@ -24,6 +24,8 @@ class ProjectDeliveryTest(unittest.TestCase):
         snapshot = workflow.split("\n  snapshot:\n", 1)[1]
         self.assertNotIn("github.event_name == 'schedule'", review)
         self.assertNotIn("github.event_name == 'pull_request_target'", snapshot)
+        self.assertIn("secrets.EMBURK_PROJECT_TOKEN", workflow)
+        self.assertNotIn("secrets.PROJECTS_TOKEN", workflow)
 
     def test_snapshot_counts_remaining_completion_and_status(self):
         value = make_snapshot([item(1, "In Progress", 5), item(2, "Blocked", 3), item(3, "Done", 2), item(4, "Review", 5, content_type="PullRequest")], dt.date(2026, 9, 5))
