@@ -91,8 +91,8 @@ temporary residue. There is no automatic removal of unrelated files.
 
 ## Stateful run and resume
 
-T-0025/S02 implements the following explicit commands; final acceptance is
-pending. Start with a state-directory path that does not exist:
+T-0025/S02 integrated the following commands through PR #121, after primary and
+independent acceptance. Start with a state-directory path that does not exist:
 
 ```sh
 emburk run config.yml --state job-state

@@ -1,7 +1,7 @@
 # T-0025/S02 validated native resume
 
-Issue: [#22](https://github.com/bhind/emburk/issues/22). State: In Progress.
-Forecast: 8 SP; accepted S01 is 5 SP. Parent Current becomes 13, Initial stays 8.
+Issue: [#22](https://github.com/bhind/emburk/issues/22). State: Done via PR #121.
+Accepted: 8 SP; accepted S01 is 5 SP. Parent Current is 13, Initial stays 8.
 
 ## Authority and dependencies
 
@@ -92,6 +92,32 @@ Use the pinned local reference JAR and Java 17. Retain primary and independent
 final-revision logs, hashes and numeric exits before PR integration.
 
 ## Evidence class, stop rule and non-claims
+
+Integrated as 9d364c4eb8d0333479ff19c10d87fcc026ba5bb6. Exact Demo at
+0d39e51c718ffaf2b88359a3f029bd62bff0cb9c passed in primary and independent
+runs: 118 passes, eight existing intentional ignores, all eight CSV and five
+format/filter actual comparisons. The observed remove-before-rename exit 1
+matched; it is a successful differential comparison, not a failed test.
+
+Primary /private/tmp/t0025-s02-primary.ptA370 stdout SHA256
+98de85035a6bedfdc1acb764155df8f82782a99565202ddbf29d3d1c55ba0146;
+stderr bc8da7ef9c592d169eccf44a899ef115ae6f902b0ca3156f28d757a74061aee1.
+Independent /private/tmp/t0025-s02-independent.SvcgZt stdout SHA256
+03af4e6e20663d33799741f685ef96f7edaa27e3fc60a69ce897d70d91a5702b;
+stderr fe26373f7bf29b082a468073e3d09e153685b02b853cd174a797b03d78b05d4a.
+Primary exit and independent exit.txt contain 0; SHA256
+9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Pre/post independent revision/status are unchanged. macOS arm64, Rust/Cargo
+1.98.1 and pinned Java17/reference JAR. Exact 41-entry registry graph matches
+the previously admitted or prospective archive inventory with no new entries.
+
+Six checkpoint unit tests, eight publication tests and four CLI recovery tests
+exercise bounded state, injected generation operations, actual SIGINT across
+CSV/JSON/plain/gzip/bzip2, tampering, lock exclusion, valid tails, and repeated
+resume. Pre/post-link crash windows are modeled by retained-state fixtures;
+they are not hardware power-loss tests. Review identified a prepared-identity
+transition defect; the accepted revision fixes it and includes a regression.
+No remaining concrete review finding. Parent #22 remains open in Backlog.
 
 Native Unit/Contract and Integration; differential regressions only. Stop on
 data loss, unsafe recovery, unbounded state, dependency mismatch or unexplained

@@ -19,8 +19,9 @@ observed Embulk parity. T-0014/S02 (#118) supplies five selected real JSON,
 gzip/bzip2 and filter-order observations. T-0033/S01 (#119) matches those five
 selected projections with native execution; codec bytes are compared only
 after decoding. T-0024/S01 (#120) accepts native bounded workers/cancellation,
-not Embulk scheduler or performance parity. T-0025/S02 develops validated native
-resume; its checkpoint format is not an Embulk resume-file compatibility claim.
+not Embulk scheduler or performance parity. T-0025/S02 (#121) accepts validated
+native resume, including actual SIGINT and modeled pre/post-link recovery;
+its checkpoint format is not an Embulk resume-file compatibility claim.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate

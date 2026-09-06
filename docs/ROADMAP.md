@@ -12,8 +12,9 @@ gates. Stage 5 integrated as T-0025/S01 through PR #117 after fault/interruption
 acceptance. Stage 6 reference-only preparation T-0014/S02 integrated through
 PR #118. T-0033/S01 integrated stage 6 through PR #119. Stage 7's bounded
 ordered formatting/cancellation integrated as T-0024/S01 through PR #120.
-T-0025/S02 addresses validated checkpoint/resume; its acceptance and broader
-parent gates remain open.
+T-0025/S02 integrated validated native checkpoint/resume through PR #121.
+The bounded seven-stage sequence is complete; broader parent gates remain open,
+including format guessing, general plugin profiles and Embulk resume parity.
 
 ## Phase 0: Governance and Compatibility Contract
 

@@ -49,8 +49,10 @@ Current 8 / Initial 5 unchanged. Full T-0033/T-0034/T-0035 parents remain
 unaccepted. T-0024/S01 is Done through PR #120 (24b99fa), accepting 5 SP
 after primary and independent Demo at 4970e46: 106 passes, eight intentional
 ignores and thirteen selected comparisons. Parent Current/Initial 8 unchanged.
-T-0025/S02 is In Progress (forecast 8 SP) for validated native resume. Parent
-Current 13 includes accepted S01 (5 SP) and this forecast; Initial remains 8.
+T-0025/S02 is Done through PR #121 (9d364c4), accepting 8 SP after primary and
+independent exact Demo at 0d39e51: 118 passes, eight intentional ignores and
+thirteen selected comparisons. Parent Current 13 covers accepted S01/S02;
+Initial remains 8. Parent #22 remains open in Backlog for broader contracts.
 
 T-0031/S01 is Done through PR #110 (`c5fb13f`), accepting 5 SP, for a native UTF-8 line-record
 File-to-File command under ADR-0015. It consumes T-0021/S06 without claiming
@@ -97,7 +99,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0022 | Implement configuration loading and the MVP CLI (S01 Done) | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches (S01/S02 Done; remaining contracts queued) | Backlog | P1 | 21 | T-0012, T-0021 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation (S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0025 | Implement atomic transaction and resume state (S01 Done; S02 active) | In Progress | P1 | 13 | T-0013, T-0024 | Rust Core Implementer | Unit/Contract |
+| T-0025 | Implement atomic transaction and resume state (S01/S02 Done; broader contracts queued) | Backlog | P1 | 13 | T-0013, T-0024 | Rust Core Implementer | Unit/Contract |
 | T-0026 | Implement structured errors and observability | Backlog | P1 | 5 | T-0021 | Rust Core Implementer | Unit/Contract |
 
 ## T-0030 — Native File-to-File ETL
