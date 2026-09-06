@@ -165,6 +165,27 @@ reproduction are still required before verified merge and completion.
 
 ## Evidence class
 
+## Stage B implementation evidence
+
+Source freeze `d95f2a9a39f921458c9b7af0b434113908bd1f66` passed the fresh
+S13 wrapper with retained and process exit 0: six cases/60 events, 19 raw-copy
+controls, one symlink-path control and two artifact controls. Java is unchanged.
+Runner SHA-256 `2e5a8ad66820a065b36fc17a06a253843ddef5f5261e98fa1a16a72144123f57`;
+wrapper `d740b9fe4f88bcc47fc800e1c2b66556fc4dcbadfd8d230bc422706d13223aaa`.
+Outer stdout/stderr hashes are
+`7c0bc07b6367e51fd00c2b6716ae564369dc05ea028e3056f49c1ae16fd239f4` /
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+The initial wrapper run at `5ae628f` exited 1 during missing-file control
+preparation, not reference execution. Its logs remain retained; `d95f2a9`
+preserves the missing entry's old digest so the validator tests file inventory.
+Root review restored framing checks lost in the first draft. Independent
+read-only source review found no remaining blocker; an event-value finding
+was retracted after checking that the mutation receives complete event lines.
+Final-head exact Demo and independent reproduction remain required. No points
+are awarded by this implementation evidence.
+
+## Evidence classification
+
 Reference Observation / Integration for the selected runtime fixtures;
 Unit/Contract for validator controls. No native Differential claim follows.
 
