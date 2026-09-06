@@ -1,7 +1,7 @@
 # T-0012/S12 selected configuration-envelope observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: In Progress; Stage A capture authorized, raw review required before Stage B
+- State: In Progress; Stage A reviewed, Stage B validation authorized
 - Branch: `research/t-0012-s12-config-envelope`
 - Owner: Compatibility Host Implementer; Project Manager owns records
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -119,6 +119,77 @@ primary and independent acceptance is required before integration and Done.
 This is the final Stage B Demo. Stage A must stop at raw review first. Bash
 syntax, Java compilation, and diff checks also apply. No Rust changed, so a
 second broad workspace/differential suite is not required for this observation.
+
+## Reviewed Stage A and Stage B decision
+
+Primary and independent Stage A capture passed at
+`73362497197713136025cd14656ed268bc8cc457`, each with retained and tool-reported
+exit 0. The PM compared complete raw output, semantic vectors, exact YAML and
+stderr across both captures. YAML and stderr bytes agree; UUIDs, timestamps,
+temporary paths and runtime progress logs are retained but not normalized into
+configuration semantics. No source implementation was consulted.
+
+| Case | Exit / events | Observed boundary |
+| --- | --- | --- |
+| control | 0 / 12 | Required String returns `envelope-value`; run/finish/cleanup return |
+| unknown-root | 0 / 12 | Same selected trace; no generic unknown-key policy follows |
+| unknown-input | 0 / 12 | Same selected trace; nested value was unconsumed, not typed |
+| in-absent | 1 / 0 | No input callback; ConfigException reports required `in` absent |
+| out-absent | 1 / 0 | No input callback; ConfigException reports required `out` absent |
+| in-null | 1 / 0 | No input callback; ConfigException reports forbidden task-field null |
+| out-null | 1 / 0 | Same selected null diagnostic; no inferred parser cause |
+
+Each successful case has one context and sequence 1 through 12:
+transaction-entry, config-load-entry, config-value(`envelope-value`),
+control-entry, run-entry, finish-entry, finish-return, run-return,
+control-return, transaction-return, cleanup-entry, cleanup-return.
+Each failure has an empty event file and exact observed stderr. These are
+environment-specific observations, not native diagnostics or public policy.
+
+| Exact input | SHA-256 |
+| --- | --- |
+| control.yml | `7c9ada0e4980778337fd8f6bd2cbbecbd5c272639c7ed4769578e379457e352a` |
+| in-absent.yml | `8a78b8bbe035efdad6a3720ae8e876230eafa40c7e81b58e79e0535665da2537` |
+| in-null.yml | `3aa644cca147381a85b544ad83268f961fe4f1f1b05b0cb083bc0d252138242e` |
+| out-absent.yml | `0a38b49f8dbb4ed56c3646051b9b603b3eaef245c90cd345a071144674fc3b45` |
+| out-null.yml | `0f15af301b5f5d35a4eb11b473e3fb0a9b3635af3e9c0b9161ac07ff9bed50e1` |
+| unknown-input.yml | `bf5850e7e14376e6448af61b0f471cf2ba00e2c6b47d4e8554c27ae21b46defa` |
+| unknown-root.yml | `6b57e54900c5284402ee433ad44f47ee875a10c1c17f12f49f7a1b4ecdda8ffb` |
+
+Failure stderr SHA-256: in-absent
+`50bb1f14e8c2c4f2febd4654047759d0ea536dddd7657393ee639634c29f777e`;
+out-absent `2c65acdc27b8590701eb8c8c94f4e266b1b4f80115f88fa922b1d652d4861e85`;
+both null cases `2534ee6510f7d3b8c233d783c2b36b60ad09e235d58b0e04b1242094df4c7289`.
+Successful stderr is empty. The existing fixture Java SHA-256 is frozen at
+`fda93051323c91e42d504f3e915b1c3421c32ecb5dacdfcc6116a91d5c9593c6`;
+Stage A runner `7cd35071f4fc9e21bd7c0d414fa832793f5687d86d12a61aa7459013cb01ed7d`,
+wrapper `3f44348fea348c642bf23276d1a77308c3939dc08d5cc51324c36ea465d1f252`.
+
+Primary outer stdout/stderr hashes:
+`e3ddc0f19507919e4ab4d78e6da3fb6160855b060dff6138902639d2015c1ae0` /
+`d1690dfa759d1680549cc72bc7128f286ffa20008799b48298c651da51088af9`.
+Tester hashes:
+`09c9d7a0759a1fa803d296eae091d34cce6dbd3ee324c3047ba354771b1371f0` /
+`0c17cc30714a65b44eead87c02b2ce67a5e4b19b98f9ca04cb554ec94681d67e`.
+Initial uncommitted implementer captures and retrieval failures remain
+diagnostic-only. Raw artifacts remain external and local-only.
+
+PM now authorizes Stage B within the same runner/wrapper allowlist: preserve
+capture-only, add default full capture plus strict validation, and explicit
+existing-evidence validate-only with no runtime execution or full marker.
+The Java fixture semantics stay frozen. Validate exact seven inputs, 36 events,
+three unique successful contexts, seven unique invocations, fixed exit/stderr
+vectors, source identities, artifact hashes and the complete evidence manifest.
+Source hashes are integrity/provenance aids, not hostile-local-process attestation.
+No Stage A result is final acceptance.
+
+Use fresh repaired copies for input, missing/extra case, event removal/order/
+payload/context, invocation, exit, stderr, source and integrity corruption;
+retain exact rejection diagnostics. Repair integrity after semantic mutations,
+so failures prove semantic checks rather than only a stale checksum. Add
+positive validate-only, symlink-path rejection, and corrupt/unavailable-runtime
+controls. Unrelated retrieval failures cannot pass a corruption control.
+Run the final Demo at a reviewed head before integration and points.
 
 ## Evidence class
 

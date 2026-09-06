@@ -32,4 +32,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0021/S06 owned-record handoff](T-0021-owned-record-handoff.md) | Done (bounded private slice; PR #96, `56ef9e9`) |
 | [T-0023/S01 positional logical batch](T-0023-positional-logical-batch.md) | Done (PR #101, `d0eebf8`; Unit/Contract only) |
 | [T-0023/S02 logical-batch differential](T-0023-logical-batch-differential.md) | Done (PR #103, `5d72866`; selected Differential only) |
-| [T-0012/S12 config-envelope observation](T-0012-config-envelope-probe.md) | In Progress (Stage A capture; no accepted observation) |
+| [T-0012/S12 config-envelope observation](T-0012-config-envelope-probe.md) | In Progress (Stage A reviewed; Stage B authorized) |

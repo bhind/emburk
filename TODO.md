@@ -20,8 +20,8 @@ after primary and independent final-head acceptance at `ca9af0a`, accepting
 The estimate now covers accepted S01, S02 verification, and remaining physical,
 timestamp and JSON uncertainty that does not fit 8 SP. It is a forecast, not
 completion evidence. Parent #20 remains open in Backlog. T-0012/S12 is In Progress
-for seven selected configuration-envelope observations, 5 SP; Stage A capture
-is authorized, with raw review required before Stage B validation. Parent
+for seven selected configuration-envelope observations, 5 SP; Stage A raw
+review passed at `7336249`, and Stage B validation is authorized. Parent
 Current 55 / Initial 5 is unchanged. No points are awarded for preparation.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;

@@ -227,8 +227,9 @@ broaden the supported product compatibility surface.
 
 T-0012/S12 is In Progress for seven selected configuration-envelope observations.
 It does not repeat S01/S02 scalar fixtures or establish native YAML, nested
-configuration, unknown-key, default, or external-error policy. No result has
-yet been observed or accepted.
+configuration, unknown-key, default, or external-error policy. Primary and
+independent Stage A agree on three successful 12-event traces and four
+no-callback failures; final strict validation and acceptance remain pending.
 
 
 
