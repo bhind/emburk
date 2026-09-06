@@ -2,6 +2,10 @@
 
 The roadmap is ordered by evidence gates. Dates are intentionally omitted until observed throughput and cycle time support forecasting.
 
+The owner-authorized [seven-stage execution sequence](IMPLEMENTATION_SEQUENCE.md)
+connects these gates to actual transfer work. T-0022/S01 currently experiments
+with an isolated parser; it does not pass the configuration or pipeline gates.
+
 ## Phase 0: Governance and Compatibility Contract
 
 - Establish canonical project records, roles, workflow, provenance, and release-compliance gates.
