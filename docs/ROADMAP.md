@@ -8,7 +8,9 @@ experiment integrated through PR #114. T-0014/S01's eight bundled File/CSV
 observations integrated through PR #115. T-0032/S01 integrated through PR #116
 after primary and independent eight-case comparison and 81 passing tests.
 This satisfies the bounded stages 2–4 consumer, not full configuration/plugin
-gates. Stage 5 is active as T-0025/S01 under ADR-0018; stages 6–7 remain open.
+gates. Stage 5 integrated as T-0025/S01 through PR #117 after fault/interruption
+acceptance. Stage 6 reference-only preparation is T-0014/S02; native formats
+and stage 7 remain open.
 
 ## Phase 0: Governance and Compatibility Contract
 
