@@ -55,7 +55,7 @@ T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012 | Backlog | S10 integrated; remaining configuration/value contracts |
+| T-0012/S11 | Ready | Five bounded schema/value coupling observations |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
@@ -355,3 +355,10 @@ typed errors, and stops callbacks on the first failure. Final PR-head acceptance
 passed at `8cb13ff`; PR #96 integrated as `56ef9e9`. S06 is Done.
 Evidence is Unit/Contract only, not a public
 API, schema/lifecycle policy, resource guarantee or Embulk compatibility claim.
+
+T-0012/S11 is the next decision-producing candidate: five isolated schema/value
+coupling observations using the admitted Page APIs. Independent readiness
+review passed; the slice is Ready, with no runtime evidence yet.
+Stage A captures before expectations; diagnostic unset/mismatched-setter results
+do not select native defaults or validation. A separate reviewed decision must
+precede any schema-bound record implementation.

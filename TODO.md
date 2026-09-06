@@ -37,7 +37,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S01–S10 integrated; remaining contracts queued) | Backlog | P0 | 34 | T-0011 | Rust Core Implementer | Differential (Embulk) |
+| T-0012 | Specify configuration, schema, and value semantics (S11 schema/value observation ready) | Ready | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
@@ -399,3 +399,11 @@ passed at `8cb13ff`; PR #96 integrated as `56ef9e9`. The slice's 2 SP are
 accepted, bringing S01–S06 to 13 SP. Parent Current 13 / Initial 5 are historical
 forecasts, not proof of completion: remaining work requires refinement before
 another slice is activated. Parent #18 remains open and returns to Backlog.
+
+Next candidate T-0012/S11 observes five bounded schema/value coupling cases
+under its [packet](docs/provenance/T-0012-schema-value-coupling-probe.md).
+Independent readiness review passed. Estimate 5 SP; Current refines 34 to
+55, Initial remains 5: known accepted S03–S10 total 30 SP plus this slice and
+remaining configuration/time/JSON/schema uncertainty exceed 34. No points are
+awarded by planning. Stage A raw capture must precede PM-reviewed expectations;
+unset/mismatched-setter observations cannot automatically become Rust policy.
