@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+"""Project validated S11 observations; never invent reference data from inputs."""
+
+import argparse
+import base64
+import binascii
+import hashlib
+import os
+import pathlib
+import subprocess
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+RUNNER = ROOT / "tools/t0012-schema-value-coupling-probe/run.sh"
+CASES = (("matching", 4), ("explicit-null", 4), ("duplicate-name", 2))
+TYPES = {"boolean": "boolean", "long": "signed64", "double": "float64", "string": "text"}
+INPUT_TAGS = {"null": "N", "boolean": "B", "long": "L", "double-bits": "D", "string": "S"}
+GETTER_TAGS = {"boolean": "B", "long": "L", "double": "D", "string": "S"}
+SOURCES = ("crates/emburk-core/src/logical_batch.rs",
+           "tools/t0023-logical-batch-differential",
+           "tests/t0023_logical_batch_differential_test.sh")
+
+
+class Invalid(ValueError):
+    pass
+
+
+def require(ok, label):
+    if not ok:
+        raise Invalid(label)
+
+
+def external_directory(path):
+    require(path.is_absolute() and path.is_dir(), "external-path")
+    require(path.resolve(strict=True) == path, "external-path")
+    require(not any(p.is_symlink() for p in (path, *path.parents)), "external-path")
+    require(ROOT != path and ROOT not in path.parents, "external-path")
+    require(any(root in path.parents for root in map(pathlib.Path,
+                ("/private/tmp", "/private/var/folders"))), "external-path")
+    return path
+
+
+def write_new(path, data):
+    with path.open("xb") as stream:
+        stream.write(data if isinstance(data, bytes) else data.encode("utf-8"))
+
+
+def decode(value):
+    if value == "-":
+        return None
+    try:
+        raw = base64.b64decode(value, validate=True)
+        text = raw.decode("utf-8")
+    except (binascii.Error, UnicodeDecodeError) as error:
+        raise Invalid("raw-payload") from error
+    require(base64.b64encode(raw).decode("ascii") == value, "raw-payload")
+    return text
+
+
+def read_events(evidence, fixture):
+    path = evidence / f"{fixture}.trace.raw"
+    require(path.is_file() and not path.is_symlink()
+            and path.stat().st_size <= 1_048_576, "trace-file")
+    raw = path.read_bytes()
+    require(raw.endswith(b"\n") and b"\r" not in raw, "trace-transport")
+    rows = []
+    for line in raw.decode("utf-8").splitlines():
+        fields = line.split("|")
+        require(len(fields) >= 5 and fields[:2] == ["COUPLINGTRACE", fixture], "trace-row")
+        rows.append((fields[4], [decode(value) for value in fields[5:]]))
+    return rows
+
+
+def project(rows, width):
+    schemas = []
+    for phase in ("transaction", "run"):
+        fields = [v for n, v in rows if n == "schema-column" and v[0] == phase]
+        require(len(fields) == width, "schema-count")
+        require([v for n, v in rows if n == "schema-fingerprint" and v[0] == phase]
+                == [[phase, str(width)]], "schema-fingerprint")
+        columns = []
+        for index, value in enumerate(fields):
+            require(len(value) == 4 and value[1] == str(index)
+                    and isinstance(value[2], str) and value[3] in TYPES, "schema-column")
+            columns.append((value[2], TYPES[value[3]]))
+        schemas.append(columns)
+    require(sum(n == "schema-column" for n, _ in rows) == 2 * width, "schema-extra")
+    require([v for n, v in rows if n == "input-row-count"] == [["1"]], "row-count")
+    inputs = [v for n, v in rows if n == "input-cell"]
+    nulls = [v for n, v in rows if n == "reader-is-null-return"]
+    null_cells = [v for n, v in rows if n == "cell-null"]
+    getters = [(n[len("reader-get-"):-len("-return")], v) for n, v in rows
+               if n.startswith("reader-get-") and n.endswith("-return")]
+    require(len(inputs) == len(nulls) == width, "cell-count")
+    cells, used_getters, used_nulls = [], [], []
+    for index, (supplied, null) in enumerate(zip(inputs, nulls, strict=True)):
+        position = ["0", "0", "0", str(index)]
+        require(len(supplied) == 4 and supplied[:2] == ["0", str(index)]
+                and supplied[2] in INPUT_TAGS, "input-cell")
+        require((supplied[2] == "null") == (supplied[3] is None), "input-null")
+        require(len(null) == 5 and null[:4] == position
+                and null[4] in ("true", "false"), "null-cell")
+        found = [(kind, value) for kind, value in getters if value[:4] == position]
+        marked = [value for value in null_cells if value == position]
+        if null[4] == "true":
+            require(not found and len(marked) == 1, "null-getter")
+            reference = ("N", "-")
+            used_nulls.extend(marked)
+        else:
+            require(not marked and len(found) == 1, "null-getter")
+            kind, value = found[0]
+            require(kind in GETTER_TAGS and len(value) == 5
+                    and isinstance(value[4], str), "getter")
+            require(TYPES[kind] == schemas[1][index][1], "getter-schema")
+            reference = (GETTER_TAGS[kind], value[4])
+            used_getters.extend(found)
+        cells.append((INPUT_TAGS[supplied[2]],
+                      "-" if supplied[3] is None else supplied[3], *reference))
+    require(getters == used_getters and null_cells == used_nulls, "extra-outcome")
+    return schemas, cells
+
+
+def gate(evidence, logs):
+    run = subprocess.run(["bash", str(RUNNER)], cwd=ROOT, text=True, capture_output=True,
+                         env={**os.environ, "T0012_COUPLING_MODE": "validate",
+                              "T0012_COUPLING_EVIDENCE_DIR": str(evidence)})
+    write_new(logs / "s11-validate.stdout.log", run.stdout)
+    write_new(logs / "s11-validate.stderr.log", run.stderr)
+    write_new(logs / "s11-validate.exit.txt", f"{run.returncode}\n")
+    require(run.returncode == 0, "S11-strict-exit")
+    require(run.stdout == f"T0012_COUPLING_VALIDATE_ONLY=passed|evidence={evidence}\n"
+            and run.stderr == "", "S11-strict-output")
+
+
+def manifest(evidence):
+    lines = ["T0023-S02\t1"]
+    for fixture, width in CASES:
+        schemas, cells = project(read_events(evidence, fixture), width)
+        lines.append(f"CASE\t{fixture}\t{width}\t1")
+        for index, (supplied, observed) in enumerate(zip(*schemas, strict=True)):
+            lines.append("\t".join(("FIELD", str(index), supplied[0].encode().hex(),
+                                    supplied[1], observed[0].encode().hex(), observed[1])))
+        lines.append("ROW\t0")
+        for index, (it, ip, rt, rp) in enumerate(cells):
+            lines.append("\t".join(("CELL", str(index), it,
+                                    ip.encode().hex() if it == "S" else ip,
+                                    rt, rp.encode().hex() if rt == "S" else rp)))
+    data = ("\n".join(lines) + "\n").encode("utf-8")
+    require(len(data) <= 65_536, "manifest-cap")
+    return data
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--evidence", type=pathlib.Path)
+    group.add_argument("--validate-evidence", type=pathlib.Path)
+    parser.add_argument("--output", type=pathlib.Path)
+    parser.add_argument("--log-directory", type=pathlib.Path, required=True)
+    args = parser.parse_args()
+    try:
+        evidence = external_directory(args.evidence or args.validate_evidence)
+        logs = external_directory(args.log_directory)
+        require(not list(logs.iterdir()), "logs-not-empty")
+        require(logs != evidence and evidence not in logs.parents, "logs-overlap")
+        if args.evidence:
+            require(args.output is not None, "output-required")
+            external_directory(args.output.parent)
+            require(args.output.parent != evidence and evidence not in args.output.parents,
+                    "output-overlap")
+            require(not any(os.path.lexists(path) for path in
+                            (args.output, args.output.with_suffix(".sha256"))), "output-exists")
+        else:
+            require(args.output is None, "validate-output")
+        revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, check=True,
+                                  text=True, capture_output=True).stdout
+        write_new(logs / "source-revision.txt", revision)
+        write_new(logs / "source-hashes.txt", "".join(
+            f"{name}={hashlib.sha256((ROOT / name).read_bytes()).hexdigest()}\n"
+            for name in SOURCES))
+        gate(evidence, logs)
+        data = manifest(evidence)
+        if args.validate_evidence:
+            print(f"T0023_S02_VALIDATE_ONLY=passed|evidence={evidence}")
+        else:
+            write_new(args.output, data)
+            write_new(args.output.with_suffix(".sha256"),
+                      hashlib.sha256(data).hexdigest() + "\n")
+            print(f"T0023_S02_PROJECTED_CASES=3|evidence={evidence}|manifest={args.output}")
+        return 0
+    except (Invalid, OSError, UnicodeError, subprocess.CalledProcessError) as error:
+        print(f"T0023_S02_VALIDATION_ERROR|{error}", file=sys.stderr)
+        return 4
+
+
+if __name__ == "__main__":
+    sys.exit(main())
