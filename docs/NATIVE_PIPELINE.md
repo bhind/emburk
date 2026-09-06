@@ -127,6 +127,16 @@ result goes to stdout. Output uses JSON syntax, which is valid YAML; an existing
 destination is never overwritten. Provide a file input type/path_prefix and
 the desired output settings in the seed.
 
+For the CSV example above, remove the entire `in.parser` section to make a
+seed, retaining `in.type`, `in.path_prefix`, `out` and `exec`. Then run:
+
+```sh
+emburk guess seed.yml -o config.yml
+emburk run config.yml --state job-state
+# After interruption, with unchanged job input and configuration:
+emburk resume config.yml job-state
+```
+
 The initial whole-file profile rejects raw inputs over 1 MiB or decoded inputs
 over 32 KiB. It supports selected UTF-8/LF/comma CSV and JSON object inputs,
 with one gzip/bzip2 layer. JSON guessing preserves explicit columns but does
@@ -134,6 +144,13 @@ not invent them; supply parser.columns to execute the current CSV output.
 Headerless numeric CSV needs an explicit parser.charset of UTF-8. TSV, general
 charset/type inference and large-input sampling remain unsupported. Explicit
 parser fields other than charset/columns are rejected, not silently replaced.
+
+T-0037/S01 (#125) compares seven guessed configurations, six generated-config
+transfers and four native interrupted/resumed jobs with pinned reference
+results. Recovery fixtures guess from a small sample and create the larger
+same-schema job input before execution; this does not demonstrate guessing
+directly from a large file. TSV and automatic headerless charset inference are
+recorded gaps, not counted as successful comparisons.
 
 ## Evidence boundary
 

@@ -7,6 +7,15 @@ integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explici
 preservation. Unseeded headerless charset detection and TSV remain unsupported
 gaps; JSON schema is not inferred. General guess parity is not accepted.
 
+T-0037/S01 (#125) verifies seven generated scalar-tree configurations and one
+empty-input rejection. Two other observed cases remain gaps, not matches:
+TSV and unseeded headerless charset inference. Six generated configurations
+produce identical output filenames/bytes in actual reference/native runs.
+Four small-sample-derived configurations also produce reference-identical final
+data after native SIGINT/resume on a larger same-schema job input, created
+before execution. This is native recovery final-data evidence, not equivalence
+of Embulk interruption, transaction, checkpoint or resume-file behavior.
+
 T-0022/S01's isolated parser experiment is not production adoption or YAML
 compatibility. Ordered syntax observations are evaluated before configuration
 policy is selected; production adoption was separately admitted by ADR-0017.

@@ -43,5 +43,8 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0033/S01 native formats](T-0033-native-formats.md) | Done through PR #119; thirteen selected comparisons |
 | [T-0024/S01 bounded workers](T-0024-bounded-parallel.md) | Done through PR #120; native ordering/admission/cancellation |
 | [T-0025/S02 validated resume](T-0025-validated-resume.md) | Done through PR #121; private validated spool recovery |
+| [T-0036/S01 guess observations](T-0036-guess-observations.md) | Done through PR #123; ten actual reference projections |
+| [T-0036/S02 bounded guess](T-0036-bounded-guess.md) | Done through PR #124; seed-preserving bounded native profile |
+| [T-0037/S01 combined acceptance](T-0037-guess-transfer-resume.md) | Done through PR #125; selected guess/transfer/native-recovery evidence |
 | [T-0031/S01 experimental file transfer](T-0031-file-to-file.md) | Done, PR #110; native-only record consumer |
 | [T-0031/S02 experimental stdout/null](T-0031-output-targets.md) | Done, PR #112; unchanged core transfer |

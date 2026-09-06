@@ -67,7 +67,13 @@ explicit bounded native profile; broader parent compatibility gates remain open.
 T-0036/S01 is Done through PR #123: three harness tests and ten reviewed actual
 guess projections passed independently at 1d577dd. T-0036/S02 is Done through
 PR #124, after 125 tests passed independently at 421500e. T-0037/S01 integrated
-guess/transfer/native-recovery acceptance is In Progress. JSON schema
+guess/transfer/native-recovery acceptance is Done through PR #125 (030df6e).
+At ec69eb6, primary and independent full Demo passed 125 tests (eight intentional
+ignores), thirteen prior comparisons, seven generated scalar-tree matches,
+one empty rejection, six transfer matches and four native recovery matches.
+Two unsupported guess cases remain explicit gaps. The owner-authorized three-step
+chain is complete within this bounded profile; no implementation item remains
+active. JSON schema
 inference and general charset/delimiter behavior remain explicit open gaps.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
