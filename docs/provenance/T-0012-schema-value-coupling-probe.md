@@ -1,7 +1,7 @@
 # T-0012/S11 bounded schema/value coupling observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Ready; independent readiness and existing-interface provenance review passed
+- State: In Progress, Stage A only; approved packet integrated through PR #98 as `b98d044`
 - Branch: `research/t-0012-schema-value-coupling`
 - Owner: Compatibility Host Implementer; PM owns records and adoption decisions
 - Priority: P0; estimate 5 SP (implementation 2, uncertainty 1, verification 1,

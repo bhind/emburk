@@ -46,7 +46,8 @@ reproduction and complete raw review authorize Stage B strict validation.
 The slice integrated through PR #91 as `34757c8`. S10's private double-storage
 decision passed readiness review and integrated through PR #92. S10 is now
 Done through PR #93. T-0021/S06 is Done through PR #96 after primary,
-independent and final-head acceptance; combined active WIP is zero of two. T-0012, T-0013 and
+independent and final-head acceptance. T-0012/S11 Stage A is now active after
+PR #98 readiness integration; combined active WIP is one of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -55,7 +56,7 @@ T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S11 | Ready | Five bounded schema/value coupling observations |
+| T-0012/S11 | In Progress | Stage A schema/value coupling capture before expectations |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
