@@ -42,6 +42,6 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0014/S02 format/filter observations](T-0014-formats-oracle.md) | Done through PR #118; five real reference cases |
 | [T-0033/S01 native formats](T-0033-native-formats.md) | Done through PR #119; thirteen selected comparisons |
 | [T-0024/S01 bounded workers](T-0024-bounded-parallel.md) | Done through PR #120; native ordering/admission/cancellation |
-| [T-0025/S02 validated resume](T-0025-validated-resume.md) | In Progress; private validated spool recovery |
+| [T-0025/S02 validated resume](T-0025-validated-resume.md) | Done through PR #121; private validated spool recovery |
 | [T-0031/S01 experimental file transfer](T-0031-file-to-file.md) | Done, PR #110; native-only record consumer |
 | [T-0031/S02 experimental stdout/null](T-0031-output-targets.md) | Done, PR #112; unchanged core transfer |

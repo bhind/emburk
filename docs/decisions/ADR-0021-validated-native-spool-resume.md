@@ -1,6 +1,6 @@
 # ADR-0021: Validated native spool resume
 
-- Status: Accepted for implementation; executable acceptance pending
+- Status: Accepted and integrated through PR #121 (T-0025/S02)
 - Date: 2026-09-06
 - Scope: T-0025/S02, private single-input configured Unix profile
 

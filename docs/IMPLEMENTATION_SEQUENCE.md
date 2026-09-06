@@ -4,6 +4,24 @@ Owner authorization: continue through stages 1–7, 2026-09-06. This is an
 execution plan, not evidence that any listed capability is complete. Existing
 experimental line file/stdout/null consumers remain available throughout.
 
+Completion: all seven bounded stages are integrated as of PR #121 on
+2026-09-06. This does not complete the broader parent tasks or imply full
+Embulk/plugin/transaction parity. Final runtime acceptance at 0d39e51 passed
+118 tests (eight intentional ignores) and thirteen selected actual reference
+comparisons in both primary and independent runs.
+
+| Stage | Integrated acceptance |
+| --- | --- |
+| 1 | T-0022/S01, PR #114: dependency admission and parser experiment |
+| 2–4 | T-0014/S01 and T-0032/S01, PR #115/#116: configured transfer and eight CSV comparisons |
+| 5 | T-0025/S01, PR #117: no-clobber publication and failure boundaries |
+| 6 | T-0014/S02 and T-0033/S01, PR #118/#119: JSON/codecs/filters and five additional comparisons |
+| 7 | T-0024/S01 and T-0025/S02, PR #120/#121: bounded workers, SIGINT and validated native resume |
+
+Use the [native pipeline guide](NATIVE_PIPELINE.md) for executable configuration
+and recovery commands. Format guessing, general plugin support, Java/JRuby
+hosts and full Embulk resume semantics remain separate backlog work.
+
 | Stage | Canonical task | Exit evidence |
 | --- | --- | --- |
 | 1. Parser | T-0022/S01 | Pinned dependency/license inventory and original syntax experiment; retained mismatches against S13 |

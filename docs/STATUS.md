@@ -56,9 +56,11 @@ T-0033/S01 is Done through PR #119 (95b5592): 97 tests and thirteen selected
 comparisons passed independently at 39c97d8. T-0024/S01 now starts stage 7 with
 bounded ordered formatting/cancellation, now integrated through PR #120
 (24b99fa) after 106 passes and thirteen independent comparisons at 4970e46.
-T-0025/S02 implements validated native resume; acceptance remains unfinished.
-The owner-authorized
-[seven-stage sequence](IMPLEMENTATION_SEQUENCE.md) remains uncompleted work.
+T-0025/S02 integrated validated native resume through PR #121 (9d364c4), after
+118 passing tests, eight intentional ignores and thirteen selected comparisons
+at 0d39e51 in primary and independent final Demo runs. The owner-authorized
+[seven-stage sequence](IMPLEMENTATION_SEQUENCE.md) is complete within its
+explicit bounded native profile; broader parent compatibility gates remain open.
 
 ## Delivery queue
 
@@ -85,7 +87,7 @@ strict controls and unchanged S12 regression. T-0031/S01 is Done through PR #110
 (`c5fb13f`) for the explicitly requested experimental native File-to-File path.
 T-0031/S02 is Done through PR #112 (`2ec236e`) for experimental stdout/null
 consumers: 71 tests passed, eight existing intentional ignores, primary and
-independent acceptance at `c5df504`. T-0025/S02 now occupies one WIP lane; the full
+independent acceptance at `c5df504`. T-0025/S02 is integrated; the full
 file/plugin parent stays open. Core transfer semantics remain unchanged.
 
 | Item | State | Purpose |
@@ -104,7 +106,8 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 
 T-0025/S01 is Done through PR #117. T-0014/S02 is Done through PR #118.
 T-0033/S01 is Done through PR #119. T-0024/S01 is Done through PR #120.
-T-0025/S02 uses one lane for validated native resume on its dedicated branch.
+T-0025/S02 is Done through PR #121. No implementation item remains active in
+the seven-stage sequence; broader parent tasks return to Backlog.
 Other unfinished stable tasks remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
 is the coordination mirror. Its 52 items, lifecycle states, initial estimates,
