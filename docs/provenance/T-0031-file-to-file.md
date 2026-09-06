@@ -1,6 +1,6 @@
 # T-0031/S01 experimental line-record File-to-File
 
-Issue: [#24](https://github.com/bhind/emburk/issues/24). State: In Progress.
+Issue: [#24](https://github.com/bhind/emburk/issues/24). State: Review, PR #110.
 Branch: `feat/t-0031-file-to-file`. Slice: 5 SP; parent remains incomplete.
 
 ## Authority
@@ -39,7 +39,8 @@ same path and symlinks, are never overwritten. Input must be a regular file.
 Read/UTF-8/size/write/flush failures exit nonzero. A new partial output may
 remain on failure and must be reported explicitly; no rollback or atomicity claim.
 Invalid arguments exit 2, transfer failures exit 1, success exits 0 and reports
-the record count. Preserve no-argument development status and provide help.
+the record count. No-argument status describes experimental availability; help
+describes the command.
 Tests cover actual files, Unicode, CRLF, empty/final lines, existing/same target,
 missing input, malformed UTF-8, oversize records, and injected write/flush errors.
 

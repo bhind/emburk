@@ -33,7 +33,7 @@ T-0022/S01 is reserved for an isolated parser-candidate experiment (forecast
 defines decision gates; artifact admission and an execution packet are required
 before Ready. T-0022 remains Backlog; parent Initial 8 is unchanged.
 
-T-0031/S01 is In Progress (5 SP) for an experimental native UTF-8 line-record
+T-0031/S01 is in Review in PR #110 (5 SP) for an experimental native UTF-8 line-record
 File-to-File command under ADR-0015. It consumes T-0021/S06 without claiming
 the parent's YAML, schema-aware plugin, transaction or full MVP contracts.
 
@@ -81,7 +81,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
-| T-0031 | Implement file/config inputs and file/stdout/null outputs (S01 experimental transfer In Progress) | In Progress | P1 | 5 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
+| T-0031 | Implement file/config inputs and file/stdout/null outputs (S01 experimental transfer in Review) | Review | P1 | 5 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0032 | Implement the CSV parser and formatter | Backlog | P1 | 8 | T-0023 | Plugin Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser | Backlog | P1 | 5 | T-0023 | Plugin Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
