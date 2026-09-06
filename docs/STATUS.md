@@ -68,6 +68,7 @@ contracts remain open; WIP is zero of two.
 | T-0023/S01 | Done | Private positional batch admission; PR #101 integrated |
 | T-0023/S02 | Done | Selected three-case LogicalBatch differential bridge; PR #103 integrated |
 | T-0012/S12 | Done | Seven-case reference observation and validator; PR #105 integrated |
+| T-0012/S13 | Ready | Six syntax fixtures; no new observations or native behavior yet |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 

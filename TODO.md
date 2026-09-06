@@ -24,6 +24,9 @@ through PR #105 (`67f0786`) after primary and independent final-head Demo at
 `9df0d5c`, accepting 5 SP. Known S03–S12 acceptance totals 40 SP. Parent #15
 remains open in Backlog, Current 55 / Initial 5 unchanged; WIP is zero of two.
 
+T-0012/S13 is Ready for six selected syntax observations, 5 SP. Stage A raw
+review precedes Stage B validation. Parent Current 55 / Initial 5 is unchanged.
+
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
 T-0030–T-0037 and T-0060–T-0067 are `Native Plugins`; T-0040–T-0045 are
@@ -47,7 +50,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S12 observations integrated) | Backlog | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
+| T-0012 | Specify configuration, schema, and value semantics (S13 syntax observations Ready) | Ready | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 

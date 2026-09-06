@@ -237,4 +237,7 @@ no-callback failures. Primary and independent final-head acceptance passed at
 
 ## Adding an Entry
 
+T-0012/S13 is Ready for six syntax observations. No YAML, duplicate-key, alias,
+encoding, or native configuration behavior is added or accepted yet.
+
 Each entry must identify the Embulk version, exact plugin artifact, configuration fixture, expected evidence, source/provenance record, and known deviations. Claims enter this document only after review evidence exists.
