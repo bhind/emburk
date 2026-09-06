@@ -40,9 +40,14 @@ fn transfer(input: &Path, output: &Path) -> Result<(), String> {
         return Err("input must be a regular file".into());
     }
     let input_file = File::open(input).map_err(|error| format!("cannot open input: {error}"))?;
-    let output_file = OpenOptions::new()
-        .write(true)
-        .create_new(true)
+    let mut options = OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    let output_file = options
         .open(output)
         .map_err(|error| format!("cannot create output exclusively: {error}"))?;
     match emburk_core::transfer_lines(BufReader::new(input_file), output_file) {

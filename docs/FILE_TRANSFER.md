@@ -18,7 +18,9 @@ bounds line-buffer growth, not total process memory. Processing is sequential.
 There is no file-wide record queue, schema inference, transformation expression,
 plugin loading, YAML configuration or Embulk compatibility claim.
 
-An existing output is never overwritten. After output creation, a read,
+An existing output is never overwritten. On Unix, new output is created with
+mode 0600 (or stricter under umask). On non-Unix systems directory/OS ACLs
+apply; no portable owner-only guarantee is made. After output creation, a read,
 encoding, size, write or flush failure may leave a **partial output**. The
 command reports failure; inspect the new file before removing it or choosing a
 different output name. There is no automatic deletion, rollback, crash-durability,

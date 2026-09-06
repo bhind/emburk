@@ -8,6 +8,29 @@ use std::{
 
 static NEXT_DIRECTORY: AtomicUsize = AtomicUsize::new(0);
 
+#[cfg(unix)]
+#[test]
+fn output_is_owner_only_even_with_permissive_umask() {
+    use std::os::unix::fs::PermissionsExt;
+    let directory = directory("permissions");
+    let input = directory.join("input.txt");
+    let output = directory.join("output.txt");
+    fs::write(&input, b"private\n").unwrap();
+    let result = Command::new("/bin/sh")
+        .args(["-c", "umask 000; exec \"$@\"", "transfer-test"])
+        .arg(env!("CARGO_BIN_EXE_emburk"))
+        .arg("transfer-lines")
+        .arg(&input)
+        .arg(&output)
+        .output()
+        .unwrap();
+    assert!(result.status.success());
+    assert_eq!(
+        fs::metadata(&output).unwrap().permissions().mode() & 0o777,
+        0o600
+    );
+}
+
 fn directory(name: &str) -> PathBuf {
     let unique = NEXT_DIRECTORY.fetch_add(1, Ordering::Relaxed);
     let path = std::env::temp_dir().join(format!(
