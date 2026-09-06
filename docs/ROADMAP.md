@@ -210,8 +210,9 @@ independent final-head acceptance at `9df0d5c`.
 
 ## Phase 1: Native File-to-File MVP
 
-T-0012/S13 is in Review in PR #107 for six syntax observations to inform configuration-loader
-constraints. It does not adopt a parser or native policy or complete this gate.
+T-0012/S13 is Done through PR #107 (`441040f`) for six syntax observations to
+inform configuration-loader constraints. Primary and independent final-head Demo
+passed at `65a2fb3`. It does not adopt a parser or native policy or complete this gate.
 
 - Build the compact execution core and MVP CLI.
 - Implement Arrow-compatible batches, bounded scheduling, backpressure, cancellation, transactions, and resume state.

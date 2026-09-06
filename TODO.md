@@ -22,11 +22,11 @@ timestamp and JSON uncertainty that does not fit 8 SP. It is a forecast, not
 completion evidence. Parent #20 remains open in Backlog. T-0012/S12 is Done
 through PR #105 (`67f0786`) after primary and independent final-head Demo at
 `9df0d5c`, accepting 5 SP. Known S03–S12 acceptance totals 40 SP. Parent #15
-remains open, Current 55 / Initial 5 unchanged. S13 now occupies one of two WIP lanes.
+remains open, Current 55 / Initial 5 unchanged.
 
-T-0012/S13 is in Review in PR #107 for six selected syntax observations, 5 SP.
-Strict controls passed at `d95f2a9`; final-head Demo is pending. Parent Current 55 / Initial 5
-is unchanged; no points are awarded yet.
+T-0012/S13 is Done through PR #107 (`441040f`) after primary and independent
+final-head Demo at `65a2fb3`, accepting 5 SP. Known S03–S13 acceptance totals
+45 SP. Parent #15 remains open in Backlog, Current 55 / Initial 5 unchanged.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -51,7 +51,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0010 | Epic: Embulk compatibility contract | Backlog | P0 | — | None | Project Manager | Planning |
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
-| T-0012 | Specify configuration, schema, and value semantics (S13 syntax observations in Review) | Review | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
+| T-0012 | Specify configuration, schema, and value semantics (S13 Done; remaining contracts queued) | Backlog | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
