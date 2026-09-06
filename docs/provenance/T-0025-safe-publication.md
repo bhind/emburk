@@ -1,6 +1,6 @@
 # T-0025/S01 safe single-file publication
 
-Issue: [#22](https://github.com/bhind/emburk/issues/22). State: In Progress.
+Issue: [#22](https://github.com/bhind/emburk/issues/22). State: Done through PR #117.
 Forecast: 5 SP. Stage 5 of the authorized execution sequence.
 
 ## Authority
@@ -74,6 +74,25 @@ primary/independent logs, exit values and hashes before integration.
 
 Unit/Contract and local Integration; selected CSV Differential regression only.
 Publication policy is a native safety contract, not measured Embulk parity.
+
+## Acceptance evidence
+
+Accepted 5 SP; integrated aac00039d9d60c218750125d274400be4b8e135e.
+Exact Demo passed in primary and independent runs at
+725dd7e9ff25f2abf0e055dae08cfc789fa00d6c: 87 tests (72 core, 5 configured CLI,
+10 old CLI) passed, eight existing intentional ignores; eight selected CSV
+comparisons matched. Actual kill regression and five publication fault tests
+passed. Fmt, strict locked Clippy and diff-check passed; no concrete defect
+found by read-only peer review. macOS arm64, Rust/Cargo 1.98.1, Java17.
+
+Primary /private/tmp/t0025-s01-primary.t2cXuE: stdout SHA256
+6cd62b5d1f648c98860e4b90a22ee79ac2f5035915a66c102b38c38ce8d81ecc;
+stderr 52bf09dc42db1ccdf0b71e7e4af82af86354684e493786791b4161461f9931fd.
+Independent /private/tmp/emburk-t0025-acceptance.6RzodA/demo.log SHA256
+c5ed2e4f0e6e6d5d3552530b9419f4aebf973b7401180e8b2b1fd73add478bda.
+Both numeric exit 0, exit-file SHA256
+9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.
+Parent #22 remains open in Backlog for resume and broader transaction scope.
 
 ## Stop rule and non-claims
 

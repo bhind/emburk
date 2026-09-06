@@ -45,10 +45,13 @@ Parser-selection research now has a [candidate assessment](provenance/T-0022-par
 T-0022/S01 is Done through PR #114 after primary and independent acceptance
 of six experiment tests, 71 workspace tests and actual-binary checks.
 T-0014/S01 is Done through PR #115 after eleven harness tests, 71 workspace
-tests and matching independent eight-case reference projections. The active
+tests and matching independent eight-case reference projections. The
 T-0032/S01 consumer is Done through PR #116 (66c6125), after 81 passing tests,
 eight existing ignores and eight independently matching selected real file
-projections at 59a7cca. T-0025/S01 now implements safe single-output publication.
+projections at 59a7cca. T-0025/S01 is Done through PR #117 (aac0003): 87 passes,
+eight existing ignores, actual interruption and operation-failure tests, and
+unchanged eight-case CSV comparison. T-0014/S02 now captures selected stage-6
+format/filter observations; native formats and stage 7 remain unfinished.
 The owner-authorized
 [seven-stage sequence](IMPLEMENTATION_SEQUENCE.md) remains uncompleted work.
 
@@ -77,7 +80,7 @@ strict controls and unchanged S12 regression. T-0031/S01 is Done through PR #110
 (`c5fb13f`) for the explicitly requested experimental native File-to-File path.
 T-0031/S02 is Done through PR #112 (`2ec236e`) for experimental stdout/null
 consumers: 71 tests passed, eight existing intentional ignores, primary and
-independent acceptance at `c5df504`. T-0025/S01 now occupies one WIP lane; the full
+independent acceptance at `c5df504`. T-0014/S02 now occupies one WIP lane; the full
 file/plugin parent stays open. Core transfer semantics remain unchanged.
 
 | Item | State | Purpose |
@@ -94,8 +97,8 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 
-T-0025/S01 is In Progress for safe single-output publication. T-0014/S02 uses
-the second independent lane for bundled format/filter reference observations
+T-0025/S01 is Done through PR #117. T-0014/S02 uses
+one lane for bundled format/filter reference observations
 on research/t-0014-formats-oracle; its packet and evidence are disjoint.
 Other unfinished stable tasks remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)

@@ -1,6 +1,6 @@
 # ADR-0018: No-clobber single-output publication
 
-- Status: Accepted for T-0025/S01 implementation; acceptance pending
+- Status: Accepted; T-0025/S01 integrated through PR #117
 - Date: 2026-09-06
 
 ## Decision

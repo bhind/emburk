@@ -13,8 +13,9 @@ T-0032/S01 integrated through PR #116: eight explicitly configured single-file
 long/string CSV projections match real Embulk outputs and exits in primary and
 independent runs. This is a private native consumer, not a verified generic
 plugin. General CSV and configuration behavior outside that selected matrix
-remains unfinished, not an accepted exception. T-0025/S01 now develops native
-no-clobber publication safety; its failure policy is not observed Embulk parity.
+remains unfinished, not an accepted exception. T-0025/S01 integrated native
+no-clobber publication safety through PR #117; its failure policy is not
+observed Embulk parity. T-0014/S02 is reference-only format/filter preparation.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate
