@@ -14,8 +14,9 @@ T-0012/S10 is integrated through PR #93; T-0012, T-0013, T-0021 and all other
 unfinished items are `Backlog`. T-0021/S06 is integrated through PR #96.
 T-0012/S11 is Done through PR #99 after final-head acceptance. T-0023/S01 is
 Done through PR #101 (`d0eebf8`), after primary and independent final-head Demo
-at `196d648`. S01 accepts 5 SP. T-0023/S02 is In Progress as a separate 5-SP selected
-comparison slice; parent Current refines 8 to 21, while Initial remains 8.
+at `196d648`. S01 accepts 5 SP. T-0023/S02 is Review in PR #103 at frozen
+source `e0a44ad` as a separate 5-SP selected comparison slice; final-head and
+separate Tester acceptance remain pending. Parent Current refines 8 to 21, while Initial remains 8.
 The estimate now covers accepted S01, S02 verification, and remaining physical,
 timestamp and JSON uncertainty that does not fit 8 SP. It is a forecast, not
 completion evidence. Parent #20 remains open; WIP is one of two.
@@ -54,7 +55,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
 | T-0021 | Define workspace boundaries and core traits (S01–S06 integrated; remaining contracts queued) | Backlog | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
 | T-0022 | Implement configuration loading and the MVP CLI | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
-| T-0023 | Implement logical schema and Arrow-compatible batches (S01 Done; S02 In Progress) | In Progress | P1 | 21 | T-0012, T-0021 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0023 | Implement logical schema and Arrow-compatible batches (S01 Done; S02 Review) | Review | P1 | 21 | T-0012, T-0021 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0025 | Implement atomic transaction and resume state | Backlog | P1 | 8 | T-0013, T-0024 | Rust Core Implementer | Unit/Contract |
 | T-0026 | Implement structured errors and observability | Backlog | P1 | 5 | T-0021 | Rust Core Implementer | Unit/Contract |

@@ -31,4 +31,4 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0012/S11 schema/value coupling](T-0012-schema-value-coupling-probe.md) | Done; PR #99 integrated after full final-head acceptance |
 | [T-0021/S06 owned-record handoff](T-0021-owned-record-handoff.md) | Done (bounded private slice; PR #96, `56ef9e9`) |
 | [T-0023/S01 positional logical batch](T-0023-positional-logical-batch.md) | Done (PR #101, `d0eebf8`; Unit/Contract only) |
-| [T-0023/S02 logical-batch differential](T-0023-logical-batch-differential.md) | In Progress (selected Differential target; acceptance pending) |
+| [T-0023/S02 logical-batch differential](T-0023-logical-batch-differential.md) | Review (frozen PR #103 source; selected Differential acceptance pending) |

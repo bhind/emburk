@@ -220,9 +220,9 @@ T-0023/S01 is Done through PR #101 (`d0eebf8`). Seven local tests
 passed primary and independent final-head acceptance as Unit/Contract evidence for an internal positional
 batch invariant only; it adds no native Differential or supported schema/value claim.
 
-T-0023/S02 is In Progress for Differential evidence limited to matching,
-explicit-null and duplicate-name S11 projections. No outcome is accepted until
-its final-head evidence exists; it does not broaden supported compatibility.
+T-0023/S02 is Review in PR #103 at frozen source `e0a44ad` for Differential
+evidence limited to matching, explicit-null and duplicate-name S11 projections.
+Final evidence is pending; it does not broaden supported compatibility.
 
 
 
