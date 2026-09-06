@@ -385,3 +385,10 @@ five bridge controls and unchanged S09/S08/S06 regressions. Primary and final
 PR-head acceptance passed; PR #93 integrated as `742274f`. S10's 5 SP are
 accepted, bringing known S03–S10 slice estimates to 30 SP; parent Current 34 /
 Initial 5 remain unchanged. Parent #15 remains open and returns to Backlog.
+
+Next candidate: T-0021/S06, a private synchronous owned-record handoff seam
+under accepted ADR-0013 and its [packet](docs/provenance/T-0021-owned-record-handoff.md).
+Estimate 2 SP within Current 13 / Initial 5; prior accepted S01–S05 total 11 SP.
+Independent readiness review passed; the slice is Ready. It will connect existing private records to original
+fake consumers without selecting schema, lifecycle or public plugin policy.
+Parent T-0021 and all delivery gates remain open.

@@ -345,3 +345,8 @@ Primary and final-head acceptance passed; PR #93 integrated as `742274f`.
 The S10 slice is Done with Unit/Contract and the two selected Differential
 projections. No public value, schema coupling, physical encoding, whole-domain
 or production claim follows; parent and delivery gates remain open.
+
+T-0021/S06 is Ready under accepted ADR-0013 after independent packet review:
+private synchronous owned-record handoff to original local fakes. There is
+no public API, schema validation, lifecycle policy, runtime resource guarantee
+or new compatibility claim follows from this planning step.
