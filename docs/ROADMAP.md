@@ -210,7 +210,7 @@ independent final-head acceptance at `9df0d5c`.
 
 ## Phase 1: Native File-to-File MVP
 
-T-0012/S13 is Ready for six syntax observations to inform configuration-loader
+T-0012/S13 is In Progress for six syntax observations to inform configuration-loader
 constraints. It does not adopt a parser or native policy or complete this gate.
 
 - Build the compact execution core and MVP CLI.

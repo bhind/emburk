@@ -1,7 +1,7 @@
 # T-0012/S13 selected configuration-syntax observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Ready; Stage A capture authorized
+- State: In Progress; Stage A capture authorized
 - Branch: `research/t-0012-s13-config-syntax`
 - Owner: Compatibility Host Implementer; PM owns records and acceptance
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
