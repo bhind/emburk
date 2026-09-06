@@ -162,9 +162,9 @@ The bounded observation slice is Done; parent contracts remain open.
 These diagnostic observations do not select native defaults or validation.
 A separate reviewed decision must precede schema-bound record implementation.
 
-T-0023/S01 is Review in PR #101 at frozen source `9f842509`. It implements one
+T-0023/S01 is Done through PR #101 (`d0eebf8`). It implements one
 private owned logical batch with positional admission over selected Boolean,
-Signed64, Float64 and Text categories; final acceptance remains pending. No
+Signed64, Float64 and Text categories; primary and independent final-head acceptance passed. No
 Arrow/Page, lifecycle, public API or transfer boundary exists.
 
 
