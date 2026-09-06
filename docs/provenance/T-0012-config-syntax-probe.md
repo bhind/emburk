@@ -1,7 +1,7 @@
 # T-0012/S13 selected configuration-syntax observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Review; PR #107, final-head acceptance pending
+- State: Done; PR #107 integrated as `441040f`
 - Branch: `research/t-0012-s13-config-syntax`
 - Owner: Compatibility Host Implementer; PM owns records and acceptance
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -181,6 +181,31 @@ read-only source review found no remaining blocker; an event-value finding
 was retracted after checking that the mutation receives complete event lines.
 Final-head exact Demo and independent reproduction remain required. No points
 are awarded by this implementation evidence.
+
+## Final acceptance and integration
+
+Primary and independent exact Demo both passed at
+`65a2fb3c5fd737e86d980996925996e365a865d1` with retained and shell-reported
+exit 0. Root inspected the independent logs and numeric exit. Both runs
+passed S13's six cases/60 events, 19 raw-copy controls, one path control and
+two artifact controls, followed by unchanged S12's seven cases, 16 raw-copy
+controls, one path control and two artifact controls. Source hashes above
+were unchanged; source-before/after matched the reviewed revision.
+
+Primary outer stdout SHA-256:
+`aaf934203df20c3c167f82aedafd5ecab8c86dcbcab0e1939ce6da431ccee926`.
+Independent outer stdout SHA-256:
+`9a41fd5b750e18f8b4cb0dd6015390f945de21b5cdd05b51c68e8edc730ad713`.
+Both stderr files were empty, SHA-256
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+Evidence remains in unique external local directories, not redistributed.
+Platform: macOS arm64, Temurin 17.0.20, Python 3.14.6, Bash 3.2.57.
+Diff checks, packet validation and Project audits passed; the Project remained
+private. PR #107 integrated with a matching-head guard as
+`441040f614f090661bff354bcbf8e40647b0f779`.
+S13 accepts 5 SP; known S03–S13 acceptance totals 45 SP. Parent #15 remains
+open in Backlog, Current 55 / Initial 5 unchanged. This completes the selected
+reference/validator slice only; all native-policy and parent non-claims remain.
 
 ## Evidence class
 

@@ -237,9 +237,9 @@ no-callback failures. Primary and independent final-head acceptance passed at
 
 ## Adding an Entry
 
-T-0012/S13 is in Review in PR #107 for six syntax observations. No YAML, duplicate-key, alias,
+T-0012/S13 is Done through PR #107 (`441040f`) for six syntax observations. No YAML, duplicate-key, alias,
 encoding, or native configuration behavior is accepted. Primary and independent
-Stage A agree on 60 events and six outcomes; strict Stage B controls pass at `d95f2a9`,
-but final acceptance remains pending.
+Stage A agree on 60 events and six outcomes; primary and independent final-head
+Demo passed at `65a2fb3`, including strict controls and unchanged S12 regression.
 
 Each entry must identify the Embulk version, exact plugin artifact, configuration fixture, expected evidence, source/provenance record, and known deviations. Claims enter this document only after review evidence exists.
