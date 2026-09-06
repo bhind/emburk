@@ -1,7 +1,7 @@
 # T-0012/S12 selected configuration-envelope observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Review in PR #105; final-head acceptance pending
+- State: Done through PR #105 (`67f0786422a152bed3ef6b78b253e3372a13b7ec`)
 - Branch: `research/t-0012-s12-config-envelope`
 - Owner: Compatibility Host Implementer; Project Manager owns records
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
@@ -204,8 +204,32 @@ artifact controls. Outer stdout SHA-256:
 `491385ec41c1864218bf8ba001c6505c93580cad899c1ff8a3b0e7e215d5be71`;
 stderr is empty; numeric exit 0. The frozen follow-up changes only the final
 control-count wording, not behavior. Read-only source review found no concrete
-blocker; Bash syntax and diff checks passed. Final-head exact Demo and separate
-Tester reproduction remain required. No points or completion follow yet.
+blocker; Bash syntax and diff checks passed. Subsequent final-head evidence
+and integration are recorded below.
+
+## Final acceptance and integration
+
+Primary and independent exact Demo both passed at
+`9df0d5c1a37c2aa5719fd222f3886dc2f4a856e5`, each with tool-reported exit 0
+and retained exit files. PM verified the Tester exit and hashes before merge.
+Frozen source hashes above remained unchanged.
+
+| Run | stdout SHA-256 | stderr SHA-256 |
+| --- | --- | --- |
+| Primary | `de236e31f2b119c8c38b5924b9d969d7aea1113ee2dce2938bdf50a3d120b405` | `2867b8b5eada947aa21b51dac2e61c10c7fc61ad8201935224e8310356a09995` |
+| Tester | `78562b100a82ce9a0396fa16f610675f9aab492691e3a505a17e5fc0918f1477` | `019ff888debcc450cd71d808e5a45a8d31d5ed0759733fad076e0e551e427fab` |
+
+Both runs prove seven selected envelopes/36 events, positive validate-only,
+16 raw-copy controls, one path control, two artifact controls, and unchanged
+nine-case S01 presence and nine-case S02 conversion regressions. Environment:
+macOS arm64, Temurin 17.0.20, Python 3.14.6, Bash 3.2.57. Logs and runtime
+artifacts remain external/local-only. No Rust changed; no redundant workspace
+suite was required by the packet.
+
+PR #105 integrated as `67f0786422a152bed3ef6b78b253e3372a13b7ec`. The owner
+explicitly approved this completion-record transition after the execution gate
+requested confirmation. S12 accepts 5 SP; known S03–S12 acceptance totals 40 SP.
+Parent #15 remains open, Current 55 / Initial 5 unchanged. All non-claims remain.
 
 ## Evidence class
 
