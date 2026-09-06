@@ -201,7 +201,7 @@ encoding, lifecycle, or File-to-File delivery gates.
 
 
 
-T-0012/S12 is Ready to observe seven selected `in`/`out` envelopes using the
+T-0012/S12 is In Progress to observe seven selected `in`/`out` envelopes using the
 existing admitted local test-plugin route. This prepares the configuration
 entry-point decision without adopting a parser or native/public policy. The
 observation cannot satisfy a File-to-File or complete configuration gate.

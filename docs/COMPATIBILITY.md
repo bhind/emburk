@@ -225,7 +225,7 @@ evidence limited to matching, explicit-null and duplicate-name S11 projections.
 Primary and independent final-head evidence passed at `ca9af0a`; this does not
 broaden the supported product compatibility surface.
 
-T-0012/S12 is Ready for seven selected configuration-envelope observations.
+T-0012/S12 is In Progress for seven selected configuration-envelope observations.
 It does not repeat S01/S02 scalar fixtures or establish native YAML, nested
 configuration, unknown-key, default, or external-error policy. No result has
 yet been observed or accepted.

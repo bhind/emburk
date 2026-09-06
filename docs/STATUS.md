@@ -52,7 +52,7 @@ final-head Demo at `196d648`: 53 workspace passes, seven intentional ignores,
 seven batch tests and unchanged regressions. T-0023/S02 is Done through PR #103
 (`5d72866`) after primary and independent Demo at `ca9af0a`: three selected
 projections/ten cells, 57 workspace passes/eight intentional ignores, and
-unchanged regressions. It adds no runtime behavior. T-0012/S12 is Ready for
+unchanged regressions. It adds no runtime behavior. T-0012/S12 is In Progress for
 seven selected configuration-envelope observations; no observations or native
 configuration behavior have been added. Stage A requires raw review before
 Stage B. T-0012, T-0013 and T-0021 parent contracts remain open.
@@ -66,7 +66,7 @@ Stage B. T-0012, T-0013 and T-0021 parent contracts remain open.
 | T-0012/S11 | Done | Automated strict observation validation; PR #99 integrated |
 | T-0023/S01 | Done | Private positional batch admission; PR #101 integrated |
 | T-0023/S02 | Done | Selected three-case LogicalBatch differential bridge; PR #103 integrated |
-| T-0012/S12 | Ready | Seven-case config-envelope capture; raw review precedes validation |
+| T-0012/S12 | In Progress | Seven-case config-envelope capture; raw review precedes validation |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 

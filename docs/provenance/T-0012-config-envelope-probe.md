@@ -1,7 +1,7 @@
 # T-0012/S12 selected configuration-envelope observation
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Ready; Stage A capture authorized, raw review required before Stage B
+- State: In Progress; Stage A capture authorized, raw review required before Stage B
 - Branch: `research/t-0012-s12-config-envelope`
 - Owner: Compatibility Host Implementer; Project Manager owns records
 - Priority: P0; slice 5 SP (implementation 2, uncertainty 1, verification 1,
