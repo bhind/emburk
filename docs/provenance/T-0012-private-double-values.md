@@ -1,7 +1,7 @@
 # T-0012/S10 private double-value storage and selected comparison
 
 - Issue: [T-0012, #15](https://github.com/bhind/emburk/issues/15)
-- State: Review; source acceptance passed, final PR-head gate and integration pending
+- State: Done; accepted and integrated through PR #93 as `742274f`
 - Branch: `feat/t-0012-private-double-values`
 - Owner: Rust Core Implementer; PM owns decisions, records and integration
 - Priority: P0; parent task T-0012; parent epic T-0010
@@ -119,6 +119,17 @@ allowlist, APIs/artifacts/dependencies or source-reuse boundaries, or on materia
 security/IP uncertainty. Routine retrieval/test failures are fixed in scope.
 
 ## Source review and verification
+
+Final acceptance: the exact Demo at PR head
+`994c68cf398f7c5c511ed2fccae58d539e6d7d18` passed with exit 0 and empty
+stderr. Complete logs: `/private/tmp/t0012-s10-pr-head.wHcZGL`; stdout SHA-256:
+`87efd49777f47ca2422062aa3cf2abe73e5b012f2e2671142a3e6e3f5ff3dcc0`.
+[PR #93](https://github.com/bhind/emburk/pull/93) integrated as
+`742274f23234b7f02f8be70a9e97f5bce86f14b3`. The source hashes below are
+unchanged. This completes S10's 5 SP, not parent #15. Parent returns to Backlog;
+known accepted S03–S10 estimates total 30 SP, Current 34 / Initial 5 unchanged.
+The following source-review chronology preserves the earlier pending gates;
+final-head acceptance and integration now satisfy them. All non-claims remain.
 
 Frozen source: `3df2a888bf37d9871769a291436df4bcabe56cb6`, following
 implementation `0aca08c`. Only the four authorized source paths changed.

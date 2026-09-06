@@ -45,7 +45,7 @@ captured 114/93 events with exact selected double bits preserved; primary
 reproduction and complete raw review authorize Stage B strict validation.
 The slice integrated through PR #91 as `34757c8`. S10's private double-storage
 decision passed readiness review and integrated through PR #92. S10 is now
-in Review after source acceptance, with combined active WIP one of two. T-0012, T-0013 and
+Done through PR #93, with combined active WIP zero of two. T-0012, T-0013 and
 T-0021 parent contracts remain open.
 
 | Item | State | Purpose |
@@ -54,7 +54,7 @@ T-0021 parent contracts remain open.
 | T-0011 | Done | Pinned Embulk core and SPI references; no external plugin admitted |
 | T-0003 | Done | Enforce Project discovery, packet checks, and WIP auditing |
 | T-0004 | Done | Established Project delivery operations and burndown inputs |
-| T-0012/S10 | Review | Private double bit storage and two selected comparisons |
+| T-0012 | Backlog | S10 integrated; remaining configuration/value contracts |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S01–S05 integrated; remaining runtime contracts |
 
@@ -341,5 +341,7 @@ S10 implements the private bit-preserving representation permitted by ADR-0012.
 Frozen source `3df2a88` passed implementer and independent Tester acceptance:
 12 selected double/null cells, five bridge controls and unchanged S09/S08/S06
 regressions. Its private equality is storage identity, not numeric equality.
-Primary final acceptance and PR integration remain required. No public value,
-schema coupling, physical encoding, whole-domain or production claim follows.
+Primary and final-head acceptance passed; PR #93 integrated as `742274f`.
+The S10 slice is Done with Unit/Contract and the two selected Differential
+projections. No public value, schema coupling, physical encoding, whole-domain
+or production claim follows; parent and delivery gates remain open.
