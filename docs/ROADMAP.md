@@ -192,6 +192,11 @@ exercise a private positional logical batch for selected schema/value categories
 Primary and independent final-head acceptance passed. Timestamp/JSON values,
 nullability, external validation, physical encoding and all File-to-File claims remain outside.
 
+T-0023/S02 is In Progress for a test-only selected Differential bridge over the three
+accepted S11 normal outcomes. It introduces no runtime behavior or public
+surface; its evidence cannot settle timestamp/JSON, nullability, physical
+encoding, lifecycle, or File-to-File delivery gates.
+
 
 
 
