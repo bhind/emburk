@@ -100,6 +100,49 @@ def make_snapshot(items: Iterable[dict[str, Any]], today: dt.date) -> Snapshot:
     return Snapshot(today.isoformat(), iteration["title"], iteration["startDate"], int(iteration["duration"]), len(selected), sum(map(points, selected)), len(remaining), sum(map(points, remaining)), len(completed), sum(map(points, completed)), dict(sorted(statuses.items())))
 
 
+def normalize_snapshot_item(node: dict[str, Any]) -> dict[str, Any]:
+    content_types = {"ISSUE": "Issue", "PULL_REQUEST": "PullRequest"}
+    item: dict[str, Any] = {
+        "content": {"type": content_types.get(node.get("type"), node.get("type"))}
+    }
+    for value in node.get("fieldValues", {}).get("nodes", []):
+        field_name = (value.get("field") or {}).get("name")
+        if field_name == "Status":
+            item["status"] = value.get("name")
+        elif field_name == "Story Points":
+            item["story Points"] = value.get("number")
+        elif field_name == "Iteration":
+            item["iteration"] = {
+                key: value[key]
+                for key in ("iterationId", "title", "startDate", "duration")
+                if key in value
+            }
+    return item
+
+
+def snapshot_items(project: ProjectRef) -> list[dict[str, Any]]:
+    query = """query($login:String!,$number:Int!,$cursor:String){user(login:$login){projectV2(number:$number){items(first:100,after:$cursor){nodes{type fieldValues(first:50){nodes{... on ProjectV2ItemFieldSingleSelectValue{name field{... on ProjectV2FieldCommon{name}}} ... on ProjectV2ItemFieldNumberValue{number field{... on ProjectV2FieldCommon{name}}} ... on ProjectV2ItemFieldIterationValue{iterationId title startDate duration field{... on ProjectV2FieldCommon{name}}}}}} pageInfo{hasNextPage endCursor}}}}}"""
+    cursor: str | None = None
+    seen_cursors: set[str] = set()
+    items: list[dict[str, Any]] = []
+    while True:
+        args = ["api", "graphql", "-f", f"query={query}", "-F", f"login={project.owner}", "-F", f"number={project.number}"]
+        if cursor is not None:
+            args.extend(("-F", f"cursor={cursor}"))
+        response = run_gh(*args)
+        connection = response["data"]["user"]["projectV2"]["items"]
+        items.extend(normalize_snapshot_item(node) for node in connection["nodes"])
+        page_info = connection["pageInfo"]
+        if not page_info["hasNextPage"]:
+            return items
+        cursor = page_info.get("endCursor")
+        if not cursor:
+            raise AuditError("Project item pagination has no end cursor")
+        if cursor in seen_cursors:
+            raise AuditError("Project item pagination repeated an end cursor")
+        seen_cursors.add(cursor)
+
+
 CSV_FIELDS = ("date", "iteration", "start_date", "duration", "total_issues", "total_points", "remaining_issues", "remaining_points", "completed_issues", "completed_points", "status_counts")
 
 
@@ -160,8 +203,7 @@ def render_svg(rows: list[dict[str, str]], path: Path, metric: str, title: str) 
 
 def snapshot(output_dir: Path, today: dt.date) -> dict[str, Any]:
     project = discover()
-    result = run_gh("project", "item-list", str(project.number), "--owner", project.owner, "--limit", "500", "--format", "json")
-    value = make_snapshot(result.get("items", []), today)
+    value = make_snapshot(snapshot_items(project), today)
     stem = value.iteration.replace("/", "-")
     rows = append_snapshot(output_dir / f"{stem}.csv", value)
     (output_dir / f"{stem}-latest.json").write_text(json.dumps(asdict(value), indent=2, sort_keys=True) + "\n", encoding="utf-8")
