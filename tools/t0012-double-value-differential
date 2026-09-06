@@ -1,0 +1,274 @@
+#!/usr/bin/env python3
+"""Project the two accepted S09 double observations into a private S10 manifest."""
+
+import argparse
+import base64
+import binascii
+import hashlib
+import os
+import pathlib
+import subprocess
+import sys
+import uuid
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+S09_RUNNER = ROOT / "tools/t0012-double-value-probe/run.sh"
+S09_WRAPPER = ROOT / "tests/t0012_double_value_probe_test.sh"
+FIXTURES = (("finite-null", 7, 114), ("nonfinite", 5, 93))
+CAP = 1024
+
+
+class InvalidEvidence(ValueError):
+    pass
+
+
+def require(condition, label):
+    if not condition:
+        raise InvalidEvidence(label)
+
+
+def canonical_external(path):
+    require(path.is_absolute() and path.exists() and not path.is_symlink(), "external-path")
+    resolved = path.resolve(strict=True)
+    require(resolved == path, "external-path")
+    require(ROOT.resolve() not in resolved.parents and resolved != ROOT.resolve(), "external-path")
+    allowed = tuple(pathlib.Path(value) for value in (
+        "/tmp", "/private/tmp", "/var/folders", "/private/var/folders"
+    ))
+    require(any(resolved == root or root in resolved.parents for root in allowed), "external-path")
+    return resolved
+
+
+def decode(value):
+    if value == "-":
+        return None
+    try:
+        raw = base64.b64decode(value, validate=True)
+        decoded = raw.decode("utf-8")
+    except (binascii.Error, UnicodeDecodeError) as error:
+        raise InvalidEvidence("projection-base64") from error
+    require(base64.b64encode(raw).decode("ascii") == value, "projection-base64")
+    return decoded
+
+
+def strict_s09_gate(evidence, log_directory):
+    completed = subprocess.run(
+        ["bash", str(S09_RUNNER)], cwd=ROOT, text=True, capture_output=True,
+        env={
+            **os.environ,
+            "T0012_DOUBLE_MODE": "validate",
+            "T0012_DOUBLE_STRICT_VALIDATE": "1",
+            "T0012_DOUBLE_EVIDENCE_DIR": str(evidence),
+        },
+    )
+    log_directory.joinpath("strict-validate.stdout.log").write_text(
+        completed.stdout, encoding="utf-8"
+    )
+    log_directory.joinpath("strict-validate.stderr.log").write_text(
+        completed.stderr, encoding="utf-8"
+    )
+    log_directory.joinpath("strict-validate.exit.txt").write_text(
+        f"{completed.returncode}\n", encoding="utf-8"
+    )
+    require(completed.returncode == 0, f"S09-strict-exit:{completed.returncode}")
+    require(
+        completed.stdout == "T0012_DOUBLE_VALIDATE_ONLY=passed\n"
+        and completed.stderr == "",
+        "S09-strict-output",
+    )
+
+
+def read_cases(evidence):
+    path = evidence / "double-cases.raw"
+    require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 65536,
+            "raw-case-file")
+    lines = path.read_text(encoding="utf-8").splitlines()
+    require(len(lines) == len(FIXTURES), "raw-case-count")
+    captures = {}
+    for (name, _, event_count), line in zip(FIXTURES, lines, strict=True):
+        fields = line.split("|")
+        require(
+            len(fields) == 5 and fields[:2] == ["DOUBLECASE", name]
+            and fields[2] == "0" and fields[3] == str(event_count),
+            "raw-case-identity",
+        )
+        require(len(fields[4]) == 64 and all(c in "0123456789abcdef" for c in fields[4]),
+                "raw-case-hash")
+        captures[name] = fields[4]
+    return captures
+
+
+def read_trace(evidence, name, rows, event_count, expected_hash):
+    path = evidence / f"{name}.trace.raw"
+    require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 1024 * 1024,
+            "trace-file")
+    material = path.read_bytes()
+    require(material.endswith(b"\n") and hashlib.sha256(material).hexdigest() == expected_hash,
+            "trace-hash")
+    lines = material.decode("utf-8").splitlines()
+    require(len(lines) == event_count, "trace-count")
+    capture = None
+    events = []
+    for sequence, line in enumerate(lines, 1):
+        fields = line.split("|")
+        require(len(fields) >= 5 and fields[:2] == ["DOUBLETRACE", name], "trace-grammar")
+        try:
+            parsed = uuid.UUID(fields[2])
+        except ValueError as error:
+            raise InvalidEvidence("trace-capture") from error
+        require(str(parsed) == fields[2] and parsed.version == 4, "trace-capture")
+        capture = capture or fields[2]
+        require(fields[2] == capture and fields[3] == str(sequence), "trace-sequence")
+        events.append((fields[4], [decode(field) for field in fields[5:]]))
+    return project(events, rows)
+
+
+def project(events, rows):
+    supplied = {}
+    nulls = {}
+    getters = {}
+    next_results = []
+    for event, values in events:
+        if event == "input-cell":
+            require(len(values) == 4 and values[1] == "0", "projection-input")
+            row = int(values[0])
+            require(row not in supplied and 0 <= row < rows, "projection-input")
+            supplied[row] = ("N", "-") if values[2] == "null" else ("D", values[3])
+        elif event == "reader-is-null-return":
+            require(len(values) == 5 and values[3] == "0", "projection-null")
+            row = int(values[2])
+            require(row not in nulls and values[4] in ("true", "false"), "projection-null")
+            nulls[row] = values[4] == "true"
+        elif event == "reader-get-double-return":
+            require(len(values) == 5 and values[3] == "0", "projection-getter")
+            row = int(values[2])
+            require(row not in getters, "projection-getter")
+            getters[row] = values[4]
+        elif event == "reader-next-record-return":
+            require(len(values) == 3, "projection-exhaustion")
+            next_results.append(values)
+    require(set(supplied) == set(range(rows)) and set(nulls) == set(range(rows)),
+            "projection-completeness")
+    require(
+        next_results == [["0", str(row), "true"] for row in range(rows)]
+        + [["0", str(rows), "false"]],
+        "projection-exhaustion",
+    )
+    output = []
+    for row in range(rows):
+        input_tag, input_payload = supplied[row]
+        if nulls[row]:
+            require(row not in getters, "projection-null-getter")
+            reference = ("N", "-")
+        else:
+            require(row in getters, "projection-getter")
+            reference = ("D", getters[row])
+        output.append((input_tag, input_payload, *reference))
+    require(set(getters) == {row for row in range(rows) if not nulls[row]},
+            "projection-getter-completeness")
+    return output
+
+
+def validate_and_project(evidence, log_directory):
+    evidence = canonical_external(evidence)
+    strict_s09_gate(evidence, log_directory)
+    case_hashes = read_cases(evidence)
+    projected = {}
+    for name, rows, event_count in FIXTURES:
+        projected[name] = read_trace(evidence, name, rows, event_count, case_hashes[name])
+    return projected
+
+
+def write_manifest(projected, output):
+    lines = ["T0012-S10\t1"]
+    for name, rows, _ in FIXTURES:
+        values = projected[name]
+        require(len(values) == rows and rows <= CAP, "manifest-dimensions")
+        lines.append(f"CASE\t{name}\t{rows}\t1")
+        for row, value in enumerate(values):
+            lines.append(f"ROW\t{row}")
+            lines.append("\t".join(("CELL", "0", *value)))
+    material = ("\n".join(lines) + "\n").encode("utf-8")
+    require(len(material) <= 65536, "manifest-size")
+    hash_path = output.with_suffix(".sha256")
+    require(not output.exists() and not output.is_symlink(), "output-exists")
+    require(not hash_path.exists() and not hash_path.is_symlink(), "output-exists")
+    with output.open("xb") as stream:
+        stream.write(material)
+    with hash_path.open("x", encoding="utf-8") as stream:
+        stream.write(hashlib.sha256(material).hexdigest() + "\n")
+
+
+def record_source_identity(logs):
+    revision = subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+        check=True, text=True, capture_output=True,
+    ).stdout
+    logs.joinpath("source-revision.txt").write_text(revision, encoding="utf-8")
+    paths = (
+        ROOT / "crates/emburk-core/src/logical_record.rs",
+        ROOT / "crates/emburk-core/src/logical_record/double_tests.rs",
+        ROOT / "tools/t0012-double-value-differential",
+        ROOT / "tests/t0012_double_value_differential_test.sh",
+    )
+    rows = []
+    for path in paths:
+        relative = path.relative_to(ROOT)
+        rows.append(f"{relative}={hashlib.sha256(path.read_bytes()).hexdigest()}")
+    logs.joinpath("source-hashes.txt").write_text("\n".join(rows) + "\n", encoding="utf-8")
+
+
+def run_live(output):
+    logs = canonical_external(output.parent)
+    completed = subprocess.run(
+        ["bash", str(S09_WRAPPER)], cwd=ROOT, text=True, capture_output=True,
+        env={**os.environ, "T0012_DOUBLE_MODE": "full"},
+    )
+    logs.joinpath("s09-wrapper.stdout.log").write_text(completed.stdout, encoding="utf-8")
+    logs.joinpath("s09-wrapper.stderr.log").write_text(completed.stderr, encoding="utf-8")
+    logs.joinpath("s09-wrapper.exit.txt").write_text(
+        f"{completed.returncode}\n", encoding="utf-8"
+    )
+    sys.stdout.write(completed.stdout)
+    sys.stderr.write(completed.stderr)
+    require(completed.returncode == 0, f"S09-full-exit:{completed.returncode}")
+    prefix = "T0012_DOUBLE_FULL_PROBE=passed|evidence="
+    markers = [line for line in completed.stdout.splitlines() if line.startswith(prefix)]
+    require(len(markers) == 1, "S09-full-marker-count")
+    require("T0012_DOUBLE_VALIDATE_ONLY=passed" not in completed.stdout,
+            "S09-live-marker-mix")
+    return pathlib.Path(markers[0][len(prefix):])
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--output", type=pathlib.Path)
+    group.add_argument("--validate-evidence", type=pathlib.Path)
+    parser.add_argument("--log-directory", type=pathlib.Path)
+    arguments = parser.parse_args()
+    try:
+        if arguments.validate_evidence is not None:
+            require(arguments.log_directory is not None, "log-directory-required")
+            logs = canonical_external(arguments.log_directory)
+            validate_and_project(arguments.validate_evidence, logs)
+            print(f"T0012_S10_RAW_VALIDATE_ONLY=passed|evidence={arguments.validate_evidence}")
+            return 0
+        require(arguments.output is not None, "output-required")
+        require(not arguments.output.exists() and not arguments.output.is_symlink(), "output-exists")
+        parent = canonical_external(arguments.output.parent.resolve(strict=True))
+        output = parent / arguments.output.name
+        require(output.name not in ("", ".", ".."), "output-name")
+        record_source_identity(parent)
+        evidence = run_live(output)
+        projected = validate_and_project(evidence, output.parent)
+        write_manifest(projected, output)
+        print(f"T0012_S10_PROJECTED_CASES=2|evidence={evidence}|manifest={output}")
+    except (InvalidEvidence, OSError, UnicodeError, ValueError) as error:
+        print(f"T0012_S10_VALIDATION_ERROR|{error}", file=sys.stderr)
+        return 4
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

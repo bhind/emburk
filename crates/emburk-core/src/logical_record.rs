@@ -1,11 +1,29 @@
 //! Private owned logical record values with no schema or physical encoding policy.
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct Float64Bits(u64);
+
+impl Float64Bits {
+    fn from_float(value: f64) -> Self {
+        Self(value.to_bits())
+    }
+
+    fn to_float(self) -> f64 {
+        f64::from_bits(self.0)
+    }
+
+    fn bits(self) -> u64 {
+        self.0
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum LogicalValue {
     Null,
     Boolean(bool),
     Signed64(i64),
     Text(String),
+    Float64(Float64Bits),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -460,3 +478,6 @@ mod tests {
             .expect("live manifest must match private records");
     }
 }
+
+#[cfg(test)]
+mod double_tests;
