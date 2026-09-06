@@ -1,6 +1,6 @@
 # T-0022/S01 parser experiment packet
 
-Issue: [#19](https://github.com/bhind/emburk/issues/19). State: In Progress.
+Issue: [#19](https://github.com/bhind/emburk/issues/19). State: Done (S01 only).
 Branch: `feat/t-0022-configured-transfer`. Slice forecast: 5 SP.
 
 ## Authority
@@ -99,3 +99,22 @@ observer guard is 64. This is a measured design constraint, not an Embulk limit.
 Implementer Demo passed six experiment tests and 71 workspace tests (eight
 existing intentional ignores); primary/independent reviewed-revision acceptance
 and integration remain required. No points are accepted yet.
+
+## Final acceptance
+
+PR #114 integrated as 8b4805101fd06821ebcaf2cdb23bb89e7c24b824 after primary
+and independent acceptance at 964b4b5ef04472d2ffd175fce0353a7ef1d6e22b.
+Six experiment and 71 workspace tests passed; eight existing intentional
+external-oracle ignores remain. Format and strict Clippy passed. Independent
+actual-binary checks confirmed ordered duplicates, tags, anchor/alias, malformed
+partial stdout with error/exit 1, raw-invalid and oversized input errors, and
+missing-argument exit 2. S01 accepts 5 SP; parent T-0022 remains open.
+
+Retained primary logs: /private/tmp/t0022-s01-primary.6Ic9TH, stdout SHA-256
+4cda785794201ea39cdafb9970ac347860f73b55e1803175e7a1c36d5ef98c30,
+stderr 820730b203dee957ad1368dcbcbf30cb25c544a518a009f70189a6612af2d167.
+Independent logs: /private/tmp/t0022-s01-final-independent.E2t4gJ, stdout
+53596ce64c1e7c36004d152c48e9fefa9dd6645ef18aef6ebf0a03196a0d6fbc,
+stderr 2acaa954ba5b57c8b6064d979f93467395921c364b6347f554adb31c44c09bde.
+Numeric exit 0 was retained and inspected. Independent offline mode used the
+same exact lock. Evidence remains Unit/Contract, not parser production adoption.

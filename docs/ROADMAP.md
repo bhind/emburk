@@ -3,8 +3,10 @@
 The roadmap is ordered by evidence gates. Dates are intentionally omitted until observed throughput and cycle time support forecasting.
 
 The owner-authorized [seven-stage execution sequence](IMPLEMENTATION_SEQUENCE.md)
-connects these gates to actual transfer work. T-0022/S01 currently experiments
-with an isolated parser; it does not pass the configuration or pipeline gates.
+connects these gates to actual transfer work. T-0022/S01's isolated parser
+experiment integrated through PR #114. T-0014/S01 now captures the bundled
+File/CSV reference before configured native semantics; configuration and pipeline
+gates remain open. This early reference work is a dependency of stages 2–4.
 
 ## Phase 0: Governance and Compatibility Contract
 

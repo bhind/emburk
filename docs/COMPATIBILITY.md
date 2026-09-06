@@ -5,6 +5,9 @@ Compatibility is an evidence record, not a general promise.
 T-0022/S01's isolated parser experiment is not production adoption or YAML
 compatibility. Ordered syntax observations are evaluated before configuration
 policy is selected; the production workspace remains unaffected.
+PR #114 accepted that experiment. T-0014/S01 admits the four version-pinned
+bundled File/CSV modules only for local observation; no Native/Verified plugin
+claim or redistribution approval follows.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate

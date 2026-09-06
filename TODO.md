@@ -28,11 +28,11 @@ T-0012/S13 is Done through PR #107 (`441040f`) after primary and independent
 final-head Demo at `65a2fb3`, accepting 5 SP. Known S03–S13 acceptance totals
 45 SP. Parent #15 remains open in Backlog, Current 55 / Initial 5 unchanged.
 
-T-0022/S01 is In Progress for an isolated parser-candidate experiment (forecast
-5 SP, not accepted). Exact archives were reviewed and the owner explicitly
-approved dependency build execution. The [packet](docs/provenance/T-0022-parser-experiment.md)
-fixes its Demo and non-claims. Parent Initial 8 is unchanged; production
-adoption and configured transfer follow experiment review.
+T-0022/S01 is Done through PR #114 (8b48051), accepting 5 SP after primary and
+independent acceptance at 964b4b5: six experiment and 71 workspace passes,
+eight existing ignores and actual-binary checks. Parent Initial 8 is unchanged.
+T-0014/S01 now observes bundled File/CSV behavior (forecast 5 SP) before
+configured CSV semantics; production parser adoption remains pending.
 
 T-0031/S01 is Done through PR #110 (`c5fb13f`), accepting 5 SP, for a native UTF-8 line-record
 File-to-File command under ADR-0015. It consumes T-0021/S06 without claiming
@@ -68,7 +68,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S13 Done; remaining contracts queued) | Backlog | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
-| T-0014 | Scaffold the differential harness | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0014 | Scaffold the differential harness (S01 File/CSV observation active) | In Progress | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
 
@@ -76,7 +76,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 |---|---|---|---|---:|---|---|---|
 | T-0020 | Epic: Compact Rust execution core | Backlog | P1 | — | T-0010 | Project Manager | Planning |
 | T-0021 | Define workspace boundaries and core traits (S01–S06 integrated; remaining contracts queued) | Backlog | P1 | 13 | T-0012, T-0013 | Rust Core Implementer | Unit/Contract |
-| T-0022 | Implement configuration loading and the MVP CLI | In Progress | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
+| T-0022 | Implement configuration loading and the MVP CLI (S01 Done) | Backlog | P1 | 8 | T-0021 | Rust Core Implementer | Unit/Contract |
 | T-0023 | Implement logical schema and Arrow-compatible batches (S01/S02 Done; remaining contracts queued) | Backlog | P1 | 21 | T-0012, T-0021 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0025 | Implement atomic transaction and resume state | Backlog | P1 | 8 | T-0013, T-0024 | Rust Core Implementer | Unit/Contract |
