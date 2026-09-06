@@ -13,6 +13,24 @@ printf 'T0012_COUPLING_FULL_ATTEMPT=%s|exit=%s\n' "$attempt" "$status"
 evidence=$(sed -n 's/^T0012_COUPLING_FULL_RUN=passed|evidence=//p' "$attempt/stdout.log")
 [[ -d "$evidence" && $(grep -c '^COUPLINGCASE|' "$evidence/coupling-cases.raw") == 5 ]]
 
+artifact_control() {
+  local name=$1 expected=$2 log status=0
+  log=$(mktemp -d "${TMPDIR:-/private/tmp}/t0012-coupling-artifact.XXXXXX")
+  log=$(cd -- "$log" && pwd -P)
+  T0012_COUPLING_MODE=full T0012_COUPLING_NEGATIVE="$name" "$runner" \
+    > "$log/stdout.log" 2> "$log/stderr.log" || status=$?
+  printf '%s\n' "$status" > "$log/exit.txt"
+  [[ "$status" == "$expected" ]]
+  if [[ "$name" == corrupt-hash ]]; then
+    grep -Fqx 'pinned executable checksum mismatch' "$log/stderr.log"
+  else
+    grep -Fq 'unable to retrieve pinned executable:' "$log/stderr.log"
+  fi
+  printf 'T0012_COUPLING_ARTIFACT_CONTROL=%s|attempt=%s\n' "$name" "$log"
+}
+artifact_control corrupt-hash 3
+artifact_control unavailable-runtime 56
+
 control=$(mktemp -d "${TMPDIR:-/private/tmp}/t0012-coupling-negative.XXXXXX")
 control=$(cd -- "$control" && pwd -P)
 cp -R "$evidence" "$control/evidence"

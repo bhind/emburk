@@ -104,11 +104,20 @@ trap 'printf "T0012_COUPLING_EVIDENCE_DIR=%s\n" "$evidence"' EXIT
 executable="$run_dir/embulk.jar"
 url=https://github.com/embulk/embulk/releases/download/v0.11.5/embulk-0.11.5.jar
 expected=e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47
-if ! curl --connect-timeout 15 --max-time 120 --fail --location --proto '=https' \
+timeout=120
+if [[ ${T0012_COUPLING_NEGATIVE:-} == unavailable-runtime ]]; then
+  url=https://127.0.0.1:1/unavailable
+  timeout=2
+fi
+if ! curl --connect-timeout 15 --max-time "$timeout" --fail --location --proto '=https' \
   --tlsv1.2 --silent --show-error --output "$executable" "$url"
 then
   printf 'unable to retrieve pinned executable: %s\n' "$url" >&2
   exit 56
+fi
+if [[ ${T0012_COUPLING_NEGATIVE:-} == corrupt-hash ]]; then
+  printf x >> "$executable"
+  printf '%s\n' corrupt-copy-injected > "$evidence/negative-control.txt"
 fi
 actual=$(shasum -a 256 "$executable" | awk '{print $1}')
 [[ "$actual" == "$expected" ]] || { printf '%s\n' 'pinned executable checksum mismatch' >&2; exit 3; }
