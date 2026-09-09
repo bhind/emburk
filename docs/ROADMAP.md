@@ -15,6 +15,8 @@ ordered formatting/cancellation integrated as T-0024/S01 through PR #120.
 T-0025/S02 integrated validated native checkpoint/resume through PR #121.
 The bounded seven-stage sequence is complete; broader parent gates remain open,
 including format guessing, general plugin profiles and Embulk resume parity.
+T-0014/S03 is in Review as a bounded multi-file File input observation before
+any native expansion of the current single-match profile.
 
 ## Phase 0: Governance and Compatibility Contract
 
@@ -249,6 +251,10 @@ passed at `65a2fb3`. It does not adopt a parser or native policy or complete thi
 - Implement file/config inputs; file/stdout/null outputs; CSV/JSON; gzip/bzip2; rename/remove-columns; and format guessing.
 
 Exit gate: representative File-to-File jobs match Embulk under normal execution, interruption, cleanup, and resume.
+
+T-0014/S03 observes selected multi-file input ordering, per-file header,
+output-task, and empty-directory behavior. Observation alone does not satisfy
+this exit gate or authorize a native implementation.
 
 T-0071/S01, integrated through PR #127, adds a reproducible File-to-File benchmark
 and measured 1/4/8-worker execution at source revision `6762f6c`. It demonstrates

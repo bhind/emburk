@@ -24,6 +24,10 @@ PR #123/#124/#125: reference observation, native implementation and combined
 acceptance. General guessing/plugin support, Java/JRuby hosts and full Embulk
 resume semantics remain separate backlog work.
 
+T-0014/S03 is a follow-on observation outside the completed seven-stage bounded
+sequence. It must capture multi-file `path_prefix` behavior before a separately
+authorized native expansion; it does not reopen or complete any prior stage.
+
 | Stage | Canonical task | Exit evidence |
 | --- | --- | --- |
 | 1. Parser | T-0022/S01 | Pinned dependency/license inventory and original syntax experiment; retained mismatches against S13 |

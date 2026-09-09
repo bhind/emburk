@@ -40,6 +40,7 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0032/S01 configured CSV](T-0032-configured-csv.md) | Done through PR #116; eight selected comparisons and 81 tests |
 | [T-0025/S01 safe publication](T-0025-safe-publication.md) | Done through PR #117; fault/interruption acceptance |
 | [T-0014/S02 format/filter observations](T-0014-formats-oracle.md) | Done through PR #118; five real reference cases |
+| [T-0014/S03 multi-file File input observation](T-0014-multifile-path-prefix-oracle.md) | Review on Issue #138 and PR #139; three bounded reference cases |
 | [T-0033/S01 native formats](T-0033-native-formats.md) | Done through PR #119; thirteen selected comparisons |
 | [T-0024/S01 bounded workers](T-0024-bounded-parallel.md) | Done through PR #120; native ordering/admission/cancellation |
 | [T-0025/S02 validated resume](T-0025-validated-resume.md) | Done through PR #121; private validated spool recovery |

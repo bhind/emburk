@@ -11,6 +11,11 @@ plugin types become public, and the empty lifecycle coordinator stays separate.
 
 ## Principles
 
+T-0014/S03 is an evidence-only observation in Review of multi-file File input
+selection. It does not choose native input ordering, per-file parser lifecycle,
+task fan-out, or output naming. Any later native multi-file boundary must be
+designed from reviewed raw reference evidence in a separate task.
+
 ADR-0022 admits a bounded private guess adapter using existing dependencies.
 It preserves explicit schema/charset, emits JSON syntax accepted by the YAML
 adapter and does not infer JSON columns. S02 integrated through PR #124;
