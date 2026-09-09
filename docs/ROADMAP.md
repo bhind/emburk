@@ -15,8 +15,8 @@ ordered formatting/cancellation integrated as T-0024/S01 through PR #120.
 T-0025/S02 integrated validated native checkpoint/resume through PR #121.
 The bounded seven-stage sequence is complete; broader parent gates remain open,
 including format guessing, general plugin profiles and Embulk resume parity.
-T-0014/S03 is in Review as a bounded multi-file File input observation before
-any native expansion of the current single-match profile.
+T-0014/S03 is accepted through PR #139 as a bounded multi-file File input
+observation before any native expansion of the current single-match profile.
 
 ## Phase 0: Governance and Compatibility Contract
 

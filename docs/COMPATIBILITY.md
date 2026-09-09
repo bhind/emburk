@@ -23,13 +23,13 @@ PR #114 accepted that experiment. T-0014/S01 admits the four version-pinned
 bundled File/CSV modules only for local observation; no Native/Verified plugin
 claim or redistribution approval follows.
 T-0014/S01 is now accepted through PR #115 as reference-only evidence.
-T-0014/S03 is in Review on Issue #138 and PR #139 as three additional multi-file File input
+T-0014/S03 is accepted through PR #139 as three additional multi-file File input
 observations. Primary raw capture and semantic projection passed; it changes no
 Native/Verified status and is not multi-file compatibility certification.
 Primary evidence observes lexical selection, one task/output per regular file,
 per-file header skipping, and exclusion of the one selected empty matching
-directory. Independent reproduction matches those bounded projections and
-exact output bytes; final-head acceptance and integration remain pending.
+directory. Independent final-head reproduction matches those bounded
+projections and exact output bytes.
 T-0032/S01 integrated through PR #116: eight explicitly configured single-file
 long/string CSV projections match real Embulk outputs and exits in primary and
 independent runs. This is a private native consumer, not a verified generic

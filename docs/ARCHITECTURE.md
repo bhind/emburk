@@ -11,7 +11,7 @@ plugin types become public, and the empty lifecycle coordinator stays separate.
 
 ## Principles
 
-T-0014/S03 is an evidence-only observation in Review of multi-file File input
+T-0014/S03, accepted through PR #139, is an evidence-only observation of multi-file File input
 selection. It does not choose native input ordering, per-file parser lifecycle,
 task fan-out, or output naming. Any later native multi-file boundary must be
 designed from reviewed raw reference evidence in a separate task.

@@ -1,6 +1,6 @@
 # T-0014/S03 multi-file File input observation
 
-Status: Review on PR #139
+Status: Done through PR #139 (`5cea0b4`)
 
 ## Authority and boundary
 
@@ -104,7 +104,16 @@ The harness implementation, first raw capture, thirteen focused unit tests,
 primary and independent semantic reproduction, and the primary full Demo pass.
 The full workspace result is 134 passed with eight intentional external-oracle
 ignores. Security review reports no remaining High or Medium finding.
-Final-head acceptance and integration remain pending.
+At fixed PR head `77864de`, primary and independent exact Demo runs passed:
+each completed thirteen focused tests, the three live reference cases, 134
+workspace tests with eight intentional ignores, and the diff check. Primary
+evidence `/private/tmp/emburk-t0014-s03-xohbfjfj` has summary SHA-256
+`5a3b9926ac882d756bc02c25ace147aaa452339df01ad38a7359c891d22fc693`;
+independent evidence `/private/tmp/emburk-t0014-s03-rg_ro39r` has summary
+SHA-256
+`7f89bdc6739d33235339856e1f76a4806ab159407f9404b883a03ff27b38ac9a`.
+Security and Vreji found no integration blocker. PR #139 squash-merged as
+`5cea0b4`, Issue #138 closed, and the 3 SP Project item moved to Done.
 
 ## Non-claims
 
