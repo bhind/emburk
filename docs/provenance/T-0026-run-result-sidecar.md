@@ -1,6 +1,6 @@
 # T-0026/S01 native run-result sidecar
 
-Status: In Progress
+Status: Review
 
 ## Authority and scope
 
@@ -90,6 +90,9 @@ and includes an eighth test that sends SIGINT after observing reservation.
 Post-remediation authoritative acceptance passed. Security re-review found the
 prior medium blocker resolved and no remaining security or supply-chain
 finding. Final-head acceptance after commit remains pending.
+
+The implementation and synchronized Review-state records were published on PR
+#136. That pull request's final-head acceptance and integration remain pending.
 
 ## Non-claims
 
