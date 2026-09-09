@@ -47,7 +47,10 @@ scope is not accepted. T-0025/S01 is Done through PR #117 (aac0003), accepting
 ignores and eight CSV comparisons. Parent #22 remains open in Backlog;
 Initial/Current 8 unchanged. T-0014/S02 is Done through PR #118 (ecf9cc4),
 accepting 3 SP after independent five-case agreement and nine tests at dad393c3.
-Parent #17 remains Backlog, S01/S02 total 8 SP, Initial/Current 8 unchanged.
+T-0014/S03 is In Progress on Issue #138 and
+`research/t-0014-multifile-path-prefix-oracle`. It adds a 3 SP bounded
+multi-file File input observation before any native implementation. Parent #17
+remains Backlog; Initial 8 is unchanged and Current refines from 8 to 11.
 T-0033/S01 is Done through PR #119 (95b5592), accepting 8 SP after independent
 97-test/thirteen-comparison Demo at 39c97d8. Parent #26 remains Backlog,
 Current 8 / Initial 5 unchanged. Full T-0033/T-0034/T-0035 parents remain
@@ -101,7 +104,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 and T-0079 are
 | T-0011 | Pin reference versions | Done | P0 | 3 | None | Project Manager | Planning |
 | T-0012 | Specify configuration, schema, and value semantics (S13 Done; remaining contracts queued) | Backlog | P0 | 55 | T-0011 | Compatibility Host Implementer | Integration |
 | T-0013 | Specify lifecycle, transaction, cleanup, and resume semantics (S01–S08 integrated) | Backlog | P0 | 34 | T-0011 | Compatibility Host Implementer | Differential (Embulk) |
-| T-0014 | Scaffold the differential harness (S01/S02 Done) | Backlog | P0 | 8 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
+| T-0014 | Scaffold the differential harness (S01/S02 Done; S03 In Progress) | Backlog | P0 | 11 | T-0012, T-0013 | Compatibility Host Implementer | Differential (Embulk) |
 
 ## T-0020 — Compact Rust execution core
 
