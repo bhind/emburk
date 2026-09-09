@@ -1,6 +1,6 @@
 # T-0080 Qwen-assisted workflow
 
-Status: Review
+Status: Done through PR #133 (`34f6ee6`)
 
 ## Purpose and authority
 
@@ -87,6 +87,22 @@ python3 -m unittest tests.test_qwen_workflow_policy tests.test_qwen_assistant &&
 The evidence class is Unit/Contract plus Integration. Integration here means
 the recorded advisory call reached the configured Qwen service; it is not
 runtime, compatibility, correctness, or performance evidence.
+
+## Accepted evidence
+
+At reviewed revision `3e9b4b7`, the exact Demo passed 17 Qwen assistant and
+policy tests, the live private Project audit at 56 items and WIP 1/2, and the
+diff check. Rust regression in the same pull request passed format, check,
+strict Clippy, and 126 tests with eight intentional live-oracle ignores; later
+commits changed policy text and its static tests only, and final-head acceptance
+reran format and check.
+
+Vreji's read-only provenance/IP/privacy review and the Security & Supply-chain
+review both passed the exact final candidate with no integration blocker. The
+repository has no PR quality-check workflow, so no GitHub status check existed;
+the repository-defined local Demo and reviewer evidence were attached to PR
+#133. The pull request squash-merged as `34f6ee6`, Issue #132 closed, and its
+3 SP Project item moved to Done.
 
 ## Non-claims
 
