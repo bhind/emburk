@@ -12,6 +12,7 @@ Repository records are the authoritative project memory. GitHub Issues and the G
 - [Performance evidence](PERFORMANCE.md)
 - [GitHub Project operations](PROJECT_OPERATIONS.md)
 - [Development](DEVELOPMENT.md)
+  - Includes the bounded Qwen development-assistant CLI and IntelliJ entry points.
 
 ## Governance
 
