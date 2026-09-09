@@ -89,6 +89,15 @@ respectively, with JVM startup included and one reference input task. Final-head
 acceptance passed at `a70d469`; Issue #47 is closed and its 5 SP Project item is
 Done.
 
+T-0079 is In Progress on Issue #129. The selected Windows-hosted Ollama service
+answered `/api/tags` with `qwen3-coder:30b` and returned exactly `READY` from a
+non-streaming chat request after its initial model load. The repository CLI
+also returned exactly `OPENAI_READY` through the `/v1` compatibility endpoint.
+The active slice is limited to a repository-local, non-applying
+development-assistant CLI, outbound data guards, IntelliJ entry points,
+documentation, and independent Rust verification. No model answer has been
+adopted as product code or evidence.
+
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary
@@ -128,6 +137,7 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0012/S13 | Done | PR #107 integrated; primary and independent final-head acceptance passed |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
+| T-0079 | In Progress | Bounded, non-applying Qwen development assistant; Issue #129 |
 
 T-0025/S01 is Done through PR #117. T-0014/S02 is Done through PR #118.
 T-0033/S01 is Done through PR #119. T-0024/S01 is Done through PR #120.
@@ -135,9 +145,11 @@ T-0025/S02 is Done through PR #121. No implementation item remains active in
 the seven-stage sequence; broader parent tasks return to Backlog.
 Other unfinished stable tasks remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
-is the coordination mirror. Its 52 items, lifecycle states, initial estimates,
-roles, dependencies, workstreams, evidence classes, and views were reconciled
-to the repository records on 2026-09-05.
+is the coordination mirror. T-0079 is its 55th item; its lifecycle state,
+estimate, role, workstream, evidence class, and Demo Command were initialized
+on 2026-09-09. The first 52 items' lifecycle states, initial estimates, roles,
+dependencies, workstreams, evidence classes, and views were reconciled to the
+repository records on 2026-09-05.
 
 T-0003 adds a fail-closed, read-only audit that dynamically discovers the one
 open Project linked to the repository, validates the combined `In Progress`
