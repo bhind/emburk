@@ -7,7 +7,8 @@ Status: Review
 Issue #132 authorizes an operational policy that moves Codex and Project
 Manager attention toward requirements, architecture, boundaries, risk,
 acceptance, and integration while making the existing Qwen3-Coder CLI the
-default non-blocking first pass for eligible low-level implementation work.
+default bounded first pass for eligible low-level implementation work without
+making it a delivery gate.
 
 The change is limited to repository instructions, project-scoped role prompts,
 workflow and development documentation, static policy tests, and canonical
@@ -42,11 +43,20 @@ allowlist look like outbound-data permission. The final policy therefore adds a
 separate `Qwen context allowlist` and requires `--no-project-context` whenever
 the default files are not explicitly listed.
 
+A read-only Security & Supply-chain review of revision `1af627c` then identified
+three medium wording and enforcement gaps: the context allowlist is procedural,
+the CLI call is synchronous despite the broad term non-blocking, and prompt or
+standard-input text is outside file-path allowlisting. The policy was revised
+to state those limitations explicitly, require a task-defined finite attempt
+timeout, treat non-blocking as “not a delivery gate,” and classify prompt and
+standard input as outbound context. Technical allowlist enforcement remains a
+future hardening opportunity rather than a T-0080 claim.
+
 ## Accepted boundary
 
 - Qwen owns no repository role, file, decision, evidence, or lifecycle state.
 - Eligible implementers attempt one useful first pass and continue when the
-  service is unavailable, slow, or unhelpful.
+  service is unavailable, reaches the packet-defined timeout, or is unhelpful.
 - Model output is never applied automatically and is classified as used,
   revised, or rejected.
 - Only explicitly permitted repository-original, non-sensitive context may be
@@ -54,6 +64,8 @@ the default files are not explicitly listed.
   security material, build outputs, `.git`, and large files remain excluded.
 - Mutation ownership and outbound context permission are separate. The task
   packet records a dedicated Qwen context allowlist when the assistant is used.
+- Prompt and standard-input content require the same human classification as
+  files because path checks cannot govern their meaning.
 - Codex and the Project Manager retain higher-level judgment, actual diff
   review, independent verification, integration, and final acceptance.
 
@@ -75,5 +87,8 @@ runtime, compatibility, correctness, or performance evidence.
 
 This policy does not show that Qwen is correct, faster than Codex, continuously
 available, appropriate for confidential material, or capable of replacing
-independent engineering judgment. It does not establish any Embulk
-compatibility or product-runtime behavior.
+independent engineering judgment. The CLI does not enforce the task's semantic
+context allowlist, make its synchronous request asynchronous, or completely
+classify prompt, standard-input, or file contents. The static tests detect
+policy-text drift, not technical bypasses. This task does not establish any
+Embulk compatibility or product-runtime behavior.

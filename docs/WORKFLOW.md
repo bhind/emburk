@@ -14,8 +14,8 @@ Status: active
    label epics `epic` and actionable items `work-item`, add it to the Project,
    and record this packet before `Ready`:
    `Authority`, `Dependencies`, `Mutation owner`, `Mutation allowlist`, optional
-   `Qwen context allowlist`, `Artifacts`, `Acceptance`, `Evidence class`, `Stop
-   rule`, and `Non-claims`.
+   `Qwen context allowlist` and Qwen attempt timeout, `Artifacts`, `Acceptance`,
+   `Evidence class`, `Stop rule`, and `Non-claims`.
 6. Create the dedicated task branch and move the item to `In Progress` only
    after all metadata is populated.
 
@@ -81,9 +81,10 @@ useful low-level first pass through `tools/qwen-assistant/run.py`: code
 explanation, error analysis, a non-applying fix proposal, test suggestions, or
 a permitted diff review.
 
-Qwen is advisory and non-blocking. If it is unavailable, slow, or unhelpful,
-record that outcome once and continue. Classify a response as used, revised, or
-rejected; never apply it automatically or treat it as evidence. Codex inspects
+Qwen is advisory and not a delivery gate. Its CLI request is synchronous, so
+the task packet sets a bounded attempt timeout. If it is unavailable, reaches
+that timeout, or is unhelpful, record that outcome once and continue. Classify
+a response as used, revised, or rejected; never apply it automatically or treat it as evidence. Codex inspects
 the actual change against the higher-level intent, and repository checks plus
 the task's `Demo Command` remain authoritative. Follow
 `docs/QWEN_ASSISTED_DEVELOPMENT.md` for data exclusions and decision boundaries.

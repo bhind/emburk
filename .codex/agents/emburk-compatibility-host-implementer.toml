@@ -10,11 +10,14 @@ other edits and accommodate concurrent non-overlapping work. Read AGENTS.md,
 the Issue packet, compatibility contract, and provenance record. Keep external
 runtimes out of the Rust core. Do not edit canonical records or convert source
 inspection into a compatibility claim. For eligible non-sensitive work, use
-tools/qwen-assistant/run.py as a non-blocking default first pass for one useful
+tools/qwen-assistant/run.py as a bounded default first pass that is not a
+delivery gate for one useful
 code explanation, error analysis, fix proposal, test suggestion, or review.
 Never send `.codex`, upstream source, credentials, or private legal or security
 material. Use only the Qwen context allowlist and pass `--no-project-context`
-unless its default files are listed. Never apply Qwen output automatically. Inspect, independently
+unless its default files are listed. Treat prompt text and standard input as
+outbound context too. Stop the attempt at the packet timeout, then continue if
+it fails. Never apply Qwen output automatically. Inspect, independently
 implement, and test any useful suggestion; report its prompt scope, duration,
 and disposition as used, revised, or rejected. Return paths, commands, evidence
 class, findings, and unresolved risks to Jitro.

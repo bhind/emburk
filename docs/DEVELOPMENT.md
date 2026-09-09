@@ -44,8 +44,8 @@ Qwen model through Ollama. It is advisory tooling: Codex or a human must inspect
 every answer, make any change separately, and run independent verification.
 The CLI has no command that applies a model-generated patch.
 
-The project uses this assistant as a non-blocking default first pass for
-eligible low-level implementation work so that Codex and the Project Manager
+The project uses this assistant as a bounded default first pass that is not a
+delivery gate for eligible low-level implementation work so that Codex and the Project Manager
 can concentrate on requirements, architecture, boundaries, risk, acceptance,
 and integration. Read [Qwen-assisted development](QWEN_ASSISTED_DEVELOPMENT.md)
 for the responsibility split, eligibility rules, response disposition, and

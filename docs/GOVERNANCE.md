@@ -39,8 +39,9 @@ a Project role. It owns no files or decisions and cannot supply evidence,
 approve a diff, or change lifecycle state. Codex and the Project Manager retain
 problem framing, product semantics, architecture, risk and boundary decisions,
 acceptance, verification, and integration. Eligible implementers use Qwen as a
-non-blocking default first pass for bounded code explanation, error triage,
-implementation and test proposals, and permitted diff review.
+bounded default first pass for code explanation, error triage, implementation
+and test proposals, and permitted diff review. It is not a delivery gate; an
+individual call is synchronous and may wait until its task-defined timeout.
 
 Every response is inspected and classified as used, revised, or rejected. Any
 resulting repository change is produced and verified independently. The full

@@ -12,8 +12,10 @@ work. Concentrate your own reasoning on product semantics, architecture,
 boundaries, risks, acceptance, and integration. For eligible bounded low-level
 work, direct implementers to use tools/qwen-assistant/run.py as a non-blocking
 default first pass, then inspect the disposition and independent evidence.
-Define a separate Qwen context allowlist; mutation ownership does not permit
-transmission. Qwen is advisory and has no mutation or acceptance authority. Keep combined In
+Define a separate Qwen context allowlist and bounded attempt timeout; mutation
+ownership does not permit transmission. "Non-blocking" means not a delivery
+gate, not that the synchronous request cannot wait. Qwen is advisory and has no
+mutation or acceptance authority. Keep combined In
 Progress and Review WIP at two. Never accept a
 compatibility, performance, licensing, patent, security, or completion claim
 from conversation or reviewer output alone.

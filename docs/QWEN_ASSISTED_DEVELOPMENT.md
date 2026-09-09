@@ -45,19 +45,26 @@ Never send:
 - build outputs, generated artifacts, dependency caches, or large files.
 
 The CLI enforces a conservative path and size policy, but that enforcement does
-not replace human classification. When uncertain, omit the material and ask the
-Project Manager or Librarian to resolve the boundary.
+not replace human classification. The CLI does not read the Issue or enforce its
+Qwen context allowlist. `--no-project-context` only disables the two default
+files; it does not prove that added files are authorized. When uncertain, omit
+the material and ask the Project Manager or Librarian to resolve the boundary.
 
 The CLI normally adds `AGENTS.md` and the workspace `Cargo.toml`. The task's
 Qwen context allowlist must name those files when they are needed. Otherwise,
 pass `--no-project-context` and add only explicitly allowed `--context` or
 command-specific files.
 
+Prompt text and standard input, including `error` input, are outbound context
+too. They are not governed by file-path allowlisting, and secret redaction is
+heuristic rather than semantic classification. Never paste prohibited or
+unclassified material into them.
+
 ## Operating loop
 
 1. Codex or the Project Manager defines the outcome, boundaries, acceptance
    criteria, mutation allowlist, Qwen context allowlist, evidence class, and
-   `Demo Command`.
+   `Demo Command`. The packet also defines a finite Qwen attempt timeout.
 2. For eligible work, the implementer attempts one useful Qwen first pass with
    `explain`, `error`, `fix`, or `review` before completing the low-level work.
 3. The implementer classifies the response as `used`, `revised`, or `rejected`
@@ -70,9 +77,11 @@ command-specific files.
 7. The Project Manager runs or confirms the task's `Demo Command`, reconciles
    records, integrates the pull request, and performs the final status change.
 
-Qwen is deliberately non-blocking. If it is unreachable, exceeds the configured
-timeout, or produces an unusable answer, record that outcome once and continue
-with the assigned work. Repeated retries are not a delivery gate and do not
+Qwen is deliberately not a delivery gate. The CLI call is synchronous and may
+wait until its configured timeout; the default is currently 600 seconds. The
+packet's finite attempt timeout bounds that wait. If Qwen is unreachable,
+reaches the timeout, or produces an unusable answer, record that outcome once
+and continue with the assigned work. Repeated retries do not gate delivery or
 consume a separate Kanban item.
 
 ## Decision exclusions

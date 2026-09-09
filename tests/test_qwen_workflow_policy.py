@@ -21,9 +21,10 @@ class QwenWorkflowPolicyTest(unittest.TestCase):
             "tools/qwen-assistant/run.py",
             "default first pass",
             "Qwen is an advisory model",
-            "Its use is non-blocking",
+            "Its use is delivery-non-blocking, not asynchronous",
             "Never apply its output automatically",
             "optional Qwen context allowlist",
+            "prompt text and standard input",
             "docs/QWEN_ASSISTED_DEVELOPMENT.md",
         ):
             self.assertIn(phrase, policy)
@@ -51,7 +52,7 @@ class QwenWorkflowPolicyTest(unittest.TestCase):
                 role = normalized(path)
                 for phrase in (
                     "tools/qwen-assistant/run.py",
-                    "non-blocking default first pass",
+                    "bounded default first pass that is not a delivery gate",
                     "Never apply Qwen output automatically",
                     "upstream source",
                     "Qwen context allowlist",
@@ -66,13 +67,16 @@ class QwenWorkflowPolicyTest(unittest.TestCase):
         operating_model = normalized("docs/QWEN_ASSISTED_DEVELOPMENT.md")
         combined = workflow + operating_model
         for phrase in (
-            "Qwen is advisory and non-blocking",
+            "Qwen is advisory and not a delivery gate",
             "never apply it automatically",
             "Qwen's answer is not evidence",
             "Codex reviews the actual diff",
             "The Project Manager runs or confirms the task's `Demo Command`",
             "mutation allowlist grants write ownership and does not grant permission",
             "pass `--no-project-context`",
+            "CLI does not read the Issue or enforce its Qwen context allowlist",
+            "Prompt text and standard input",
+            "CLI call is synchronous",
         ):
             self.assertIn(phrase, combined)
 
