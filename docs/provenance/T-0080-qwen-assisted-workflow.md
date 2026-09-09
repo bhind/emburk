@@ -1,6 +1,6 @@
 # T-0080 Qwen-assisted workflow
 
-Status: In Progress
+Status: Review
 
 ## Purpose and authority
 
