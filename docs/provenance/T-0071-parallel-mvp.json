@@ -1,0 +1,206 @@
+{
+  "generated_at_utc": "2026-09-09T06:59:34.613052+00:00",
+  "native": {
+    "binary_bytes": 1392224,
+    "binary_sha256": "3195790eee26d47496c672047a6bb3752ff6c6635c791310085084cb9a2d20e5",
+    "source_dirty": false,
+    "source_revision": "6762f6ca53b2cb68e0ab4a91f3c6d10ca6e04b0a"
+  },
+  "parameters": {
+    "measurement": "fresh end-to-end process wall time",
+    "repeats": 3,
+    "timeout_seconds": 180.0,
+    "warmups": 1,
+    "workers": [
+      1,
+      4,
+      8
+    ]
+  },
+  "platform": {
+    "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+    "logical_cpus": 8,
+    "machine": "arm64",
+    "python": "3.14.6",
+    "release": "25.6.0",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "system": "Darwin"
+  },
+  "profile": "evidence",
+  "reference": {
+    "jar_sha256": "e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47",
+    "java": "openjdk version \"17.0.20\" 2026-07-21\nOpenJDK Runtime Environment Temurin-17.0.20+8 (build 17.0.20+8)\nOpenJDK 64-Bit Server VM Temurin-17.0.20+8 (build 17.0.20+8, mixed mode, sharing)",
+    "version": "0.11.5"
+  },
+  "schema": "emburk-benchmark-v1",
+  "workloads": {
+    "json_to_csv": {
+      "columns": 8,
+      "engines": {
+        "embulk-0.11.5": {
+          "1": {
+            "input_mib_per_second": 27.8294750697635,
+            "median_seconds": 1.431758416001685,
+            "records_per_second": 104766.27783260292,
+            "samples_seconds": [
+              1.431758416001685,
+              1.449562459019944,
+              1.4126766250119545
+            ],
+            "speedup_vs_1_worker": 1.0
+          },
+          "4": {
+            "input_mib_per_second": 27.607592852678753,
+            "median_seconds": 1.4432654580450617,
+            "records_per_second": 103930.98453501317,
+            "samples_seconds": [
+              1.434200041985605,
+              1.4432654580450617,
+              1.4577362499549054
+            ],
+            "speedup_vs_1_worker": 0.9920270786089738
+          },
+          "8": {
+            "input_mib_per_second": 27.824001309285826,
+            "median_seconds": 1.4320400829892606,
+            "records_per_second": 104745.6714248444,
+            "samples_seconds": [
+              1.4299131659790874,
+              1.4320400829892606,
+              1.4409243330010213
+            ],
+            "speedup_vs_1_worker": 0.9998033106817878
+          }
+        },
+        "native": {
+          "1": {
+            "input_mib_per_second": 49.19788619771229,
+            "median_seconds": 0.8098942500073463,
+            "records_per_second": 185209.36529508562,
+            "samples_seconds": [
+              0.8021420830045827,
+              0.8098942500073463,
+              0.8276656660018489
+            ],
+            "speedup_vs_1_worker": 1.0
+          },
+          "4": {
+            "input_mib_per_second": 60.3547016118102,
+            "median_seconds": 0.6601819589850493,
+            "records_per_second": 227210.08648980205,
+            "samples_seconds": [
+              0.6601819589850493,
+              0.6650154169765301,
+              0.6565975000266917
+            ],
+            "speedup_vs_1_worker": 1.2267742839450835
+          },
+          "8": {
+            "input_mib_per_second": 64.09228248789964,
+            "median_seconds": 0.6216830419725738,
+            "records_per_second": 241280.50770704052,
+            "samples_seconds": [
+              0.6216830419725738,
+              0.6251506669796072,
+              0.6177433340344578
+            ],
+            "speedup_vs_1_worker": 1.3027446388719022
+          }
+        }
+      },
+      "input_bytes": 41780600,
+      "native_speedup_vs_embulk_0_11_5": {
+        "1": 1.767833783223795,
+        "4": 2.186163130334415,
+        "8": 2.303489055203208
+      },
+      "output_bytes": 35480624,
+      "output_sha256": "f1768c404e5326879a2db5f4ea70e86b93699ffdb1537e4ef9a401c3352e31cb",
+      "records": 150000
+    },
+    "quoted_csv_to_csv": {
+      "columns": 16,
+      "engines": {
+        "embulk-0.11.5": {
+          "1": {
+            "input_mib_per_second": 33.25440247399476,
+            "median_seconds": 1.7397088339785114,
+            "records_per_second": 68977.05964139642,
+            "samples_seconds": [
+              1.7418400840251707,
+              1.7397088339785114,
+              1.727684625016991
+            ],
+            "speedup_vs_1_worker": 1.0
+          },
+          "4": {
+            "input_mib_per_second": 33.51476331743585,
+            "median_seconds": 1.7261938329902478,
+            "records_per_second": 69517.10619434124,
+            "samples_seconds": [
+              1.7261938329902478,
+              1.7423469160567038,
+              1.721545165986754
+            ],
+            "speedup_vs_1_worker": 1.007829364657648
+          },
+          "8": {
+            "input_mib_per_second": 33.368834553089435,
+            "median_seconds": 1.7337428330210969,
+            "records_per_second": 69214.41733714136,
+            "samples_seconds": [
+              1.7212197500048205,
+              1.7412786250351928,
+              1.7337428330210969
+            ],
+            "speedup_vs_1_worker": 1.0034411106675023
+          }
+        },
+        "native": {
+          "1": {
+            "input_mib_per_second": 76.99586657639239,
+            "median_seconds": 0.7513777079875581,
+            "records_per_second": 159706.62787082186,
+            "samples_seconds": [
+              0.7513777079875581,
+              0.7449989999877289,
+              0.7518840419943444
+            ],
+            "speedup_vs_1_worker": 1.0
+          },
+          "4": {
+            "input_mib_per_second": 134.76337162238877,
+            "median_seconds": 0.42929304199060425,
+            "records_per_second": 279529.33838286245,
+            "samples_seconds": [
+              0.42681058298330754,
+              0.42929304199060425,
+              0.4309087499859743
+            ],
+            "speedup_vs_1_worker": 1.750267613244948
+          },
+          "8": {
+            "input_mib_per_second": 147.9970023138647,
+            "median_seconds": 0.39090641599614173,
+            "records_per_second": 306978.84478105983,
+            "samples_seconds": [
+              0.4117187499650754,
+              0.39090641599614173,
+              0.3862071249750443
+            ],
+            "speedup_vs_1_worker": 1.9221421732688426
+          }
+        }
+      },
+      "input_bytes": 60663244,
+      "native_speedup_vs_embulk_0_11_5": {
+        "1": 2.3153585945982296,
+        "4": 4.021015167136178,
+        "8": 4.435186433568819
+      },
+      "output_bytes": 60663244,
+      "output_sha256": "cd5b9727fa8218c37da7c2a6a8c1a0e37233524935734581fa633abd7c6aacd7",
+      "records": 120000
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Current status
 
-Last updated: 2026-09-06
+Last updated: 2026-09-09
 
 Development state: `experimental native pipeline`
 
@@ -18,8 +18,10 @@ Development state: `experimental native pipeline`
 - A bounded private configured File/CSV consumer is integrated through PR #116;
   no public plugin API or Java/JRuby-hosted plugin is implemented or verified.
 - Thirteen selected private raw-scalar outcomes match the pinned Embulk
-  executable in a live differential test. No full configuration, plugin,
-  data-transfer, or performance claim has passed its evidence gate.
+  executable in a live differential test. The bounded native File-to-File
+  profile also has selected transfer/recovery comparisons and T-0071/S01
+  benchmark evidence. No full configuration, plugin, or general performance
+  claim has passed its evidence gate.
 - A private ordered logical schema preserves owned names, type tags, order and
   duplicates. T-0023/S01 adds integrated private positional batch admission
   for selected Boolean, Signed64, Float64 and Text values under ADR-0014. Timestamp/JSON, nullability, lookup and physical
@@ -73,8 +75,17 @@ ignores), thirteen prior comparisons, seven generated scalar-tree matches,
 one empty rejection, six transfer matches and four native recovery matches.
 Two unsupported guess cases remain explicit gaps. The owner-authorized three-step
 chain is complete within this bounded profile; no implementation item remains
-active. JSON schema
+active in that chain. JSON schema
 inference and general charset/delimiter behavior remain explicit open gaps.
+
+T-0071/S01 is in Review at source revision `6762f6c`. It adds a deterministic
+CSV/JSON 1/4/8-worker runner, strict machine-report validation, buffered CSV
+scanning and copy-free formatting without new dependencies. On the recorded
+eight-logical-CPU arm64 machine, quoted CSV scaled from 77.0 to 148.0 MiB/s
+(1.92×) and JSON to CSV from 49.2 to 64.1 MiB/s (1.30×). The same end-to-end
+workloads were 2.32–4.44× and 1.77–2.30× the pinned Embulk 0.11.5 throughput,
+respectively, with JVM startup included and one reference input task. Final-head
+acceptance, integration and Project closeout remain required.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
@@ -170,8 +181,8 @@ In particular, the repository does not yet demonstrate:
 - general parallel ETL beyond the selected single-file ordered formatter;
 - successful loading of any unchanged Java or Ruby plugin;
 - exactly-once behavior for any source/output combination;
-- a performance, security-isolation, production-readiness, or ecosystem
-  coverage claim.
+- performance outside the recorded T-0071 workloads and machine, security
+  isolation, production readiness, or ecosystem coverage.
 
 The shared bootstrap integration for `T-0002` and `T-0011` passed its stated
 checks at revision `9416ec3` and was squash-merged by

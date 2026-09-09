@@ -17,6 +17,13 @@ adapter and does not infer JSON columns. S02 integrated through PR #124;
 combined reference/transfer/recovery evidence integrated through T-0037/S01,
 PR #125. That selected acceptance does not widen the adapter's profile bounds.
 
+ADR-0023 retains the ADR-0020 scoped-thread model for the local File-to-File
+MVP. T-0071/S01 processes CSV input in `BufRead` chunks and moves owned cells
+directly into per-record output buffers while preserving the existing serial
+parser, ordered writer, cancellation and 2 × worker admission window. Tokio is
+not admitted; async execution remains contingent on a concrete network or
+control-plane workload and separate evidence.
+
 ADR-0019 admits the selected native_formats adapter for bounded JSON framing,
 streaming codecs and ordered schema projections inside the configured consumer.
 Dependencies remain private and codec finalization precedes publication.
