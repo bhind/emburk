@@ -42,6 +42,11 @@ fresh-process timing, one reference input task and recorded machine are explicit
 it does not change any Native/Verified status or establish scheduler parity or
 general performance superiority.
 
+T-0026/S01 is an active native-only observability slice. Its optional configured
+run result JSON is an Emburk-owned experimental CLI contract, not an observed
+Embulk format, diagnostic taxonomy, plugin result, or compatibility surface.
+It changes no Native/Verified status.
+
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate
 effort, or unavoidable Java/Rust differences may justify an explicit exception

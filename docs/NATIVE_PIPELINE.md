@@ -56,6 +56,39 @@ file's parent. The selected single-task output is `output/result000.00.csv`.
 At most one regular input may match the prefix. An unmatched ordinary run
 produces no output. The output directory must already exist.
 
+### Optional native result report
+
+For an ordinary configured run, reserve a new machine-readable result file:
+
+```sh
+emburk run config.yml --report run-result.json
+```
+
+The report is an experimental Emburk-owned CLI contract. Its fixed v1 object is
+written as UTF-8 JSON followed by LF:
+
+```json
+{"schema":"emburk.run-result/v1","command":"run","outcome":"succeeded","exit_code":0,"records":2,"error":null}
+```
+
+Successful reports contain the exact emitted record count. Failed and cancelled
+reports use `records: null`, exit codes 1 and 130 respectively, and copy the
+complete `emburk: run failed: ...` stderr diagnostic into `error`. The report is
+reserved exclusively with owner-only permissions after successful SIGINT-handler
+installation and before configuration loading. This ordering prevents a handled
+SIGINT from leaving an empty reserved report. An existing report path exits 2
+without executing the pipeline. Choose a report path outside the configured
+input `path_prefix` and distinct from the configured final output. A collision
+can affect the existing input selection or output no-overwrite checks, so the
+pipeline fails explicitly and leaves a failed report rather than silently
+excluding the reserved path.
+
+Report writing is flushed but is not atomic or durability-guaranteed. A crash
+or report I/O failure may leave an empty or partial report; a configured output
+already published before a report-write failure can remain valid. Reports are
+not implemented for stateful run, resume, guess, or `transfer-lines` commands.
+This format is not an Embulk structured-error or report compatibility claim.
+
 ## Selected formats and filters
 
 - JSON input: replace the parser with `type: json` and the same `columns` list;
