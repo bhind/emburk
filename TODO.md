@@ -10,8 +10,8 @@ tasks. Dependencies name predecessor T-IDs and do not imply completion.
 Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
 `T-0013/S08`, `T-0012/S08` and `T-0021/S05` are integrated. T-0012/S09 is
 integrated through PR #91 following fresh reference-probe acceptance runs.
-T-0012/S10 is integrated through PR #93. T-0071/S01 is in `Review` at source
-revision `6762f6c`; T-0012, T-0013, T-0021 and all other unfinished items are
+T-0012/S10 is integrated through PR #93. T-0071/S01 is Done through PR #127
+(`fe778b2`); T-0012, T-0013, T-0021 and all other unfinished items are
 `Backlog`. T-0021/S06 is integrated through PR #96.
 T-0012/S11 is Done through PR #99 after final-head acceptance. T-0023/S01 is
 Done through PR #101 (`d0eebf8`), after primary and independent final-head Demo
@@ -64,11 +64,12 @@ accepting 3 SP after primary and independent final-head Demo at `c5df504`.
 Parent Current 8 / Initial 5 covers accepted S01 and S02; remaining broader
 plugin/configuration scope is not accepted by this forecast.
 
-T-0071/S01 implements the full 5 SP comparative benchmark task at source
-revision `6762f6c`. The evidence profile verifies byte-identical CSV output for
+T-0071/S01 implements and accepts the full 5 SP comparative benchmark task at
+source revision `6762f6c`. The evidence profile verifies byte-identical CSV output for
 deterministic CSV/JSON workloads at 1/4/8 workers, with an optional checksum-
 pinned Embulk 0.11.5 reference, strict JSON report validation and documented
-method limits. Final-head acceptance and PR integration remain before Done.
+method limits. Final-head acceptance passed at `a70d469`; PR #127 integrated as
+`fe778b2`, Issue #47 closed, and the Project item moved to Done.
 
 Project Workstreams map as follows: T-0001–T-0006 are `Governance`;
 T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`;
@@ -161,7 +162,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 are `Delivery`.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0070 | Epic: Verification and delivery | Backlog | P1 | — | T-0030 | Project Manager | Planning |
-| T-0071 | Build the comparative benchmark suite (S01 in Review at `6762f6c`) | Review | P1 | 5 | T-0037 | Rust Core Implementer | Benchmark |
+| T-0071 | Build the comparative benchmark suite (S01 Done through PR #127) | Done | P1 | 5 | T-0037 | Rust Core Implementer | Benchmark |
 | T-0072 | Deliver container, dependency lock, SBOM, and notices | Backlog | P1 | 5 | T-0005, T-0037 | Project Manager | Release |
 | T-0073 | Publish the alpha migration guide and compatibility matrix | Backlog | P1 | 5 | T-0037, T-0071, T-0072 | Project Manager | Release |
 | T-0074 | Research the GUI and control-plane boundary | Backlog | Icebox | 3 | T-0073 | Project Manager | Planning |

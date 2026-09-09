@@ -1,7 +1,8 @@
 # T-0071/S01 native parallel MVP benchmark
 
-Issue: [#47](https://github.com/bhind/emburk/issues/47). State: Review pending.
-Forecast: 5 SP. Evidence class: Benchmark plus Unit/Contract.
+Issue: [#47](https://github.com/bhind/emburk/issues/47). State: Done through
+PR #127 (`fe778b2`). Accepted: 5 SP. Evidence class: Benchmark plus
+Unit/Contract.
 
 ## Authority and boundaries
 
@@ -55,8 +56,13 @@ general Embulk performance or scheduler claim.
 Primary pre-documentation acceptance passed 126 workspace tests with eight
 intentional ignores, strict Clippy, formatting, six benchmark-tool tests,
 smoke execution, two full native/reference evidence workloads, strict report
-validation, and diff checks. Final-head Demo, independent review, pull-request
-integration, canonical closeout, and Project Done transition remain required.
+validation, and diff checks. Final-head acceptance at `a70d469` repeated the
+exact native evidence Demo, 126 workspace tests/eight intentional ignores,
+strict Clippy/fmt/diff checks and six benchmark-tool tests. Eight configured-CSV
+and five native-format live reference cases also matched. PR #127 integrated as
+`fe778b2`; Issue #47 closed and its 5 SP Project item moved to Done. No separate
+independent reviewer was assigned, so the retained evidence is primary and
+executable rather than an independent-review claim.
 
 No performance claim extends beyond the exact report. This is not memory/RSS,
 energy, tail-latency, multi-file, codec, network, production-readiness,
