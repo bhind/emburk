@@ -52,6 +52,11 @@ timeout, treat non-blocking as “not a delivery gate,” and classify prompt an
 standard input as outbound context. Technical allowlist enforcement remains a
 future hardening opportunity rather than a T-0080 claim.
 
+The final security re-review found no High or Medium issue and no integration
+blocker. Its one Low clarity finding observed that a packet timeout does not
+configure the CLI by itself. The operating loop now explicitly maps that value
+to `EMBURK_QWEN_TIMEOUT_SECONDS` for each consultation.
+
 ## Accepted boundary
 
 - Qwen owns no repository role, file, decision, evidence, or lifecycle state.

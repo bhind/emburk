@@ -82,7 +82,8 @@ explanation, error analysis, a non-applying fix proposal, test suggestions, or
 a permitted diff review.
 
 Qwen is advisory and not a delivery gate. Its CLI request is synchronous, so
-the task packet sets a bounded attempt timeout. If it is unavailable, reaches
+the task packet sets a bounded attempt timeout and the caller maps it to
+`EMBURK_QWEN_TIMEOUT_SECONDS`. If it is unavailable, reaches
 that timeout, or is unhelpful, record that outcome once and continue. Classify
 a response as used, revised, or rejected; never apply it automatically or treat it as evidence. Codex inspects
 the actual change against the higher-level intent, and repository checks plus

@@ -77,6 +77,7 @@ class QwenWorkflowPolicyTest(unittest.TestCase):
             "CLI does not read the Issue or enforce its Qwen context allowlist",
             "Prompt text and standard input",
             "CLI call is synchronous",
+            "set `EMBURK_QWEN_TIMEOUT_SECONDS`",
         ):
             self.assertIn(phrase, combined)
 
