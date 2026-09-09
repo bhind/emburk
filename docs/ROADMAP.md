@@ -256,10 +256,11 @@ bounded ordered parallel formatting and exact selected output bytes, but does
 not close the Arrow-compatible batch, general transaction, or full phase exit
 gates.
 
-T-0026/S01 is active as an operational extension to the experimental native
-MVP. Its opt-in result sidecar makes ordinary configured runs machine-readable
-without changing core execution or claiming Embulk structured-error/report
-compatibility. This slice does not close the Phase 1 exit gate or T-0026.
+T-0026/S01 is integrated as an operational extension to the experimental
+native MVP. Its opt-in result sidecar makes ordinary configured runs
+machine-readable without changing core execution or claiming Embulk
+structured-error/report compatibility. This slice does not close the Phase 1
+exit gate or T-0026.
 
 ## Phase 2: Java Compatibility
 
