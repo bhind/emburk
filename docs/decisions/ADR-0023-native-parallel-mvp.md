@@ -1,6 +1,6 @@
 # ADR-0023: Scoped threads for the local File-to-File MVP
 
-- Status: Accepted for T-0071/S01; integration pending
+- Status: Accepted and integrated through PR #127 (T-0071/S01)
 - Date: 2026-09-09
 
 ## Context

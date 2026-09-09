@@ -78,14 +78,16 @@ chain is complete within this bounded profile; no implementation item remains
 active in that chain. JSON schema
 inference and general charset/delimiter behavior remain explicit open gaps.
 
-T-0071/S01 is in Review at source revision `6762f6c`. It adds a deterministic
-CSV/JSON 1/4/8-worker runner, strict machine-report validation, buffered CSV
+T-0071/S01 is Done through PR #127 (`fe778b2`), with runtime evidence at source
+revision `6762f6c`. It adds a deterministic CSV/JSON 1/4/8-worker runner,
+strict machine-report validation, buffered CSV
 scanning and copy-free formatting without new dependencies. On the recorded
 eight-logical-CPU arm64 machine, quoted CSV scaled from 77.0 to 148.0 MiB/s
 (1.92×) and JSON to CSV from 49.2 to 64.1 MiB/s (1.30×). The same end-to-end
 workloads were 2.32–4.44× and 1.77–2.30× the pinned Embulk 0.11.5 throughput,
 respectively, with JVM startup included and one reference input task. Final-head
-acceptance, integration and Project closeout remain required.
+acceptance passed at `a70d469`; Issue #47 is closed and its 5 SP Project item is
+Done.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
