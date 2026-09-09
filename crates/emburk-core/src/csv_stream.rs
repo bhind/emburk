@@ -18,8 +18,81 @@ pub(super) fn read_record<R: BufRead>(input: &mut R) -> io::Result<Option<Vec<(S
     let mut count = 0usize;
     let mut saw = false;
     loop {
-        let mut byte = [0];
-        if input.read(&mut byte)? == 0 {
+        let mut completed = None;
+        let consumed = {
+            let buffer = input.fill_buf()?;
+            if buffer.is_empty() {
+                0
+            } else {
+                let mut consumed = 0;
+                for &byte in buffer {
+                    consumed += 1;
+                    saw = true;
+                    count += 1;
+                    if count > MAX_RECORD {
+                        return Err(io::Error::other("CSV record exceeds 1048576 bytes"));
+                    }
+                    match state {
+                        State::Start => match byte {
+                            b'"' => {
+                                state = State::Quoted;
+                                quoted = true
+                            }
+                            b',' => push_field(&mut fields, std::mem::take(&mut field), false)?,
+                            b'\n' => {
+                                completed = Some(false);
+                                break;
+                            }
+                            value => {
+                                state = State::Plain;
+                                push(&mut field, value)?
+                            }
+                        },
+                        State::Plain => match byte {
+                            b'"' => {
+                                return Err(io::Error::other("CSV quote in unquoted field"));
+                            }
+                            b',' => {
+                                push_field(&mut fields, std::mem::take(&mut field), false)?;
+                                state = State::Start
+                            }
+                            b'\n' => {
+                                if field.last() == Some(&b'\r') {
+                                    field.pop();
+                                }
+                                completed = Some(false);
+                                break;
+                            }
+                            value => push(&mut field, value)?,
+                        },
+                        State::Quoted => match byte {
+                            b'"' => state = State::AfterQuote,
+                            value => push(&mut field, value)?,
+                        },
+                        State::AfterQuote => match byte {
+                            b'"' => {
+                                push(&mut field, b'"')?;
+                                state = State::Quoted
+                            }
+                            b',' => {
+                                push_field(&mut fields, std::mem::take(&mut field), true)?;
+                                quoted = false;
+                                state = State::Start
+                            }
+                            b'\n' => {
+                                completed = Some(true);
+                                break;
+                            }
+                            _ => {
+                                return Err(io::Error::other("CSV character after closing quote"));
+                            }
+                        },
+                    }
+                }
+                consumed
+            }
+        };
+        if consumed == 0 {
             if !saw {
                 return Ok(None);
             }
@@ -28,55 +101,9 @@ pub(super) fn read_record<R: BufRead>(input: &mut R) -> io::Result<Option<Vec<(S
             }
             return finish(fields, field, quoted);
         }
-        saw = true;
-        count += 1;
-        if count > MAX_RECORD {
-            return Err(io::Error::other("CSV record exceeds 1048576 bytes"));
-        }
-        match state {
-            State::Start => match byte[0] {
-                b'"' => {
-                    state = State::Quoted;
-                    quoted = true
-                }
-                b',' => push_field(&mut fields, std::mem::take(&mut field), false)?,
-                b'\n' => return finish(fields, field, false),
-                value => {
-                    state = State::Plain;
-                    push(&mut field, value)?
-                }
-            },
-            State::Plain => match byte[0] {
-                b'"' => return Err(io::Error::other("CSV quote in unquoted field")),
-                b',' => {
-                    push_field(&mut fields, std::mem::take(&mut field), false)?;
-                    state = State::Start
-                }
-                b'\n' => {
-                    if field.last() == Some(&b'\r') {
-                        field.pop();
-                    }
-                    return finish(fields, field, false);
-                }
-                value => push(&mut field, value)?,
-            },
-            State::Quoted => match byte[0] {
-                b'"' => state = State::AfterQuote,
-                value => push(&mut field, value)?,
-            },
-            State::AfterQuote => match byte[0] {
-                b'"' => {
-                    push(&mut field, b'"')?;
-                    state = State::Quoted
-                }
-                b',' => {
-                    push_field(&mut fields, std::mem::take(&mut field), true)?;
-                    quoted = false;
-                    state = State::Start
-                }
-                b'\n' => return finish(fields, field, true),
-                _ => return Err(io::Error::other("CSV character after closing quote")),
-            },
+        input.consume(consumed);
+        if let Some(quoted) = completed {
+            return finish(fields, field, quoted);
         }
     }
 }
@@ -132,6 +159,29 @@ pub(super) fn write_row<W: Write>(out: &mut W, row: &[Option<String>]) -> io::Re
     out.write_all(b"\n")
 }
 
+pub(super) fn append_field(out: &mut Vec<u8>, value: &str) {
+    let bytes = value.as_bytes();
+    let quote = value.is_empty()
+        || bytes
+            .iter()
+            .any(|byte| matches!(byte, b',' | b'"' | b'\n' | b'\r'));
+    if quote {
+        out.push(b'"');
+    }
+    let mut start = 0;
+    for (index, byte) in bytes.iter().enumerate() {
+        if *byte == b'"' {
+            out.extend_from_slice(&bytes[start..index]);
+            out.extend_from_slice(b"\"\"");
+            start = index + 1;
+        }
+    }
+    out.extend_from_slice(&bytes[start..]);
+    if quote {
+        out.push(b'"');
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -151,6 +201,25 @@ mod tests {
     fn rejects_invalid_quote_transitions() {
         for bytes in [b"a\"b".as_slice(), b"\"a\"x", b"\"unterminated"] {
             assert!(read_record(&mut Cursor::new(bytes)).is_err());
+        }
+    }
+
+    #[test]
+    fn direct_field_formatter_matches_streaming_rows() {
+        for value in [
+            "plain",
+            "",
+            "comma,value",
+            "quote\"value",
+            "line\nvalue",
+            "🦀",
+        ] {
+            let mut expected = Vec::new();
+            write_row(&mut expected, &[Some(value.to_owned())]).unwrap();
+            let mut actual = Vec::new();
+            append_field(&mut actual, value);
+            actual.push(b'\n');
+            assert_eq!(actual, expected);
         }
     }
 }
