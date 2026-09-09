@@ -632,17 +632,21 @@ impl RecordSource for Source<'_> {
     }
 }
 fn format_record(r: LogicalRecord, projection: &[(usize, String)]) -> Result<Vec<u8>, String> {
-    let cells = r.cells().collect::<Vec<_>>();
-    let row = projection
-        .iter()
-        .map(|(index, _)| match cells[*index] {
-            LogicalValue::Null => None,
-            LogicalValue::Signed64(v) => Some(v.to_string()),
-            LogicalValue::Text(v) => Some(v.clone()),
-            _ => None,
-        })
-        .collect::<Vec<_>>();
     let mut output = Vec::new();
-    csv_stream::write_row(&mut output, &row).map_err(|e| e.to_string())?;
+    let cells = r.into_cells();
+    for (position, (index, _)) in projection.iter().enumerate() {
+        if position != 0 {
+            output.push(b',');
+        }
+        match &cells[*index] {
+            LogicalValue::Null => {}
+            LogicalValue::Signed64(value) => {
+                csv_stream::append_field(&mut output, &value.to_string())
+            }
+            LogicalValue::Text(value) => csv_stream::append_field(&mut output, value),
+            _ => {}
+        }
+    }
+    output.push(b'\n');
     Ok(output)
 }

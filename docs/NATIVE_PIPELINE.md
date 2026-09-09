@@ -152,6 +152,30 @@ same-schema job input before execution; this does not demonstrate guessing
 directly from a large file. TSV and automatic headerless charset inference are
 recorded gaps, not counted as successful comparisons.
 
+## Parallel MVP demonstration
+
+The configured pipeline uses scoped native threads for independent record
+formatting and one ordered writer. `exec.max_threads` selects one to eight
+workers; the total admitted but unwritten window remains at most twice that
+number. Tokio is not a dependency of this local-file profile.
+
+Run a real, self-contained CSV and JSON File-to-File smoke demonstration from
+the repository root:
+
+```sh
+cargo build --release --locked && \
+python3 tools/t0071-benchmark/run.py \
+  --binary target/release/emburk \
+  --profile smoke \
+  --output target/t0071-smoke.json && \
+python3 tools/t0071-benchmark/validate.py target/t0071-smoke.json
+```
+
+Every worker count must produce byte-identical output. The smoke inputs are
+deliberately small and are not performance evidence. Use the documented
+`evidence` profile and pinned optional reference only for reproducible
+measurement; see [Performance evidence](PERFORMANCE.md).
+
 ## Evidence boundary
 
 Eight selected CSV cases and five JSON/codec/filter cases are compared with

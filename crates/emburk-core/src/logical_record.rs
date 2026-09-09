@@ -39,6 +39,10 @@ impl LogicalRecord {
     pub(super) fn cells(&self) -> impl ExactSizeIterator<Item = &LogicalValue> {
         self.cells.iter()
     }
+
+    pub(super) fn into_cells(self) -> Vec<LogicalValue> {
+        self.cells
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]

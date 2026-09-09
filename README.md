@@ -48,6 +48,7 @@ Embulk demonstrated the value of a pluggable, parallel data loader, but the upst
 - [Architecture](docs/ARCHITECTURE.md)
 - [Compatibility](docs/COMPATIBILITY.md)
 - [Experimental native pipeline](docs/NATIVE_PIPELINE.md)
+- [Performance evidence](docs/PERFORMANCE.md)
 - [Documentation index](docs/README.md)
 
 ## Independence and License

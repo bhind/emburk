@@ -250,6 +250,12 @@ passed at `65a2fb3`. It does not adopt a parser or native policy or complete thi
 
 Exit gate: representative File-to-File jobs match Embulk under normal execution, interruption, cleanup, and resume.
 
+T-0071/S01 adds a reproducible File-to-File benchmark and measured 1/4/8-worker
+execution at source revision `6762f6c`; integration is pending. It demonstrates
+bounded ordered parallel formatting and exact selected output bytes, but does
+not close the Arrow-compatible batch, general transaction, or full phase exit
+gates.
+
 ## Phase 2: Java Compatibility
 
 - Define the versioned host protocol.

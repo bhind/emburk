@@ -36,6 +36,11 @@ after decoding. T-0024/S01 (#120) accepts native bounded workers/cancellation,
 not Embulk scheduler or performance parity. T-0025/S02 (#121) accepts validated
 native resume, including actual SIGINT and modeled pre/post-link recovery;
 its checkpoint format is not an Embulk resume-file compatibility claim.
+T-0071/S01 adds selected end-to-end performance evidence against the same
+pinned Embulk 0.11.5 executable for deterministic CSV and JSON workloads. Its
+fresh-process timing, one reference input task and recorded machine are explicit;
+it does not change any Native/Verified status or establish scheduler parity or
+general performance superiority.
 
 The implementation objective is strict reproduction of observable behavior for
 the pinned core and admitted plugins. Technical constraints, disproportionate
