@@ -20,6 +20,17 @@ cargo test --locked --workspace
 
 If `cargo` is unavailable immediately after installation, restart the terminal or run `source "$HOME/.cargo/env"`.
 
+For the experimental native configured pipeline, an ordinary run can also
+write a deterministic result sidecar for local automation:
+
+```sh
+cargo run -p emburk-cli -- run config.yml --report run-result.json
+```
+
+The report is reserved before execution and is never overwritten. See
+[Experimental native pipeline](NATIVE_PIPELINE.md#optional-native-result-report)
+for its exact v1 shape, failure behavior, and non-claims.
+
 ## IntelliJ IDEA
 
 1. Open Settings → Plugins and install JetBrains' **Rust** plugin.

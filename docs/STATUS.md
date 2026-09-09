@@ -105,6 +105,14 @@ requirements, architecture, risk, acceptance, verification, and integration
 with Codex and the Project Manager. It changes no runtime, Cargo dependency,
 compatibility behavior, or public API.
 
+T-0026/S01 is in Review on PR #136. The candidate adds an opt-in
+`emburk run CONFIG --report REPORT.json` path with a fixed experimental native
+v1 result shape, exclusive report reservation, exact successful record count,
+and explicit failure/cancellation outcomes. Core execution, publication,
+checkpoint, and resume code remain unchanged. Implementation-stage acceptance,
+independent testing, Security, and Vreji reviews passed; final-head acceptance
+and PR integration are still pending.
+
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary
@@ -144,6 +152,7 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0012/S13 | Done | PR #107 integrated; primary and independent final-head acceptance passed |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
+| T-0026/S01 | Review | Experimental native configured-run result sidecar; PR #136 |
 | T-0079 | Done | Bounded, non-applying Qwen development assistant; PR #130 integrated |
 | T-0080 | Done | Qwen-first low-level assistance with Codex retaining higher-level authority; PR #133 integrated |
 

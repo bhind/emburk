@@ -16,6 +16,8 @@ T-0012/S10 is integrated through PR #93. T-0071/S01 is Done through PR #127
 (`7582b33`). T-0021/S06 is
 integrated through PR #96.
 T-0080 is Done through PR #133 (`34f6ee6`).
+T-0026/S01 is in Review on PR #136 from
+`feat/t-0026-run-result-sidecar`.
 T-0012/S11 is Done through PR #99 after final-head acceptance. T-0023/S01 is
 Done through PR #101 (`d0eebf8`), after primary and independent final-head Demo
 at `196d648`. S01 accepts 5 SP. T-0023/S02 is Done through PR #103 (`5d72866`)
@@ -112,7 +114,13 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 and T-0079 are
 | T-0023 | Implement logical schema and Arrow-compatible batches (S01/S02 Done; remaining contracts queued) | Backlog | P1 | 21 | T-0012, T-0021 | Compatibility Host Implementer | Differential (Embulk) |
 | T-0024 | Implement bounded scheduling, backpressure, and cancellation (S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0025 | Implement atomic transaction and resume state (S01/S02 Done; broader contracts queued) | Backlog | P1 | 13 | T-0013, T-0024 | Rust Core Implementer | Unit/Contract |
-| T-0026 | Implement structured errors and observability | Backlog | P1 | 5 | T-0021 | Rust Core Implementer | Unit/Contract |
+| T-0026 | Implement structured errors and observability (S01 in Review) | Backlog | P1 | 5 | T-0021 | Rust Core Implementer | Unit/Contract |
+
+T-0026/S01 (3 SP within the parent) adds only an opt-in native v1 result
+sidecar for ordinary configured `run`. The report has fixed success, failure,
+and cancellation outcomes while the existing core execution and publication
+semantics remain unchanged. It is not an Embulk report/error compatibility
+claim or completion of T-0026.
 
 ## T-0030 — Native File-to-File ETL
 

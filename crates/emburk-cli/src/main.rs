@@ -24,8 +24,15 @@ fn main() {
         )
     {
         println!(
-            "Usage: emburk guess SEED [-o CONFIG]\n       emburk run CONFIG [--state STATE_DIR]\n       emburk resume CONFIG STATE_DIR\n       emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
+            "Usage: emburk guess SEED [-o CONFIG]\n       emburk run CONFIG [--report REPORT.json]\n       emburk run CONFIG [--state STATE_DIR]\n       emburk resume CONFIG STATE_DIR\n       emburk transfer-lines INPUT OUTPUT\n       emburk transfer-lines-stdout INPUT\n       emburk transfer-lines-null INPUT"
         );
+        return;
+    }
+    if let [_, command, config, flag, report] = arguments.as_slice()
+        && command == "run"
+        && flag == "--report"
+    {
+        run_with_report(Path::new(config), Path::new(report));
         return;
     }
     let cancelled = Arc::new(AtomicBool::new(false));
@@ -73,7 +80,9 @@ fn main() {
             ("transfer-lines-null", transfer_null(Path::new(input)))
         }
         _ => {
-            eprintln!("Usage: emburk run CONFIG\n       emburk transfer-lines INPUT OUTPUT");
+            eprintln!(
+                "Usage: emburk run CONFIG [--report REPORT.json]\n       emburk transfer-lines INPUT OUTPUT"
+            );
             std::process::exit(2);
         }
     };
@@ -85,6 +94,82 @@ fn main() {
             1
         });
     }
+}
+
+fn run_with_report(config: &Path, report_path: &Path) {
+    let cancelled = Arc::new(AtomicBool::new(false));
+    let signal_flag = Arc::clone(&cancelled);
+    if let Err(error) = ctrlc::set_handler(move || signal_flag.store(true, Ordering::Release)) {
+        eprintln!("emburk: run failed: cannot install SIGINT handler: {error}");
+        std::process::exit(1);
+    }
+
+    let mut report = match create_report(report_path) {
+        Ok(report) => report,
+        Err(error) => {
+            eprintln!("emburk: cannot create run report exclusively: {error}");
+            std::process::exit(2);
+        }
+    };
+
+    let result = if cancelled.load(Ordering::Acquire) {
+        Err("cancelled".to_owned())
+    } else {
+        emburk_core::run_config_with_cancel(config, &cancelled)
+    };
+
+    let (outcome, exit_code, records, error) = match result {
+        Ok(records) => ("succeeded", 0, Some(records), None),
+        Err(error) if cancelled.load(Ordering::Acquire) => {
+            let diagnostic = format!("emburk: run failed: {error}");
+            eprintln!("{diagnostic}");
+            ("cancelled", 130, None, Some(diagnostic))
+        }
+        Err(error) => {
+            let diagnostic = format!("emburk: run failed: {error}");
+            eprintln!("{diagnostic}");
+            ("failed", 1, None, Some(diagnostic))
+        }
+    };
+    let body = run_report_json(outcome, exit_code, records, error.as_deref());
+    if let Err(error) = report
+        .write_all(body.as_bytes())
+        .and_then(|()| report.flush())
+    {
+        eprintln!("emburk: cannot write run report: {error}");
+        std::process::exit(exit_code.max(1));
+    }
+    if exit_code != 0 {
+        std::process::exit(exit_code);
+    }
+}
+
+fn create_report(path: &Path) -> io::Result<File> {
+    let mut options = OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    options.open(path)
+}
+
+fn run_report_json(
+    outcome: &str,
+    exit_code: i32,
+    records: Option<usize>,
+    error: Option<&str>,
+) -> String {
+    let records = records
+        .map(|records| records.to_string())
+        .unwrap_or_else(|| "null".to_owned());
+    let error = error
+        .map(|error| serde_json::to_string(error).expect("string JSON serialization cannot fail"))
+        .unwrap_or_else(|| "null".to_owned());
+    format!(
+        "{{\"schema\":\"emburk.run-result/v1\",\"command\":\"run\",\"outcome\":\"{outcome}\",\"exit_code\":{exit_code},\"records\":{records},\"error\":{error}}}\n"
+    )
 }
 
 #[cfg(unix)]

@@ -125,6 +125,7 @@ version = "0.1.0"
 dependencies = [
  "ctrlc",
  "emburk-core",
+ "serde_json",
 ]
 
 [[package]]
