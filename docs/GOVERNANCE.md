@@ -32,6 +32,21 @@ Add a specialized role only when a recurring responsibility cannot be expressed
 through these boundaries. Role names belong in the Project `Owner Role` and
 `Support Roles` fields; GitHub assignees identify people, not authority.
 
+### Advisory development model
+
+The Windows-hosted Qwen3-Coder service is an advisory implementation tool, not
+a Project role. It owns no files or decisions and cannot supply evidence,
+approve a diff, or change lifecycle state. Codex and the Project Manager retain
+problem framing, product semantics, architecture, risk and boundary decisions,
+acceptance, verification, and integration. Eligible implementers use Qwen as a
+non-blocking default first pass for bounded code explanation, error triage,
+implementation and test proposals, and permitted diff review.
+
+Every response is inspected and classified as used, revised, or rejected. Any
+resulting repository change is produced and verified independently. The full
+information boundary and operating loop are defined in
+`docs/QWEN_ASSISTED_DEVELOPMENT.md`.
+
 ## Decision and evidence governance
 
 Create an ADR when a change accepts or supersedes an architectural invariant,

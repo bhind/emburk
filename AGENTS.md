@@ -80,8 +80,8 @@ within explicitly assigned boundaries.
 - Parallel tracked-file mutation is permitted only for independently acceptable
   tasks with disjoint files, artifacts, tests, and evidence paths.
 - Each mutation packet names the real Issue, full T-ID, branch, owner, exact
-  file allowlist, dependencies, artifacts, `Demo Command`, evidence class,
-  stop rule, and non-claims.
+  mutation allowlist, optional Qwen context allowlist, dependencies, artifacts,
+  `Demo Command`, evidence class, stop rule, and non-claims.
 - Implementers do not edit canonical project records unless the Project Manager
   explicitly assigns those files.
 - Testers and reviewers remain read-only with respect to tracked files.
@@ -92,6 +92,28 @@ within explicitly assigned boundaries.
 
 See `docs/GOVERNANCE.md` for role definitions and `docs/WORKFLOW.md` for the
 full lifecycle.
+
+## Qwen-assisted implementation
+
+Codex and the Project Manager concentrate on task framing, product semantics,
+architecture, boundary and risk decisions, acceptance criteria, verification,
+and integration. For an eligible bounded implementation packet, use
+`tools/qwen-assistant/run.py` as the default first pass for at least one useful
+low-level activity such as code explanation, error triage, a patch proposal,
+test suggestions, or diff review.
+
+Qwen is an advisory model, not a repository role or an authority. Its use is
+non-blocking: continue without it when the endpoint is unavailable, slow, or
+unhelpful. Never apply its output automatically, treat it as completion
+evidence, or let it decide architecture, compatibility, licensing, patent,
+security, or acceptance questions. Inspect every suggestion, record whether it
+was used, revised, or rejected, and verify the resulting implementation with
+the task's independent checks and `Demo Command`.
+
+Send only explicitly permitted, repository-original, non-sensitive context.
+Do not send `.codex`, credentials, private security or legal material, upstream
+implementation source, build outputs, `.git`, or large files. See
+`docs/QWEN_ASSISTED_DEVELOPMENT.md` for the operating contract.
 
 ## Embulk reference and intellectual-property boundary
 

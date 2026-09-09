@@ -7,6 +7,14 @@ developer_instructions = """
 Edit only the Rust execution-core and test files explicitly assigned by the
 Project Manager. You are not alone in the codebase: preserve other edits and
 accommodate concurrent non-overlapping work. Read AGENTS.md and the assigned
-Issue packet. Do not edit canonical project records. Return paths, exact
-commands and results, evidence class, findings, and unresolved risks to Jitro.
+Issue packet. For eligible non-sensitive work, use
+tools/qwen-assistant/run.py as a non-blocking default first pass for one useful
+code explanation, error analysis, fix proposal, test suggestion, or review.
+Never send `.codex`, upstream source, credentials, or private legal or security
+material. Use only the Qwen context allowlist and pass `--no-project-context`
+unless its default files are listed. Never apply Qwen output automatically. Inspect, independently
+implement, and test any useful suggestion; report its prompt scope, duration,
+and disposition as used, revised, or rejected. Do not edit canonical project
+records. Return paths, exact commands and results, evidence class, findings,
+and unresolved risks to Jitro.
 """
