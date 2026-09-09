@@ -13,8 +13,9 @@ Status: active
 5. Create or reuse a real open Issue for every epic and actionable work item,
    label epics `epic` and actionable items `work-item`, add it to the Project,
    and record this packet before `Ready`:
-   `Authority`, `Dependencies`, `Mutation owner`, `Allowlist`, `Artifacts`,
-   `Acceptance`, `Evidence class`, `Stop rule`, and `Non-claims`.
+   `Authority`, `Dependencies`, `Mutation owner`, `Mutation allowlist`, optional
+   `Qwen context allowlist` and Qwen attempt timeout, `Artifacts`, `Acceptance`,
+   `Evidence class`, `Stop rule`, and `Non-claims`.
 6. Create the dedicated task branch and move the item to `In Progress` only
    after all metadata is populated.
 
@@ -70,6 +71,24 @@ test or review lane.
   unsupported cases rather than converting them into success claims.
 - Update STATUS, TODO, ROADMAP, COMPATIBILITY, ADRs, and provenance in the same
   coherent change when their facts change.
+
+### Qwen-assisted implementation lane
+
+Codex or the Project Manager first defines the task's intent, architecture and
+risk boundaries, allowlist, acceptance criteria, and verification plan. For an
+eligible bounded implementation packet, the implementer then attempts one
+useful low-level first pass through `tools/qwen-assistant/run.py`: code
+explanation, error analysis, a non-applying fix proposal, test suggestions, or
+a permitted diff review.
+
+Qwen is advisory and not a delivery gate. Its CLI request is synchronous, so
+the task packet sets a bounded attempt timeout and the caller maps it to
+`EMBURK_QWEN_TIMEOUT_SECONDS`. If it is unavailable, reaches
+that timeout, or is unhelpful, record that outcome once and continue. Classify
+a response as used, revised, or rejected; never apply it automatically or treat it as evidence. Codex inspects
+the actual change against the higher-level intent, and repository checks plus
+the task's `Demo Command` remain authoritative. Follow
+`docs/QWEN_ASSISTED_DEVELOPMENT.md` for data exclusions and decision boundaries.
 
 ## Review and completion
 

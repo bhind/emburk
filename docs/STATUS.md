@@ -99,6 +99,12 @@ development-assistant CLI, outbound data guards, IntelliJ entry points,
 documentation, and independent Rust verification. No model answer has been
 adopted as product code or evidence.
 
+T-0080 is in Review through PR #133. It defines Qwen as a non-blocking default
+first pass for eligible low-level assistance while retaining
+requirements, architecture, risk, acceptance, verification, and integration
+with Codex and the Project Manager. It changes no runtime, Cargo dependency,
+compatibility behavior, or public API.
+
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary
@@ -139,6 +145,7 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 | T-0079 | Done | Bounded, non-applying Qwen development assistant; PR #130 integrated |
+| T-0080 | Review | PR #133 defines Qwen-first low-level assistance with Codex retaining higher-level authority |
 
 T-0025/S01 is Done through PR #117. T-0014/S02 is Done through PR #118.
 T-0033/S01 is Done through PR #119. T-0024/S01 is Done through PR #120.
@@ -148,7 +155,8 @@ Other unfinished stable tasks remain `Backlog`. Parent epics are
 unpointed. The private [Emburk Delivery Project](https://github.com/users/bhind/projects/2)
 is the coordination mirror. T-0079 is its 55th item; its lifecycle state,
 estimate, role, workstream, evidence class, and Demo Command were initialized
-on 2026-09-09. The first 52 items' lifecycle states, initial estimates, roles,
+on 2026-09-09. T-0080 is its 56th item and is in Review with 3 SP. The first
+52 items' lifecycle states, initial estimates, roles,
 dependencies, workstreams, evidence classes, and views were reconciled to the
 repository records on 2026-09-05.
 

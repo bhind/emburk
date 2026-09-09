@@ -13,6 +13,8 @@ Repository records are the authoritative project memory. GitHub Issues and the G
 - [GitHub Project operations](PROJECT_OPERATIONS.md)
 - [Development](DEVELOPMENT.md)
   - Includes the bounded Qwen development-assistant CLI and IntelliJ entry points.
+- [Qwen-assisted development](QWEN_ASSISTED_DEVELOPMENT.md)
+  - Defines the Codex/Qwen responsibility split, data boundary, and verification loop.
 
 ## Governance
 

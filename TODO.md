@@ -12,7 +12,8 @@ Current queue state: `T-0002`, `T-0003`, `T-0004`, and `T-0011` are `Done`;
 integrated through PR #91 following fresh reference-probe acceptance runs.
 T-0012/S10 is integrated through PR #93. T-0071/S01 is Done through PR #127
 (`fe778b2`); T-0012, T-0013, T-0021 and all other unfinished items are
-`Backlog`. T-0079 is Done through PR #130 (`7582b33`). T-0021/S06 is
+`Backlog` except T-0080, which is in Review. T-0079 is Done through PR #130
+(`7582b33`). T-0021/S06 is
 integrated through PR #96.
 T-0012/S11 is Done through PR #99 after final-head acceptance. T-0023/S01 is
 Done through PR #101 (`d0eebf8`), after primary and independent final-head Demo
@@ -77,7 +78,7 @@ T-0010–T-0014 are `Compatibility Contract`; T-0020–T-0026 are `Core Runtime`
 T-0030–T-0037 and T-0060–T-0067 are `Native Plugins`; T-0040–T-0045 are
 `Java Host`; T-0050–T-0054 are `JRuby Host`; T-0070 is the `Delivery` epic;
 T-0071 and T-0076 are `Verification`; and T-0072–T-0075 and T-0079 are
-`Delivery`.
+`Delivery`. T-0080 is also `Delivery`.
 
 ## T-0001 — Governance and traceability
 
@@ -171,6 +172,7 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 and T-0079 are
 | T-0075 | Research Terraform deployment | Backlog | Icebox | 3 | T-0072 | Project Manager | Planning |
 | T-0076 | Research adaptive optimization | Backlog | Icebox | 3 | T-0071 | Performance Reviewer | Planning |
 | T-0079 | Add a bounded Qwen development assistant (Done through PR #130) | Done | P1 | 5 | None | Rust Core Implementer | Integration |
+| T-0080 | Operationalize Qwen-first implementation assistance | Review | P1 | 3 | T-0079 | Project Manager | Unit/Contract + Integration |
 
 ## Pull order
 
