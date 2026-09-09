@@ -113,7 +113,7 @@ checkpoint, and resume code remain unchanged. Primary and independent
 final-head acceptance, Security, and Vreji reviews passed at `a377b6e` before
 integration.
 
-T-0014/S03 is In Progress on Issue #138. It observes three bounded multi-file
+T-0014/S03 is in Review on Issue #138 and PR #139. It observes three bounded multi-file
 File input `path_prefix` cases through the already-admitted pinned Embulk 0.11.5
 runtime before any native multi-file policy is selected. The evidence-only
 slice changes no Rust runtime, Cargo dependency, plugin admission, or current
@@ -163,7 +163,7 @@ file/plugin parent stays open. Core transfer semantics remain unchanged.
 | T-0012/S12 | Done | Seven-case reference observation and validator; PR #105 integrated |
 | T-0012/S13 | Done | PR #107 integrated; primary and independent final-head acceptance passed |
 | T-0013 | Backlog | S01–S08 integrated; remaining cleanup/recovery contracts |
-| T-0014/S03 | In Progress | Bounded multi-file File input reference observation; Issue #138 |
+| T-0014/S03 | Review | Bounded multi-file File input reference observation; Issue #138, PR #139 |
 | T-0021 | Backlog | S06 handoff integrated; remaining runtime contracts |
 | T-0026/S01 | Done | Experimental native configured-run result sidecar; PR #136 integrated |
 | T-0079 | Done | Bounded, non-applying Qwen development assistant; PR #130 integrated |
