@@ -93,7 +93,9 @@ quotes, but also incorrectly stated that a Rust `&str` cannot contain a null
 byte. Rust strings can contain `U+0000`. No part of the response was adopted.
 This result proves the guarded request/response path while demonstrating why
 model text cannot be treated as correctness evidence. The final local Demo
-remains pending until the implementation revision is available.
+passed at implementation revision `3972350`: 12 assistant tests, 126 Rust
+tests with eight intentional live-oracle ignores, workspace format/check, and
+diff checks all passed. Strict workspace Clippy also passed separately.
 
 A staged-diff review redacted seven fixture-like credential patterns before
 transmission and returned in 77.0 seconds. The response hallucinated an
@@ -105,3 +107,7 @@ transport evidence, not a successful semantic review.
 This task does not replace Codex, approve or apply model output, change runtime
 behavior, establish Embulk compatibility, provide a general AI-provider API,
 or claim that outbound filtering eliminates every disclosure risk.
+
+PR #130 was squash-merged as `7582b33`. Issue #129 closed and its 5 SP private
+Project item moved to Done. Integration accepts only the bounded tooling and
+evidence described here.
