@@ -1,6 +1,6 @@
 # T-0026/S01 native run-result sidecar
 
-Status: Review
+Status: Done
 
 ## Authority and scope
 
@@ -77,11 +77,11 @@ Implementation-stage checks passed:
 
 The initial implementation-stage authoritative Demo passed. An independent
 read-only Tester then reran `git diff --check`, all seven initial focused
-integration tests, and
-the exact SIGINT test separately; all passed. The Tester confirmed exact JSON
+integration tests, and the exact SIGINT test separately; all passed. The Tester
+confirmed exact JSON
 bytes and LF, exit codes 0/1/2/130, diagnostic equality, exclusive no-overwrite,
 both collision boundaries, Unix mode 0600, and no final output after
-cancellation. Final-head acceptance remains pending.
+cancellation. At that stage, final-head acceptance remained pending.
 
 Security review then identified a reservation-to-handler SIGINT race that could
 leave an empty report. The candidate now installs the handler first, reserves
@@ -89,10 +89,14 @@ the report before configuration loading, observes any already-handled signal,
 and includes an eighth test that sends SIGINT after observing reservation.
 Post-remediation authoritative acceptance passed. Security re-review found the
 prior medium blocker resolved and no remaining security or supply-chain
-finding. Final-head acceptance after commit remains pending.
+finding. At that stage, final-head acceptance after commit remained pending.
 
 The implementation and synchronized Review-state records were published on PR
-#136. That pull request's final-head acceptance and integration remain pending.
+#136. Primary and independent exact final-head Demo runs passed at `a377b6e`:
+134 tests passed and eight intentional external-oracle tests were ignored.
+Security & Supply-chain and Vreji final-head reviews found no integration
+blocker. PR #136 squash-merged as `8577ffd`; Issue #135 closed and its 3 SP
+Project item moved to Done.
 
 ## Non-claims
 
