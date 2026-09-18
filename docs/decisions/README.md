@@ -27,4 +27,4 @@ Architecture Decision Records capture durable decisions that affect product cont
 | [ADR-0021](ADR-0021-validated-native-spool-resume.md) | Validated native spool resume | Accepted through PR #121 |
 | [ADR-0022](ADR-0022-bounded-guess-profile.md) | Bounded seed-preserving guess profile | Accepted through PR #124 |
 | [ADR-0023](ADR-0023-native-parallel-mvp.md) | Scoped threads for the local File-to-File MVP | Accepted through PR #127 |
-| [ADR-0024](ADR-0024-bounded-multifile-configured-input.md) | Bounded multi-file configured input | Proposed for T-0031/S03 |
+| [ADR-0024](ADR-0024-bounded-multifile-configured-input.md) | Bounded multi-file configured input | Accepted through PR #142 |

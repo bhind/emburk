@@ -1,6 +1,6 @@
 # T-0031/S03 bounded multi-file configured input
 
-Status: In Progress on Issue #141
+Status: Done through PR #142 (`3dfb006`)
 
 ## Scope and provenance
 
