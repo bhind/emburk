@@ -52,3 +52,24 @@ within this factual boundary.
 One 90-second non-applying request is now authorized with only the two files
 listed in Issue #144 and default project context disabled. Its answer cannot
 select behavior or supply evidence.
+
+The authorized request used `fix` with only
+`crates/emburk-core/src/configured_csv.rs` and
+`crates/emburk-cli/tests/configured_csv.rs`. It timed out after 90 seconds with
+no response; disposition: rejected. A separate implementer-side sandbox-blocked
+attempt did not reach the network and returned no output. No model output was
+used.
+
+## Primary candidate evidence
+
+At candidate `85c3444`, formatting, workspace check, and strict Clippy passed.
+The full Rust workspace completed 146 tests with eight intentional external-
+oracle ignores. The existing eight-case configured CSV differential, the new
+three-case Boolean differential, and the T-0031/S03 three-case multi-file
+regression all matched the pinned reference.
+
+The primary Boolean raw evidence is
+`/private/tmp/emburk-t0032-s02-differential-9n1g51fo`; root manifest SHA-256
+`c6fc93d91d2e381300b977037442ebbdc72b2534d40565293b233a81e445730d`.
+This is selected Differential evidence only. Independent fixed-head acceptance,
+Security, and final Vreji review remain pending.
