@@ -135,12 +135,13 @@ ignores and all three pinned live comparisons. Security and Vreji reviews
 passed at the reviewed head; Issue #141 is closed and its 5 SP Project item is
 Done.
 
-T-0032/S02 completed its reviewed Stage A capture on Issue #144. Stage B is
-authorized for only the five observed Boolean input/output effects recorded by
-ADR-0025. The parent remains Backlog at Current 11 / Initial 8; no Boolean
-runtime support is accepted yet. The Stage B candidate passes primary 146/8
-workspace and 8+3+3 live differential evidence. Independent acceptance,
-Security, and Vreji gates pass at `23d4f94`; integration remains pending.
+T-0032/S02 is Done through PR #145 (`e73cd3a`). The native consumer accepts only
+the five observed Boolean input/output effects recorded by ADR-0025. Primary
+and final-head acceptance passed 146 workspace tests with eight intentional
+ignores and all 8+3+3 live differential cases; independent acceptance,
+Security, and Vreji gates passed at `23d4f94`. Issue #144 is closed, its 3 SP
+Project item is Done, and parent T-0032 remains Backlog at Current 11 / Initial
+8 for broader CSV work.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`

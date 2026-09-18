@@ -2,8 +2,10 @@
 
 Compatibility is an evidence record, not a general promise.
 
-T-0032/S02 has reviewed reference-only evidence for three Boolean cases. Native
-Boolean File/CSV values remain unsupported until Stage B passes.
+T-0032/S02 integrated through PR #145. The native File/CSV consumer matches the
+three selected Boolean cases: exact `true`/`false`, the observed `truthy`
+mapping, and distinct unquoted/quoted empty handling. Unsupported literals are
+rejected. This is not general Boolean, JSON, or multi-file compatibility.
 
 T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
 integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed

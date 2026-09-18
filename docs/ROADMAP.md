@@ -20,8 +20,9 @@ observation before any native expansion of the current single-match profile.
 T-0031/S03 completed that bounded 5 SP implementation gate through PR #142
 after exact differential agreement, Unit/Contract evidence, independent review,
 and explicit sequential-publication non-claims.
-T-0032/S02 is the active 3 SP follow-on: reference observation must lock the
-bounded Boolean lexical/null boundary before native implementation begins.
+T-0032/S02 completed the 3 SP bounded Boolean follow-on through PR #145 after
+reviewed reference observation, native differential acceptance, and independent
+Security and provenance review. Broader CSV/Boolean behavior remains queued.
 
 ## Phase 0: Governance and Compatibility Contract
 
