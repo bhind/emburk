@@ -1,6 +1,6 @@
 # Current status
 
-Last updated: 2026-09-09
+Last updated: 2026-09-18
 
 Development state: `experimental native pipeline`
 
@@ -125,6 +125,13 @@ thirteen focused tests; the full workspace result is 134 passed with eight
 intentional external-oracle ignores. Primary and independent exact Demo runs,
 Security, and Vreji passed at fixed PR head `77864de` before integration. The
 Issue is closed and its 3 SP Project item is Done.
+
+T-0031/S03 is In Progress on Issue #141. Its candidate extends only ordinary
+configured `run` to at most two lexically ordered File inputs and fixed indexed
+outputs, while stateful execution stays single-input-only. Sequential
+publication intentionally permits a completed prefix after a later failure.
+No compatibility claim is accepted until fixed-head differential and
+independent review evidence pass.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`

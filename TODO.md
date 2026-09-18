@@ -1,6 +1,6 @@
 # Emburk product backlog
 
-Last updated: 2026-09-09
+Last updated: 2026-09-18
 
 This file is the authoritative actionable-work inventory. GitHub Issues and the
 GitHub Project mirror these stable identifiers for coordination. Parent epics
@@ -129,7 +129,7 @@ claim or completion of T-0026.
 | ID | Outcome | Status | Priority | SP | Depends on | Owner Role | Evidence |
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
-| T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02 Done; remaining contracts queued) | Backlog | P1 | 8 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
+| T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02 Done; S03 in progress) | Backlog | P1 | 13 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
 | T-0032 | Implement the CSV parser and formatter (configured S01 integrated) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |

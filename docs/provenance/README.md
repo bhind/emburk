@@ -49,4 +49,5 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0037/S01 combined acceptance](T-0037-guess-transfer-resume.md) | Done through PR #125; selected guess/transfer/native-recovery evidence |
 | [T-0031/S01 experimental file transfer](T-0031-file-to-file.md) | Done, PR #110; native-only record consumer |
 | [T-0031/S02 experimental stdout/null](T-0031-output-targets.md) | Done, PR #112; unchanged core transfer |
+| [T-0031/S03 bounded multi-file configured input](T-0031-multifile-configured-input.md) | In Progress on Issue #141 |
 | [T-0071/S01 native parallel MVP benchmark](T-0071-parallel-mvp.md) | Done through PR #127; Benchmark plus Unit/Contract evidence |

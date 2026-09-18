@@ -28,6 +28,8 @@ T-0014/S03, accepted through PR #139, is a follow-on observation outside the
 completed seven-stage bounded sequence. It captures selected multi-file
 `path_prefix` behavior before a separately authorized native expansion; it
 does not reopen or complete any prior stage.
+T-0031/S03 is the separately authorized bounded native follow-on and does not
+broaden the completed seven-stage acceptance.
 
 | Stage | Canonical task | Exit evidence |
 | --- | --- | --- |

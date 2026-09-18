@@ -4,6 +4,10 @@ This guide describes the selected native profile, not general Embulk plugin
 compatibility. Use a new output prefix: existing final files are never replaced.
 The configured path is intended for trusted local Unix filesystems.
 
+T-0031/S03 is an active candidate for at most two ordinary-run inputs. The
+integrated documented profile remains single-input until its acceptance gates
+pass. Stateful run/resume remain single-input.
+
 ## Minimal configured transfer
 
 Build with `cargo build --locked`. In a separate job directory create an
