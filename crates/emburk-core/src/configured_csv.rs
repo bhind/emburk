@@ -340,6 +340,9 @@ fn execute(
     preflight_targets(&inputs, &outputs, report)?;
     let mut total = 0usize;
     for (input, output) in inputs.into_iter().zip(outputs) {
+        if cancel.load(Ordering::Acquire) {
+            return Err("cancelled".into());
+        }
         total = checked_total(total, execute_input(&profile, cancel, input.file, &output)?)?;
     }
     Ok(total)
@@ -387,6 +390,13 @@ fn select_inputs(profile: &Profile) -> Result<Vec<InputFile>, String> {
         .into_iter()
         .map(|path| {
             let file = File::open(&path).map_err(|e| format!("cannot open input: {e}"))?;
+            if !file
+                .metadata()
+                .map_err(|e| format!("cannot inspect opened input: {e}"))?
+                .is_file()
+            {
+                return Err("input must be a regular file".into());
+            }
             Ok(InputFile { path, file })
         })
         .collect()
@@ -413,8 +423,10 @@ fn preflight_targets(
     report: Option<(&File, &Path)>,
 ) -> Result<(), String> {
     for output in outputs {
-        if fs::symlink_metadata(output).is_ok() {
-            return Err(format!("output already exists: {}", output.display()));
+        match fs::symlink_metadata(output) {
+            Ok(_) => return Err(format!("output already exists: {}", output.display())),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(format!("cannot inspect output target: {error}")),
         }
     }
     let canonical_outputs = outputs
