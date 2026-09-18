@@ -22,4 +22,3 @@ dependency or public API.
 This proposal does not select generic coercion, case folding, arbitrary CSV
 syntax, Float64/timestamp/JSON values, multi-file Boolean compatibility,
 state/resume parity, transaction behavior, or performance policy.
-
