@@ -1,6 +1,6 @@
 # ADR-0025: Bounded Boolean File/CSV physical values
 
-Status: Proposed for T-0032/S02
+Status: Accepted through PR #145
 
 ## Context
 

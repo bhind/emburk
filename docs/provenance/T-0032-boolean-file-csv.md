@@ -1,6 +1,6 @@
 # T-0032/S02 bounded Boolean File/CSV values
 
-Status: Stage A reviewed; Stage B authorized on Issue #144
+Status: Done through PR #145 (`e73cd3a`)
 
 ## Authority and boundary
 
@@ -85,3 +85,7 @@ evidence isolation, dependency, or Qwen boundary. Final Vreji review found no
 blocking provenance or source-reuse issue and confirmed that unresolved
 redistribution, NOTICE/SBOM, patent/FTO, trademark, standards, and broader
 compatibility questions remain non-claims.
+
+Final-head acceptance at `4119ff3` repeated formatting, strict Clippy, 146/8
+workspace tests, and all 8+3+3 live comparisons. PR #145 integrated the slice
+as `e73cd3a`; Issue #144 is closed and its Project item is Done.
