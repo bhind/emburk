@@ -132,8 +132,7 @@ exec:
 
 
 def outputs(root):
-    output = root / "output"
-    return [item for item in tree(output) if item["type"] == "regular"]
+    return [item for item in tree(root) if item["type"] == "regular"]
 
 
 def kill_group(process):
@@ -289,6 +288,17 @@ class DriverTests(unittest.TestCase):
     def test_cases_and_fixture_are_bounded(self):
         self.assertEqual(CASES, ("two-regular", "regular-and-directory", "malformed-later"))
         self.assertEqual(fixture("regular-and-directory")["input.15.csv"], None)
+
+    def test_outputs_inventories_the_supplied_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "native-output"
+            output.mkdir()
+            (output / "result000.00.csv").write_bytes(b"id,name\n10,alpha\n")
+            self.assertEqual(
+                outputs(output),
+                [{"type": "regular", "name": "result000.00.csv", "size": 17,
+                  "sha256": sha256(b"id,name\n10,alpha\n")}],
+            )
 
     def test_kill_group_stops_normal_exit_descendant(self):
         with tempfile.TemporaryDirectory() as directory:
