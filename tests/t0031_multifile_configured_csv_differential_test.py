@@ -19,7 +19,7 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 JAR_SHA256 = "e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47"
-CASES = ("two-regular", "regular-and-directory", "malformed-later")
+CASES = ("two-regular", "contents-exchanged", "regular-and-directory")
 TIMEOUT_SECONDS = 90
 
 
@@ -90,10 +90,10 @@ def fixture(case):
     header = b"id,name\n"
     if case == "two-regular":
         return {"input.10.csv": header + b"10,alpha\n", "input.20.csv": header + b"20,beta\n"}
+    if case == "contents-exchanged":
+        return {"input.10.csv": header + b"20,beta\n", "input.20.csv": header + b"10,alpha\n"}
     if case == "regular-and-directory":
         return {"input.10.csv": header + b"10,alpha\n", "input.15.csv": None}
-    if case == "malformed-later":
-        return {"input.10.csv": header + b"10,alpha\n", "input.20.csv": header + b"not-a-long,beta\n"}
     raise ValueError("unknown selected case")
 
 
@@ -209,12 +209,12 @@ def assert_selected(value, root):
     if value["case"] == "two-regular":
         expected = [("result000.00.csv", b"id,name\n10,alpha\n"), ("result001.00.csv", b"id,name\n20,beta\n")]
         require(reference["exit"] == native["exit"] == 0, "two regular exit")
+    elif value["case"] == "contents-exchanged":
+        expected = [("result000.00.csv", b"id,name\n20,beta\n"), ("result001.00.csv", b"id,name\n10,alpha\n")]
+        require(reference["exit"] == native["exit"] == 0, "contents exchanged exit")
     elif value["case"] == "regular-and-directory":
         expected = [("result000.00.csv", b"id,name\n10,alpha\n")]
         require(reference["exit"] == native["exit"] == 0, "directory exclusion exit")
-    else:
-        expected = [("result000.00.csv", b"id,name\n10,alpha\n")]
-        require(reference["exit"] != 0 and native["exit"] != 0, "malformed later must fail")
     expected_names = [name for name, _ in expected]
     for run, output_dir in ((reference, root / "reference-output"), (native, root / "native-output")):
         require([entry["name"] for entry in run["outputs"]] == expected_names, "selected output names differ")
@@ -286,7 +286,11 @@ def main():
 
 class DriverTests(unittest.TestCase):
     def test_cases_and_fixture_are_bounded(self):
-        self.assertEqual(CASES, ("two-regular", "regular-and-directory", "malformed-later"))
+        self.assertEqual(CASES, ("two-regular", "contents-exchanged", "regular-and-directory"))
+        self.assertEqual(
+            fixture("contents-exchanged"),
+            {"input.10.csv": b"id,name\n20,beta\n", "input.20.csv": b"id,name\n10,alpha\n"},
+        )
         self.assertEqual(fixture("regular-and-directory")["input.15.csv"], None)
 
     def test_outputs_inventories_the_supplied_directory(self):
