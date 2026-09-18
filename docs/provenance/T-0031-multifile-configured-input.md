@@ -27,10 +27,22 @@ on 2026-09-18, one additional non-applying request failed at the network layer
 before a response. No Qwen response was received or adopted. Deterministic
 repository checks, not model output, remain the evidence boundary.
 
-## Evidence pending
+## Primary candidate evidence
 
-Primary and independent runs must still pass the Issue #141 Demo Command at a
-fixed reviewed revision. Raw differential evidence remains local and outside
-the repository. This record makes no general compatibility, atomicity,
-parallelism, performance, security, redistribution, or patent-clearance claim.
+At candidate `903596e`, formatting and strict workspace Clippy passed. The full
+workspace completed 144 tests with eight intentional external-oracle ignores.
+The pinned live comparison matched all three admitted cases: two regular files,
+the same filenames with contents exchanged, and one regular file plus an empty
+matching directory. Raw evidence is retained outside the repository at
+`/private/tmp/emburk-t0031-s03-differential-cgyphec5`; its root manifest SHA-256
+is `14294492f42e1ce754dad38bfca6fff01cffb866c1e4608fe4edc167ce9dff5d`.
 
+Two earlier retained runs exposed and then corrected driver-only defects: the
+supplied output directory was inventoried through a nonexistent child, and a
+native malformed-input test had been incorrectly substituted for the admitted
+contents-exchanged reference case. Their raw results were not converted into
+runtime rules or compatibility claims.
+
+Independent fixed-head acceptance remains pending. This record makes no general
+compatibility, atomicity, parallelism, performance, security, redistribution,
+or patent-clearance claim.
