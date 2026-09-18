@@ -1,8 +1,9 @@
 use std::{
     fs,
+    fs::File,
     path::{Path, PathBuf},
     process::{Command, Output, Stdio},
-    sync::atomic::{AtomicUsize, Ordering},
+    sync::atomic::{AtomicBool, AtomicUsize, Ordering},
 };
 
 static NEXT: AtomicUsize = AtomicUsize::new(0);
@@ -16,6 +17,40 @@ fn root(name: &str) -> PathBuf {
     fs::create_dir(&root).unwrap();
     fs::create_dir(root.join("output")).unwrap();
     root
+}
+
+#[cfg(unix)]
+#[test]
+fn report_hard_link_to_selected_input_is_rejected_by_open_descriptor_identity() {
+    let root = root("report-input-hardlink");
+    let input = root.join("input.csv");
+    fs::write(&input, b"id,name\n1,Ada\n").unwrap();
+    let output_prefix = root.join("output/result");
+    fs::write(
+        root.join("config.yml"),
+        config()
+            .replace(
+                "path_prefix: input.csv",
+                &format!("path_prefix: {}", input.display()),
+            )
+            .replace(
+                "path_prefix: output/result",
+                &format!("path_prefix: {}", output_prefix.display()),
+            ),
+    )
+    .unwrap();
+    let report = root.join("report-hardlink.json");
+    fs::hard_link(&input, &report).unwrap();
+    let report_file = File::open(&report).unwrap();
+    let error = emburk_core::run_config_with_cancel_and_report(
+        &root.join("config.yml"),
+        &AtomicBool::new(false),
+        Some((&report_file, &report)),
+    )
+    .unwrap_err();
+    assert_eq!(error, "report target aliases input");
+    assert_eq!(fs::read(&input).unwrap(), b"id,name\n1,Ada\n");
+    assert_eq!(fs::read_dir(root.join("output")).unwrap().count(), 0);
 }
 
 fn config() -> &'static str {
@@ -141,6 +176,29 @@ fn report_and_configured_output_collision_keeps_the_reserved_failed_report() {
             .unwrap()
             .trim_end_matches('\n')
     );
+}
+
+#[test]
+fn report_output_aliases_are_rejected_before_any_prefix_publication() {
+    let root = root("output-aliases");
+    std::os::unix::fs::symlink("output", root.join("output-link")).unwrap();
+    for report_path in [
+        root.join("output/result000.00.csv"),
+        root.join("output/../output/result000.00.csv"),
+        fs::canonicalize(root.join("output"))
+            .unwrap()
+            .join("result000.00.csv"),
+        root.join("output-link/result000.00.csv"),
+    ] {
+        fs::write(root.join("config.yml"), config()).unwrap();
+        fs::write(root.join("input.csv"), b"id,name\n1,Ada\n").unwrap();
+        let output = command(&root, &report_path).output().unwrap();
+        assert_eq!(output.status.code(), Some(1));
+        assert_eq!(report(&report_path)["outcome"], "failed");
+        assert_eq!(fs::read_dir(root.join("output")).unwrap().count(), 1);
+        fs::remove_file(&report_path).unwrap();
+        assert!(!root.join("output/result000.00.csv").exists());
+    }
 }
 
 #[test]
@@ -292,4 +350,56 @@ fn sigint_writes_a_cancelled_result_without_publishing_output() {
     assert!(result["records"].is_null());
     assert_eq!(result["error"], stderr.trim_end_matches('\n'));
     assert!(!root.join("output/result000.00.csv").exists());
+}
+
+#[cfg(unix)]
+#[test]
+fn sigint_after_first_prefix_is_published_keeps_only_that_prefix() {
+    use std::{
+        io::Write,
+        thread,
+        time::{Duration, Instant},
+    };
+    let root = root("sigint-after-first-prefix");
+    fs::write(root.join("config.yml"), config()).unwrap();
+    fs::write(root.join("input.csv-a"), b"id,name\n1,Ada\n").unwrap();
+    let mut second = File::create(root.join("input.csv-b")).unwrap();
+    second.write_all(b"id,name\n").unwrap();
+    let block = b"2,abcdefghijklmnopqrstuvwxyz\n".repeat(4096);
+    for _ in 0..256 {
+        second.write_all(&block).unwrap();
+    }
+    drop(second);
+    let report_path = root.join("result.json");
+    let mut child = command(&root, &report_path)
+        .stdout(Stdio::null())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let start = Instant::now();
+    while !root.join("output/result000.00.csv").exists()
+        && start.elapsed() < Duration::from_secs(10)
+    {
+        assert!(child.try_wait().unwrap().is_none(), "pipeline exited early");
+        thread::sleep(Duration::from_millis(1));
+    }
+    assert!(
+        root.join("output/result000.00.csv").exists(),
+        "first prefix was not published"
+    );
+    assert!(
+        Command::new("/bin/kill")
+            .args(["-INT", &child.id().to_string()])
+            .status()
+            .unwrap()
+            .success()
+    );
+    let output = child.wait_with_output().unwrap();
+    assert_eq!(output.status.code(), Some(130));
+    assert_eq!(report(&report_path)["outcome"], "cancelled");
+    assert_eq!(
+        fs::read(root.join("output/result000.00.csv")).unwrap(),
+        b"id,name\n1,Ada\n"
+    );
+    assert!(!root.join("output/result001.00.csv").exists());
 }

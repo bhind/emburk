@@ -340,11 +340,14 @@ fn execute(
     preflight_targets(&inputs, &outputs, report)?;
     let mut total = 0usize;
     for (input, output) in inputs.into_iter().zip(outputs) {
-        total = total
-            .checked_add(execute_input(&profile, cancel, input.file, &output)?)
-            .ok_or("aggregate record count overflow")?;
+        total = checked_total(total, execute_input(&profile, cancel, input.file, &output)?)?;
     }
     Ok(total)
+}
+fn checked_total(total: usize, next: usize) -> Result<usize, String> {
+    total
+        .checked_add(next)
+        .ok_or_else(|| "aggregate record count overflow".into())
 }
 fn select_inputs(profile: &Profile) -> Result<Vec<InputFile>, String> {
     let parent = profile
@@ -754,4 +757,17 @@ fn format_record(r: LogicalRecord, projection: &[(usize, String)]) -> Result<Vec
     }
     output.push(b'\n');
     Ok(output)
+}
+
+#[cfg(test)]
+mod configured_tests {
+    use super::checked_total;
+
+    #[test]
+    fn aggregate_record_count_overflow_is_rejected() {
+        assert_eq!(
+            checked_total(usize::MAX, 1),
+            Err("aggregate record count overflow".into())
+        );
+    }
 }
