@@ -22,7 +22,7 @@ struct Column {
 }
 struct Profile {
     input: PathBuf,
-    output: PathBuf,
+    output_prefix: PathBuf,
     skip: usize,
     schema: LogicalSchema,
     json: bool,
@@ -36,7 +36,16 @@ pub fn run_config(path: &Path) -> Result<usize, String> {
 }
 pub fn run_config_with_cancel(path: &Path, cancel: &AtomicBool) -> Result<usize, String> {
     let p = compile(yaml_profile::load(path)?.compile_node()?)?;
-    execute(p, cancel)
+    execute(p, cancel, None)
+}
+#[doc(hidden)]
+pub fn run_config_with_cancel_and_report(
+    path: &Path,
+    cancel: &AtomicBool,
+    report: Option<(&File, &Path)>,
+) -> Result<usize, String> {
+    let p = compile(yaml_profile::load(path)?.compile_node()?)?;
+    execute(p, cancel, report)
 }
 fn scalar(n: &Node) -> Result<&str, String> {
     match n {
@@ -249,10 +258,7 @@ fn compile(root: Node) -> Result<Profile, String> {
     }
     Ok(Profile {
         input: PathBuf::from(scalar(one(input, "path_prefix")?)?),
-        output: PathBuf::from(format!(
-            "{}000.00.csv",
-            scalar(one(output, "path_prefix")?)?
-        )),
+        output_prefix: PathBuf::from(scalar(one(output, "path_prefix")?)?),
         skip,
         json,
         decoder: codec(input, "decoders", false)?,
@@ -312,16 +318,35 @@ fn codec(mapping: &[(String, Node)], key: &str, encoder: bool) -> Result<Codec, 
     }
     Ok(codec)
 }
-fn execute(profile: Profile, cancel: &AtomicBool) -> Result<usize, String> {
+struct InputFile {
+    path: PathBuf,
+    file: File,
+}
+fn execute(
+    profile: Profile,
+    cancel: &AtomicBool,
+    report: Option<(&File, &Path)>,
+) -> Result<usize, String> {
     if cancel.load(Ordering::Acquire) {
         return Err("cancelled".into());
     }
-    let Some(input_path) = select_input(&profile)? else {
+    let inputs = select_inputs(&profile)?;
+    if inputs.is_empty() {
         return Ok(0);
-    };
-    execute_input(profile, cancel, input_path)
+    }
+    let outputs = (0..inputs.len())
+        .map(|index| output_path(&profile, index))
+        .collect::<Result<Vec<_>, _>>()?;
+    preflight_targets(&inputs, &outputs, report)?;
+    let mut total = 0usize;
+    for (input, output) in inputs.into_iter().zip(outputs) {
+        total = total
+            .checked_add(execute_input(&profile, cancel, input.file, &output)?)
+            .ok_or("aggregate record count overflow")?;
+    }
+    Ok(total)
 }
-fn select_input(profile: &Profile) -> Result<Option<PathBuf>, String> {
+fn select_inputs(profile: &Profile) -> Result<Vec<InputFile>, String> {
     let parent = profile
         .input
         .parent()
@@ -344,25 +369,104 @@ fn select_input(profile: &Profile) -> Result<Option<PathBuf>, String> {
                 .is_file()
         {
             matches.push(entry.path());
-            if matches.len() == 2 {
-                return Err("multiple input files matched".into());
+        }
+    }
+    matches.sort_by(|left, right| {
+        left.file_name()
+            .unwrap_or_default()
+            .as_encoded_bytes()
+            .cmp(right.file_name().unwrap_or_default().as_encoded_bytes())
+    });
+    if matches.len() > 2 {
+        return Err("more than two input files matched".into());
+    }
+    matches
+        .into_iter()
+        .map(|path| {
+            let file = File::open(&path).map_err(|e| format!("cannot open input: {e}"))?;
+            Ok(InputFile { path, file })
+        })
+        .collect()
+}
+fn output_path(profile: &Profile, index: usize) -> Result<PathBuf, String> {
+    Ok(PathBuf::from(format!(
+        "{}{:03}.00.csv",
+        profile.output_prefix.display(),
+        index
+    )))
+}
+fn canonical_target(path: &Path) -> Result<PathBuf, String> {
+    let parent = path
+        .parent()
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
+    Ok(fs::canonicalize(parent)
+        .map_err(|e| format!("cannot canonicalize output parent: {e}"))?
+        .join(path.file_name().ok_or("missing output filename")?))
+}
+fn preflight_targets(
+    inputs: &[InputFile],
+    outputs: &[PathBuf],
+    report: Option<(&File, &Path)>,
+) -> Result<(), String> {
+    for output in outputs {
+        if fs::symlink_metadata(output).is_ok() {
+            return Err(format!("output already exists: {}", output.display()));
+        }
+    }
+    let canonical_outputs = outputs
+        .iter()
+        .map(|p| canonical_target(p))
+        .collect::<Result<Vec<_>, _>>()?;
+    for (index, output) in canonical_outputs.iter().enumerate() {
+        if canonical_outputs[..index].contains(output) {
+            return Err("output targets alias each other".into());
+        }
+    }
+    for input in inputs {
+        let canonical_input =
+            fs::canonicalize(&input.path).map_err(|e| format!("cannot canonicalize input: {e}"))?;
+        if canonical_outputs.contains(&canonical_input) {
+            return Err("output target aliases input".into());
+        }
+    }
+    if let Some((report_file, report_path)) = report {
+        let canonical_report = fs::canonicalize(report_path)
+            .map_err(|e| format!("cannot canonicalize report: {e}"))?;
+        if canonical_outputs.contains(&canonical_report) {
+            return Err("report target aliases configured output".into());
+        }
+        for input in inputs {
+            if same_file(report_file, &input.file)? {
+                return Err("report target aliases input".into());
             }
         }
     }
-    Ok(matches.pop())
+    Ok(())
+}
+#[cfg(unix)]
+fn same_file(left: &File, right: &File) -> Result<bool, String> {
+    use std::os::unix::fs::MetadataExt;
+    let left = left.metadata().map_err(|e| e.to_string())?;
+    let right = right.metadata().map_err(|e| e.to_string())?;
+    Ok(left.dev() == right.dev() && left.ino() == right.ino())
+}
+#[cfg(not(unix))]
+fn same_file(_: &File, _: &File) -> Result<bool, String> {
+    Err("cannot verify file identity on this platform".into())
 }
 fn execute_input(
-    profile: Profile,
+    profile: &Profile,
     cancel: &AtomicBool,
-    input_path: PathBuf,
+    file: File,
+    output: &Path,
 ) -> Result<usize, String> {
-    let file = File::open(&input_path).map_err(|e| format!("cannot open input: {e}"))?;
     let mut source = Source {
         input: native_formats::reader(file, profile.decoder),
-        profile: &profile,
+        profile,
         skipped: 0,
     };
-    publication::write_atomic(&profile.output, cancel, |output| {
+    publication::write_atomic(output, cancel, |output| {
         let mut encoded = Encoder::new(output, profile.encoder);
         csv_stream::write_row(
             &mut encoded,
@@ -411,30 +515,31 @@ pub fn run_config_resumable(
     let raw = yaml_profile::load(config)?;
     let config_hash = checkpoint::hash(&raw.bytes);
     let profile = compile(raw.compile_node()?)?;
-    let input = select_input(&profile)?.ok_or("stateful run requires one matched input")?;
-    let input_identity = checkpoint::identity(&input)?;
-    let input = fs::canonicalize(input).map_err(|e| e.to_string())?;
-    let parent = profile
-        .output
+    let mut inputs = select_inputs(&profile)?;
+    if inputs.len() != 1 {
+        return Err("stateful run requires exactly one matched input".into());
+    }
+    let input_file = inputs.pop().expect("length checked");
+    let input_identity = checkpoint::identity(&input_file.path)?;
+    let input = fs::canonicalize(input_file.path).map_err(|e| e.to_string())?;
+    let output_path = output_path(&profile, 0)?;
+    let parent = output_path
         .parent()
         .filter(|p| !p.as_os_str().is_empty())
         .unwrap_or(Path::new("."));
-    let output = fs::canonicalize(parent).map_err(|e| e.to_string())?.join(
-        profile
-            .output
-            .file_name()
-            .ok_or("missing output filename")?,
-    );
+    let output = fs::canonicalize(parent)
+        .map_err(|e| e.to_string())?
+        .join(output_path.file_name().ok_or("missing output filename")?);
     let context = json!({"profile":"configured-spool-v1", "config_sha256":config_hash,"input_path":input.to_str().ok_or("stateful input path must be UTF-8")?,"input":input_identity,"output":output.to_str().ok_or("stateful output path must be UTF-8")?});
     let revalidate = || -> Result<(), String> {
         cancelled()?;
         if checkpoint::hash(&yaml_profile::load(config)?.bytes) != config_hash
             || checkpoint::identity(&input)? != input_identity
-            || select_input(&profile)?
-                .map(fs::canonicalize)
-                .transpose()
-                .map_err(|e| e.to_string())?
-                != Some(input.clone())
+            || {
+                let selected = select_inputs(&profile)?;
+                selected.len() != 1
+                    || fs::canonicalize(&selected[0].path).map_err(|e| e.to_string())? != input
+            }
         {
             return Err("configuration or input changed".into());
         }

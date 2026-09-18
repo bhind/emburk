@@ -259,3 +259,20 @@ fn modeled_crashes_before_and_after_output_link_recover() {
         }
     }
 }
+
+#[test]
+fn stateful_commands_require_exactly_one_input_before_creating_state() {
+    for (name, inputs) in [("zero", 0usize), ("two", 2usize)] {
+        let p = root();
+        fs::write(p.join("config.yml"), config(false, "")).unwrap();
+        for index in 0..inputs {
+            fs::write(p.join(format!("input-{index}")), b"id,name\n1,Ada\n").unwrap();
+        }
+        let output = command(&p, &["run", "config.yml", "--state", "state"])
+            .output()
+            .unwrap();
+        assert!(!output.status.success(), "{name}: {output:?}");
+        assert!(!p.join("state").exists());
+        assert!(!p.join("output/result000.00.csv").exists());
+    }
+}

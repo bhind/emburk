@@ -56,6 +56,26 @@ fn successful_run_writes_the_exact_v1_result_line() {
 }
 
 #[test]
+fn successful_two_input_run_reports_the_checked_aggregate() {
+    let root = root("two-inputs");
+    fs::write(root.join("config.yml"), config()).unwrap();
+    fs::write(root.join("input.csv-a"), b"id,name\n1,Ada\n").unwrap();
+    fs::write(root.join("input.csv-b"), b"id,name\n2,Bea\n3,Cy\n").unwrap();
+    let report_path = root.join("result.json");
+    let output = command(&root, &report_path).output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(report(&report_path)["records"], 3);
+    assert_eq!(
+        fs::read(root.join("output/result000.00.csv")).unwrap(),
+        b"id,name\n1,Ada\n"
+    );
+    assert_eq!(
+        fs::read(root.join("output/result001.00.csv")).unwrap(),
+        b"id,name\n2,Bea\n3,Cy\n"
+    );
+}
+
+#[test]
 fn failed_run_records_the_exact_canonical_stderr_line() {
     let root = root("failure");
     fs::write(
