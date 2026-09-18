@@ -88,7 +88,7 @@ def java_command(environment):
 def fixture(case):
     values = {
         "canonical-true-false": b"flag\ntrue\nfalse\n",
-        "unquoted-and-quoted-empty": b"flag\n\n\"\"\n",
+        "unquoted-and-quoted-empty": b'label,flag\nbare,\nquoted,""\n',
         "invalid-between-valid": b"flag\ntrue\ntruthy\nfalse\n",
     }
     try:
@@ -97,7 +97,10 @@ def fixture(case):
         raise ValueError("unknown selected case") from failure
 
 
-def config():
+def config(case):
+    columns = b"    - {name: flag, type: boolean}\n"
+    if case == "unquoted-and-quoted-empty":
+        columns = b"    - {name: label, type: string}\n    - {name: flag, type: boolean}\n"
     return b'''in:
   type: file
   path_prefix: input.csv
@@ -110,8 +113,7 @@ def config():
     escape: '"'
     skip_header_lines: 1
     columns:
-    - {name: flag, type: boolean}
-out:
+''' + columns + b'''out:
   type: file
   path_prefix: output/result
   file_ext: csv
@@ -187,6 +189,32 @@ def validate_case_manifest(path):
     return value
 
 
+def validate_summary_manifest(path):
+    """Fail closed if the summary no longer describes the complete capture tree."""
+    value = json.loads(path.read_text(encoding="utf-8"))
+    required = {"run_uuid", "reference", "reference_snapshot", "cases", "result", "tree"}
+    require(isinstance(value, dict) and set(value) == required, "summary manifest structure")
+    require(str(uuid.UUID(value["run_uuid"])) == value["run_uuid"], "summary run identity")
+    require(value["reference"] == {"sha256": JAR_SHA256}, "summary reference identity")
+    root = path.parent
+    snapshot = regular_detail(root / "embulk.jar", root)
+    require(snapshot == value["reference_snapshot"] and snapshot["sha256"] == JAR_SHA256, "summary reference snapshot")
+    require(value["result"] == "captured", "summary result")
+    require(isinstance(value["cases"], list) and [item.get("case") if isinstance(item, dict) else None for item in value["cases"]] == list(CASES), "summary case order")
+    for item, case in zip(value["cases"], CASES):
+        require(set(item) == {"case", "path", "manifest_sha256"}, "summary case shape")
+        require(item["path"] == f"cases/{case}", "summary case path")
+        manifest = root / item["path"] / "manifest.json"
+        require(manifest.is_file() and not manifest.is_symlink(), "summary case manifest")
+        require(item["manifest_sha256"] == sha256(manifest.read_bytes()), "summary case hash")
+        captured = validate_case_manifest(manifest)
+        require(captured["case"] == case and captured["run_uuid"] == value["run_uuid"], "summary case identity")
+        require(captured["reference"] == value["reference"], "summary case reference linkage")
+    actual = [item for item in inventory(root) if item["name"] != "manifest.json"]
+    require(value["tree"] == actual, "summary tree changed")
+    return value
+
+
 def run_case(case, run_root, jar, java, java_version, run_uuid):
     root = run_root / "cases" / case
     root.mkdir(parents=True, mode=0o700)
@@ -196,7 +224,7 @@ def run_case(case, run_root, jar, java, java_version, run_uuid):
         directory.mkdir(mode=0o700)
         directory.chmod(0o700)
     (root / "input.csv").write_bytes(fixture(case))
-    (root / "config.yml").write_bytes(config())
+    (root / "config.yml").write_bytes(config(case))
     (root / "java-version.txt").write_bytes(java_version)
     environment = {"PATH": os.defpath, "JAVA_HOME": str(java.parent.parent), "HOME": str(home),
                    "TMPDIR": str(temporary), "EMBULK_HOME": str(home)}
@@ -224,7 +252,8 @@ def main():
     jar = root / "embulk.jar"
     jar.write_bytes(jar_data); jar.chmod(0o400)
     run_uuid = str(uuid.uuid4())
-    summary = {"run_uuid": run_uuid, "reference_sha256": JAR_SHA256, "cases": [], "result": "captured"}
+    summary = {"run_uuid": run_uuid, "reference": {"sha256": JAR_SHA256},
+               "reference_snapshot": regular_detail(jar, root), "cases": [], "result": "captured"}
     try:
         for case in CASES:
             manifest = run_case(case, root, jar, java, version, run_uuid)
@@ -234,7 +263,9 @@ def main():
         require(sha256(jar.read_bytes()) == JAR_SHA256, "reference snapshot changed")
     finally:
         summary["tree"] = inventory(root)
-        (root / "manifest.json").write_text(json.dumps(summary, sort_keys=True) + "\n", encoding="utf-8")
+        summary_path = root / "manifest.json"
+        summary_path.write_text(json.dumps(summary, sort_keys=True) + "\n", encoding="utf-8")
+        validate_summary_manifest(summary_path)
         print("T0032_S02_EVIDENCE_DIR=" + str(root), flush=True)
 
 
