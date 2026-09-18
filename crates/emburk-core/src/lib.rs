@@ -62,6 +62,8 @@ pub use configured_csv::run_config;
 #[doc(hidden)]
 pub use configured_csv::run_config_with_cancel;
 #[doc(hidden)]
+pub use configured_csv::run_config_with_cancel_and_report;
+#[doc(hidden)]
 pub use text_transfer::transfer_lines;
 
 // This is deliberately private: it is a bounded fake-fixture coordinator, not

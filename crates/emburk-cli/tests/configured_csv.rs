@@ -72,13 +72,76 @@ fn invalid_configurations_do_not_open_output() {
     assert!(!d.join("output/result000.00.csv").exists());
 }
 #[test]
-fn prefix_and_bad_csv_fail_without_publishing_or_leaving_temporary_output() {
+fn two_matching_inputs_are_sorted_and_more_than_two_are_rejected() {
     let d = dir("prefix");
     write(&d, &config(""));
     fs::write(d.join("input.csv-a"), b"id,name\n1,a\n").unwrap();
     fs::write(d.join("input.csv-b"), b"id,name\n2,b\n").unwrap();
+    assert!(run(&d).status.success());
+    assert_eq!(
+        fs::read(d.join("output/result000.00.csv")).unwrap(),
+        b"id,name\n1,a\n"
+    );
+    assert_eq!(
+        fs::read(d.join("output/result001.00.csv")).unwrap(),
+        b"id,name\n2,b\n"
+    );
+    fs::write(d.join("input.csv-c"), b"id,name\n3,c\n").unwrap();
+    let failed = run(&d);
+    assert!(!failed.status.success());
+    assert!(String::from_utf8_lossy(&failed.stderr).contains("more than two input files matched"));
+}
+#[test]
+fn bad_csv_does_not_publish_or_leave_temporary_output() {
+    for (name, bytes) in [
+        ("quote", b"id,name\n1,\"bad\"x\n".as_slice()),
+        ("width", b"id,name\n1,a,b\n".as_slice()),
+        ("utf8", b"id,name\n1,\xff\n".as_slice()),
+    ] {
+        let d = dir(name);
+        write(&d, &config(""));
+        fs::write(d.join("input.csv"), bytes).unwrap();
+        assert!(!run(&d).status.success());
+        assert!(!d.join("output/result000.00.csv").exists());
+        assert_eq!(fs::read_dir(d.join("output")).unwrap().count(), 0);
+    }
+}
+#[test]
+fn malformed_second_input_keeps_completed_first_prefix() {
+    let d = dir("second-fails");
+    write(&d, &config(""));
+    fs::write(d.join("input.csv-a"), b"id,name\n1,a\n").unwrap();
+    fs::write(d.join("input.csv-b"), b"id,name\n2,b,c\n").unwrap();
     assert!(!run(&d).status.success());
-    assert!(!d.join("output/result000.00.csv").exists());
+    assert_eq!(
+        fs::read(d.join("output/result000.00.csv")).unwrap(),
+        b"id,name\n1,a\n"
+    );
+    assert!(!d.join("output/result001.00.csv").exists());
+}
+#[test]
+fn existing_and_dangling_output_targets_are_rejected_before_processing() {
+    for (name, make_target) in [("existing", false), ("dangling", true)] {
+        let d = dir(name);
+        write(&d, &config(""));
+        fs::write(d.join("input.csv-a"), b"id,name\n1,a\n").unwrap();
+        fs::write(d.join("input.csv-b"), b"id,name\n2,b\n").unwrap();
+        let target = d.join("output/result001.00.csv");
+        if make_target {
+            #[cfg(unix)]
+            std::os::unix::fs::symlink("absent", &target).unwrap();
+            #[cfg(not(unix))]
+            fs::write(&target, b"sentinel").unwrap();
+        } else {
+            fs::write(&target, b"sentinel").unwrap();
+        }
+        assert!(!run(&d).status.success());
+        assert!(!d.join("output/result000.00.csv").exists());
+    }
+}
+#[test]
+fn prefix_and_bad_csv_regression_marker() {
+    // Keeps the old test name's coverage split into focused multi-file cases.
     for (name, bytes) in [
         ("quote", b"id,name\n1,\"bad\"x\n".as_slice()),
         ("width", b"id,name\n1,a,b\n".as_slice()),

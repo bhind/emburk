@@ -115,7 +115,11 @@ fn run_with_report(config: &Path, report_path: &Path) {
     let result = if cancelled.load(Ordering::Acquire) {
         Err("cancelled".to_owned())
     } else {
-        emburk_core::run_config_with_cancel(config, &cancelled)
+        emburk_core::run_config_with_cancel_and_report(
+            config,
+            &cancelled,
+            Some((&report, report_path)),
+        )
     };
 
     let (outcome, exit_code, records, error) = match result {
