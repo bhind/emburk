@@ -139,8 +139,8 @@ T-0032/S02 completed its reviewed Stage A capture on Issue #144. Stage B is
 authorized for only the five observed Boolean input/output effects recorded by
 ADR-0025. The parent remains Backlog at Current 11 / Initial 8; no Boolean
 runtime support is accepted yet. The Stage B candidate passes primary 146/8
-workspace and 8+3+3 live differential evidence; independent and specialist
-gates remain pending.
+workspace and 8+3+3 live differential evidence. Independent acceptance,
+Security, and Vreji gates pass at `23d4f94`; integration remains pending.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`

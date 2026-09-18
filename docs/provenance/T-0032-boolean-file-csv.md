@@ -73,3 +73,15 @@ The primary Boolean raw evidence is
 `c6fc93d91d2e381300b977037442ebbdc72b2534d40565293b233a81e445730d`.
 This is selected Differential evidence only. Independent fixed-head acceptance,
 Security, and final Vreji review remain pending.
+
+Independent acceptance at `23d4f94` reproduced 146 passes, eight intentional
+ignores, existing CSV 8/8, Boolean 3/3, and multi-file 3/3 matches. Its Boolean
+evidence root is `/private/tmp/emburk-t0032-s02-differential-vhc2j7f3`, root
+manifest SHA-256
+`bdca4a6b522882f496f2630fd54f796c4e6aabdb2a74c4a0e08b1580505c610d`.
+
+Security found no actionable issue in the bounded parser, atomic publication,
+evidence isolation, dependency, or Qwen boundary. Final Vreji review found no
+blocking provenance or source-reuse issue and confirmed that unresolved
+redistribution, NOTICE/SBOM, patent/FTO, trademark, standards, and broader
+compatibility questions remain non-claims.
