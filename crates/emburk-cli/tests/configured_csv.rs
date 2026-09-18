@@ -21,6 +21,12 @@ fn config(extra: &str) -> String {
         "in:\n  type: file\n  path_prefix: input.csv\n  parser:\n    type: csv\n    charset: UTF-8\n    newline: LF\n    delimiter: ','\n    quote: '\"'\n    escape: '\"'\n    skip_header_lines: 1\n    columns:\n    - {{name: id, type: long}}\n    - {{name: name, type: string}}\nout:\n  type: file\n  path_prefix: output/result\n  file_ext: csv\n  formatter:\n    type: csv\n    charset: UTF-8\n    newline: LF\n    delimiter: ','\n    quote: '\"'\n    escape: '\"'\n    header_line: true\n    quote_policy: MINIMAL\nexec:\n  max_threads: 1\n  min_output_tasks: 1\n{extra}"
     )
 }
+fn boolean_config(extra: &str) -> String {
+    config(extra).replace(
+        "    - {name: id, type: long}\n    - {name: name, type: string}",
+        "    - {name: flag, type: boolean}",
+    )
+}
 fn run(dir: &Path) -> std::process::Output {
     Command::new(env!("CARGO_BIN_EXE_emburk"))
         .args(["run", "config.yml"])
@@ -46,6 +52,27 @@ fn normal_missing_and_existing_outputs_are_safe() {
     write(&m, &config(""));
     assert!(run(&m).status.success());
     assert!(!m.join("output/result000.00.csv").exists());
+}
+#[test]
+fn selected_boolean_csv_values_preserve_empty_and_quote_state() {
+    let d = dir("boolean-selected");
+    write(&d, &boolean_config(""));
+    fs::write(d.join("input.csv"), b"flag\ntrue\nfalse\ntruthy\n\n\"\"\n").unwrap();
+    assert!(run(&d).status.success());
+    assert_eq!(
+        fs::read(d.join("output/result000.00.csv")).unwrap(),
+        b"flag\ntrue\nfalse\nfalse\n\nfalse\n"
+    );
+}
+#[test]
+fn unsupported_boolean_literal_rejects_the_csv_run() {
+    let d = dir("boolean-unsupported");
+    write(&d, &boolean_config(""));
+    fs::write(d.join("input.csv"), b"flag\nTRUE\n").unwrap();
+    let output = run(&d);
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("unsupported Boolean literal"));
+    assert!(!d.join("output/result000.00.csv").exists());
 }
 #[test]
 fn invalid_configurations_do_not_open_output() {
