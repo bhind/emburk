@@ -36,4 +36,3 @@ count and output naming bounded. It explicitly does not admit general globbing,
 recursive discovery, non-ASCII ordering compatibility, arbitrary task counts,
 inter-file parallelism, hostile concurrent namespace replacement, multi-input
 resume, or Embulk transaction parity.
-

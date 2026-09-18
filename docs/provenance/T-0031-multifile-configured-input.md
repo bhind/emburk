@@ -43,6 +43,18 @@ native malformed-input test had been incorrectly substituted for the admitted
 contents-exchanged reference case. Their raw results were not converted into
 runtime rules or compatibility claims.
 
-Independent fixed-head acceptance remains pending. This record makes no general
-compatibility, atomicity, parallelism, performance, security, redistribution,
-or patent-clearance claim.
+Independent acceptance at `a06d49a` reproduced 144 passes, eight intentional
+ignores, strict Clippy, and all three live comparisons. Its raw evidence is
+`/private/tmp/emburk-t0031-s03-differential-8fgb4n3g`, root manifest SHA-256
+`07323b396be1b126b0c0d86cd29635520d87a6ed8237304047535acb4896586d`.
+
+Security review treats concurrent pathname replacement as outside the trusted
+local-filesystem profile for both ordinary and stateful execution. Stateful
+selection opens and descriptor-validates exactly one candidate before state
+access, but the accepted checkpoint path subsequently derives identity and
+reads through the pathname. It therefore does not defend against a hostile
+same-UID rename between selection and state processing.
+
+This record makes no general compatibility, atomicity, parallelism,
+performance, hostile namespace defense, security, redistribution, or
+patent-clearance claim.

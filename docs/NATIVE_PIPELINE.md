@@ -6,7 +6,9 @@ The configured path is intended for trusted local Unix filesystems.
 
 T-0031/S03 is an active candidate for at most two ordinary-run inputs. The
 integrated documented profile remains single-input until its acceptance gates
-pass. Stateful run/resume remain single-input.
+pass. Stateful run/resume remain single-input. Both paths assume a trusted local
+namespace; stateful processing can resolve the selected pathname again after
+descriptor validation and does not defend against concurrent same-UID rename.
 
 ## Minimal configured transfer
 
