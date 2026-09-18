@@ -4,6 +4,9 @@ This guide describes the selected native profile, not general Embulk plugin
 compatibility. Use a new output prefix: existing final files are never replaced.
 The configured path is intended for trusted local Unix filesystems.
 
+Boolean columns are not yet admitted. T-0032/S02 has locked a bounded observed
+profile, but its native Stage B is not yet accepted.
+
 T-0031/S03, integrated through PR #142, admits at most two ordinary-run inputs.
 Stateful run/resume remain single-input. Both paths assume a trusted local
 namespace; stateful processing can resolve the selected pathname again after

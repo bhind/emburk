@@ -1,6 +1,8 @@
 # Architecture
 
 Status: target architecture unless explicitly identified as implemented below.
+T-0032/S02 may extend the configured consumer with private Boolean values only
+after a reviewed black-box observation; it adds no public type or dependency.
 The runtime uses two crates. T-0031/S01 adds an experimental text File-to-File
 consumer, not an Embulk-compatible configuration/plugin loader.
 

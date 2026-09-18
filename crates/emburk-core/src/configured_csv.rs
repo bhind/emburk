@@ -18,7 +18,7 @@ use std::{
 #[derive(Clone)]
 struct Column {
     name: String,
-    long: bool,
+    logical_type: LogicalType,
 }
 struct Profile {
     input: PathBuf,
@@ -161,13 +161,16 @@ fn compile(root: Node) -> Result<Profile, String> {
     for item in cols {
         let c = map(item)?;
         exact(c, &["name", "type"])?;
-        let t = scalar(one(c, "type")?)?;
-        if !matches!(t, "long" | "string") {
-            return Err("unsupported column type".into());
+        let logical_type = match scalar(one(c, "type")?)? {
+            "long" => LogicalType::Signed64,
+            "string" => LogicalType::Text,
+            "boolean" if !json => LogicalType::Boolean,
+            "boolean" => return Err("Boolean columns are only supported for CSV".into()),
+            _ => return Err("unsupported column type".into()),
         };
         columns.push(Column {
             name: scalar(one(c, "name")?)?.to_owned(),
-            long: t == "long",
+            logical_type,
         });
     }
     let output = map(one(top, "out")?)?;
@@ -268,16 +271,7 @@ fn compile(root: Node) -> Result<Profile, String> {
         schema: LogicalSchema::new(
             columns
                 .iter()
-                .map(|column| {
-                    LogicalColumn::new(
-                        column.name.clone(),
-                        if column.long {
-                            LogicalType::Signed64
-                        } else {
-                            LogicalType::Text
-                        },
-                    )
-                })
+                .map(|column| LogicalColumn::new(column.name.clone(), column.logical_type))
                 .collect(),
         ),
     })
@@ -741,6 +735,12 @@ impl RecordSource for Source<'_> {
                             break;
                         }
                     }
+                } else if c.logical_type() == LogicalType::Boolean {
+                    match text.as_str() {
+                        "true" => cells.push(LogicalValue::Boolean(true)),
+                        "false" | "truthy" | "" => cells.push(LogicalValue::Boolean(false)),
+                        _ => return Err(SourceError("unsupported Boolean literal".into())),
+                    }
                 } else {
                     cells.push(LogicalValue::Text(text))
                 }
@@ -762,6 +762,9 @@ fn format_record(r: LogicalRecord, projection: &[(usize, String)]) -> Result<Vec
             LogicalValue::Null => {}
             LogicalValue::Signed64(value) => {
                 csv_stream::append_field(&mut output, &value.to_string())
+            }
+            LogicalValue::Boolean(value) => {
+                csv_stream::append_field(&mut output, if *value { "true" } else { "false" })
             }
             LogicalValue::Text(value) => csv_stream::append_field(&mut output, value),
             _ => {}
