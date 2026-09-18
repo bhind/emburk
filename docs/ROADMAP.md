@@ -17,9 +17,9 @@ The bounded seven-stage sequence is complete; broader parent gates remain open,
 including format guessing, general plugin profiles and Embulk resume parity.
 T-0014/S03 is accepted through PR #139 as a bounded multi-file File input
 observation before any native expansion of the current single-match profile.
-T-0031/S03 is the active 5 SP implementation gate for that bounded expansion;
-integration requires exact differential agreement, Unit/Contract evidence,
-independent review, and explicit sequential-publication non-claims.
+T-0031/S03 completed that bounded 5 SP implementation gate through PR #142
+after exact differential agreement, Unit/Contract evidence, independent review,
+and explicit sequential-publication non-claims.
 
 ## Phase 0: Governance and Compatibility Contract
 

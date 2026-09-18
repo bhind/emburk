@@ -15,7 +15,7 @@ T-0014/S03, accepted through PR #139, is an evidence-only observation of multi-f
 selection. It does not choose native input ordering, per-file parser lifecycle,
 task fan-out, or output naming. Any later native multi-file boundary must be
 designed from reviewed raw reference evidence in a separate task.
-T-0031/S03 is that bounded candidate: ordinary run admits at most two retained
+ADR-0024, integrated through PR #142, admits that bounded profile: ordinary run admits at most two retained
 input descriptors, preflights every fixed indexed target, and publishes each
 output sequentially. Stateful run/resume retain the accepted single-input
 boundary; no cross-output transaction is introduced.

@@ -30,9 +30,9 @@ Primary evidence observes lexical selection, one task/output per regular file,
 per-file header skipping, and exclusion of the one selected empty matching
 directory. Independent final-head reproduction matches those bounded
 projections and exact output bytes.
-T-0031/S03 is an active candidate to reproduce only those three cases with a
-maximum of two ordinary-run inputs. It is not yet Verified and does not extend
-stateful execution or certify general multi-file compatibility.
+T-0031/S03 integrated through PR #142 and reproduces only those three cases
+with a maximum of two ordinary-run inputs. This selected evidence does not
+extend stateful execution or certify general multi-file compatibility.
 T-0032/S01 integrated through PR #116: eight explicitly configured single-file
 long/string CSV projections match real Embulk outputs and exits in primary and
 independent runs. This is a private native consumer, not a verified generic

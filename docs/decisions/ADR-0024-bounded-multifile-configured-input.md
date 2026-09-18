@@ -1,6 +1,6 @@
 # ADR-0024: Bounded multi-file configured input
 
-Status: Proposed for T-0031/S03
+Status: Accepted through PR #142
 
 ## Context
 
