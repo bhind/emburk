@@ -1,6 +1,6 @@
 # T-0032/S02 bounded Boolean File/CSV values
 
-Status: Stage A reference observation on Issue #144
+Status: Stage A reviewed; Stage B authorized on Issue #144
 
 ## Authority and boundary
 
@@ -28,6 +28,27 @@ bytes must be retained in a private external tree and validated before semantic
 assertions. Native code must not change until the Project Manager reviews the
 first capture.
 
+The first capture at
+`/private/tmp/emburk-t0032-s02-boolean-capture-mu9hbxu1` was intentionally
+rejected as underdetermined because a blank physical row and quoted empty field
+could not be distinguished. No native rule was inferred from it.
+
+The hardened capture is retained at
+`/private/tmp/emburk-t0032-s02-boolean-capture-0xl43ape`; root manifest SHA-256
+`080cb06e34b881e4a1cba61a3a44fa9e251c137a7e6b09b32bc4beda9bde6a7b`.
+Its exact outputs are:
+
+- `true`, `false` -> `true`, `false`;
+- labeled unquoted empty and quoted empty -> empty field and `false`;
+- `true`, `truthy`, `false` -> `true`, `false`, `false`.
+
+All cases exited zero without timeout or stderr. The summary validator binds
+the exact case order, one run UUID, case-manifest hashes, pinned JAR snapshot,
+and complete tree. Jitro and Vreji reviewed the capture and authorized Stage B
+within this factual boundary.
+
 ## Qwen
 
-No Qwen request is authorized until the observed Boolean policy is locked.
+One 90-second non-applying request is now authorized with only the two files
+listed in Issue #144 and default project context disabled. Its answer cannot
+select behavior or supply evidence.

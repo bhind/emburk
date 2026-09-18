@@ -2,8 +2,8 @@
 
 Compatibility is an evidence record, not a general promise.
 
-T-0032/S02 is reference-observation-only until its first three-case Boolean
-capture is reviewed. Boolean File/CSV values remain unsupported natively.
+T-0032/S02 has reviewed reference-only evidence for three Boolean cases. Native
+Boolean File/CSV values remain unsupported until Stage B passes.
 
 T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
 integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed
