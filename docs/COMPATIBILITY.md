@@ -17,6 +17,13 @@ explicit native safety refusal, not reference-parity evidence. The native
 `double` profile is integrated only at this bounded ADR-0026 boundary; no wider
 numeric behavior is claimed.
 
+T-0032/S04 has reviewed two matching local lexical Float64 captures only.
+ADR-0027 selects plain `3.5`/`-12.25`, quoted and unquoted `3.5`, and one
+`3.5x` middle-row omission outcome. Candidate `42d1c44` is in Review, not
+integrated; all remaining unselected Float64 lexical values must continue to
+reject before publication. This is not a general lexical, parser, or
+error-policy compatibility claim.
+
 T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
 integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed
 preservation. Unseeded headerless charset detection and TSV remain unsupported

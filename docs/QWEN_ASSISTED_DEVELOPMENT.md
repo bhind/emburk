@@ -78,9 +78,13 @@ unclassified material into them.
    records, integrates the pull request, and performs the final status change.
 
 Qwen is deliberately not a delivery gate. The CLI call is synchronous and may
-wait until its configured timeout; the default is currently 600 seconds. Before
-each consultation, set `EMBURK_QWEN_TIMEOUT_SECONDS` to the packet's finite
-attempt timeout so the configured request actually enforces that bound. If Qwen is unreachable,
+wait until its configured timeout; the default consultation timeout is 600
+seconds and the default keepalive is 30 minutes. A cold model load may take
+two to three minutes, so a task packet should use the 600-second bound unless a
+separate explicit authority records a different bound. Before each consultation,
+set `EMBURK_QWEN_TIMEOUT_SECONDS` and `EMBURK_QWEN_KEEP_ALIVE` to the packet's
+approved values so the request enforces that boundary. A timeout is an observed
+request outcome, not proof of a network failure. If Qwen is unreachable,
 reaches the timeout, or produces an unusable answer, record that outcome once
 and continue with the assigned work. Repeated retries do not gate delivery or
 consume a separate Kanban item.

@@ -114,7 +114,32 @@ fn selected_float64_unquoted_empty_is_null() {
 fn unsupported_float64_literal_rejects_without_publishing_output() {
     let d = dir("float64-unsupported");
     write(&d, &double_config(""));
-    fs::write(d.join("input.csv"), b"ratio\n3.5\n").unwrap();
+    fs::write(d.join("input.csv"), b"ratio\n3.50\n").unwrap();
+    let output = run(&d);
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("unsupported Float64 literal"));
+    assert!(!d.join("output/result000.00.csv").exists());
+}
+#[test]
+fn selected_float64_lexical_values_preserve_quote_state_and_omit_only_3_5x() {
+    let d = dir("float64-lexical-selected");
+    write(&d, &double_config(""));
+    fs::write(
+        d.join("input.csv"),
+        b"ratio\n3.5\n-12.25\n\"3.5\"\n3.5x\n42.0\n",
+    )
+    .unwrap();
+    assert!(run(&d).status.success());
+    assert_eq!(
+        fs::read(d.join("output/result000.00.csv")).unwrap(),
+        b"ratio\n3.5\n-12.25\n3.5\n42.0\n"
+    );
+}
+#[test]
+fn unselected_float64_lexical_literal_rejects_without_publishing_output() {
+    let d = dir("float64-lexical-unselected");
+    write(&d, &double_config(""));
+    fs::write(d.join("input.csv"), b"ratio\n3.5\n3.50\n").unwrap();
     let output = run(&d);
     assert!(!output.status.success());
     assert!(String::from_utf8_lossy(&output.stderr).contains("unsupported Float64 literal"));

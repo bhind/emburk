@@ -30,3 +30,4 @@ Architecture Decision Records capture durable decisions that affect product cont
 | [ADR-0024](ADR-0024-bounded-multifile-configured-input.md) | Bounded multi-file configured input | Accepted through PR #142 |
 | [ADR-0025](ADR-0025-bounded-boolean-file-csv.md) | Bounded Boolean File/CSV physical values | Accepted through PR #145 |
 | [ADR-0026](ADR-0026-bounded-float64-file-csv.md) | Bounded Float64 File/CSV physical values | Accepted through PR #148 |
+| [ADR-0027](ADR-0027-bounded-float64-lexical-file-csv.md) | Bounded Float64 lexical File/CSV values | Accepted; T-0032/S04 candidate in Review |

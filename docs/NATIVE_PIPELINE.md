@@ -13,6 +13,11 @@ in ADR-0026 through source `3cb9c32`. The native `double` column is limited to
 that three-case profile; do not treat the configured examples below as general
 Float64 support.
 
+T-0032/S04 Stage A selects three lexical Float64 observations under ADR-0027;
+candidate `42d1c44` is in Review, not integrated. It preserves the ADR-0026
+profile and rejects unselected lexical values before final publication. It is
+not a general CSV parsing or malformed-row recovery policy.
+
 T-0031/S03, integrated through PR #142, admits at most two ordinary-run inputs.
 Stateful run/resume remain single-input. Both paths assume a trusted local
 namespace; stateful processing can resolve the selected pathname again after
