@@ -29,6 +29,11 @@ existing null distinction, and add no dependency, public API, physical-batch
 format, or plugin surface. The differential harness must validate raw Stage A
 evidence before projecting it into native expectations.
 
+Candidate `3cb9c32` implements this decision and rejects any other Float64
+literal before final publication rather than silently omitting it. Its primary
+and independent exact-Demo evidence is under review; this ADR is not accepted
+through a pull request until integration.
+
 ## Limits
 
 This decision selects no general Float64 lexical grammar, exponent/non-finite

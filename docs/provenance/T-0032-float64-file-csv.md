@@ -1,7 +1,8 @@
 # T-0032/S03 bounded Float64 File/CSV values
 
-Status: Stage A reviewed; Stage B authorized under ADR-0026. No native Float64
-File/CSV implementation is integrated by this record.
+Status: Candidate Stage B evidence recorded at `3cb9c32`; final provenance
+review and integration pending. No native Float64 File/CSV implementation is
+integrated by this record.
 
 ## Authority
 
@@ -84,6 +85,37 @@ Stop on evidence invalidity, mismatch, any unobserved syntax requirement, new
 dependency/public surface, unsafe output effect, IP/licensing uncertainty,
 Qwen context breach, or regression. Do not guess behavior to obtain a passing
 comparison.
+
+## Candidate evidence
+
+At exact candidate head `3cb9c32`, the primary Demo exited zero after format,
+locked strict workspace Clippy, locked workspace tests (157 listed, eight
+intentional external-oracle ignores), CLI build, and `git diff --check`. It
+retained the following primary evidence manifests: configured CSV 8/8 at
+`/private/tmp/emburk-t0032-differential-vf0c24dp`, SHA-256
+`85fb39438505dde57c3ffa1a8e162e330553f6e6dd5d8fe46a7482fc53d30eae`;
+Boolean 3/3 at `/private/tmp/emburk-t0032-s02-differential-it6mscwf`,
+`c3b0fd4bfbb5bcabdb2bd985d780e2648f5535e323f5f55301fd02433bedc6b1`;
+Float64 3/3 at `/private/tmp/emburk-t0032-s03-float64-differential-1fe8dzh3`,
+`38be834ec60e339e66a411d88b59ea83e5a11d0f607d8b519ef51cd92123de99`;
+and multi-file 3/3 at `/private/tmp/emburk-t0031-s03-differential-8pjhm9ru`,
+`532d3964580ba8480b2138a3f4cdf52eeaa8855e6981241051b53f1b1c2a188c`.
+
+An independent exact-head run reported the same command outcomes and retained
+configured CSV SHA-256
+`f6924e995991ae7da1649d7cad1b49156431230430ded89f5b38ae9358f2a70d`,
+Boolean `a296f42f345a837e289f390899686177366d86b694207c33345743bcef4b87cc`,
+Float64 `00947a051d196f1e2caf40dfda17b9d2b4a0f70b4fd9387a31fa114521f3eeb1`,
+and multi-file `2160d0dec95032931b144c1ca60ed30d47292b6b9edec9f3e50d433de5908e5f`.
+Jitro revalidated the two Float64 manifests with the frozen driver. Security's
+re-review reported no blocker after the silent-drop and pre-read-size fixes;
+per-captured-file post-read size caps remain a residual non-claim. Final
+provenance review remains required.
+
+The single authorized Qwen request supplied only the two allowed Rust files,
+with default project context disabled. It timed out after 90 seconds with
+`Errno 60`, returned no response, and was rejected; it had zero implementation
+or evidence influence.
 
 ## Non-claims
 

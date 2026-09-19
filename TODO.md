@@ -130,7 +130,7 @@ claim or completion of T-0026.
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 13 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0032 | Implement the CSV parser and formatter (S01/S02 Done; S03 Stage B In Progress) | Backlog | P1 | 16 | T-0023 | Rust Core Implementer | Differential (Embulk) |
+| T-0032 | Implement the CSV parser and formatter (S01/S02 Done; S03 Candidate Review) | Backlog | P1 | 16 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
@@ -139,9 +139,10 @@ claim or completion of T-0026.
 
 T-0032/S03 is a 5 SP selected Float64 File/CSV physical-value slice under
 Issue #147. Stage A reference evidence is reviewed and ADR-0026 authorizes
-Stage B only for its three observed configurations. No runtime support is
-integrated, and parent Current 16 / Initial 8 is a forecast rather than
-completion evidence.
+its three observed configurations only. Candidate `3cb9c32` has matching
+primary and independent exact Demos, but final provenance review, PR
+integration, and closeout remain required. No runtime support is integrated,
+and parent Current 16 / Initial 8 is a forecast rather than completion evidence.
 
 ## T-0040 — Java compatibility host
 

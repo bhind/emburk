@@ -146,10 +146,15 @@ Project item is Done, and parent T-0032 remains Backlog at Current 11 / Initial
 T-0032/S03 Stage A is reviewed at source `7f85ca1`. Two complete, independently
 validated private captures against the admitted pinned JAR record only three
 Float64 File/CSV effects: finite decimal/signed-zero output, distinct unquoted
-and quoted empty handling, and omission of a selected malformed row. ADR-0026
-authorizes Stage B at exactly that boundary; no `double` runtime support is
-integrated or accepted yet. Parent T-0032 remains Backlog at Current 16 /
-Initial 8; 16 is a forecast, not a completion claim.
+and quoted empty handling, and omission of a selected malformed row. Candidate
+Stage B source `3cb9c32` passes the exact primary and independent Demo with the
+three selected Float64 comparisons and prior configured-CSV, Boolean, and
+multi-file regressions. Security's re-review reported the former silent-drop
+and pre-read-size findings resolved; remaining per-captured-file post-read caps
+remain an explicit non-claim. The candidate awaits final provenance review,
+pull-request integration, and closeout; no `double` runtime support is yet
+integrated or accepted. Parent T-0032 remains Backlog at Current 16 / Initial
+8; 16 is a forecast, not a completion claim.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
