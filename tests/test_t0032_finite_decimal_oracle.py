@@ -16,11 +16,12 @@ class FiniteDecimalOracleTests(unittest.TestCase):
         self.assertEqual(len(oracle.holdout_values()), 64)
         self.assertEqual(oracle.fixture("seeded-holdout").count(b"\n"), 65)
         family = oracle.fixture("family-corpus")
-        for value in (b"3.50", b"-0", b"999999.99", b'"3.5"'):
+        for value in (b"3.50", b"-0.00", b"0.1", b"-0.1", b"1.00", b"42", b"123456.78", b"-123456.78", b"999999.99", b'"3.5"'):
             self.assertIn(value, family)
         boundaries = oracle.fixture("grammar-boundaries")
         for value in (b"+3.5", b"03.5", b".5", b"1.", b"1e2", b"NaN", b"3.141"):
             self.assertIn(value, boundaries)
+        self.assertEqual(oracle.fixture("prior-null-sentinel"), b'label,ratio\nfinite,1.5\nbare,\nquoted,""\nmalformed,not-a-double\ntail,2.5\n')
 
     def test_config_never_encodes_output_or_fixture_values(self):
         profile = oracle.config("family-corpus").decode("utf-8")

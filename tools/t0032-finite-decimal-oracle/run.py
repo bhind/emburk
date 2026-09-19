@@ -144,19 +144,23 @@ def holdout_values():
 
 def fixture(case):
     values = {
-        "family-corpus": ("0", "-0", "3.5", "3.50", "-12.25", "42.0", "999999.99", "-999999.99", '"3.5"'),
+        "family-corpus": ("0", "-0", "-0.00", "0.1", "-0.1", "1.00", "3.5", "3.50", "-12.25", "42", "42.0", "123456.78", "-123456.78", "999999.99", "-999999.99", '"3.5"'),
         "grammar-boundaries": ("+3.5", "03.5", ".5", "1.", "1e2", "NaN", "Infinity", "3.141", "1000000", "-1000000.01"),
-        "prior-null-sentinel": ("1.5", "", '""', "not-a-double", "2.5"),
+        "prior-null-sentinel": ("finite,1.5", "bare,", 'quoted,""', "malformed,not-a-double", "tail,2.5"),
         "seeded-holdout": holdout_values(),
     }
     try:
-        return ("ratio\n" + "\n".join(values[case]) + "\n").encode("ascii")
+        header = "label,ratio\n" if case == "prior-null-sentinel" else "ratio\n"
+        return (header + "\n".join(values[case]) + "\n").encode("ascii")
     except KeyError as failure:
         raise ValueError("unknown selected case") from failure
 
 
 def config(case):
     require(case in CASES, "unknown selected case")
+    columns = b"    - {name: ratio, type: double}\n"
+    if case == "prior-null-sentinel":
+        columns = b"    - {name: label, type: string}\n    - {name: ratio, type: double}\n"
     return b'''in:
   type: file
   path_prefix: input.csv
@@ -169,8 +173,7 @@ def config(case):
     escape: '"'
     skip_header_lines: 1
     columns:
-    - {name: ratio, type: double}
-out:
+''' + columns + b'''out:
   type: file
   path_prefix: output/result
   file_ext: csv
