@@ -749,10 +749,15 @@ impl RecordSource for Source<'_> {
                         "-0.0" => Float64Bits::from_float(-0.0),
                         "0.0" => Float64Bits::from_float(0.0),
                         "2.5" => Float64Bits::from_float(2.5),
-                        _ => {
+                        "" if q => {
                             bad = true;
                             break;
                         }
+                        "not-a-double" => {
+                            bad = true;
+                            break;
+                        }
+                        _ => return Err(SourceError("unsupported Float64 literal".into())),
                     };
                     cells.push(LogicalValue::Float64(value))
                 } else {

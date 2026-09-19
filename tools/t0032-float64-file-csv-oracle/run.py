@@ -18,6 +18,7 @@ import uuid
 
 
 REFERENCE_SHA256 = "e2f298db60c2fe1cc17c377edf7215c7005b5d106d151b1a4278a508e4a32e47"
+REFERENCE_BYTES = 11109700
 CASES = ("finite-decimal-and-signed-zero", "unquoted-and-quoted-empty", "malformed-between-finite")
 TIMEOUT_SECONDS = 90
 MAX_INPUT_BYTES = 4096
@@ -105,6 +106,7 @@ def reference(environment):
     require(raw is not None, "EMBURK_REFERENCE_JAR is required")
     path = Path(raw)
     require(path.is_file() and not path.is_symlink(), "reference JAR must be regular")
+    require(path.stat().st_size == REFERENCE_BYTES, "reference JAR size mismatch")
     contents = path.read_bytes()
     require(digest(contents) == REFERENCE_SHA256, "reference JAR checksum mismatch")
     return contents

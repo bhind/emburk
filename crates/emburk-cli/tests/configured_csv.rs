@@ -111,6 +111,16 @@ fn selected_float64_unquoted_empty_is_null() {
     );
 }
 #[test]
+fn unsupported_float64_literal_rejects_without_publishing_output() {
+    let d = dir("float64-unsupported");
+    write(&d, &double_config(""));
+    fs::write(d.join("input.csv"), b"ratio\n3.5\n").unwrap();
+    let output = run(&d);
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("unsupported Float64 literal"));
+    assert!(!d.join("output/result000.00.csv").exists());
+}
+#[test]
 fn invalid_configurations_do_not_open_output() {
     for (name, text) in [
         ("unknown", config("unknown: nope\n")),

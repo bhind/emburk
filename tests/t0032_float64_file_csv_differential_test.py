@@ -24,6 +24,7 @@ SPEC.loader.exec_module(oracle)
 CASES = oracle.CASES
 TIMEOUT_SECONDS = 90
 MAX_TREE_BYTES = 20 * 1024 * 1024
+MAX_BINARY_BYTES = 256 * 1024 * 1024
 
 
 def require(value, message):
@@ -69,6 +70,7 @@ def binary():
     require(raw is not None, "EMBURK_BINARY is required")
     path = Path(raw).resolve()
     require(path.is_file() and not path.is_symlink() and os.access(path, os.X_OK), "EMBURK_BINARY invalid")
+    require(0 < path.stat().st_size <= MAX_BINARY_BYTES, "EMBURK_BINARY exceeds byte cap")
     return path
 
 

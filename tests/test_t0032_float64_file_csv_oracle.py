@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -9,6 +10,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("t0032_float64_oracle", ROOT / "tools/t0032-float64-file-csv-oracle/run.py")
 oracle = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(oracle)
+DIFFERENTIAL_SPEC = importlib.util.spec_from_file_location(
+    "t0032_float64_differential", ROOT / "tests/t0032_float64_file_csv_differential_test.py"
+)
+differential = importlib.util.module_from_spec(DIFFERENTIAL_SPEC)
+DIFFERENTIAL_SPEC.loader.exec_module(differential)
 
 
 class Float64FileCsvOracleTests(unittest.TestCase):
@@ -42,6 +48,32 @@ class Float64FileCsvOracleTests(unittest.TestCase):
             sample.write_bytes(b"12345\n")
             with self.assertRaises(ValueError):
                 oracle.canonical_text(sample, root, 5)
+
+    def test_reference_and_binary_limits_reject_before_reading(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            jar = root / "reference.jar"; jar.write_bytes(b"jar")
+            binary = root / "emburk"; binary.write_bytes(b"bin"); binary.chmod(0o500)
+            saved_sha, saved_bytes = oracle.REFERENCE_SHA256, oracle.REFERENCE_BYTES
+            saved_cap, saved_binary = differential.MAX_BINARY_BYTES, os.environ.get("EMBURK_BINARY")
+            try:
+                oracle.REFERENCE_SHA256 = oracle.digest(b"jar")
+                oracle.REFERENCE_BYTES = 2
+                with self.assertRaises(ValueError):
+                    oracle.reference({"EMBURK_REFERENCE_JAR": str(jar)})
+                oracle.REFERENCE_BYTES = 3
+                self.assertEqual(oracle.reference({"EMBURK_REFERENCE_JAR": str(jar)}), b"jar")
+                differential.MAX_BINARY_BYTES = 2
+                os.environ["EMBURK_BINARY"] = str(binary)
+                with self.assertRaises(ValueError):
+                    differential.binary()
+            finally:
+                oracle.REFERENCE_SHA256, oracle.REFERENCE_BYTES = saved_sha, saved_bytes
+                differential.MAX_BINARY_BYTES = saved_cap
+                if saved_binary is None:
+                    os.environ.pop("EMBURK_BINARY", None)
+                else:
+                    os.environ["EMBURK_BINARY"] = saved_binary
 
     def test_case_manifest_rejects_raw_tampering(self):
         with tempfile.TemporaryDirectory() as temporary:
