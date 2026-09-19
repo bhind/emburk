@@ -24,11 +24,10 @@ T-0032/S02 completed the 3 SP bounded Boolean follow-on through PR #145 after
 reviewed reference observation, native differential acceptance, and independent
 Security and provenance review. Broader CSV/Boolean behavior remains queued.
 T-0032/S03 completed its reference-only Stage A at `7f85ca1`: two validated
-private captures fix three Float64 File/CSV outcomes. Candidate Stage B
-`3cb9c32` has exact primary and independent differential evidence, but awaits
-final provenance review and integration. ADR-0026 remains bounded to those
-three outcomes, not general Float64/CSV compatibility or a delivery-gate
-completion.
+private captures fix three Float64 File/CSV outcomes. PR #148 integrated the
+bounded Stage B as `c410c953` after exact primary and independent differential
+evidence. ADR-0026 remains limited to those outcomes, not general Float64/CSV
+compatibility or a delivery-gate completion.
 
 ## Phase 0: Governance and Compatibility Contract
 

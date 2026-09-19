@@ -4,12 +4,11 @@ Status: target architecture unless explicitly identified as implemented below.
 T-0032/S02, integrated through PR #145, extends the configured consumer with
 private Boolean values only at the reviewed ADR-0025 boundary; it adds no
 public type or dependency.
-ADR-0026 authorizes T-0032/S03 Stage B to connect existing private Float64
-storage to exactly three reviewed File/CSV outcomes. Candidate `3cb9c32` adds
-that private mapping and explicitly rejects unobserved Float64 literals before
-publication rather than silently dropping them. It adds no public type,
-dependency, physical-batch representation, or general numeric policy; final
-review and integration remain pending.
+ADR-0026, integrated through PR #148, connects existing private Float64 storage
+to exactly three reviewed File/CSV outcomes. Source `3cb9c32` adds that private
+mapping and explicitly rejects unobserved Float64 literals before publication
+rather than silently dropping them. It adds no public type, dependency,
+physical-batch representation, or general numeric policy.
 The runtime uses two crates. T-0031/S01 adds an experimental text File-to-File
 consumer, not an Embulk-compatible configuration/plugin loader.
 

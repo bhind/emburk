@@ -130,19 +130,18 @@ claim or completion of T-0026.
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 13 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0032 | Implement the CSV parser and formatter (S01/S02 Done; S03 Candidate Review) | Backlog | P1 | 16 | T-0023 | Rust Core Implementer | Differential (Embulk) |
+| T-0032 | Implement the CSV parser and formatter (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 16 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
 | T-0036 | Implement format guessing (S01/S02 Done, accepted 8 SP; broader gaps queued) | Backlog | P1 | 8 | T-0032, T-0033, T-0034 | Plugin Implementer | Differential (Embulk) |
 | T-0037 | Pass File-to-File differential and resume acceptance (S01 Done, accepted 5 SP; broader gates queued) | Backlog | P0 | 5 | T-0014, T-0025, T-0031–T-0036 | Tester | Differential (Embulk) |
 
-T-0032/S03 is a 5 SP selected Float64 File/CSV physical-value slice under
-Issue #147. Stage A reference evidence is reviewed and ADR-0026 authorizes
-its three observed configurations only. Candidate `3cb9c32` has matching
-primary and independent exact Demos, but final provenance review, PR
-integration, and closeout remain required. No runtime support is integrated,
-and parent Current 16 / Initial 8 is a forecast rather than completion evidence.
+T-0032/S03 is Done through PR #148 (`c410c953`), accepting its 5 SP selected
+Float64 File/CSV physical-value slice. ADR-0026 remains limited to its three
+observed configurations; unobserved Float64 literals reject rather than silently
+omit. Parent T-0032 remains Backlog at Current 16 / Initial 8; the forecast is
+not parent completion evidence.
 
 ## T-0040 — Java compatibility host
 
