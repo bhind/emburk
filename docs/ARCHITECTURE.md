@@ -9,10 +9,10 @@ to exactly three reviewed File/CSV outcomes. Source `3cb9c32` adds that private
 mapping and explicitly rejects unobserved Float64 literals before publication
 rather than silently dropping them. It adds no public type, dependency,
 physical-batch representation, or general numeric policy.
-ADR-0027 authorizes the private T-0032/S04 lexical extension candidate
-`42d1c44` after its reviewed local observations. It preserves ADR-0026 and
-requires rejection before publication for all Float64 lexical values outside
-the two selected decisions. No public type, dependency, physical
+ADR-0027 authorizes the private T-0032/S04 lexical extension integrated through
+PR #151 as `7f4853d` after its reviewed local observations. It preserves
+ADR-0026 and requires rejection before publication for all Float64 lexical
+values outside the two selected decisions. No public type, dependency, physical
 representation, or general numeric grammar is integrated by this record.
 The runtime uses two crates. T-0031/S01 adds an experimental text File-to-File
 consumer, not an Embulk-compatible configuration/plugin loader.

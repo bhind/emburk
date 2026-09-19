@@ -1,7 +1,7 @@
 # T-0032/S04 bounded Float64 lexical File/CSV observations
 
-Status: Candidate Review at `42d1c44`. Stage B is authorized by ADR-0027 but
-remains pending pull-request integration.
+Status: Done through PR #151 (`7f4853d`). The integrated tree is byte-identical
+to reviewed candidate `42d1c44`.
 
 ## Authority
 
@@ -11,7 +11,8 @@ and exact output bytes before accepting ADR-0027 for the bounded Stage B
 candidate. Stage B remains subject to its stated primary and independent
 acceptance, Security and provenance review, pull-request integration, and
 canonical-record reconciliation. Those pre-integration review gates passed for
-candidate `42d1c44`; integration remains required.
+candidate `42d1c44`; PR #151 integrated its byte-identical tree as `7f4853d`.
+Issue #150 and its Project item are Done.
 
 ## Artifact and provenance boundary
 
@@ -88,8 +89,8 @@ The independent exact-head Demo at `42d1c44` exited zero with the same 151
 passed / eight ignored result and all configured-CSV 8/8, Boolean 3/3,
 Float64 3/3, lexical Float64 3/3, and multi-file 3/3 comparisons. Its repaired
 lexical self-test also exited zero. This is selected Differential (Embulk),
-Unit/Contract, and native CLI Integration candidate evidence, not general
-compatibility certification or completion before integration.
+Unit/Contract, and native CLI Integration evidence, not general compatibility
+certification or parent completion.
 
 | Run | Evidence roots and SHA-256 |
 | --- | --- |

@@ -1,6 +1,6 @@
 # ADR-0027: Bounded Float64 lexical File/CSV values
 
-Status: Accepted for T-0032/S04 Stage B only; candidate `42d1c44` pending integration
+Status: Accepted through PR #151 for T-0032/S04 Stage B only
 
 ## Context
 

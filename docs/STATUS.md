@@ -162,8 +162,9 @@ plain `3.5`/`-12.25`, quoted and unquoted `3.5`, and a selected `3.5x`
 middle-row omission with `3.5`/`42.0` surrounding output. ADR-0027 authorizes
 a private Stage B candidate only. Candidate `42d1c44` passed primary bounded
 evidence, independent exact-head Demo, targeted Security clearance, and final
-provenance/IP triage. It remains in Review pending pull-request integration;
-no public API, new dependency, or broader Float64/CSV claim is integrated.
+provenance/IP triage. PR #151 integrated the byte-identical tree as `7f4853d`;
+Issue #150 and its Project item are Done. No public API, new dependency, or
+broader Float64/CSV claim is integrated.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
