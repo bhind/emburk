@@ -24,6 +24,14 @@ as `7f4853d`; all remaining unselected Float64 lexical values continue to
 reject before publication. This is not a general lexical, parser, or error-policy
 compatibility claim.
 
+T-0032/S05 has reviewed two matching primary/independent finite-decimal
+captures. ADR-0028 selects a private ASCII finite grammar, canonical `.0`
+whole-value formatting, and preserved negative zero; it supersedes the prior
+finite literal tables. The same captures show that the reference accepts
+broader lexical forms. Emburk does not claim parity for those forms: the native
+profile explicitly refuses them while preserving the selected historical
+quoted-empty and malformed-row omission sentinels.
+
 T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
 integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed
 preservation. Unseeded headerless charset detection and TSV remain unsupported

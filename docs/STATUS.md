@@ -166,6 +166,18 @@ provenance/IP triage. PR #151 integrated the byte-identical tree as `7f4853d`;
 Issue #150 and its Project item are Done. No public API, new dependency, or
 broader Float64/CSV claim is integrated.
 
+T-0032/S05 Stage A is reviewed at `cb47c8c`. Two complete, independently
+validated frozen-corpus captures identify an economical bounded finite-decimal
+profile: the selected in-domain forms canonicalize finite fields, preserve
+negative zero, and emit `.0` for whole values. The same captures show that the
+pinned reference accepts broader plus, dot, exponent, non-finite, precision,
+and magnitude forms. ADR-0028 deliberately records those as native refusal
+gaps rather than a compatibility claim, supersedes the prior finite literal
+tables, and preserves the three earlier omission sentinels. Stage B is
+authorized; no runtime implementation, dependency, public API, or broader
+Float64/CSV claim is integrated. Parent T-0032 remains Backlog at Current 26 /
+Initial 8.
+
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary

@@ -41,6 +41,7 @@ Use the schema and rules in [Traceable, License-Aware Reimplementation](../PROVE
 | [T-0032/S02 Boolean File/CSV](T-0032-boolean-file-csv.md) | Done through PR #145; selected three-case differential |
 | [T-0032/S03 Float64 File/CSV](T-0032-float64-file-csv.md) | Done through PR #148; selected three-case differential |
 | [T-0032/S04 Float64 lexical File/CSV](T-0032-float64-lexical-file-csv.md) | Done through PR #151; selected differential, Security, and provenance gates passed |
+| [T-0032/S05 finite-decimal File/CSV](T-0032-finite-decimal-file-csv.md) | Stage A reviewed; ADR-0028 permits the private Stage B candidate |
 | [T-0025/S01 safe publication](T-0025-safe-publication.md) | Done through PR #117; fault/interruption acceptance |
 | [T-0014/S02 format/filter observations](T-0014-formats-oracle.md) | Done through PR #118; five real reference cases |
 | [T-0014/S03 multi-file File input observation](T-0014-multifile-path-prefix-oracle.md) | Done through PR #139; three bounded reference cases |

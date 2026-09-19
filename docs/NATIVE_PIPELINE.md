@@ -18,6 +18,12 @@ PR #151 integrates them as `7f4853d`. It preserves the ADR-0026 profile and
 rejects unselected lexical values before final publication. It is not a general
 CSV parsing or malformed-row recovery policy.
 
+T-0032/S05 Stage A is reviewed and ADR-0028 authorizes a candidate bounded
+finite-decimal profile. It replaces the finite literal tables with a selected
+ASCII grammar and canonical formatter while retaining prior omission sentinels.
+Reference-accepted plus, dot, exponent, non-finite, extra-precision, and
+out-of-range forms remain native refusals, not mismatches hidden as support.
+
 T-0031/S03, integrated through PR #142, admits at most two ordinary-run inputs.
 Stateful run/resume remain single-input. Both paths assume a trusted local
 namespace; stateful processing can resolve the selected pathname again after

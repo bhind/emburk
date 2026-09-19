@@ -1,6 +1,6 @@
 # ADR-0027: Bounded Float64 lexical File/CSV values
 
-Status: Accepted through PR #151 for T-0032/S04 Stage B only
+Status: Accepted through PR #151; finite literal tables superseded by ADR-0028
 
 ## Context
 

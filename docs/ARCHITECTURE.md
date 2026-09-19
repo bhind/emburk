@@ -14,6 +14,11 @@ PR #151 as `7f4853d` after its reviewed local observations. It preserves
 ADR-0026 and requires rejection before publication for all Float64 lexical
 values outside the two selected decisions. No public type, dependency, physical
 representation, or general numeric grammar is integrated by this record.
+ADR-0028 authorizes T-0032/S05 Stage B after reviewed primary and independent
+black-box captures. It replaces only finite Float64 literal tables with a
+private bounded grammar and canonical formatter; its explicit out-of-domain
+refusal set is a native profile boundary, not reference rejection or broad
+Float64 compatibility.
 The runtime uses two crates. T-0031/S01 adds an experimental text File-to-File
 consumer, not an Embulk-compatible configuration/plugin loader.
 
