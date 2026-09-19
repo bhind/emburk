@@ -1,7 +1,7 @@
 # T-0032/S04 bounded Float64 lexical File/CSV observations
 
-Status: Stage A reviewed. Stage B is authorized by ADR-0027 but no runtime
-implementation is integrated.
+Status: Candidate Review at `42d1c44`. Stage B is authorized by ADR-0027 but
+remains pending pull-request integration.
 
 ## Authority
 
@@ -10,7 +10,8 @@ Issue #150 and direct owner approval authorize this independently acceptable
 and exact output bytes before accepting ADR-0027 for the bounded Stage B
 candidate. Stage B remains subject to its stated primary and independent
 acceptance, Security and provenance review, pull-request integration, and
-canonical-record reconciliation.
+canonical-record reconciliation. Those pre-integration review gates passed for
+candidate `42d1c44`; integration remains required.
 
 ## Artifact and provenance boundary
 
@@ -74,6 +75,32 @@ EMBURK_BINARY=target/debug/emburk python3 -I -B tests/t0032_float64_lexical_diff
 EMBURK_BINARY=target/debug/emburk python3 -I -B tests/t0031_multifile_configured_csv_differential_test.py &&
 git diff --check
 ```
+
+## Candidate evidence
+
+Primary bounded runtime evidence at `1af02d3` passed format, strict Clippy,
+build, 151 passed plus eight intentional ignores, and 20 selected differential
+comparisons. The later `42d1c44` change is a differential-harness-only
+executable-symlink control and does not change runtime semantics. Its focused
+self-test and lexical differential passed at the reviewed head.
+
+The independent exact-head Demo at `42d1c44` exited zero with the same 151
+passed / eight ignored result and all configured-CSV 8/8, Boolean 3/3,
+Float64 3/3, lexical Float64 3/3, and multi-file 3/3 comparisons. Its repaired
+lexical self-test also exited zero. This is selected Differential (Embulk),
+Unit/Contract, and native CLI Integration candidate evidence, not general
+compatibility certification or completion before integration.
+
+| Run | Evidence roots and SHA-256 |
+| --- | --- |
+| Primary | configured `/private/tmp/emburk-t0032-differential-v09yb21_` `f1c01bdd87de4da72d219a0a6e2188ae92df1f263b35f2c8cd2091281f867bc3`; Boolean `/private/tmp/emburk-t0032-s02-differential-8m8y_fwf` `f319947b59d42bb72f5b65004b401c2e034d3568f2420fb9056fab3981cd4e73`; Float64 `/private/tmp/emburk-t0032-s03-float64-differential-0dnjkg_u` `86dbdba43f58881b5c2468d9f0150d8fe647410637779aca2d63f471c44e8d6d`; lexical `/private/tmp/emburk-t0032-s04-float64-lexical-differential-0izvygaq` `65228169a96fb3ee0bdf3a13e5b092b5688698821b23c3eb2c29a6d3f703eb0f`; multi-file `/private/tmp/emburk-t0031-s03-differential-w2a985xj` `e2276a750b404cba6b063f65c8043ae157eeb182e35f0a79a0251481a9b31d89` |
+| Independent | Demo log `/private/tmp/emburk-t0032-s04-independent-demo-java17-42d1c441.log` `a6d41a432124c4974064e654a2d9ec8d25cf60cd360a4a95baf5d3f52429083b`; configured `/private/tmp/emburk-t0032-differential-t_q3wtzh` `84d8f45219368cb34e59e4a77dce4ef99f5a6ecd886a65e379fac18c3b699e92`; Boolean `/private/tmp/emburk-t0032-s02-differential-do6t8hrg` `fa71bac91f0d8e77a7658308387cd89377ada0f4e2d894e89b37e131d6038b8e`; Float64 `/private/tmp/emburk-t0032-s03-float64-differential-3vyg461k` `6a21ac259be80cc83940678b3106113bf99c9f9f29bab8c057cec0f9be8c7dc9`; lexical `/private/tmp/emburk-t0032-s04-float64-lexical-differential-xeanetkr` `5c100b24abd7ede43104683d90fc4cd8022114dbc45236f1006caaad98860733`; multi-file `/private/tmp/emburk-t0031-s03-differential-zz4vb1so` `dc0ff8256590d5b4849b516b96dd754ee07304831e1021c248f9982900c4cbc4`; self-test log `/private/tmp/emburk-t0032-s04-independent-lexical-self-test-42d1c441.log` `0dee65336beaaeb00b14a0943a3e5a036f2d6236e22d717addb96cbe92846ee9` |
+
+Security independently cleared the supplied-binary symlink control at `42d1c44`:
+the supplied path is lstat-rejected before resolution and the executable target
+in the negative self-test makes the check discriminating. Vreji's final
+read-only review found no provenance/IP escalation blocker; it added no legal
+advice, license clearance, or FTO conclusion.
 
 ## Qwen consultations
 

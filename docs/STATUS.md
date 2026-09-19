@@ -160,8 +160,10 @@ T-0032/S04 Stage A is reviewed at source `2dc3b46`. Two independently validated
 local captures fix only three additional lexical Float64 File/CSV outcomes:
 plain `3.5`/`-12.25`, quoted and unquoted `3.5`, and a selected `3.5x`
 middle-row omission with `3.5`/`42.0` surrounding output. ADR-0027 authorizes
-a private Stage B candidate only. No S04 runtime implementation, public API,
-new dependency, or broader Float64/CSV claim is integrated.
+a private Stage B candidate only. Candidate `42d1c44` passed primary bounded
+evidence, independent exact-head Demo, targeted Security clearance, and final
+provenance/IP triage. It remains in Review pending pull-request integration;
+no public API, new dependency, or broader Float64/CSV claim is integrated.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
