@@ -121,6 +121,32 @@ fn out_of_domain_float64_literal_rejects_without_publishing_output() {
     assert!(!d.join("output/result000.00.csv").exists());
 }
 #[test]
+fn finite_decimal_grammar_refuses_non_domain_forms() {
+    for literal in [
+        "+3.5",
+        ".5",
+        "1.",
+        "1e2",
+        "NaN",
+        "Infinity",
+        "3.141",
+        "1000000",
+        "-1000000.01",
+        "-",
+        " 1",
+        "1 ",
+        "１２",
+        "0000000",
+    ] {
+        let d = dir("float64-domain-refusal");
+        write(&d, &double_config(""));
+        fs::write(d.join("input.csv"), format!("ratio\n{literal}\n")).unwrap();
+        let output = run(&d);
+        assert!(!output.status.success(), "accepted {literal:?}");
+        assert!(!d.join("output/result000.00.csv").exists());
+    }
+}
+#[test]
 fn selected_float64_lexical_values_preserve_quote_state_and_omit_only_3_5x() {
     let d = dir("float64-lexical-selected");
     write(&d, &double_config(""));
