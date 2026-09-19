@@ -8,23 +8,24 @@ T-0032/S02, integrated through PR #145, admits only the bounded Boolean profile
 in ADR-0025. It does not establish general Boolean lexical, JSON, multi-file,
 or configuration compatibility.
 
-T-0032/S03, integrated through PR #148, admits the exact Float64 observations
-in ADR-0026 through source `3cb9c32`. The native `double` column is limited to
-that three-case profile. Its former finite-literal table is superseded by the
-separately reviewed ADR-0028 candidate; do not treat configured examples below
-as general Float64 support.
+T-0032/S03, integrated through PR #148, admitted the exact Float64 observations
+in ADR-0026 through source `3cb9c32`. Its former finite-literal table is
+superseded by integrated ADR-0028; do not treat configured examples below as
+general Float64 support.
 
 T-0032/S04 Stage A selects three lexical Float64 observations under ADR-0027;
 PR #151 integrates them as `7f4853d`. It preserves the ADR-0026 profile and
 its `3.5x` omission sentinel. Its finite-literal refusal rule is superseded by
-ADR-0028's candidate grammar. It is not a general CSV parsing or malformed-row
+ADR-0028's integrated grammar. It is not a general CSV parsing or malformed-row
 recovery policy.
 
-T-0032/S05 Stage A is reviewed and ADR-0028 authorizes a candidate bounded
-finite-decimal profile. It replaces the finite literal tables with a selected
-ASCII grammar and canonical formatter while retaining prior omission sentinels.
-Reference-accepted plus, dot, exponent, non-finite, extra-precision, and
-out-of-range forms remain native refusals, not mismatches hidden as support.
+T-0032/S05 integrated ADR-0028 through PR #154. The private `double` profile
+accepts an optional ASCII minus, one to six ASCII integral digits (leading zeros
+allowed), and optionally a decimal point followed by one or two ASCII fraction
+digits. It formats integral values with `.0` and preserves `-0.0`; it retains
+prior omission sentinels. Reference-accepted leading-plus, leading/trailing-dot,
+exponent, non-finite, extra-precision, and out-of-range forms remain native
+refusals, not mismatches hidden as support.
 
 T-0031/S03, integrated through PR #142, admits at most two ordinary-run inputs.
 Stateful run/resume remain single-input. Both paths assume a trusted local

@@ -12,15 +12,15 @@ and malformed-sentinel outcomes remain. It adds no public type, dependency,
 physical-batch representation, or general numeric policy.
 ADR-0027 authorizes the private T-0032/S04 lexical extension integrated through
 PR #151 as `7f4853d` after its reviewed local observations. It preserves
-ADR-0026 and its `3.5x` sentinel; ADR-0028 supersedes the former finite
-literal-only refusal rule with a separately reviewed bounded grammar candidate.
+ADR-0026 and its `3.5x` sentinel; integrated ADR-0028 supersedes the former
+finite literal-only refusal rule with the reviewed bounded grammar.
 No public type, dependency, physical representation, or general numeric grammar
 is integrated by this record.
-ADR-0028 authorizes T-0032/S05 Stage B after reviewed primary and independent
-black-box captures. It replaces only finite Float64 literal tables with a
-private bounded grammar and canonical formatter; its explicit out-of-domain
-refusal set is a native profile boundary, not reference rejection or broad
-Float64 compatibility.
+ADR-0028 is integrated through PR #154 as `5b9de8b` after reviewed primary,
+independent, and final-head evidence. It replaces only finite Float64 literal
+tables with a private bounded grammar and canonical formatter; its explicit
+out-of-domain refusal set is a native profile boundary, not reference rejection
+or broad Float64 compatibility.
 The runtime uses two crates. T-0031/S01 adds an experimental text File-to-File
 consumer, not an Embulk-compatible configuration/plugin loader.
 

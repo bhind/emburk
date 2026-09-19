@@ -166,17 +166,15 @@ provenance/IP triage. PR #151 integrated the byte-identical tree as `7f4853d`;
 Issue #150 and its Project item are Done. No public API, new dependency, or
 broader Float64/CSV claim is integrated.
 
-T-0032/S05 Stage A is reviewed at `cb47c8c`. Two complete, independently
-validated frozen-corpus captures identify an economical bounded finite-decimal
-profile: the selected in-domain forms canonicalize finite fields, preserve
-negative zero, and emit `.0` for whole values. The same captures show that the
-pinned reference accepts broader plus, dot, exponent, non-finite, precision,
-and magnitude forms. ADR-0028 deliberately records those as native refusal
-gaps rather than a compatibility claim, supersedes the prior finite literal
-tables, and preserves the three earlier omission sentinels. Stage B is
-authorized; no runtime implementation, dependency, public API, or broader
-Float64/CSV claim is integrated. Parent T-0032 remains Backlog at Current 26 /
-Initial 8.
+T-0032/S05 is integrated through PR #154 as `5b9de8b`. Two complete,
+independently validated frozen-corpus captures selected its private finite
+decimal profile: admitted values canonicalize finite fields, preserve negative
+zero, and emit `.0` for whole values. ADR-0028 supersedes only the prior finite
+literal tables and preserves the three earlier omission sentinels. The pinned
+reference accepts broader plus, dot, exponent, non-finite, precision, and
+magnitude forms; these remain explicit native-refusal gaps, not compatibility
+claims. No dependency, public API, or broader Float64/CSV behavior is accepted.
+Parent T-0032 remains Backlog at Current 26 / Initial 8.
 
 Primary candidate acceptance at runtime/differential head `f46e00e` passes the
 full Issue #153 Demo: 152 workspace passes with eight intentional ignores, all
@@ -190,8 +188,14 @@ ignores, focused 17/17 configured CSV controls, all 23 selected comparisons,
 and the 13-control differential self-test. Its retained S05 plain manifest is
 `f3255bbd6adfe524cfb203beda860e0937b86d334e1740e0bfd4c061fef65a23`;
 serial Security and Librarian reviews found no release blocker. Their
-concurrency-slot fallback is recorded in S05 provenance; integration remains
-required before completion.
+concurrency-slot fallback is recorded in S05 provenance. The final exact Demo
+at merged PR head
+`585fa4768dd8830feee6efae0d0a25425ea5cfdb` also passed: formatting, locked
+strict Clippy, CLI build, 152 workspace passes with eight intentional ignores,
+all 23 selected comparisons, one admitted normalization, nine native refusals,
+and `git diff --check`. Its retained root is
+`/private/tmp/emburk-t0032-s05-differential-7hir14zy`, manifest
+`10615ccec1cfdca97a30459cef34584e166e913ee97827034b83b5ecf6c4f043`.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`

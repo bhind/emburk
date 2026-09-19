@@ -14,7 +14,7 @@ row omission. PR #148 integrated `3cb9c32` after primary and independent exact
 runs, while retaining configured-CSV, Boolean, and multi-file regressions. At
 S03 integration it rejected unobserved Float64 tokens rather than silently
 omitting them; that historical finite-literal safety refusal is superseded by
-ADR-0028's reviewed S05 grammar candidate. The native `double` profile remains
+ADR-0028's integrated S05 grammar. The native `double` profile remains
 bounded and no wider numeric behavior is claimed.
 
 T-0032/S04 has reviewed two matching local lexical Float64 captures only.
@@ -24,13 +24,13 @@ as `7f4853d`. Its finite-literal rejection rule is historical where ADR-0028
 selects the S05 grammar; `3.5x` remains an admitted omission sentinel. This is
 not a general lexical, parser, or error-policy compatibility claim.
 
-T-0032/S05 has reviewed two matching primary/independent finite-decimal
-captures. ADR-0028 selects a private ASCII finite grammar, canonical `.0`
-whole-value formatting, and preserved negative zero; it supersedes the prior
-finite literal tables. The same captures show that the reference accepts
-broader lexical forms. Emburk does not claim parity for those forms: the native
-profile explicitly refuses them while preserving the selected historical
-quoted-empty and malformed-row omission sentinels.
+T-0032/S05 integrated ADR-0028 through PR #154. It selects a private ASCII
+finite grammar, canonical `.0` whole-value formatting, and preserved negative
+zero; it supersedes the prior finite literal tables. The primary, independent,
+and final-head Demos passed only the selected in-domain comparisons. The same
+captures show that the reference accepts broader lexical forms. Emburk does not
+claim parity for those forms: the native profile explicitly refuses them while
+preserving selected historical quoted-empty and malformed-row omission sentinels.
 
 T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
 integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed
