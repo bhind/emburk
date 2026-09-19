@@ -130,7 +130,7 @@ claim or completion of T-0026.
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 13 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0032 | Implement the CSV parser and formatter (S01/S02/S03/S04 Done; S05 In Progress) | Backlog | P1 | 26 | T-0023 | Rust Core Implementer | Differential (Embulk) |
+| T-0032 | Implement the CSV parser and formatter (S01/S02/S03/S04/S05 Done; remaining contracts queued) | Backlog | P1 | 26 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
@@ -154,16 +154,19 @@ unquoted `3.5`, and a selected `3.5x` middle-row omission with surrounding
 final provenance review preceded integration. At S04 closeout its finite lexical
 table rejected every other unselected Float64 value before final publication.
 ADR-0028 now supersedes that finite table for the reviewed S05 grammar while
-preserving S04's `3.5x` sentinel. Parent T-0032 remains Backlog at Current 21 /
-Initial 8; this forecast is not parent completion evidence.
+preserving S04's `3.5x` sentinel. At S04 closeout, parent T-0032 was Backlog at
+Current 21 / Initial 8; that forecast was not parent completion evidence.
 
-T-0032/S05 is In Progress in Issue #153 at 5 SP. ADR-0028 replaces the
-finite-literal Float64 tables with an observed bounded finite-decimal profile
-after its Stage A primary and independent black-box captures. It preserves the
-quoted-empty, `not-a-double`, and `3.5x` row-omission sentinels while admitting
-the selected finite grammar. The reference accepts several broader forms; those
-remain documented compatibility gaps and native refusals, not a parity claim.
-Parent T-0032 remains Backlog at Current 26 / Initial 8.
+T-0032/S05 is Done through PR #154 (`5b9de8b`) at 5 SP. ADR-0028 replaces the
+finite-literal Float64 tables with the reviewed bounded finite-decimal profile.
+It preserves quoted-empty, `not-a-double`, and `3.5x` row-omission sentinels
+while admitting only the selected grammar. Primary, independent, and final-head
+Issue #153 Demos passed; the final root is
+`/private/tmp/emburk-t0032-s05-differential-7hir14zy`, manifest
+`10615ccec1cfdca97a30459cef34584e166e913ee97827034b83b5ecf6c4f043`.
+Reference-accepted broader forms remain documented compatibility gaps and
+native refusals, not parity claims. Parent T-0032 remains Backlog at Current 26
+/ Initial 8.
 
 ## T-0040 — Java compatibility host
 

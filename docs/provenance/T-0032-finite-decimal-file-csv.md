@@ -1,6 +1,6 @@
 # T-0032/S05 bounded finite-decimal File/CSV observations
 
-Status: Stage A reviewed; ADR-0028 authorizes the private Stage B candidate.
+Status: Done through PR #154; ADR-0028's private bounded profile is integrated.
 
 ## Authority and boundary
 
@@ -101,7 +101,7 @@ self-test manifest is `b00cc5493279688bb5f23eea643e785c505e42d259102f26d4fe7d20e
 its plain manifest is `f3255bbd6adfe524cfb203beda860e0937b86d334e1740e0bfd4c061fef65a23`,
 and its fresh linked Stage A manifest is
 `29b3d8a7bc80d2fd8c6d0ee63657313a7444e6db318a1db4551beb4067200963`.
-Security and final provenance review remain required before integration.
+Security and final provenance review completed before integration.
 
 ## Final review
 
@@ -129,6 +129,18 @@ source, fixture, test, text, dependency, NOTICE material, or third-party code
 copied into the candidate, and no dependency change. It found no provenance
 blocker for this narrow behavioral observation. It does not clear license,
 redistribution, patent, or freedom-to-operate questions.
+
+## Integration evidence
+
+PR #154 merged the final candidate as `5b9de8ba17326aeb73058d3bb4fef2a3ad710848`.
+Before merge, the exact PR head
+`585fa4768dd8830feee6efae0d0a25425ea5cfdb` passed the full Issue #153 Demo:
+formatting, locked strict Clippy, CLI build, 152 workspace passes with eight
+intentional ignores, all 23 selected comparisons, one admitted leading-zero
+normalization, nine native refusals, and `git diff --check`. The retained final
+S05 differential root is `/private/tmp/emburk-t0032-s05-differential-7hir14zy`,
+manifest SHA-256
+`10615ccec1cfdca97a30459cef34584e166e913ee97827034b83b5ecf6c4f043`.
 
 ## Stop rule and non-claims
 

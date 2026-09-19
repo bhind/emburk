@@ -1,6 +1,6 @@
 # ADR-0028: Bounded finite-decimal File/CSV values
 
-Status: Accepted for T-0032/S05 Stage B only
+Status: Accepted through PR #154 for T-0032/S05 only
 
 ## Context
 
