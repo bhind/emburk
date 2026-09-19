@@ -178,6 +178,21 @@ authorized; no runtime implementation, dependency, public API, or broader
 Float64/CSV claim is integrated. Parent T-0032 remains Backlog at Current 26 /
 Initial 8.
 
+Primary candidate acceptance at runtime/differential head `f46e00e` passes the
+full Issue #153 Demo: 152 workspace passes with eight intentional ignores, all
+prior 20 selected comparisons, three S05 selected equalities, one admitted
+leading-zero normalization, and nine native refusals. Test-only `29647d7`
+adds focused 17/17 trailing-junk, repeated-dot, and negative-leading-zero
+controls without changing runtime or differential-driver source. Independent
+final-head acceptance at `29647d7fac8b9df07cb3508afaf4504910ef6ef4` separately
+reproduces that full Demo, including 152 workspace passes with eight intentional
+ignores, focused 17/17 configured CSV controls, all 23 selected comparisons,
+and the 13-control differential self-test. Its retained S05 plain manifest is
+`f3255bbd6adfe524cfb203beda860e0937b86d334e1740e0bfd4c061fef65a23`;
+serial Security and Librarian reviews found no release blocker. Their
+concurrency-slot fallback is recorded in S05 provenance; integration remains
+required before completion.
+
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary

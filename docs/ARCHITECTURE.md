@@ -5,15 +5,17 @@ T-0032/S02, integrated through PR #145, extends the configured consumer with
 private Boolean values only at the reviewed ADR-0025 boundary; it adds no
 public type or dependency.
 ADR-0026, integrated through PR #148, connects existing private Float64 storage
-to exactly three reviewed File/CSV outcomes. Source `3cb9c32` adds that private
-mapping and explicitly rejects unobserved Float64 literals before publication
-rather than silently dropping them. It adds no public type, dependency,
+to exactly three reviewed File/CSV outcomes. Source `3cb9c32` added a private
+finite-literal mapping and refused unobserved values rather than silently
+dropping them. ADR-0028 supersedes that finite table only; the physical empty
+and malformed-sentinel outcomes remain. It adds no public type, dependency,
 physical-batch representation, or general numeric policy.
 ADR-0027 authorizes the private T-0032/S04 lexical extension integrated through
 PR #151 as `7f4853d` after its reviewed local observations. It preserves
-ADR-0026 and requires rejection before publication for all Float64 lexical
-values outside the two selected decisions. No public type, dependency, physical
-representation, or general numeric grammar is integrated by this record.
+ADR-0026 and its `3.5x` sentinel; ADR-0028 supersedes the former finite
+literal-only refusal rule with a separately reviewed bounded grammar candidate.
+No public type, dependency, physical representation, or general numeric grammar
+is integrated by this record.
 ADR-0028 authorizes T-0032/S05 Stage B after reviewed primary and independent
 black-box captures. It replaces only finite Float64 literal tables with a
 private bounded grammar and canonical formatter; its explicit out-of-domain
