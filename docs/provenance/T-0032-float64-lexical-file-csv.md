@@ -77,19 +77,24 @@ git diff --check
 
 ## Qwen consultations
 
-Stage A used two non-applying, bounded reviews: a 46.1-second review produced
-mostly false missing-control findings, with one malformed-JSON test idea
-retained independently; a 24.7-second review confirmed most controls but
-incorrectly claimed timeout handling was absent despite `wait(timeout)` and
-`killpg`. No model code, semantic mapping, or evidence was adopted.
+Five non-applying consultations have completed. The two Stage A reviews took
+46.1 and 24.7 seconds: the first produced mostly false missing-control findings
+while one malformed-JSON test idea was retained independently; the second
+confirmed most controls but incorrectly claimed timeout handling was absent
+despite `wait(timeout)` and `killpg`. Stage B's 90-second patch proposal timed
+out without output; its 60.1-second test review was rejected because it was
+contradictory and missed existing tests; its 90-second changed-file review timed
+out without output. No model code, semantic mapping, or evidence was adopted.
 
-For Stage B, run up to three recurring advisory consultations, each capped at
-90 seconds: patch proposal, test-gap proposal, and changed-file diff review.
-Each receives only the exact three Stage B allowlisted files, with default
-project context disabled. It must not receive artifacts, manifests, `.git`,
-credentials, upstream/legal material, or security-review contents. Answers
-are never applied automatically, do not gate delivery, and require independent
-PM review; timeout or unhelpful output is not a delivery failure.
+After owner correction, one sixth final changed-file review is authorized for
+the frozen `327cb0e..7951f23` diff. It may use a 600-second timeout, a 30-minute
+keepalive, and only the exact three Stage B allowlisted files with default
+project context disabled. A two-to-three-minute cold model load is expected; a
+timeout remains a request outcome rather than proof of a network failure.
+It must not receive artifacts, manifests, `.git`, credentials, upstream/legal
+material, or security-review contents. Answers are never applied automatically,
+do not gate delivery, and require independent PM review; timeout or unhelpful
+output is not a delivery failure.
 
 ## Stop rule
 
