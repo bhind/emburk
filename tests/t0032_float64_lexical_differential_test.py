@@ -257,6 +257,7 @@ def self_test():
         root = Path(temporary)
         binary = root / "binary"
         binary.write_bytes(b"not executed\n")
+        binary.chmod(0o500)
         link = root / "binary-link"
         link.symlink_to(binary)
         original = os.environ.get("EMBURK_BINARY")
