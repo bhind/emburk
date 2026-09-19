@@ -93,8 +93,8 @@ T-0071 and T-0076 are `Verification`; and T-0072–T-0075 and T-0079 are
 | T-0002 | Establish canonical records and stable IDs | Done | P0 | 3 | None | Project Manager | Unit/Contract |
 | T-0003 | Establish roles, mutation ownership, and WIP enforcement | Done | P0 | 3 | T-0002 | Project Manager | Unit/Contract |
 | T-0004 | Implement Project synchronization audit | Done | P1 | 5 | T-0002, T-0003 | Project Manager | Unit/Contract |
-| T-0005 | Establish provenance, license, NOTICE, and SBOM gates | Backlog | P0 | 5 | T-0002 | Project Manager | Release |
-| T-0006 | Establish trademark and patent review checkpoints | Backlog | P1 | 2 | T-0005 | Project Manager | Planning |
+| T-0005 | Establish provenance, license, NOTICE, and SBOM gates (S01 In Progress; broader review gates queued) | Backlog | P0 | 5 | T-0002 | Project Manager | Release |
+| T-0006 | Establish trademark and patent review checkpoints (checkpoint automation queued; counsel remains external for material uncertainty) | Backlog | P1 | 2 | T-0005 | Project Manager | Planning |
 
 ## T-0010 — Embulk compatibility contract
 
@@ -130,7 +130,7 @@ claim or completion of T-0026.
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 13 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0032 | Implement the CSV parser and formatter (S01/S02/S03/S04/S05 Done; remaining contracts queued) | Backlog | P1 | 26 | T-0023 | Rust Core Implementer | Differential (Embulk) |
+| T-0032 | Implement the CSV parser and formatter (S01-S05 Done; S06 In Progress; remaining contracts queued) | Backlog | P0 | 34 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
@@ -167,6 +167,20 @@ Issue #153 Demos passed; the final root is
 Reference-accepted broader forms remain documented compatibility gaps and
 native refusals, not parity claims. Parent T-0032 remains Backlog at Current 26
 / Initial 8.
+
+T-0032/S06 is In Progress in Issue #156 at 8 SP. Its Stage A freezes original
+generated scalar-family corpus and holdouts before a local black-box run, then
+requires a new ADR before any runtime mutation. It is intended to replace
+literal-table pressure with reviewed grammar/type-family rules; it does not
+admit Timestamp/JSON logical values, public APIs, plugins, transactions, resume
+or general Embulk scalar compatibility. Parent T-0032 is refined to Current 34
+/ Initial 8; this forecast is not completion evidence.
+
+T-0005/S01 is In Progress in Issue #157 at 3 SP within parent T-0005's Current
+/ Initial 5. It implements only local, deterministic delivery-evidence
+inventory automation and explicit `unreviewed` states. It cannot clear license,
+NOTICE, advisory, redistribution, patent or FTO questions; T-0006's material
+risk checkpoint remains separately queued.
 
 ## T-0040 — Java compatibility host
 

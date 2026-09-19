@@ -2,6 +2,13 @@
 
 The roadmap is ordered by evidence gates. Dates are intentionally omitted until observed throughput and cycle time support forecasting.
 
+The owner-authorized [Native MVP execution matrix](NATIVE_MVP_EXECUTION_MATRIX.md)
+defines the remaining substantive native work across T-0005/T-0006, T-0012-
+T-0014, T-0021-T-0026 and T-0031-T-0037. It starts with T-0032/S06 scalar-family
+evidence/runtime and T-0005/S01 local delivery inventory under the combined
+two-item WIP limit. Completion remains a native local-file profile, not general
+Embulk, legal, patent or FTO completion.
+
 The owner-authorized [seven-stage execution sequence](IMPLEMENTATION_SEQUENCE.md)
 connects these gates to actual transfer work. T-0022/S01's isolated parser
 experiment integrated through PR #114. T-0014/S01's eight bundled File/CSV
