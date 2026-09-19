@@ -137,6 +137,8 @@ fn finite_decimal_grammar_refuses_non_domain_forms() {
         "1 ",
         "１２",
         "0000000",
+        "123.45a",
+        "123..45",
     ] {
         let d = dir("float64-domain-refusal");
         write(&d, &double_config(""));
@@ -167,13 +169,13 @@ fn finite_decimal_profile_normalizes_leading_zeroes_and_preserves_negative_zero(
     write(&d, &double_config(""));
     fs::write(
         d.join("input.csv"),
-        b"ratio\n03.5\n3.50\n42\n-0\n-0.00\n999999.99\n",
+        b"ratio\n03.5\n3.50\n42\n-0\n-0.00\n999999.99\n-00123.45\n",
     )
     .unwrap();
     assert!(run(&d).status.success());
     assert_eq!(
         fs::read(d.join("output/result000.00.csv")).unwrap(),
-        b"ratio\n3.5\n3.5\n42.0\n-0.0\n-0.0\n999999.99\n"
+        b"ratio\n3.5\n3.5\n42.0\n-0.0\n-0.0\n999999.99\n-123.45\n"
     );
 }
 #[test]
