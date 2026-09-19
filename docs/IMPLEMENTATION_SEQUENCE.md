@@ -31,11 +31,10 @@ does not reopen or complete any prior stage.
 T-0032/S02 is another separate follow-on, integrated through PR #145; its
 bounded Boolean observation and implementation do not broaden the completed
 seven-stage acceptance.
-T-0032/S03 is a separately authorized Float64 follow-on. Its Stage A raw
-captures are reviewed, and candidate Stage B `3cb9c32` has primary and
-independent exact-Demo evidence. ADR-0026 limits it to the corresponding
-outcomes; final provenance review and integration remain pending, and neither
-action broadens the completed sequence or completes CSV compatibility.
+T-0032/S03 is a separately authorized Float64 follow-on, integrated through
+PR #148. Its Stage A raw captures and source `3cb9c32` fixed the corresponding
+ADR-0026 outcomes; this does not broaden the completed sequence or complete
+CSV compatibility.
 T-0031/S03 is the separately authorized bounded native follow-on and does not
 broaden the completed seven-stage acceptance.
 

@@ -8,10 +8,10 @@ T-0032/S02, integrated through PR #145, admits only the bounded Boolean profile
 in ADR-0025. It does not establish general Boolean lexical, JSON, multi-file,
 or configuration compatibility.
 
-T-0032/S03 has reviewed Float64 reference observations under ADR-0026 and has
-a candidate implementation at `3cb9c32`, but no native `double` column is
-available until final review and integration. Do not treat the configured
-examples below as Float64 support.
+T-0032/S03, integrated through PR #148, admits the exact Float64 observations
+in ADR-0026 through source `3cb9c32`. The native `double` column is limited to
+that three-case profile; do not treat the configured examples below as general
+Float64 support.
 
 T-0031/S03, integrated through PR #142, admits at most two ordinary-run inputs.
 Stateful run/resume remain single-input. Both paths assume a trusted local

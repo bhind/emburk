@@ -1,15 +1,14 @@
 # T-0032/S03 bounded Float64 File/CSV values
 
-Status: Candidate Stage B evidence recorded at `3cb9c32`; final provenance
-review and integration pending. No native Float64 File/CSV implementation is
-integrated by this record.
+Status: Done through PR #148 (`c410c953`). The integrated native Float64
+File/CSV implementation remains limited to this record's selected boundary.
 
 ## Authority
 
 Issue #147 and the owner authorize this independently acceptable 5 SP slice.
 Jitro reviewed the complete first capture before accepting ADR-0026. The Rust
-Core Implementer may begin Stage B only within the Issue allowlist; final
-acceptance still requires independent final-head evidence and merge.
+Core Implementer completed Stage B within the Issue allowlist; primary and
+independent final-head evidence preceded PR #148 integration.
 
 ## Artifact and provenance boundary
 
@@ -86,9 +85,9 @@ dependency/public surface, unsafe output effect, IP/licensing uncertainty,
 Qwen context breach, or regression. Do not guess behavior to obtain a passing
 comparison.
 
-## Candidate evidence
+## Integrated evidence
 
-At exact candidate head `3cb9c32`, the primary Demo exited zero after format,
+At exact pre-merge head `3cb9c32`, the primary Demo exited zero after format,
 locked strict workspace Clippy, locked workspace tests (157 listed, eight
 intentional external-oracle ignores), CLI build, and `git diff --check`. It
 retained the following primary evidence manifests: configured CSV 8/8 at
@@ -109,8 +108,9 @@ Float64 `00947a051d196f1e2caf40dfda17b9d2b4a0f70b4fd9387a31fa114521f3eeb1`,
 and multi-file `2160d0dec95032931b144c1ca60ed30d47292b6b9edec9f3e50d433de5908e5f`.
 Jitro revalidated the two Float64 manifests with the frozen driver. Security's
 re-review reported no blocker after the silent-drop and pre-read-size fixes;
-per-captured-file post-read size caps remain a residual non-claim. Final
-provenance review remains required.
+per-captured-file post-read size caps remain a residual non-claim. PR #148
+integrated the candidate as `c410c953`; Issue #147 is closed and its Project
+item is Done.
 
 The single authorized Qwen request supplied only the two allowed Rust files,
 with default project context disabled. It timed out after 90 seconds with
