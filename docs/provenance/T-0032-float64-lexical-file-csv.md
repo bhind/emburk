@@ -77,7 +77,7 @@ git diff --check
 
 ## Qwen consultations
 
-Five non-applying consultations have completed. The two Stage A reviews took
+Six non-applying consultations have completed. The two Stage A reviews took
 46.1 and 24.7 seconds: the first produced mostly false missing-control findings
 while one malformed-JSON test idea was retained independently; the second
 confirmed most controls but incorrectly claimed timeout handling was absent
@@ -86,15 +86,23 @@ out without output; its 60.1-second test review was rejected because it was
 contradictory and missed existing tests; its 90-second changed-file review timed
 out without output. No model code, semantic mapping, or evidence was adopted.
 
-After owner correction, one sixth final changed-file review is authorized for
-the frozen `327cb0e..7951f23` diff. It may use a 600-second timeout, a 30-minute
-keepalive, and only the exact three Stage B allowlisted files with default
-project context disabled. A two-to-three-minute cold model load is expected; a
-timeout remains a request outcome rather than proof of a network failure.
-It must not receive artifacts, manifests, `.git`, credentials, upstream/legal
-material, or security-review contents. Answers are never applied automatically,
-do not gate delivery, and require independent PM review; timeout or unhelpful
-output is not a delivery failure.
+After owner correction, a sixth final changed-file review ran for 175.4 seconds
+on the frozen `327cb0e..7951f23` diff with the exact three Stage B allowlisted
+files and default project context disabled. It was rejected: it misread the
+oracle summary interface, asserted a false file-close concern, treated a
+deliberate private-evidence mutation self-test as a defect, and confused
+Float64 literals with test markers. No model code, test, semantic mapping, or
+evidence was adopted. The response arriving after 90 seconds shows that the
+former task-specific bound was insufficient for this request; no load-duration
+measurement attributes that delay to a cold load or network condition.
+
+Future authorized consultations use a 600-second timeout and a 30-minute
+keepalive. A two-to-three-minute cold model load is expected, but a timeout
+remains a request outcome rather than proof of a network failure. Context must
+remain only the exact task allowlist and must exclude artifacts, manifests,
+`.git`, credentials, upstream/legal material, and security-review contents.
+Answers are never applied automatically, do not gate delivery, and require
+independent PM review; timeout or unhelpful output is not a delivery failure.
 
 ## Stop rule
 
