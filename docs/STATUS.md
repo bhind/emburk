@@ -143,6 +143,14 @@ Security, and Vreji gates passed at `23d4f94`. Issue #144 is closed, its 3 SP
 Project item is Done, and parent T-0032 remains Backlog at Current 11 / Initial
 8 for broader CSV work.
 
+T-0032/S03 Stage A is reviewed at source `7f85ca1`. Two complete, independently
+validated private captures against the admitted pinned JAR record only three
+Float64 File/CSV effects: finite decimal/signed-zero output, distinct unquoted
+and quoted empty handling, and omission of a selected malformed row. ADR-0026
+authorizes Stage B at exactly that boundary; no `double` runtime support is
+integrated or accepted yet. Parent T-0032 remains Backlog at Current 16 /
+Initial 8; 16 is a forecast, not a completion claim.
+
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`
 captured 114/93 events with exact selected double bits preserved; primary

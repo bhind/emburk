@@ -23,6 +23,10 @@ and explicit sequential-publication non-claims.
 T-0032/S02 completed the 3 SP bounded Boolean follow-on through PR #145 after
 reviewed reference observation, native differential acceptance, and independent
 Security and provenance review. Broader CSV/Boolean behavior remains queued.
+T-0032/S03 has completed its reference-only Stage A at `7f85ca1`: two validated
+private captures fix three Float64 File/CSV outcomes. ADR-0026 authorizes a
+separate bounded native Stage B, not general Float64/CSV compatibility or a
+delivery-gate completion.
 
 ## Phase 0: Governance and Compatibility Contract
 
