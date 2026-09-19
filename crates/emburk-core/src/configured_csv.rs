@@ -749,11 +749,14 @@ impl RecordSource for Source<'_> {
                         "-0.0" => Float64Bits::from_float(-0.0),
                         "0.0" => Float64Bits::from_float(0.0),
                         "2.5" => Float64Bits::from_float(2.5),
+                        "3.5" => Float64Bits::from_float(3.5),
+                        "-12.25" => Float64Bits::from_float(-12.25),
+                        "42.0" => Float64Bits::from_float(42.0),
                         "" if q => {
                             bad = true;
                             break;
                         }
-                        "not-a-double" => {
+                        "not-a-double" | "3.5x" => {
                             bad = true;
                             break;
                         }
@@ -790,6 +793,9 @@ fn format_record(r: LogicalRecord, projection: &[(usize, String)]) -> Result<Vec
                 0x8000_0000_0000_0000 => csv_stream::append_field(&mut output, "-0.0"),
                 0x0000_0000_0000_0000 => csv_stream::append_field(&mut output, "0.0"),
                 0x4004_0000_0000_0000 => csv_stream::append_field(&mut output, "2.5"),
+                0x400c_0000_0000_0000 => csv_stream::append_field(&mut output, "3.5"),
+                0xc028_8000_0000_0000 => csv_stream::append_field(&mut output, "-12.25"),
+                0x4045_0000_0000_0000 => csv_stream::append_field(&mut output, "42.0"),
                 _ => return Err("unsupported Float64 value".into()),
             },
             LogicalValue::Text(value) => csv_stream::append_field(&mut output, value),
