@@ -73,7 +73,9 @@ def inventory(root):
 def executable():
     raw = os.environ.get("EMBURK_BINARY")
     require(raw is not None, "EMBURK_BINARY is required")
-    path = Path(raw).resolve()
+    source = Path(raw)
+    require(not stat.S_ISLNK(source.lstat().st_mode), "EMBURK_BINARY invalid")
+    path = source.resolve()
     require(path.is_file() and not path.is_symlink() and os.access(path, os.X_OK), "EMBURK_BINARY invalid")
     require(0 < path.stat().st_size <= MAX_BINARY_BYTES, "EMBURK_BINARY exceeds byte cap")
     return path
@@ -251,6 +253,26 @@ def main():
 
 
 def self_test():
+    with tempfile.TemporaryDirectory(prefix="emburk-t0032-s04-symlink-", dir="/private/tmp") as temporary:
+        root = Path(temporary)
+        binary = root / "binary"
+        binary.write_bytes(b"not executed\n")
+        link = root / "binary-link"
+        link.symlink_to(binary)
+        original = os.environ.get("EMBURK_BINARY")
+        os.environ["EMBURK_BINARY"] = str(link)
+        try:
+            try:
+                executable()
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("EMBURK_BINARY symlink was accepted")
+        finally:
+            if original is None:
+                del os.environ["EMBURK_BINARY"]
+            else:
+                os.environ["EMBURK_BINARY"] = original
     root = main()
     summary_path = root / "manifest.json"
     case_root = root / "cases" / oracle.CASES[0]
