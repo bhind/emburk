@@ -66,6 +66,18 @@ explicit bounded native profile; broader parent compatibility gates remain open.
 
 ## Delivery queue
 
+The owner authorized a native-MVP execution program. Its definition, remaining
+parent-task matrix, acceptance boundaries and dependency order are recorded in
+[Native MVP execution matrix](NATIVE_MVP_EXECUTION_MATRIX.md). This does not
+reclassify previously bounded slices as completion of their parent tasks.
+
+T-0032/S06 (Issue #156) and T-0005/S01 (Issue #157) are the two active WIP
+lanes. S06 first freezes original scalar-family corpus and holdouts before any
+new black-box observation or runtime semantics; T-0005/S01 builds a local
+delivery-evidence inventory that reports unresolved matters as `unreviewed`.
+Neither packet makes Timestamp/JSON logical values, generic plugins, legal/FTO
+clearance or broader Embulk compatibility claims.
+
 T-0036/S01 is Done through PR #123: three harness tests and ten reviewed actual
 guess projections passed independently at 1d577dd. T-0036/S02 is Done through
 PR #124, after 125 tests passed independently at 421500e. T-0037/S01 integrated
