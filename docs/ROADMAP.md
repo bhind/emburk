@@ -34,6 +34,10 @@ Its Stage A captures at `2dc3b46` select three outcomes only; ADR-0027 permits
 the integrated `7f4853d` tree at that private boundary. It does not broaden the
 completed seven-stage sequence, generic CSV/Float64 compatibility, or any
 delivery gate.
+T-0032/S05 has completed reviewed Stage A at `cb47c8c`. ADR-0028 authorizes a
+private bounded finite-decimal Stage B that replaces literal tables; broader
+reference-accepted lexical forms remain explicit gaps. This continues neither
+the completed seven-stage sequence nor a general Float64 compatibility claim.
 
 ## Phase 0: Governance and Compatibility Contract
 

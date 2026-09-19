@@ -31,6 +31,39 @@ struct Profile {
     projection: Vec<(usize, String)>,
     workers: usize,
 }
+fn parse_finite_decimal(text: &str) -> Option<Float64Bits> {
+    let bytes = text.as_bytes();
+    let mut at = 0;
+    if bytes.first() == Some(&b'-') {
+        at = 1;
+    }
+    let integer_start = at;
+    while at < bytes.len() && bytes[at].is_ascii_digit() {
+        at += 1;
+    }
+    let integer_digits = at - integer_start;
+    if !(1..=6).contains(&integer_digits) {
+        return None;
+    }
+    if at < bytes.len() {
+        if bytes[at] != b'.' {
+            return None;
+        }
+        at += 1;
+        let fraction_start = at;
+        while at < bytes.len() && bytes[at].is_ascii_digit() {
+            at += 1;
+        }
+        if !(1..=2).contains(&(at - fraction_start)) {
+            return None;
+        }
+    }
+    if at != bytes.len() {
+        return None;
+    }
+    let value = text.parse::<f64>().ok()?;
+    value.is_finite().then(|| Float64Bits::from_float(value))
+}
 pub fn run_config(path: &Path) -> Result<usize, String> {
     run_config_with_cancel(path, &AtomicBool::new(false))
 }
@@ -745,13 +778,6 @@ impl RecordSource for Source<'_> {
                     }
                 } else if c.logical_type() == LogicalType::Float64 {
                     let value = match text.as_str() {
-                        "1.5" => Float64Bits::from_float(1.5),
-                        "-0.0" => Float64Bits::from_float(-0.0),
-                        "0.0" => Float64Bits::from_float(0.0),
-                        "2.5" => Float64Bits::from_float(2.5),
-                        "3.5" => Float64Bits::from_float(3.5),
-                        "-12.25" => Float64Bits::from_float(-12.25),
-                        "42.0" => Float64Bits::from_float(42.0),
                         "" if q => {
                             bad = true;
                             break;
@@ -760,7 +786,8 @@ impl RecordSource for Source<'_> {
                             bad = true;
                             break;
                         }
-                        _ => return Err(SourceError("unsupported Float64 literal".into())),
+                        _ => parse_finite_decimal(&text)
+                            .ok_or_else(|| SourceError("unsupported Float64 literal".into()))?,
                     };
                     cells.push(LogicalValue::Float64(value))
                 } else {
@@ -788,16 +815,19 @@ fn format_record(r: LogicalRecord, projection: &[(usize, String)]) -> Result<Vec
             LogicalValue::Boolean(value) => {
                 csv_stream::append_field(&mut output, if *value { "true" } else { "false" })
             }
-            LogicalValue::Float64(value) => match value.bits() {
-                0x3ff8_0000_0000_0000 => csv_stream::append_field(&mut output, "1.5"),
-                0x8000_0000_0000_0000 => csv_stream::append_field(&mut output, "-0.0"),
-                0x0000_0000_0000_0000 => csv_stream::append_field(&mut output, "0.0"),
-                0x4004_0000_0000_0000 => csv_stream::append_field(&mut output, "2.5"),
-                0x400c_0000_0000_0000 => csv_stream::append_field(&mut output, "3.5"),
-                0xc028_8000_0000_0000 => csv_stream::append_field(&mut output, "-12.25"),
-                0x4045_0000_0000_0000 => csv_stream::append_field(&mut output, "42.0"),
-                _ => return Err("unsupported Float64 value".into()),
-            },
+            LogicalValue::Float64(value) => {
+                let number = f64::from_bits(value.bits());
+                let text = if number == 0.0 && number.is_sign_negative() {
+                    "-0.0".to_owned()
+                } else {
+                    let mut text = number.to_string();
+                    if !text.contains('.') {
+                        text.push_str(".0");
+                    }
+                    text
+                };
+                csv_stream::append_field(&mut output, &text)
+            }
             LogicalValue::Text(value) => csv_stream::append_field(&mut output, value),
         }
     }

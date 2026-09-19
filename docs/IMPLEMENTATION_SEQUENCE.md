@@ -39,6 +39,9 @@ T-0032/S04 is a separate lexical Float64 follow-on Done through PR #151. Its
 Stage A local observations and ADR-0027 select private integrated tree
 `7f4853d` only; they neither reopen nor complete the bounded seven-stage
 sequence.
+T-0032/S05 is a separate finite-decimal follow-on. Its reviewed Stage A source
+`cb47c8c` authorizes ADR-0028's private Stage B candidate only; it neither
+reopens nor completes the bounded seven-stage sequence.
 T-0031/S03 is the separately authorized bounded native follow-on and does not
 broaden the completed seven-stage acceptance.
 

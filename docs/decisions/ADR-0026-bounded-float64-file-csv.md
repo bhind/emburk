@@ -1,6 +1,6 @@
 # ADR-0026: Bounded Float64 File/CSV physical values
 
-Status: Accepted through PR #148
+Status: Accepted through PR #148; finite literal tables superseded by ADR-0028
 
 ## Context
 

@@ -130,7 +130,7 @@ claim or completion of T-0026.
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 13 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0032 | Implement the CSV parser and formatter (S01/S02/S03/S04 Done; remaining contracts queued) | Backlog | P1 | 21 | T-0023 | Rust Core Implementer | Differential (Embulk) |
+| T-0032 | Implement the CSV parser and formatter (S01/S02/S03/S04 Done; S05 In Progress) | Backlog | P1 | 26 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
@@ -138,10 +138,11 @@ claim or completion of T-0026.
 | T-0037 | Pass File-to-File differential and resume acceptance (S01 Done, accepted 5 SP; broader gates queued) | Backlog | P0 | 5 | T-0014, T-0025, T-0031–T-0036 | Tester | Differential (Embulk) |
 
 T-0032/S03 is Done through PR #148 (`c410c953`), accepting its 5 SP selected
-Float64 File/CSV physical-value slice. ADR-0026 remains limited to its three
-observed configurations; unobserved Float64 literals reject rather than silently
-omit. Parent T-0032 remains Backlog at Current 16 / Initial 8; the forecast is
-not parent completion evidence at the S03 closeout; S04 subsequently raises
+Float64 File/CSV physical-value slice. At S03 closeout ADR-0026 rejected
+unobserved Float64 literals rather than silently omitting them. ADR-0028 now
+supersedes only that finite-literal table and refusal boundary for S05's
+reviewed grammar; the remaining S03 sentinel outcomes stay intact. Parent
+T-0032 remained Backlog at Current 16 / Initial 8; S04 subsequently raised
 Current to 21 while retaining Initial 8.
 
 T-0032/S04 is Done through PR #151 (`7f4853d`), accepting its 5 SP bounded
@@ -150,10 +151,19 @@ ADR-0027. Its Stage A evidence fixes only plain `3.5`/`-12.25`, quoted and
 unquoted `3.5`, and a selected `3.5x` middle-row omission with surrounding
 `3.5`/`42.0` output. The integrated tree is byte-identical to reviewed candidate
 `42d1c44`; primary and independent bounded evidence, Security clearance, and
-final provenance review preceded integration. Stage B has no public surface or
-new dependency and preserves ADR-0026 while rejecting every other unselected
-Float64 lexical value before final publication. Parent T-0032 remains Backlog
-at Current 21 / Initial 8; this forecast is not parent completion evidence.
+final provenance review preceded integration. At S04 closeout its finite lexical
+table rejected every other unselected Float64 value before final publication.
+ADR-0028 now supersedes that finite table for the reviewed S05 grammar while
+preserving S04's `3.5x` sentinel. Parent T-0032 remains Backlog at Current 21 /
+Initial 8; this forecast is not parent completion evidence.
+
+T-0032/S05 is In Progress in Issue #153 at 5 SP. ADR-0028 replaces the
+finite-literal Float64 tables with an observed bounded finite-decimal profile
+after its Stage A primary and independent black-box captures. It preserves the
+quoted-empty, `not-a-double`, and `3.5x` row-omission sentinels while admitting
+the selected finite grammar. The reference accepts several broader forms; those
+remain documented compatibility gaps and native refusals, not a parity claim.
+Parent T-0032 remains Backlog at Current 26 / Initial 8.
 
 ## T-0040 — Java compatibility host
 

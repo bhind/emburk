@@ -11,18 +11,26 @@ T-0032/S03 has reviewed two matching raw Float64 File/CSV captures against the
 pinned reference. They observe only three configurations: selected decimal and
 signed-zero output, unquoted versus quoted empty fields, and selected malformed
 row omission. PR #148 integrated `3cb9c32` after primary and independent exact
-runs, while retaining configured-CSV, Boolean, and multi-file regressions. It
-rejects unobserved Float64 tokens rather than silently omitting them; that is an
-explicit native safety refusal, not reference-parity evidence. The native
-`double` profile is integrated only at this bounded ADR-0026 boundary; no wider
-numeric behavior is claimed.
+runs, while retaining configured-CSV, Boolean, and multi-file regressions. At
+S03 integration it rejected unobserved Float64 tokens rather than silently
+omitting them; that historical finite-literal safety refusal is superseded by
+ADR-0028's reviewed S05 grammar candidate. The native `double` profile remains
+bounded and no wider numeric behavior is claimed.
 
 T-0032/S04 has reviewed two matching local lexical Float64 captures only.
 ADR-0027 selects plain `3.5`/`-12.25`, quoted and unquoted `3.5`, and one
 `3.5x` middle-row omission outcome. PR #151 integrated the reviewed candidate
-as `7f4853d`; all remaining unselected Float64 lexical values continue to
-reject before publication. This is not a general lexical, parser, or error-policy
-compatibility claim.
+as `7f4853d`. Its finite-literal rejection rule is historical where ADR-0028
+selects the S05 grammar; `3.5x` remains an admitted omission sentinel. This is
+not a general lexical, parser, or error-policy compatibility claim.
+
+T-0032/S05 has reviewed two matching primary/independent finite-decimal
+captures. ADR-0028 selects a private ASCII finite grammar, canonical `.0`
+whole-value formatting, and preserved negative zero; it supersedes the prior
+finite literal tables. The same captures show that the reference accepts
+broader lexical forms. Emburk does not claim parity for those forms: the native
+profile explicitly refuses them while preserving the selected historical
+quoted-empty and malformed-row omission sentinels.
 
 T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
 integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed
