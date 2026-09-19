@@ -130,7 +130,7 @@ claim or completion of T-0026.
 |---|---|---|---|---:|---|---|---|
 | T-0030 | Epic: Native File-to-File ETL | Backlog | P1 | — | T-0020 | Project Manager | Planning |
 | T-0031 | Implement file/config inputs and file/stdout/null outputs (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 13 | T-0022, T-0023 | Rust Core Implementer | Unit/Contract |
-| T-0032 | Implement the CSV parser and formatter (S01/S02/S03 Done; remaining contracts queued) | Backlog | P1 | 16 | T-0023 | Rust Core Implementer | Differential (Embulk) |
+| T-0032 | Implement the CSV parser and formatter (S01/S02/S03 Done; S04 Stage B In Progress; remaining contracts queued) | Backlog | P1 | 21 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0033 | Implement the JSON parser (bounded formats S01 Done) | Backlog | P1 | 8 | T-0023 | Rust Core Implementer | Differential (Embulk) |
 | T-0034 | Implement gzip and bzip2 codecs | Backlog | P1 | 5 | T-0031 | Plugin Implementer | Differential (Embulk) |
 | T-0035 | Implement rename and remove-columns filters | Backlog | P1 | 3 | T-0023 | Plugin Implementer | Differential (Embulk) |
@@ -141,7 +141,16 @@ T-0032/S03 is Done through PR #148 (`c410c953`), accepting its 5 SP selected
 Float64 File/CSV physical-value slice. ADR-0026 remains limited to its three
 observed configurations; unobserved Float64 literals reject rather than silently
 omit. Parent T-0032 remains Backlog at Current 16 / Initial 8; the forecast is
-not parent completion evidence.
+not parent completion evidence at the S03 closeout; S04 subsequently raises
+Current to 21 while retaining Initial 8.
+
+T-0032/S04 is an active 5 SP bounded lexical Float64 File/CSV follow-on under
+ADR-0027. Its Stage A evidence fixes only plain `3.5`/`-12.25`, quoted and
+unquoted `3.5`, and a selected `3.5x` middle-row omission with surrounding
+`3.5`/`42.0` output. Stage B has no public surface or new dependency and must
+preserve ADR-0026 while rejecting every other unselected Float64 lexical value
+before final publication. Parent T-0032 remains Backlog at Current 21 / Initial
+8; this forecast is not parent completion evidence.
 
 ## T-0040 — Java compatibility host
 

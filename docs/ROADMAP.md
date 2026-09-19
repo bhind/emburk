@@ -28,6 +28,10 @@ private captures fix three Float64 File/CSV outcomes. PR #148 integrated the
 bounded Stage B as `c410c953` after exact primary and independent differential
 evidence. ADR-0026 remains limited to those outcomes, not general Float64/CSV
 compatibility or a delivery-gate completion.
+T-0032/S04 is an active, separately authorized 5 SP lexical Float64 follow-on.
+Its Stage A captures at `2dc3b46` select three outcomes only; ADR-0027 permits
+Stage B at that private boundary. It does not broaden the completed seven-stage
+sequence, generic CSV/Float64 compatibility, or any delivery gate.
 
 ## Phase 0: Governance and Compatibility Contract
 

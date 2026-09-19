@@ -153,7 +153,15 @@ Boolean, and multi-file regressions. Security's re-review reported the former
 silent-drop and pre-read-size findings resolved; remaining per-captured-file
 post-read caps remain an explicit non-claim. The integrated `double` profile is
 limited to ADR-0026's outcomes. Parent T-0032 remains Backlog at Current 16 /
-Initial 8; 16 is a forecast, not a completion claim.
+Initial 8 at S03 closeout; S04 subsequently raises Current to 21 while retaining
+Initial 8. Neither forecast is a completion claim.
+
+T-0032/S04 Stage A is reviewed at source `2dc3b46`. Two independently validated
+local captures fix only three additional lexical Float64 File/CSV outcomes:
+plain `3.5`/`-12.25`, quoted and unquoted `3.5`, and a selected `3.5x`
+middle-row omission with `3.5`/`42.0` surrounding output. ADR-0027 authorizes
+a private Stage B candidate only. No S04 runtime implementation, public API,
+new dependency, or broader Float64/CSV claim is integrated.
 
 T-0012/S08 is integrated through PR #82. The owner approved continuation of
 T-0012/S09 after the reference-execution explanation. Stage A at `7e46379`

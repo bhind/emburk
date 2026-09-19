@@ -35,6 +35,9 @@ T-0032/S03 is a separately authorized Float64 follow-on, integrated through
 PR #148. Its Stage A raw captures and source `3cb9c32` fixed the corresponding
 ADR-0026 outcomes; this does not broaden the completed sequence or complete
 CSV compatibility.
+T-0032/S04 is a separate active lexical Float64 follow-on. Its Stage A local
+observations and ADR-0027 select a private Stage B candidate only; they neither
+reopen nor complete the bounded seven-stage sequence.
 T-0031/S03 is the separately authorized bounded native follow-on and does not
 broaden the completed seven-stage acceptance.
 
