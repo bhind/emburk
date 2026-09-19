@@ -27,6 +27,12 @@ fn boolean_config(extra: &str) -> String {
         "    - {name: flag, type: boolean}",
     )
 }
+fn double_config(extra: &str) -> String {
+    config(extra).replace(
+        "    - {name: id, type: long}\n    - {name: name, type: string}",
+        "    - {name: ratio, type: double}",
+    )
+}
 fn run(dir: &Path) -> std::process::Output {
     Command::new(env!("CARGO_BIN_EXE_emburk"))
         .args(["run", "config.yml"])
@@ -72,6 +78,46 @@ fn unsupported_boolean_literal_rejects_the_csv_run() {
     let output = run(&d);
     assert!(!output.status.success());
     assert!(String::from_utf8_lossy(&output.stderr).contains("unsupported Boolean literal"));
+    assert!(!d.join("output/result000.00.csv").exists());
+}
+#[test]
+fn selected_float64_csv_values_preserve_signed_zero_and_omit_selected_bad_rows() {
+    let d = dir("float64-selected");
+    write(&d, &double_config(""));
+    fs::write(
+        d.join("input.csv"),
+        b"ratio\n1.5\n-0.0\n0.0\n\"\"\nnot-a-double\n2.5\n",
+    )
+    .unwrap();
+    assert!(run(&d).status.success());
+    assert_eq!(
+        fs::read(d.join("output/result000.00.csv")).unwrap(),
+        b"ratio\n1.5\n-0.0\n0.0\n2.5\n"
+    );
+}
+#[test]
+fn selected_float64_unquoted_empty_is_null() {
+    let d = dir("float64-unquoted-empty");
+    let profile = double_config("").replace(
+        "    - {name: ratio, type: double}",
+        "    - {name: label, type: string}\n    - {name: ratio, type: double}",
+    );
+    write(&d, &profile);
+    fs::write(d.join("input.csv"), b"label,ratio\nbare,\nquoted,\"\"\n").unwrap();
+    assert!(run(&d).status.success());
+    assert_eq!(
+        fs::read(d.join("output/result000.00.csv")).unwrap(),
+        b"label,ratio\nbare,\n"
+    );
+}
+#[test]
+fn unsupported_float64_literal_rejects_without_publishing_output() {
+    let d = dir("float64-unsupported");
+    write(&d, &double_config(""));
+    fs::write(d.join("input.csv"), b"ratio\n3.5\n").unwrap();
+    let output = run(&d);
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("unsupported Float64 literal"));
     assert!(!d.join("output/result000.00.csv").exists());
 }
 #[test]

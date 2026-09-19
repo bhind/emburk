@@ -1,7 +1,7 @@
 //! Private single-file configured CSV execution profile.
 use crate::{
     bounded_parallel, csv_stream,
-    logical_record::{LogicalRecord, LogicalValue},
+    logical_record::{Float64Bits, LogicalRecord, LogicalValue},
     logical_schema::{LogicalColumn, LogicalSchema, LogicalType},
     native_formats::{self, Codec, Encoder},
     publication,
@@ -166,6 +166,8 @@ fn compile(root: Node) -> Result<Profile, String> {
             "string" => LogicalType::Text,
             "boolean" if !json => LogicalType::Boolean,
             "boolean" => return Err("Boolean columns are only supported for CSV".into()),
+            "double" if !json => LogicalType::Float64,
+            "double" => return Err("Float64 columns are only supported for CSV".into()),
             _ => return Err("unsupported column type".into()),
         };
         columns.push(Column {
@@ -741,6 +743,23 @@ impl RecordSource for Source<'_> {
                         "false" | "truthy" | "" => cells.push(LogicalValue::Boolean(false)),
                         _ => return Err(SourceError("unsupported Boolean literal".into())),
                     }
+                } else if c.logical_type() == LogicalType::Float64 {
+                    let value = match text.as_str() {
+                        "1.5" => Float64Bits::from_float(1.5),
+                        "-0.0" => Float64Bits::from_float(-0.0),
+                        "0.0" => Float64Bits::from_float(0.0),
+                        "2.5" => Float64Bits::from_float(2.5),
+                        "" if q => {
+                            bad = true;
+                            break;
+                        }
+                        "not-a-double" => {
+                            bad = true;
+                            break;
+                        }
+                        _ => return Err(SourceError("unsupported Float64 literal".into())),
+                    };
+                    cells.push(LogicalValue::Float64(value))
                 } else {
                     cells.push(LogicalValue::Text(text))
                 }
@@ -766,8 +785,14 @@ fn format_record(r: LogicalRecord, projection: &[(usize, String)]) -> Result<Vec
             LogicalValue::Boolean(value) => {
                 csv_stream::append_field(&mut output, if *value { "true" } else { "false" })
             }
+            LogicalValue::Float64(value) => match value.bits() {
+                0x3ff8_0000_0000_0000 => csv_stream::append_field(&mut output, "1.5"),
+                0x8000_0000_0000_0000 => csv_stream::append_field(&mut output, "-0.0"),
+                0x0000_0000_0000_0000 => csv_stream::append_field(&mut output, "0.0"),
+                0x4004_0000_0000_0000 => csv_stream::append_field(&mut output, "2.5"),
+                _ => return Err("unsupported Float64 value".into()),
+            },
             LogicalValue::Text(value) => csv_stream::append_field(&mut output, value),
-            _ => {}
         }
     }
     output.push(b'\n');

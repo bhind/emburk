@@ -7,6 +7,16 @@ three selected Boolean cases: exact `true`/`false`, the observed `truthy`
 mapping, and distinct unquoted/quoted empty handling. Unsupported literals are
 rejected. This is not general Boolean, JSON, or multi-file compatibility.
 
+T-0032/S03 has reviewed two matching raw Float64 File/CSV captures against the
+pinned reference. They observe only three configurations: selected decimal and
+signed-zero output, unquoted versus quoted empty fields, and selected malformed
+row omission. Candidate `3cb9c32` reproduces these three cases in primary and
+independent exact runs, while retaining configured-CSV, Boolean, and multi-file
+regressions. It rejects unobserved Float64 tokens rather than silently omitting
+them; that is an explicit native safety refusal, not reference-parity evidence.
+Final provenance review and integration remain pending, so no native `double`
+profile is integrated or verified and no wider numeric behavior is claimed.
+
 T-0036/S01 (#123) records ten actual guess projections. The S02 native profile
 integrated through PR #124: UTF-8/LF/comma, JSON objects, gzip/bzip2 and explicit seed
 preservation. Unseeded headerless charset detection and TSV remain unsupported
